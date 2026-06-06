@@ -635,12 +635,13 @@
                     <div class="timer-badge"><i class="fas fa-clock"></i> 00:30 - 00:45</div>
                 </div>
                 <div class="bilingual">
-                    <p>Now it's your turn to be the architect! I'm going to give you a number, and I want you to drag the correct blocks into the chart. Let's try 263!</p>
-                    <span class="id-lang">Sekarang giliranmu menjadi arsitek! Aku akan memberikan sebuah angka, dan aku mau kamu seret blok yang benar ke dalam tabel. Mari coba 263!</span>
+                    <p>Now it's your turn to be the architect! Drag the correct blocks into the chart and fill in the expanded form.</p>
+                    <span class="id-lang">Sekarang giliranmu menjadi arsitek! Seret blok yang benar ke dalam tabel dan isi bentuk ekspansinya.</span>
                 </div>
 
                 <div style="text-align:center; margin-bottom:20px;">
-                    <h2 style="color:var(--neon-cyan); font-size:3rem; letter-spacing:5px;">263</h2>
+                    <h4 style="color:var(--neon-cyan);" id="q-tracker">Question 1 of 5</h4>
+                    <h2 style="color:var(--neon-pink); font-size:3.5rem; letter-spacing:5px;" id="target-number">263</h2>
                 </div>
 
                 <!-- Drag & Drop Area -->
@@ -675,12 +676,13 @@
                 <div style="text-align:center; font-size:1.5rem; font-weight:bold; color:var(--text-main);">
                     <input type="text" class="eq-input" id="exp-h" maxlength="3" placeholder="?"> + 
                     <input type="text" class="eq-input" id="exp-t" maxlength="2" placeholder="?"> + 
-                    <input type="text" class="eq-input" id="exp-o" maxlength="1" placeholder="?"> = 263
+                    <input type="text" class="eq-input" id="exp-o" maxlength="1" placeholder="?"> = <span id="eq-target">263</span>
                 </div>
 
-                <div class="action-btns" style="justify-content: center; margin-top:30px;">
+                <div class="action-btns" style="justify-content: center; margin-top:30px; flex-wrap: wrap;">
                     <button class="btn-check" onclick="checkGuided()"><i class="fas fa-check-circle"></i> Cek Jawaban</button>
                     <button class="btn-reset" onclick="resetGuided()"><i class="fas fa-redo"></i> Reset</button>
+                    <button class="btn-check" id="btn-next-guided" style="display: none; background: linear-gradient(135deg, var(--neon-cyan), #00b4d8);" onclick="nextGuided()"><i class="fas fa-forward"></i> Next Question</button>
                 </div>
                 <div id="fb-game5" class="feedback-msg" style="text-align:center; margin-top:15px; font-size:1.2rem;"></div>
             </section>
@@ -1622,8 +1624,18 @@
             document.getElementById('fb-game3').className = 'feedback-msg';
         }
 
-        // --- Game 5: Guided Practice Drag & Drop Blocks ---
+        // --- Game 5: Guided Practice Drag & Drop Blocks (DINAMIS 5 SOAL) ---
         let blockCounts = { 'col-h': 0, 'col-t': 0, 'col-o': 0 };
+        
+        // Bank Soal Guided Practice
+        const guidedQuestions = [
+            { num: 263, h: 2, t: 6, o: 3, expH: '200', expT: '60', expO: '3' },
+            { num: 154, h: 1, t: 5, o: 4, expH: '100', expT: '50', expO: '4' },
+            { num: 308, h: 3, t: 0, o: 8, expH: '300', expT: '0', expO: '8' },
+            { num: 420, h: 4, t: 2, o: 0, expH: '400', expT: '20', expO: '0' },
+            { num: 505, h: 5, t: 0, o: 5, expH: '500', expT: '0', expO: '5' }
+        ];
+        let currentGQ = 0; // Index soal saat ini
 
         function dragBlock(e, val) { e.dataTransfer.setData("text/plain", val); }
 
@@ -1631,6 +1643,7 @@
             e.preventDefault();
             var val = e.dataTransfer.getData("text/plain");
             blockCounts[targetId]++;
+            
             const target = document.getElementById(targetId);
             const svgMap = {
                 '100': '<svg width="40" height="40" viewBox="0 0 80 80" class="dropped-item"><rect width="80" height="80" fill="#ff2d95" rx="3"/><text x="40" y="45" font-size="25" fill="white" text-anchor="middle">100</text></svg>',
@@ -1640,22 +1653,45 @@
             target.innerHTML += svgMap[val];
         }
 
+        function loadGuidedQuestion() {
+            const q = guidedQuestions[currentGQ];
+            document.getElementById('target-number').innerText = q.num;
+            document.getElementById('eq-target').innerText = q.num;
+            document.getElementById('q-tracker').innerText = `Question ${currentGQ + 1} of ${guidedQuestions.length}`;
+            document.getElementById('btn-next-guided').style.display = 'none'; // Sembunyikan tombol next
+            resetGuided(); // Bersihkan papan
+            document.getElementById('fb-game5').className = 'feedback-msg'; // Hapus feedback lama
+            document.getElementById('build-chart').style.borderColor = "var(--neon-cyan)"; // Reset border
+        }
+
         function checkGuided() {
+            const q = guidedQuestions[currentGQ];
             const fb = document.getElementById('fb-game5');
             const hVal = document.getElementById('exp-h').value.trim();
             const tVal = document.getElementById('exp-t').value.trim();
             const oVal = document.getElementById('exp-o').value.trim();
-            let blockCorrect = (blockCounts['col-h'] === 2 && blockCounts['col-t'] === 6 && blockCounts['col-o'] === 3);
-            let inputCorrect = (hVal === '200' && tVal === '60' && oVal === '3');
+
+            // Cek blok (menggunakan data dari bank soal)
+            let blockCorrect = (blockCounts['col-h'] === q.h && blockCounts['col-t'] === q.t && blockCounts['col-o'] === q.o);
+            // Cek input
+            let inputCorrect = (hVal === q.expH && tVal === q.expT && oVal === q.expO);
 
             if(blockCorrect && inputCorrect) {
                 fb.className = 'feedback-msg show success';
-                fb.innerHTML = '<i class="fas fa-trophy"></i> Amazing Architect! You built 263 perfectly! / Arsitek Luar Biasa!';
+                fb.innerHTML = `<i class="fas fa-trophy"></i> Amazing Architect! You built ${q.num} perfectly! / Arsitek Luar Biasa!`;
                 document.getElementById('build-chart').style.borderColor = "var(--success)";
+                
+                // Jika bukan soal terakhir, tampilkan tombol Next
+                if(currentGQ < guidedQuestions.length - 1) {
+                    document.getElementById('btn-next-guided').style.display = 'inline-block';
+                } else {
+                    fb.innerHTML += `<br><i class="fas fa-flag-checkered"></i> All questions completed! / Semua soal selesai!`;
+                }
             } else {
                 let hints = [];
-                if(!blockCorrect) hints.push("Check your blocks (Need 2 hundreds, 6 tens, 3 ones)");
-                if(!inputCorrect) hints.push("Check your expanded form (200 + 60 + 3)");
+                if(!blockCorrect) hints.push(`Check your blocks (Need ${q.h} hundreds, ${q.t} tens, ${q.o} ones) / Cek blokmu`);
+                if(!inputCorrect) hints.push(`Check your expanded form (${q.expH} + ${q.expT} + ${q.expO}) / Cek bentuk ekspansi`);
+                
                 fb.className = 'feedback-msg show error';
                 fb.innerHTML = `<i class="fas fa-times-circle"></i> Not quite! ${hints.join(' & ')}.`;
                 document.getElementById('build-chart').style.borderColor = "var(--error)";
@@ -1664,12 +1700,22 @@
 
         function resetGuided() {
             blockCounts = { 'col-h': 0, 'col-t': 0, 'col-o': 0 };
+            
             document.getElementById('col-h').innerHTML = '<div class="drop-column-header">Hundreds<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Rataran</span></div>';
             document.getElementById('col-t').innerHTML = '<div class="drop-column-header">Tens<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Puluhan</span></div>';
             document.getElementById('col-o').innerHTML = '<div class="drop-column-header">Ones<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Satuan</span></div>';
-            document.getElementById('exp-h').value = ''; document.getElementById('exp-t').value = ''; document.getElementById('exp-o').value = '';
+            
+            document.getElementById('exp-h').value = '';
+            document.getElementById('exp-t').value = '';
+            document.getElementById('exp-o').value = '';
+            
             document.getElementById('build-chart').style.borderColor = "var(--neon-cyan)";
             document.getElementById('fb-game5').className = 'feedback-msg';
+        }
+
+        function nextGuided() {
+            currentGQ++; // Pindah ke soal berikutnya
+            loadGuidedQuestion(); // Load soal baru
         }
 
         // --- Game 6: Treasure Hunt Logic ---
