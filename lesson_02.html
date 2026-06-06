@@ -1389,44 +1389,68 @@
 
     <!-- JavaScript for Part 1 -->
     <script>
-        // --- Canvas Logic ---
+        // --- Canvas Logic (FIXED) ---
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
         let painting = false;
         let currentColor = '#000000';
         let currentTool = 'pen';
 
+        // Init background
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        canvas.addEventListener('mousedown', (e) => {
+        // Fungsi saat mulai menekan mouse/sentuh
+        function startDrawing(e) {
             painting = true;
-            draw(e);
-        });
-        canvas.addEventListener('mouseup', () => painting = false);
-        canvas.addEventListener('mouseleave', () => painting = false);
-        canvas.addEventListener('mousemove', draw);
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            
+            // Mulai jalur baru agar tidak menyambung ke coretan sebelumnya
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
 
-        // Touch support
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); painting = true; draw(e.touches[0]); });
-        canvas.addEventListener('touchend', () => painting = false);
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+        // Fungsi saat berhenti menekan mouse/sentuh
+        function stopDrawing() {
+            painting = false;
+            // Putuskan jalur saat diangkat
+            ctx.beginPath();
+        }
 
+        // Fungsi untuk menggambar garisnya
         function draw(e) {
             if (!painting) return;
+            e.preventDefault(); // Mencegah scroll saat di-touch screen
+
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
 
             ctx.lineWidth = currentTool === 'eraser' ? 20 : 3;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round'; // Membuat garis lebih halus
             ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
 
             ctx.lineTo(x, y);
             ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x, y);
         }
+
+        // Mouse Events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+
+        // Touch Events (Untuk HP/Tablet)
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); });
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('touchmove', draw);
 
         function setColor(color, btn) {
             currentColor = color;
