@@ -1450,85 +1450,116 @@
         // --- Interactive Game Logic (Section 1) ---
         let selectedOptions = {};
 
+        // Fungsi Select yang disatukan untuk Game 1 & 4
         function selectOption(btn, qNumber) {
             const parent = btn.parentElement;
-            // Remove previous selection in this question
-            parent.querySelectorAll('.opt-btn').forEach(b => {
-                b.classList.remove('selected');
-            });
-            // Add selection
+            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             selectedOptions[qNumber] = btn.innerText.trim();
             
-            // Hide previous feedback
-            const fb = document.getElementById(`fb${qNumber}`);
+            // Cek ID feedback, baik yang pakai strip (fb-g4q1) maupun tidak (fb1)
+            let fb = document.getElementById(`fb-${qNumber}`) || document.getElementById(`fb${qNumber}`);
             if(fb) { fb.classList.remove('show'); fb.innerHTML = ''; }
         }
 
+        // Fungsi Check yang disatukan untuk Game 1, 4, dan 6 (Treasure)
         function checkGame(gameId) {
             const gameArea = document.getElementById(gameId);
-            const cards = gameArea.querySelectorAll('.question-card');
+            const cards = gameArea.querySelectorAll('.treasure-card, .question-card');
             
-            cards.forEach((card, index) => {
-                const qNumber = index + 1;
-                const correctAnswer = card.getAttribute('data-answer');
-                const fb = document.getElementById(`fb${qNumber}`);
-                const buttons = card.querySelectorAll('.opt-btn');
+            cards.forEach((card) => {
+                let qNumber = "";
+                let correctAnswer = card.getAttribute('data-answer');
+                let fb = null;
+                let buttons = [];
 
-                // Reset styles
-                buttons.forEach(btn => {
-                    btn.classList.remove('correct', 'wrong');
-                });
+                if (card.classList.contains('treasure-card')) {
+                    qNumber = card.querySelector('.q-num').innerText.replace('Q', '');
+                    fb = document.getElementById(`tfb${qNumber}`);
+                    buttons = card.querySelectorAll('.treasure-btn');
+                } else {
+                    buttons = card.querySelectorAll('.opt-btn');
+                    const onclickStr = buttons[0].getAttribute('onclick');
+                    const match = onclickStr.match(/,\s*'?([^')]+)'?\)/);
+                    qNumber = match ? match[1] : "";
+                    fb = document.getElementById(`fb-${qNumber}`) || document.getElementById(`fb${qNumber}`);
+                }
+
+                buttons.forEach(btn => btn.classList.remove('correct', 'wrong'));
 
                 if (selectedOptions[qNumber] === correctAnswer) {
                     buttons.forEach(btn => {
                         if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
                     });
-                    fb.className = 'feedback-msg show success';
-                    fb.innerHTML = '<i class="fas fa-check-circle"></i> Awesome! / Hebat!';
+                    if(fb) {
+                        if (card.classList.contains('treasure-card')) {
+                            fb.className = 'treasure-fb'; fb.style.color = 'var(--success)'; fb.innerText = '✓ Correct!';
+                        } else {
+                            fb.className = 'feedback-msg show success';
+                            fb.innerHTML = '<i class="fas fa-check-circle"></i> Awesome! / Hebat!';
+                        }
+                    }
                 } else if (selectedOptions[qNumber]) {
                     buttons.forEach(btn => {
                         if (btn.innerText.trim() === selectedOptions[qNumber]) btn.classList.add('wrong');
                         if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
                     });
-                    fb.className = 'feedback-msg show error';
-                    fb.innerHTML = `<i class="fas fa-times-circle"></i> Oops! The correct answer is ${correctAnswer}. / Ups! Jawaban yang benar adalah ${correctAnswer}.`;
+                    if(fb) {
+                        if (card.classList.contains('treasure-card')) {
+                            fb.className = 'treasure-fb'; fb.style.color = 'var(--error)'; fb.innerText = `✗ Answer: ${correctAnswer}`;
+                        } else {
+                            fb.className = 'feedback-msg show error';
+                            fb.innerHTML = `<i class="fas fa-times-circle"></i> Oops! Correct is ${correctAnswer}. / Ups! Jawaban benar ${correctAnswer}.`;
+                        }
+                    }
                 } else {
-                    fb.className = 'feedback-msg show error';
-                    fb.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please select an answer. / Silakan pilih jawaban.';
+                    if(fb) {
+                        if (card.classList.contains('treasure-card')) {
+                            fb.className = 'treasure-fb'; fb.style.color = 'var(--error)'; fb.innerText = 'Must select!';
+                        } else {
+                            fb.className = 'feedback-msg show error';
+                            fb.innerHTML = '<i class="fas fa-exclamation-circle"></i> Select an answer. / Pilih jawaban.';
+                        }
+                    }
                 }
             });
         }
 
+        // Fungsi Reset yang disatukan untuk Game 1, 4, dan 6
         function resetGame(gameId) {
             const gameArea = document.getElementById(gameId);
-            const cards = gameArea.querySelectorAll('.question-card');
+            const cards = gameArea.querySelectorAll('.treasure-card, .question-card');
             
-            selectedOptions = {}; // Reset stored answers
-            
-            cards.forEach((card, index) => {
-                const qNumber = index + 1;
-                const fb = document.getElementById(`fb${qNumber}`);
-                const buttons = card.querySelectorAll('.opt-btn');
-                
-                buttons.forEach(btn => {
-                    btn.classList.remove('selected', 'correct', 'wrong');
-                });
-                
-                fb.className = 'feedback-msg';
-                fb.innerHTML = '';
+            cards.forEach((card) => {
+                let qNumber = "";
+                let fb = null;
+                let buttons = [];
+
+                if (card.classList.contains('treasure-card')) {
+                    qNumber = card.querySelector('.q-num').innerText.replace('Q', '');
+                    fb = document.getElementById(`tfb${qNumber}`);
+                    buttons = card.querySelectorAll('.treasure-btn');
+                    buttons.forEach(btn => btn.classList.remove('selected', 'correct', 'wrong'));
+                    if(fb) { fb.className = 'treasure-fb'; fb.innerText = ''; fb.style.color = ''; }
+                } else {
+                    buttons = card.querySelectorAll('.opt-btn');
+                    const onclickStr = buttons[0].getAttribute('onclick');
+                    const match = onclickStr.match(/,\s*'?([^')]+)'?\)/);
+                    qNumber = match ? match[1] : "";
+                    fb = document.getElementById(`fb-${qNumber}`) || document.getElementById(`fb${qNumber}`);
+                    
+                    buttons.forEach(btn => btn.classList.remove('selected', 'correct', 'wrong'));
+                    if(fb) { fb.className = 'feedback-msg'; fb.innerHTML = ''; }
+                }
+                delete selectedOptions[qNumber];
             });
         }
+
         // --- Game 3: Drag & Drop Labels Logic ---
         let droppedLabels = { 'drop-ones': '', 'drop-tens': '', 'drop-hundreds': '' };
 
-        function dragLabel(e, label) {
-            e.dataTransfer.setData("text/plain", label);
-        }
-        
-        function allowDrop(e) {
-            e.preventDefault();
-        }
+        function dragLabel(e, label) { e.dataTransfer.setData("text/plain", label); }
+        function allowDrop(e) { e.preventDefault(); }
 
         function dropLabel(e, targetId) {
             e.preventDefault();
@@ -1567,92 +1598,21 @@
             document.getElementById('fb-game3').className = 'feedback-msg';
         }
 
-
-        // --- Game 4 Logic (Re-using functions from Part 1) ---
-        // selectOption, checkGame, and resetGame already handle dynamic qNumbers and data-attributes!
-        // Just ensure the qNumbers are unique. I used 'g4q1', 'g4q2', 'g4q3' in HTML.
-        // Need slight modification to checkGame to handle string IDs properly if needed, but the previous logic is robust.
-        
-        // Modify selectOption for string IDs
-        function selectOption(btn, qNumber) {
-            const parent = btn.parentElement;
-            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedOptions[qNumber] = btn.innerText.trim();
-            
-            const fb = document.getElementById(`fb-${qNumber}`);
-            if(fb) { fb.classList.remove('show'); fb.innerHTML = ''; }
-        }
-
-        function checkGame(gameId) {
-            const gameArea = document.getElementById(gameId);
-            const cards = gameArea.querySelectorAll('.question-card');
-            
-            cards.forEach((card) => {
-                const qNumber = card.querySelector('.q-options').querySelector('.opt-btn').onclick.toString().match(/'([^']+)'/)[1]; // Extracts qNumber dynamically
-                const correctAnswer = card.getAttribute('data-answer');
-                const fb = document.getElementById(`fb-${qNumber}`);
-                const buttons = card.querySelectorAll('.opt-btn');
-
-                buttons.forEach(btn => btn.classList.remove('correct', 'wrong'));
-
-                if (selectedOptions[qNumber] === correctAnswer) {
-                    buttons.forEach(btn => {
-                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
-                    });
-                    fb.className = 'feedback-msg show success';
-                    fb.innerHTML = '<i class="fas fa-check-circle"></i> Awesome! / Hebat!';
-                } else if (selectedOptions[qNumber]) {
-                    buttons.forEach(btn => {
-                        if (btn.innerText.trim() === selectedOptions[qNumber]) btn.classList.add('wrong');
-                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
-                    });
-                    fb.className = 'feedback-msg show error';
-                    fb.innerHTML = `<i class="fas fa-times-circle"></i> Oops! Correct is ${correctAnswer}. / Ups! Jawaban benar ${correctAnswer}.`;
-                } else {
-                    fb.className = 'feedback-msg show error';
-                    fb.innerHTML = '<i class="fas fa-exclamation-circle"></i> Select an answer. / Pilih jawaban.';
-                }
-            });
-        }
-
-        function resetGame(gameId) {
-            const gameArea = document.getElementById(gameId);
-            const cards = gameArea.querySelectorAll('.question-card');
-            
-            cards.forEach((card) => {
-                const qNumber = card.querySelector('.q-options').querySelector('.opt-btn').onclick.toString().match(/'([^']+)'/)[1];
-                const fb = document.getElementById(`fb-${qNumber}`);
-                const buttons = card.querySelectorAll('.opt-btn');
-                
-                buttons.forEach(btn => btn.classList.remove('selected', 'correct', 'wrong'));
-                fb.className = 'feedback-msg';
-                fb.innerHTML = '';
-                delete selectedOptions[qNumber];
-            });
-        }
-
-
         // --- Game 5: Guided Practice Drag & Drop Blocks ---
         let blockCounts = { 'col-h': 0, 'col-t': 0, 'col-o': 0 };
 
-        function dragBlock(e, val) {
-            e.dataTransfer.setData("text/plain", val);
-        }
+        function dragBlock(e, val) { e.dataTransfer.setData("text/plain", val); }
 
         function dropBlock(e, targetId) {
             e.preventDefault();
             var val = e.dataTransfer.getData("text/plain");
             blockCounts[targetId]++;
-            
             const target = document.getElementById(targetId);
             const svgMap = {
                 '100': '<svg width="40" height="40" viewBox="0 0 80 80" class="dropped-item"><rect width="80" height="80" fill="#ff2d95" rx="3"/><text x="40" y="45" font-size="25" fill="white" text-anchor="middle">100</text></svg>',
                 '10': '<svg width="12" height="40" viewBox="0 0 20 80" class="dropped-item"><rect width="20" height="80" fill="#7b2ff7" rx="3"/></svg>',
                 '1': '<svg width="15" height="15" viewBox="0 0 30 30" class="dropped-item"><rect width="30" height="30" fill="#00f0ff"/></svg>'
             };
-
-            // Append visual block
             target.innerHTML += svgMap[val];
         }
 
@@ -1661,21 +1621,17 @@
             const hVal = document.getElementById('exp-h').value.trim();
             const tVal = document.getElementById('exp-t').value.trim();
             const oVal = document.getElementById('exp-o').value.trim();
-
-            // Check blocks
             let blockCorrect = (blockCounts['col-h'] === 2 && blockCounts['col-t'] === 6 && blockCounts['col-o'] === 3);
-            // Check inputs
             let inputCorrect = (hVal === '200' && tVal === '60' && oVal === '3');
 
             if(blockCorrect && inputCorrect) {
                 fb.className = 'feedback-msg show success';
-                fb.innerHTML = '<i class="fas fa-trophy"></i> Amazing Architect! You built 263 perfectly! / Arsitek Luar Biasa! Kamu membangun 263 dengan sempurna!';
+                fb.innerHTML = '<i class="fas fa-trophy"></i> Amazing Architect! You built 263 perfectly! / Arsitek Luar Biasa!';
                 document.getElementById('build-chart').style.borderColor = "var(--success)";
             } else {
                 let hints = [];
-                if(!blockCorrect) hints.push("Check your blocks (Need 2 hundreds, 6 tens, 3 ones) / Cek blokmu (Butuh 2 ratusan, 6 puluhan, 3 satuan)");
-                if(!inputCorrect) hints.push("Check your expanded form (200 + 60 + 3) / Cek bentuk ekspansimu (200 + 60 + 3)");
-                
+                if(!blockCorrect) hints.push("Check your blocks (Need 2 hundreds, 6 tens, 3 ones)");
+                if(!inputCorrect) hints.push("Check your expanded form (200 + 60 + 3)");
                 fb.className = 'feedback-msg show error';
                 fb.innerHTML = `<i class="fas fa-times-circle"></i> Not quite! ${hints.join(' & ')}.`;
                 document.getElementById('build-chart').style.borderColor = "var(--error)";
@@ -1684,92 +1640,39 @@
 
         function resetGuided() {
             blockCounts = { 'col-h': 0, 'col-t': 0, 'col-o': 0 };
-            
-            // Clear dropped blocks but keep headers
-            document.getElementById('col-h').innerHTML = '<div class="drop-column-header">Hundreds<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Ratusan</span></div>';
+            document.getElementById('col-h').innerHTML = '<div class="drop-column-header">Hundreds<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Rataran</span></div>';
             document.getElementById('col-t').innerHTML = '<div class="drop-column-header">Tens<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Puluhan</span></div>';
             document.getElementById('col-o').innerHTML = '<div class="drop-column-header">Ones<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Satuan</span></div>';
-            
-            document.getElementById('exp-h').value = '';
-            document.getElementById('exp-t').value = '';
-            document.getElementById('exp-o').value = '';
-            
+            document.getElementById('exp-h').value = ''; document.getElementById('exp-t').value = ''; document.getElementById('exp-o').value = '';
             document.getElementById('build-chart').style.borderColor = "var(--neon-cyan)";
             document.getElementById('fb-game5').className = 'feedback-msg';
         }
+
         // --- Game 6: Treasure Hunt Logic ---
         let treasureOptions = {};
-
         function selectTreasure(btn, qNum) {
             const parent = btn.parentElement;
             parent.querySelectorAll('.treasure-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             treasureOptions[qNum] = btn.innerText.trim();
+            selectedOptions[qNum] = treasureOptions[qNum]; // Map ke global checker
             
             const fb = document.getElementById(`tfb${qNum}`);
             if(fb) { fb.innerText = ''; fb.style.color = ''; }
         }
 
-        // We need to update the checkGame function from Part 1/2 slightly to handle the new Treasure Card HTML structure
-        function checkGame(gameId) {
-            const gameArea = document.getElementById(gameId);
-            const cards = gameArea.querySelectorAll('.treasure-card, .question-card'); // Select both types
-            
-            cards.forEach((card) => {
-                let qNumber = "";
-                let correctAnswer = card.getAttribute('data-answer');
-                let fb = null;
-                let buttons = [];
-
-                if (card.classList.contains('treasure-card')) {
-                    // Handle Treasure Hunt Cards
-                    qNumber = card.querySelector('.q-num').innerText.replace('Q', '');
-                    fb = document.getElementById(`tfb${qNumber}`);
-                    buttons = card.querySelectorAll('.treasure-btn');
-                    selectedOptions[qNumber] = treasureOptions[qNumber]; // Map to global checker
-                } else {
-                    // Handle Standard Question Cards (from Part 1 & 2)
-                    qNumber = card.querySelector('.q-options').querySelector('.opt-btn').onclick.toString().match(/'([^']+)'/)[1];
-                    fb = document.getElementById(`fb-${qNumber}`);
-                    buttons = card.querySelectorAll('.opt-btn');
-                }
-
-                buttons.forEach(btn => btn.classList.remove('correct', 'wrong'));
-
-                if (selectedOptions[qNumber] === correctAnswer) {
-                    buttons.forEach(btn => {
-                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
-                    });
-                    if(fb) { fb.className = 'treasure-fb'; fb.style.color = 'var(--success)'; fb.innerText = '✓ Correct!'; }
-                } else if (selectedOptions[qNumber]) {
-                    buttons.forEach(btn => {
-                        if (btn.innerText.trim() === selectedOptions[qNumber]) btn.classList.add('wrong');
-                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
-                    });
-                    if(fb) { fb.className = 'treasure-fb'; fb.style.color = 'var(--error)'; fb.innerText = `✗ Answer: ${correctAnswer}`; }
-                } else {
-                    if(fb) { fb.className = 'treasure-fb'; fb.style.color = 'var(--error)'; fb.innerText = 'Must select!'; }
-                }
-            });
-        }
-
-
         // --- Assessment Tab Logic ---
         function openTab(evt, groupName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
             tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
             document.getElementById(groupName).style.display = "block";
             evt.currentTarget.className += " active";
         }
 
-        // --- Assessment Checking Logic (Group 1 & 2) ---
+        // --- Assessment Checking Logic (Semua Group Disatukan dengan Benar) ---
         const answerKeys = {
             'Group1': {
                 'g1q1': { type: 'radio', answer: '500', hint: '5 is in the hundreds place (5x100=500)' },
@@ -1794,6 +1697,42 @@
                 'g2q8': { type: 'radio', answer: '329', hint: '300+20+9 = 329' },
                 'g2q9': { type: 'checkbox', answer: ['501', '600'], hint: '501 and 600 are > 500' },
                 'g2q10': { type: 'text', answer: '332', hint: '342 - 10 = 332' }
+            },
+            'Group3': {
+                'g3q1': { type: 'radio', answer: '80', hint: '8 is in the tens place (8x10=80)' },
+                'g3q2': { type: 'select', answer: '542', hint: '500+40+2 equals 542' },
+                'g3q3': { type: 'text', answer: '915', hint: '900+10+5 = 915' },
+                'g3q4': { type: 'checkbox', answer: ['4_hundreds', '40_tens'], hint: '4 hundreds = 40 tens = 400' },
+                'g3q5': { type: 'radio', answer: '9', hint: 'The rightmost digit is the ones place' },
+                'g3q6': { type: 'select', answer: '407', hint: '400 + 0 + 7 = 407' },
+                'g3q7': { type: 'text', answer: '445', hint: '345 + 100 = 445' },
+                'g3q8': { type: 'radio', answer: '803', hint: '800 + 0 + 3 = 803' },
+                'g3q9': { type: 'checkbox', answer: ['352', '259'], hint: '352 has 5 tens, 259 has 5 tens' },
+                'g3q10': { type: 'text', answer: '230', hint: '23 tens = 23 x 10 = 230' }
+            },
+            'Group4': {
+                'g4q1': { type: 'radio', answer: '400', hint: '4 is in the hundreds place (4x100=400)' },
+                'g4q2': { type: 'select', answer: '199', hint: '100+90+9 equals 199' },
+                'g4q3': { type: 'text', answer: '703', hint: '700 + 0 + 3 = 703' },
+                'g4q4': { type: 'checkbox', answer: ['25_tens', '200+50+0'], hint: '25x10=250 and 200+50=250' },
+                'g4q5': { type: 'radio', answer: '9', hint: '9 is the leftmost digit (Hundreds)' },
+                'g4q6': { type: 'select', answer: '560', hint: '500 + 60 + 0 = 560' },
+                'g4q7': { type: 'text', answer: '805', hint: '815 - 10 = 805' },
+                'g4q8': { type: 'radio', answer: '320', hint: '300 + 20 + 0 = 320' },
+                'g4q9': { type: 'checkbox', answer: ['150', '199'], hint: '150 and 199 are smaller than 200' },
+                'g4q10': { type: 'text', answer: '10', hint: '10 tens make 100' }
+            },
+            'Group5': {
+                'g5q1': { type: 'select', answer: 'Hundreds', hint: '5 is in the leftmost place' },
+                'g5q2': { type: 'select', answer: 'Tens', hint: '3 is in the middle place' },
+                'g5q3': { type: 'select', answer: 'Ones', hint: '2 is in the rightmost place' },
+                'g5q4': { type: 'radio', answer: '670', hint: '600 + 70 + 0 = 670' },
+                'g5q5': { type: 'text', answer: '309', hint: '299 + 10 = 309' },
+                'g5q6': { type: 'checkbox', answer: ['10_hundreds', '1000_ones'], hint: '10x100=1000 and 1000x1=1000' },
+                'g5q7': { type: 'radio', answer: '800+40+4', hint: 'Expanded form breaks down each digit' },
+                'g5q8': { type: 'select', answer: '909', hint: '900 + 0 + 9 = 909' },
+                'g5q9': { type: 'text', answer: '132', hint: '1 hundred, 3 tens, 2 ones' },
+                'g5q10': { type: 'radio', answer: '980', hint: '980 is greater than 890 and 809' }
             }
         };
 
@@ -1808,18 +1747,16 @@
                 let studentAnswer = '';
                 let isCorrect = false;
 
-                fbEl.className = 'assess-fb'; // reset
+                fbEl.className = 'assess-fb';
 
                 if(qData.type === 'radio') {
                     const sel = document.querySelector(`input[name="${qId}"]:checked`);
                     studentAnswer = sel ? sel.value : "";
                     isCorrect = studentAnswer === qData.answer;
-                } 
-                else if(qData.type === 'select' || qData.type === 'text') {
+                } else if(qData.type === 'select' || qData.type === 'text') {
                     studentAnswer = document.getElementById(qId).value.trim();
                     isCorrect = studentAnswer === qData.answer;
-                }
-                else if(qData.type === 'checkbox') {
+                } else if(qData.type === 'checkbox') {
                     const checkedBoxes = document.querySelectorAll(`input[name="${qId}"]:checked`);
                     studentAnswer = Array.from(checkedBoxes).map(cb => cb.value);
                     isCorrect = studentAnswer.length === qData.answer.length && qData.answer.every(a => studentAnswer.includes(a));
@@ -1834,142 +1771,95 @@
                     fbEl.classList.add('show', 'error');
                 }
             }
-
             alert(`Score for ${groupName}: ${score}/${totalQ}`);
         }
 
-        // Tambahkan ini di dalam const answerKeys = { ... }
-        // Sehingga menjadi answerKeys = { Group1: {...}, Group2: {...}, Group3: {...}, dst... }
-        'Group3': {
-            'g3q1': { type: 'radio', answer: '80', hint: '8 is in the tens place (8x10=80)' },
-            'g3q2': { type: 'select', answer: '542', hint: '500+40+2 equals 542' },
-            'g3q3': { type: 'text', answer: '915', hint: '900+10+5 = 915' },
-            'g3q4': { type: 'checkbox', answer: ['4_hundreds', '40_tens'], hint: '4 hundreds = 40 tens = 400' },
-            'g3q5': { type: 'radio', answer: '9', hint: 'The rightmost digit is the ones place' },
-            'g3q6': { type: 'select', answer: '407', hint: '400 + 0 + 7 = 407' },
-            'g3q7': { type: 'text', answer: '445', hint: '345 + 100 = 445' },
-            'g3q8': { type: 'radio', answer: '803', hint: '800 + 0 + 3 = 803' },
-            'g3q9': { type: 'checkbox', answer: ['352', '259'], hint: '352 has 5 tens, 259 has 5 tens' },
-            'g3q10': { type: 'text', answer: '230', hint: '23 tens = 23 x 10 = 230' }
-        },
-        'Group4': {
-            'g4q1': { type: 'radio', answer: '400', hint: '4 is in the hundreds place (4x100=400)' },
-            'g4q2': { type: 'select', answer: '199', hint: '100+90+9 equals 199' },
-            'g4q3': { type: 'text', answer: '703', hint: '700 + 0 + 3 = 703' },
-            'g4q4': { type: 'checkbox', answer: ['25_tens', '200+50+0'], hint: '25x10=250 and 200+50=250' },
-            'g4q5': { type: 'radio', answer: '9', hint: '9 is the leftmost digit (Hundreds)' },
-            'g4q6': { type: 'select', answer: '560', hint: '500 + 60 + 0 = 560' },
-            'g4q7': { type: 'text', answer: '805', hint: '815 - 10 = 805' },
-            'g4q8': { type: 'radio', answer: '320', hint: '300 + 20 + 0 = 320' },
-            'g4q9': { type: 'checkbox', answer: ['150', '199'], hint: '150 and 199 are smaller than 200' },
-            'g4q10': { type: 'text', answer: '10', hint: '10 tens make 100' }
-        },
-        'Group5': {
-            'g5q1': { type: 'select', answer: 'Hundreds', hint: '5 is in the leftmost place' },
-            'g5q2': { type: 'select', answer: 'Tens', hint: '3 is in the middle place' },
-            'g5q3': { type: 'select', answer: 'Ones', hint: '2 is in the rightmost place' },
-            'g5q4': { type: 'radio', answer: '670', hint: '600 + 70 + 0 = 670' },
-            'g5q5': { type: 'text', answer: '309', hint: '299 + 10 = 309' },
-            'g5q6': { type: 'checkbox', answer: ['10_hundreds', '1000_ones'], hint: '10x100=1000 and 1000x1=1000' },
-            'g5q7': { type: 'radio', answer: '800+40+4', hint: 'Expanded form breaks down each digit' },
-            'g5q8': { type: 'select', answer: '909', hint: '900 + 0 + 9 = 909' },
-            'g5q9': { type: 'text', answer: '132', hint: '1 hundred, 3 tens, 2 ones' },
-            'g5q10': { type: 'radio', answer: '980', hint: '980 is greater than 890 and 809' }
-        }
-    };
+        function printAssessment(groupName) {
+            const name = document.getElementById('studentName').value || 'No Name';
+            const date = document.getElementById('assessDate').value || 'No Date';
+            const answers = answerKeys[groupName];
+            let score = 0;
+            const totalQ = Object.keys(answers).length;
 
-    // Ganti fungsi printAssessment yang lama dengan ini:
-    function printAssessment(groupName) {
-        const name = document.getElementById('studentName').value || 'No Name';
-        const date = document.getElementById('assessDate').value || 'No Date';
-        const answers = answerKeys[groupName];
-        let score = 0;
-        const totalQ = Object.keys(answers).length;
+            let printHTML = `
+            <html>
+            <head>
+                <title>Assessment Report - ${groupName}</title>
+                <style>
+                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #1e293b; }
+                    h1 { color: #7b2ff7; border-bottom: 2px solid #7b2ff7; padding-bottom: 10px; }
+                    .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 1.1rem; background: #f8fafc; padding: 15px; border-radius: 8px;}
+                    .q-block { margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+                    .q-text { font-weight: 600; margin-bottom: 8px; }
+                    .correct { color: #16a34a; font-weight: bold; }
+                    .incorrect { color: #dc2626; font-weight: bold; }
+                    .student-ans { font-weight: bold; }
+                    .key-ans { color: #16a34a; font-weight: bold; }
+                    .score-box { text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border: 2px solid #7b2ff7; border-radius: 12px; }
+                    .score-num { font-size: 2rem; font-weight: 800; color: #7b2ff7; }
+                </style>
+            </head>
+            <body>
+                <h1>Assessment Report: ${groupName}</h1>
+                <div class="header-info">
+                    <div><strong>Student Name:</strong> ${name}</div>
+                    <div><strong>Date:</strong> ${date}</div>
+                </div>
+            `;
 
-        // Buat HTML untuk Pop-up Window Print
-        let printHTML = `
-        <html>
-        <head>
-            <title>Assessment Report - ${groupName}</title>
-            <style>
-                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #1e293b; }
-                h1 { color: #7b2ff7; border-bottom: 2px solid #7b2ff7; padding-bottom: 10px; }
-                .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 1.1rem; background: #f8fafc; padding: 15px; border-radius: 8px;}
-                .q-block { margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
-                .q-text { font-weight: 600; margin-bottom: 8px; }
-                .correct { color: #16a34a; font-weight: bold; }
-                .incorrect { color: #dc2626; font-weight: bold; }
-                .student-ans { font-weight: bold; }
-                .key-ans { color: #16a34a; font-weight: bold; }
-                .score-box { text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border: 2px solid #7b2ff7; border-radius: 12px; }
-                .score-num { font-size: 2rem; font-weight: 800; color: #7b2ff7; }
-            </style>
-        </head>
-        <body>
-            <h1>Assessment Report: ${groupName}</h1>
-            <div class="header-info">
-                <div><strong>Student Name:</strong> ${name}</div>
-                <div><strong>Date:</strong> ${date}</div>
-            </div>
-        `;
+            let qNum = 1;
+            for(let qId in answers) {
+                const qData = answers[qId];
+                const qTextEl = document.getElementById(qId)?.closest('.assess-q')?.querySelector('.assess-q-text');
+                const qText = qTextEl ? qTextEl.innerText : `Question ${qNum}`;
 
-        let qNum = 1;
-        for(let qId in answers) {
-            const qData = answers[qId];
-            // Ambil teks soal dari DOM
-            const qTextEl = document.getElementById(qId)?.closest('.assess-q')?.querySelector('.assess-q-text');
-            const qText = qTextEl ? qTextEl.innerText : `Question ${qNum}`;
+                let studentAnswer = '';
+                let isCorrect = false;
 
-            let studentAnswer = '';
-            let isCorrect = false;
+                if(qData.type === 'radio') {
+                    const sel = document.querySelector(`input[name="${qId}"]:checked`);
+                    studentAnswer = sel ? sel.value : "Unanswered";
+                    isCorrect = studentAnswer === qData.answer;
+                } else if(qData.type === 'select' || qData.type === 'text') {
+                    studentAnswer = document.getElementById(qId).value.trim() || "Unanswered";
+                    isCorrect = studentAnswer === qData.answer;
+                } else if(qData.type === 'checkbox') {
+                    const checkedBoxes = document.querySelectorAll(`input[name="${qId}"]:checked`);
+                    studentAnswer = checkedBoxes.length > 0 ? Array.from(checkedBoxes).map(cb => cb.value).join(', ') : "Unanswered";
+                    isCorrect = qData.answer.every(a => studentAnswer.includes(a)) && checkedBoxes.length === qData.answer.length;
+                }
 
-            if(qData.type === 'radio') {
-                const sel = document.querySelector(`input[name="${qId}"]:checked`);
-                studentAnswer = sel ? sel.value : "Unanswered";
-                isCorrect = studentAnswer === qData.answer;
-            } else if(qData.type === 'select' || qData.type === 'text') {
-                studentAnswer = document.getElementById(qId).value.trim() || "Unanswered";
-                isCorrect = studentAnswer === qData.answer;
-            } else if(qData.type === 'checkbox') {
-                const checkedBoxes = document.querySelectorAll(`input[name="${qId}"]:checked`);
-                studentAnswer = checkedBoxes.length > 0 ? Array.from(checkedBoxes).map(cb => cb.value).join(', ') : "Unanswered";
-                isCorrect = qData.answer.every(a => studentAnswer.includes(a)) && checkedBoxes.length === qData.answer.length;
+                if(isCorrect) score++;
+
+                const correctAnswerStr = Array.isArray(qData.answer) ? qData.answer.join(', ') : qData.answer;
+                const statusClass = isCorrect ? 'correct' : 'incorrect';
+                const statusText = isCorrect ? 'Correct' : 'Incorrect';
+
+                printHTML += `
+                <div class="q-block">
+                    <div class="q-text">${qNum}. ${qText}</div>
+                    <div>Your Answer: <span class="student-ans ${statusClass}">${studentAnswer} (${statusText})</span></div>
+                    ${!isCorrect ? `<div>Correct Answer: <span class="key-ans">${correctAnswerStr}</span></div>` : ''}
+                </div>
+                `;
+                qNum++;
             }
 
-            if(isCorrect) score++;
-
-            const correctAnswerStr = Array.isArray(qData.answer) ? qData.answer.join(', ') : qData.answer;
-            const statusClass = isCorrect ? 'correct' : 'incorrect';
-            const statusText = isCorrect ? 'Correct' : 'Incorrect';
-
             printHTML += `
-            <div class="q-block">
-                <div class="q-text">${qNum}. ${qText}</div>
-                <div>Your Answer: <span class="student-ans ${statusClass}">${studentAnswer} (${statusText})</span></div>
-                ${!isCorrect ? `<div>Correct Answer: <span class="key-ans">${correctAnswerStr}</span></div>` : ''}
-            </div>
+                <div class="score-box">
+                    <h2>Final Score</h2>
+                    <div class="score-num">${score} / ${totalQ}</div>
+                </div>
+            </body>
+            </html>
             `;
-            qNum++;
+
+            const printWindow = window.open('', '_blank', 'height=600,width=800');
+            printWindow.document.write(printHTML);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(function() { printWindow.print(); }, 500);
         }
-
-        printHTML += `
-            <div class="score-box">
-                <h2>Final Score</h2>
-                <div class="score-num">${score} / ${totalQ}</div>
-            </div>
-        </body>
-        </html>
-        `;
-
-        // Buka window baru dan print
-        const printWindow = window.open('', '_blank', 'height=600,width=800');
-        printWindow.document.write(printHTML);
-        printWindow.document.close();
-        printWindow.focus();
-        setTimeout(function() {
-            printWindow.print();
-        }, 500);
-    }
     </script>
 </body>
 </html>
