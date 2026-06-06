@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutoring - Place Value</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=KaTeX_Main&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-purple: #7b2ff7;
+            --neon-pink: #ff2d95;
+            --neon-cyan: #00f0ff;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --success: #4ade80;
+            --error: #f87171;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--neon-cyan);
+            box-shadow: 0 4px 15px rgba(123, 47, 247, 0.5);
+        }
+        header h1 { font-weight: 800; font-size: 2rem; letter-spacing: 2px; text-transform: uppercase; }
+        header p { font-size: 1rem; opacity: 0.9; }
+        .tutor-name { font-weight: 600; color: var(--neon-cyan); }
+
+        /* Class Rules */
+        .rules-bar {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 0.9rem;
+            color: var(--neon-cyan);
+        }
+        .rules-bar i { margin-right: 8px; }
+
+        /* Main Layout 3:1 */
+        .main-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .content-area section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .content-area section:hover { transform: translateY(-5px); }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        .section-title { font-weight: 800; font-size: 1.5rem; background: linear-gradient(to right, var(--neon-purple), var(--neon-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .timer-badge { background: var(--neon-purple); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+
+        .bilingual { margin-bottom: 15px; }
+        .id-lang { display: block; font-size: 0.85rem; color: var(--text-sub); font-style: italic; margin-top: -5px; }
+
+        /* Visuals & SVGs */
+        .visual-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px dashed var(--neon-cyan);
+        }
+
+        /* Interactive Games */
+        .game-area { margin-top: 20px; }
+        .question-card {
+            background: rgba(123, 47, 247, 0.1);
+            border: 1px solid var(--neon-purple);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .q-text { font-weight: 600; }
+        .q-options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .opt-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--text-sub);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .opt-btn:hover { background: var(--neon-purple); border-color: var(--neon-purple); }
+        .opt-btn.selected { background: var(--neon-pink); border-color: var(--neon-pink); transform: scale(1.05); }
+        .opt-btn.correct { background: var(--success); border-color: var(--success); color: #000; }
+        .opt-btn.wrong { background: var(--error); border-color: var(--error); color: #000; }
+
+        .feedback-msg { font-size: 0.9rem; margin-top: 5px; font-weight: 600; display: none; }
+        .feedback-msg.show { display: block; }
+        .feedback-msg.success { color: var(--success); }
+        .feedback-msg.error { color: var(--error); }
+
+        .action-btns { margin-top: 20px; display: flex; gap: 15px; }
+        .btn-check {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            color: white; padding: 10px 25px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .btn-check:hover { box-shadow: 0 0 15px var(--neon-purple); transform: translateY(-2px); }
+        .btn-reset {
+            background: transparent; color: var(--text-sub); border: 1px solid var(--text-sub); padding: 10px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .btn-reset:hover { border-color: white; color: white; }
+
+        /* Canvas Area (Sticky) */
+        .canvas-sidebar {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        .canvas-container {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+        .canvas-header { background: #e2e8f0; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .canvas-colors { display: flex; gap: 5px; }
+        .color-btn { width: 25px; height: 25px; border-radius: 50%; border: 2px solid #cbd5e1; cursor: pointer; transition: 0.2s; }
+        .color-btn.active { border-color: #0f172a; transform: scale(1.2); }
+        .canvas-tools { display: flex; gap: 5px; }
+        .tool-btn { background: #cbd5e1; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-weight: bold; color: #0f172a; }
+        .tool-btn:hover { background: #94a3b8; }
+        #drawCanvas { display: block; cursor: crosshair; }
+
+        /* Math Font */
+        .math { font-family: 'KaTeX_Main', serif; font-style: italic; font-weight: bold; }
+
+        /* Animations */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInUp 0.6s ease-out forwards; }
+        /* Drag & Drop Base 10 Styles */
+        .block-palette {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .draggable-block {
+            cursor: grab;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--text-sub);
+        }
+        .draggable-block:active { cursor: grabbing; transform: scale(1.1); }
+        .draggable-block svg { margin-bottom: 5px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+        .block-label { font-size: 0.8rem; color: var(--text-sub); }
+
+        .drop-zone-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px dashed var(--neon-cyan);
+            margin-bottom: 20px;
+        }
+        .drop-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-width: 100px;
+            min-height: 150px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+        .drop-column-header { font-weight: bold; color: var(--neon-cyan); margin-bottom: 10px; text-align: center;}
+        .dropped-item { animation: fadeInUp 0.3s ease; }
+
+        /* Expanded Form Visual Table */
+        .place-value-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .place-value-table th {
+            background: var(--neon-purple);
+            color: white;
+            padding: 10px;
+            font-size: 1.1rem;
+        }
+        .place-value-table td {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            font-size: 2rem;
+            font-weight: 800;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--neon-cyan);
+        }
+        .expand-eq {
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--neon-pink);
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        /* Input fields for expanded form */
+        .eq-input {
+            width: 60px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-bottom: 2px solid var(--neon-cyan);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .eq-input:focus { outline: none; border-bottom-color: var(--neon-pink); }
+        /* Treasure Hunt Grid */
+        .treasure-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .treasure-card {
+            background: linear-gradient(135deg, #312e81, #4c1d95);
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .treasure-card:hover { transform: translateY(-5px); box-shadow: 0 0 15px #fbbf24; }
+        .treasure-card .q-num { position: absolute; top: 5px; left: 10px; font-size: 0.8rem; color: #fbbf24; }
+        .treasure-card .big-digit { font-size: 2.5rem; font-weight: 800; color: white; letter-spacing: 5px; margin: 10px 0; }
+        .treasure-card .big-digit u { color: var(--neon-cyan); text-decoration-color: var(--neon-cyan); }
+        .treasure-options { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+        .treasure-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid #fbbf24; color: white; padding: 5px 12px; 
+            border-radius: 5px; cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+        }
+        .treasure-btn:hover { background: #fbbf24; color: #000; }
+        .treasure-btn.selected { background: var(--neon-pink); border-color: var(--neon-pink); }
+        .treasure-btn.correct { background: var(--success); border-color: var(--success); color: #000; }
+        .treasure-btn.wrong { background: var(--error); border-color: var(--error); color: #000; }
+        .treasure-fb { font-size: 0.8rem; margin-top: 8px; font-weight: bold; height: 15px; }
+
+        /* Consolidation Section */
+        .consolidation-box {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            padding: 30px; border-radius: 16px; text-align: center; margin-top: 20px;
+        }
+        .consolidation-box h2 { color: white; font-size: 2rem; margin-bottom: 10px; }
+        .consolidation-box a { display: inline-block; margin-top: 15px; background: white; color: var(--neon-purple); padding: 10px 25px; border-radius: 30px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .consolidation-box a:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+
+        /* Assessment Styles */
+        #assessment-section { margin-top: 50px; padding-top: 30px; border-top: 5px solid var(--neon-cyan); }
+        .assessment-header { text-align: center; margin-bottom: 30px; }
+        .assessment-form { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
+        .form-input { background: rgba(255,255,255,0.1); border: 1px solid var(--text-sub); color: white; padding: 10px; border-radius: 8px; font-family: 'Poppins'; width: 200px; }
+        .form-input:focus { outline: none; border-color: var(--neon-cyan); }
+
+        .tab-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid var(--text-sub); color: var(--text-sub); 
+            padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .tab-btn.active { background: var(--neon-purple); border-color: var(--neon-purple); color: white; box-shadow: 0 0 10px var(--neon-purple); }
+        
+        .tab-content { display: none; background: var(--card-bg); border-radius: 16px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); }
+        .tab-content.active { display: block; animation: fadeInUp 0.4s ease; }
+
+        .assess-q {
+            margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .assess-q-text { font-weight: 600; margin-bottom: 10px; font-size: 1.1rem; }
+        
+        /* Radio & Checkbox custom */
+        .assess-options { display: flex; flex-direction: column; gap: 8px; padding-left: 15px; }
+        .assess-opt-label { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px; border-radius: 5px; transition: 0.2s; }
+        .assess-opt-label:hover { background: rgba(255,255,255,0.05); padding-left: 20px; }
+        .assess-opt-label input { accent-color: var(--neon-purple); width: 18px; height: 18px; cursor: pointer; }
+        
+        .assess-select, .assess-text {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--text-sub); color: white; padding: 8px 12px; 
+            border-radius: 8px; font-family: 'Poppins'; font-size: 1rem; margin-left: 15px;
+        }
+        .assess-select:focus, .assess-text:focus { outline: none; border-color: var(--neon-cyan); }
+        .assess-select option { background: #1e293b; color: white; }
+
+        .assess-fb { margin-top: 10px; font-size: 0.9rem; font-weight: bold; display: none; padding: 8px; border-radius: 5px; }
+        .assess-fb.show { display: block; }
+        .assess-fb.success { background: rgba(74, 222, 128, 0.2); color: var(--success); }
+        .assess-fb.error { background: rgba(248, 113, 113, 0.2); color: var(--error); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MATH TUTORING</h1>
+        <p>Topik: Place Value hingga 1000 (Ratusan, Puluhan, Satuan) <br>
+        <span class="tutor-name"><i class="fas fa-chalkboard-teacher"></i> Tutor: Deni</span></p>
+    </header>
+
+    <div class="rules-bar">
+        <div><i class="fas fa-comments"></i> Berbicara secara bergantian / Take turns speaking</div>
+        <div><i class="fas fa-door-open"></i> Minta izin ketika ingin meninggalkan Zoom / Ask permission to leave</div>
+    </div>
+
+    <div class="main-container">
+        <!-- LEFT: CONTENT AREA (3/4) -->
+        <div class="content-area">
+            
+            <!-- SECTION 1 -->
+            <section id="sec1" class="animate-in">
+                <div class="section-header">
+                    <div class="section-title"><i class="fas fa-fire"></i> Spiral Review Warm-up</div>
+                    <div class="timer-badge"><i class="fas fa-clock"></i> 00:00 - 00:10</div>
+                </div>
+                <div class="bilingual">
+                    <p>Before we jump into 3-digit numbers, let's warm up our math muscles with a quick review!</p>
+                    <span class="id-lang">Sebelum kita melompat ke angka 3 digit, ayo pemanasan otot matematika kita dengan review cepat!</span>
+                </div>
+                
+                <div class="visual-box">
+                    <svg width="100" height="100" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#7b2ff7" stroke-width="5" stroke-dasharray="10 5"/>
+                        <text x="50" y="60" font-size="30" fill="#00f0ff" text-anchor="middle" font-weight="bold">10</text>
+                    </svg>
+                    <p>Remember our friends: Tens and Ones!</p>
+                    <span class="id-lang">Ingat teman kita: Puluhan dan Satuan!</span>
+                </div>
+
+                <div class="game-area" id="game1">
+                    <div class="question-card" data-answer="7">
+                        <div class="q-text">1. 17 is 1 ten and _ ones? <span class="id-lang">17 adalah 1 puluhan dan _ satuan?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 1)">5</button>
+                            <button class="opt-btn" onclick="selectOption(this, 1)">7</button>
+                            <button class="opt-btn" onclick="selectOption(this, 1)">1</button>
+                        </div>
+                        <div class="feedback-msg" id="fb1"></div>
+                    </div>
+                    <div class="question-card" data-answer="10">
+                        <div class="q-text">2. What number comes right before 11? <span class="id-lang">Angka apa yang tepat sebelum 11?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 2)">12</button>
+                            <button class="opt-btn" onclick="selectOption(this, 2)">9</button>
+                            <button class="opt-btn" onclick="selectOption(this, 2)">10</button>
+                        </div>
+                        <div class="feedback-msg" id="fb2"></div>
+                    </div>
+                    <div class="question-card" data-answer="23">
+                        <div class="q-text">3. I have 2 tens and 3 ones. What number am I? <span class="id-lang">Aku punya 2 puluhan dan 3 satuan. Angka berapa aku?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 3)">32</button>
+                            <button class="opt-btn" onclick="selectOption(this, 3)">5</button>
+                            <button class="opt-btn" onclick="selectOption(this, 3)">23</button>
+                        </div>
+                        <div class="feedback-msg" id="fb3"></div>
+                    </div>
+                    <div class="question-card" data-answer="3">
+                        <div class="q-text">4. How many 'Hundreds' blocks do I need to make 300? <span class="id-lang">Berapa blok 'Ratusan' yang aku butuhkan untuk membuat 300?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 4)">3</button>
+                            <button class="opt-btn" onclick="selectOption(this, 4)">30</button>
+                            <button class="opt-btn" onclick="selectOption(this, 4)">300</button>
+                        </div>
+                        <div class="feedback-msg" id="fb4"></div>
+                    </div>
+                    <div class="question-card" data-answer="13">
+                        <div class="q-text">5. If you have 15 stickers and give 2 to a friend, how many are left? <span class="id-lang">Jika kamu punya 15 stiker dan memberikan 2 ke teman, berapa sisanya?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 5)">12</button>
+                            <button class="opt-btn" onclick="selectOption(this, 5)">17</button>
+                            <button class="opt-btn" onclick="selectOption(this, 5)">13</button>
+                        </div>
+                        <div class="feedback-msg" id="fb5"></div>
+                    </div>
+
+                    <div class="action-btns">
+                        <button class="btn-check" onclick="checkGame('game1')"><i class="fas fa-check-circle"></i> Cek Jawaban</button>
+                        <button class="btn-reset" onclick="resetGame('game1')"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2 -->
+            <section id="sec2" class="animate-in">
+                <div class="section-header">
+                    <div class="section-title"><i class="fas fa-candy-cane"></i> Real-World Connection</div>
+                    <div class="timer-badge"><i class="fas fa-clock"></i> 00:10 - 00:15</div>
+                </div>
+                <div class="bilingual">
+                    <p>Imagine you are the manager of a giant candy factory! Today, we have an order of 345 chocolate bars. We can't just throw them in one big pile!</p>
+                    <span class="id-lang">Bayangkan kamu manajer pabrik permen raksasa! Hari ini ada pesanan 345 batang cokelat. Kita tidak bisa taruh semuanya dalam satu tumpukan!</span>
+                </div>
+                <div class="bilingual">
+                    <p>We put them in <strong>Boxes of 100</strong>, <strong>Packs of 10</strong>, and <strong>Single bars</strong>. Learning Place Value helps us organize everything so we never lose count!</p>
+                    <span class="id-lang">Kita memasukkannya ke dalam <strong>Kotak berisi 100</strong>, <strong>Paket berisi 10</strong>, dan <strong>Batang Tunggal</strong>. Belajar Nilai Tempat membantu kita mengatur semuanya agar tidak salah hitung!</span>
+                </div>
+
+                <div class="visual-box">
+                    <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px;">
+                        <div style="text-align: center;">
+                            <svg width="80" height="80" viewBox="0 0 80 80">
+                                <rect width="80" height="80" fill="#ff2d95" rx="5"/>
+                                <text x="40" y="45" font-size="20" fill="white" text-anchor="middle" font-weight="bold">100</text>
+                            </svg>
+                            <p style="color:#ff2d95; font-weight:bold;">Boxes (Hundreds)</p>
+                            <span class="id-lang" style="color:#ff2d95;">Kotak (Ratusan)</span>
+                        </div>
+                        <div style="text-align: center;">
+                            <svg width="20" height="80" viewBox="0 0 20 80">
+                                <rect width="20" height="80" fill="#7b2ff7" rx="5"/>
+                                <text x="10" y="45" font-size="12" fill="white" text-anchor="middle" font-weight="bold">10</text>
+                            </svg>
+                            <p style="color:#7b2ff7; font-weight:bold;">Packs (Tens)</p>
+                            <span class="id-lang" style="color:#7b2ff7;">Paket (Puluhan)</span>
+                        </div>
+                        <div style="text-align: center;">
+                            <svg width="15" height="15" viewBox="0 0 15 15">
+                                <rect width="15" height="15" fill="#00f0ff" rx="2"/>
+                            </svg>
+                            <p style="color:#00f0ff; font-weight:bold;">Singles (Ones)</p>
+                            <span class="id-lang" style="color:#00f0ff;">Satuan</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h3 style="color: white;">345 = 3 Boxes + 4 Packs + 5 Singles</h3>
+                        <span class="id-lang">345 = 3 Kotak + 4 Paket + 5 Satuan</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sections 3-7 and Assessment will be added in the next parts -->
+            <!-- SECTION 3 -->
+            <section id="sec3" class="animate-in">
+                <div class="section-header">
+                    <div class="section-title"><i class="fas fa-cubes"></i> Review: Base-10 Blocks</div>
+                    <div class="timer-badge"><i class="fas fa-clock"></i> 00:15 - 00:20</div>
+                </div>
+                <div class="bilingual">
+                    <p>Remember our friendly base-10 blocks? A tiny cube is 1. A long stick is 10. And today's superstar... the big flat square! That is 100. Let's count by hundreds to 1000!</p>
+                    <span class="id-lang">Ingat blok base-10 kita? Kubus kecil bernilai 1. Tongkat panjang bernilai 10. Dan bintang hari ini... kotak besar datar! Itu bernilai 100. Ayo hitung ratusan sampai 1000!</span>
+                </div>
+
+                <div class="visual-box" style="display: flex; justify-content: space-around; align-items: flex-end; padding: 30px 10px;">
+                    <!-- Ones -->
+                    <div style="text-align: center;">
+                        <svg width="30" height="30" viewBox="0 0 30 30"><rect width="30" height="30" fill="#00f0ff"/></svg>
+                        <p style="color:#00f0ff; font-weight:bold; margin-top:10px;">1 (Ones)</p>
+                        <span class="id-lang" style="color:#00f0ff;">Satuan</span>
+                    </div>
+                    <!-- Tens -->
+                    <div style="text-align: center;">
+                        <svg width="20" height="80" viewBox="0 0 20 80"><rect width="20" height="80" fill="#7b2ff7" rx="3"/></svg>
+                        <p style="color:#7b2ff7; font-weight:bold; margin-top:10px;">10 (Tens)</p>
+                        <span class="id-lang" style="color:#7b2ff7;">Puluhan</span>
+                    </div>
+                    <!-- Hundreds -->
+                    <div style="text-align: center;">
+                        <svg width="80" height="80" viewBox="0 0 80 80"><rect width="80" height="80" fill="#ff2d95" rx="3"/></svg>
+                        <p style="color:#ff2d95; font-weight:bold; margin-top:10px;">100 (Hundreds)</p>
+                        <span class="id-lang" style="color:#ff2d95;">Ratusan</span>
+                    </div>
+                </div>
+
+                <!-- Mini Game: Drag Label to Block -->
+                <div class="game-area" id="game3" style="margin-top: 20px;">
+                    <h3 style="text-align:center; margin-bottom:15px;"><i class="fas fa-gamepad"></i> Mini Game: Match the Labels <span class="id-lang">Cocokkan Labelnya</span></h3>
+                    <div style="display:flex; justify-content:center; gap:15px; margin-bottom:20px; flex-wrap: wrap;">
+                        <div class="draggable-block" draggable="true" id="label-hundreds" ondragstart="dragLabel(event, 'Hundreds')">
+                            <span style="color:#ff2d95; font-weight:bold; font-size:1.2rem;">Hundreds</span>
+                        </div>
+                        <div class="draggable-block" draggable="true" id="label-tens" ondragstart="dragLabel(event, 'Tens')">
+                            <span style="color:#7b2ff7; font-weight:bold; font-size:1.2rem;">Tens</span>
+                        </div>
+                        <div class="draggable-block" draggable="true" id="label-ones" ondragstart="dragLabel(event, 'Ones')">
+                            <span style="color:#00f0ff; font-weight:bold; font-size:1.2rem;">Ones</span>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-around; gap:10px; flex-wrap: wrap;">
+                        <div class="drop-column" ondragover="allowDrop(event)" ondrop="dropLabel(event, 'drop-ones')" id="drop-ones" style="width: 30%; border: 2px dashed #00f0ff;">
+                            <svg width="30" height="30" viewBox="0 0 30 30"><rect width="30" height="30" fill="#00f0ff"/></svg>
+                            <div class="drop-label-text" style="color:white; font-weight:bold;"></div>
+                        </div>
+                        <div class="drop-column" ondragover="allowDrop(event)" ondrop="dropLabel(event, 'drop-tens')" id="drop-tens" style="width: 30%; border: 2px dashed #7b2ff7;">
+                            <svg width="20" height="80" viewBox="0 0 20 80"><rect width="20" height="80" fill="#7b2ff7" rx="3"/></svg>
+                            <div class="drop-label-text" style="color:white; font-weight:bold;"></div>
+                        </div>
+                        <div class="drop-column" ondragover="allowDrop(event)" ondrop="dropLabel(event, 'drop-hundreds')" id="drop-hundreds" style="width: 30%; border: 2px dashed #ff2d95;">
+                            <svg width="80" height="80" viewBox="0 0 80 80"><rect width="80" height="80" fill="#ff2d95" rx="3"/></svg>
+                            <div class="drop-label-text" style="color:white; font-weight:bold;"></div>
+                        </div>
+                    </div>
+                    <div class="action-btns" style="justify-content: center; margin-top:20px;">
+                        <button class="btn-check" onclick="checkLabels()"><i class="fas fa-check-circle"></i> Cek</button>
+                        <button class="btn-reset" onclick="resetLabels()"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                    <div id="fb-game3" class="feedback-msg" style="text-align:center; margin-top:15px;"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 4 -->
+            <section id="sec4" class="animate-in">
+                <div class="section-header">
+                    <div class="section-title"><i class="fas fa-magic"></i> Problem Introduction: Expanded Form</div>
+                    <div class="timer-badge"><i class="fas fa-clock"></i> 00:20 - 00:30</div>
+                </div>
+                <div class="bilingual">
+                    <p>Let's look at the magic number 427. If we break it apart, we see three rooms. The Hundreds room has 4 (that's 400!), the Tens room has 2 (that's 20!), and the Ones room has 7. It's like a number puzzle!</p>
+                    <span class="id-lang">Mari lihat angka ajaib 427. Jika kita pisahkan, kita lihat 3 ruangan. Ruang Ratusan ada 4 (itu 400!), Ruang Puluhan ada 2 (itu 20!), dan Ruang Satuan ada 7. Ini seperti teka-teki angka!</span>
+                </div>
+
+                <div class="visual-box">
+                    <table class="place-value-table">
+                        <thead>
+                            <tr>
+                                <th>Hundreds<br><span style="font-size:0.8em; font-weight:normal;">Ratusan</span></th>
+                                <th>Tens<br><span style="font-size:0.8em; font-weight:normal;">Puluhan</span></th>
+                                <th>Ones<br><span style="font-size:0.8em; font-weight:normal;">Satuan</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>7</td>
+                            </tr>
+                            <tr style="font-size: 1.2rem; color: var(--neon-pink);">
+                                <td>400</td>
+                                <td>20</td>
+                                <td>7</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="expand-eq">400 + 20 + 7 = 427</div>
+                </div>
+
+                <!-- Game 4: Quick Click Questions -->
+                <div class="game-area" id="game4">
+                    <div class="question-card" data-answer="4">
+                        <div class="q-text">1. Which digit is in the Hundreds place in 427? <span class="id-lang">Digit mana yang di tempat Ratusan pada 427?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q1')">7</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q1')">2</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q1')">4</button>
+                        </div>
+                        <div class="feedback-msg" id="fb-g4q1"></div>
+                    </div>
+                    <div class="question-card" data-answer="20">
+                        <div class="q-text">2. What is the value of the digit 2 in 427? <span class="id-lang">Berapa nilai digit 2 pada 427?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q2')">2</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q2')">20</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q2')">200</button>
+                        </div>
+                        <div class="feedback-msg" id="fb-g4q2"></div>
+                    </div>
+                    <div class="question-card" data-answer="500 + 30 + 6">
+                        <div class="q-text">3. What is the expanded form of 536? <span class="id-lang">Bentuk ekspansi dari 536 adalah?</span></div>
+                        <div class="q-options">
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q3')">5 + 3 + 6</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q3')">500 + 30 + 6</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'g4q3')">500 + 3 + 60</button>
+                        </div>
+                        <div class="feedback-msg" id="fb-g4q3"></div>
+                    </div>
+
+                    <div class="action-btns">
+                        <button class="btn-check" onclick="checkGame('game4')"><i class="fas fa-check-circle"></i> Cek Jawaban</button>
+                        <button class="btn-reset" onclick="resetGame('game4')"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5 -->
+            <section id="sec5" class="animate-in">
+                <div class="section-header">
+                    <div class="section-title"><i class="fas fa-hard-hat"></i> Guided Practice: Build the Number!</div>
+                    <div class="timer-badge"><i class="fas fa-clock"></i> 00:30 - 00:45</div>
+                </div>
+                <div class="bilingual">
+                    <p>Now it's your turn to be the architect! I'm going to give you a number, and I want you to drag the correct blocks into the chart. Let's try 263!</p>
+                    <span class="id-lang">Sekarang giliranmu menjadi arsitek! Aku akan memberikan sebuah angka, dan aku mau kamu seret blok yang benar ke dalam tabel. Mari coba 263!</span>
+                </div>
+
+                <div style="text-align:center; margin-bottom:20px;">
+                    <h2 style="color:var(--neon-cyan); font-size:3rem; letter-spacing:5px;">263</h2>
+                </div>
+
+                <!-- Drag & Drop Area -->
+                <div class="block-palette">
+                    <div class="draggable-block" draggable="true" id="blk-100" ondragstart="dragBlock(event, '100')">
+                        <svg width="50" height="50" viewBox="0 0 80 80"><rect width="80" height="80" fill="#ff2d95" rx="3"/><text x="40" y="45" font-size="20" fill="white" text-anchor="middle">100</text></svg>
+                        <span class="block-label">Drag me</span>
+                    </div>
+                    <div class="draggable-block" draggable="true" id="blk-10" ondragstart="dragBlock(event, '10')">
+                        <svg width="15" height="50" viewBox="0 0 20 80"><rect width="20" height="80" fill="#7b2ff7" rx="3"/><text x="10" y="45" font-size="15" fill="white" text-anchor="middle" transform="rotate(-90 10 45)">10</text></svg>
+                        <span class="block-label">Drag me</span>
+                    </div>
+                    <div class="draggable-block" draggable="true" id="blk-1" ondragstart="dragBlock(event, '1')">
+                        <svg width="20" height="20" viewBox="0 0 30 30"><rect width="30" height="30" fill="#00f0ff"/></svg>
+                        <span class="block-label">Drag me</span>
+                    </div>
+                </div>
+
+                <div class="drop-zone-container" id="build-chart">
+                    <div class="drop-column" ondragover="allowDrop(event)" ondrop="dropBlock(event, 'col-h')" id="col-h">
+                        <div class="drop-column-header">Hundreds<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Ratusan</span></div>
+                    </div>
+                    <div class="drop-column" ondragover="allowDrop(event)" ondrop="dropBlock(event, 'col-t')" id="col-t">
+                        <div class="drop-column-header">Tens<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Puluhan</span></div>
+                    </div>
+                    <div class="drop-column" ondragover="allowDrop(event)" ondrop="dropBlock(event, 'col-o')" id="col-o">
+                        <div class="drop-column-header">Ones<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Satuan</span></div>
+                    </div>
+                </div>
+
+                <!-- Expanded Form Input -->
+                <div style="text-align:center; font-size:1.5rem; font-weight:bold; color:var(--text-main);">
+                    <input type="text" class="eq-input" id="exp-h" maxlength="3" placeholder="?"> + 
+                    <input type="text" class="eq-input" id="exp-t" maxlength="2" placeholder="?"> + 
+                    <input type="text" class="eq-input" id="exp-o" maxlength="1" placeholder="?"> = 263
+                </div>
+
+                <div class="action-btns" style="justify-content: center; margin-top:30px;">
+                    <button class="btn-check" onclick="checkGuided()"><i class="fas fa-check-circle"></i> Cek Jawaban</button>
+                    <button class="btn-reset" onclick="resetGuided()"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+                <div id="fb-game5" class="feedback-msg" style="text-align:center; margin-top:15px; font-size:1.2rem;"></div>
+            </section>
+            <!-- SECTION 6 -->
+            <section id="sec6" class="animate-in">
+                <div class="section-header">
+                    <div class="section-title"><i class="fas fa-gem"></i> Independent Practice: Treasure Hunt</div>
+                    <div class="timer-badge"><i class="fas fa-clock"></i> 00:45 - 01:00</div>
+                </div>
+                <div class="bilingual">
+                    <p>You are a Place Value pro! I've set up 10 secret treasure chests. You need to tell me the Value of the underlined digit. Click the correct value!</p>
+                    <span class="id-lang">Kamu pro Nilai Tempat! Aku sudah menyiapkan 10 peti harta karun rahasia. Kamu harus memberitahu aku Nilai dari digit yang bergaris bawah. Klik nilai yang benar!</span>
+                </div>
+
+                <div class="treasure-grid" id="game6">
+                    <!-- Q1 -->
+                    <div class="treasure-card" data-answer="80">
+                        <div class="q-num">Q1</div>
+                        <div class="big-digit">7<u>8</u>1</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 1)">8</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 1)">80</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 1)">800</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb1"></div>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="treasure-card" data-answer="900">
+                        <div class="q-num">Q2</div>
+                        <div class="big-digit"><u>9</u>05</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 2)">9</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 2)">90</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 2)">900</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb2"></div>
+                    </div>
+                    <!-- Q3 -->
+                    <div class="treasure-card" data-answer="30">
+                        <div class="q-num">Q3</div>
+                        <div class="big-digit">9<u>3</u>1</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 3)">3</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 3)">30</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 3)">300</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb3"></div>
+                    </div>
+                    <!-- Q4 -->
+                    <div class="treasure-card" data-answer="1">
+                        <div class="q-num">Q4</div>
+                        <div class="big-digit">64<u>1</u></div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 4)">1</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 4)">10</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 4)">100</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb4"></div>
+                    </div>
+                    <!-- Q5 -->
+                    <div class="treasure-card" data-answer="400">
+                        <div class="q-num">Q5</div>
+                        <div class="big-digit"><u>4</u>52</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 5)">4</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 5)">40</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 5)">400</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb5"></div>
+                    </div>
+                    <!-- Q6 -->
+                    <div class="treasure-card" data-answer="70">
+                        <div class="q-num">Q6</div>
+                        <div class="big-digit">2<u>7</u>3</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 6)">7</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 6)">70</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 6)">700</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb6"></div>
+                    </div>
+                    <!-- Q7 -->
+                    <div class="treasure-card" data-answer="200">
+                        <div class="q-num">Q7</div>
+                        <div class="big-digit"><u>2</u>17</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 7)">2</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 7)">20</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 7)">200</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb7"></div>
+                    </div>
+                    <!-- Q8 -->
+                    <div class="treasure-card" data-answer="5">
+                        <div class="q-num">Q8</div>
+                        <div class="big-digit">89<u>5</u></div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 8)">5</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 8)">50</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 8)">500</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb8"></div>
+                    </div>
+                    <!-- Q9 -->
+                    <div class="treasure-card" data-answer="60">
+                        <div class="q-num">Q9</div>
+                        <div class="big-digit">5<u>6</u>8</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 9)">6</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 9)">60</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 9)">600</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb9"></div>
+                    </div>
+                    <!-- Q10 -->
+                    <div class="treasure-card" data-answer="100">
+                        <div class="q-num">Q10</div>
+                        <div class="big-digit"><u>1</u>00</div>
+                        <div class="treasure-options">
+                            <button class="treasure-btn" onclick="selectTreasure(this, 10)">1</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 10)">10</button>
+                            <button class="treasure-btn" onclick="selectTreasure(this, 10)">100</button>
+                        </div>
+                        <div class="treasure-fb" id="tfb10"></div>
+                    </div>
+                </div>
+
+                <div class="action-btns" style="justify-content: center; margin-top:30px;">
+                    <button class="btn-check" onclick="checkGame('game6')"><i class="fas fa-check-circle"></i> Cek Jawaban</button>
+                    <button class="btn-reset" onclick="resetGame('game6')"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+            </section>
+
+            <!-- SECTION 7: CONSOLIDATION -->
+            <section id="sec7" class="animate-in">
+                <div class="consolidation-box">
+                    <h2><i class="fas fa-trophy"></i> Class Complete! <br><span style="font-size:1.2rem; color:var(--neon-cyan);">Kelas Selesai!</span></h2>
+                    <p style="color:white; font-size:1.1rem;">Today we learned that numbers have secret values based on where they sit. Great job!</p>
+                    <span class="id-lang" style="color:#e2e8f0; font-size:0.9rem;">Hari ini kita belajar bahwa angka punya nilai rahasia berdasarkan posisinya. Kerja bagus!</span>
+                    <br>
+                    <a href="https://learn.algonova.id/login" target="_blank"><i class="fas fa-star"></i> Get Rewards & Check Report</a>
+                </div>
+            </section>
+
+            <!-- ASSESSMENT SECTION -->
+            <div id="assessment-section">
+                <div class="assessment-header">
+                    <h2 style="color:var(--neon-cyan);"><i class="fas fa-clipboard-check"></i> Assessment Time!</h2>
+                    <p class="id-lang">Waktu Penilaian!</p>
+                </div>
+
+                <div class="assessment-form">
+                    <input type="text" id="studentName" class="form-input" placeholder="Student Name / Nama Siswa">
+                    <input type="date" id="assessDate" class="form-input">
+                </div>
+
+                <div class="tab-container">
+                    <button class="tab-btn active" onclick="openTab(event, 'Group1')">Group 1</button>
+                    <button class="tab-btn" onclick="openTab(event, 'Group2')">Group 2</button>
+                    <button class="tab-btn" onclick="openTab(event, 'Group3')">Group 3</button>
+                    <button class="tab-btn" onclick="openTab(event, 'Group4')">Group 4</button>
+                    <button class="tab-btn" onclick="openTab(event, 'Group5')">Group 5</button>
+                </div>
+
+                <!-- GROUP 1 -->
+                <div id="Group1" class="tab-content active">
+                    <h3 style="color:var(--neon-pink); margin-bottom:20px;">Group 1 - Mixed Types</h3>
+                    
+                    <div class="assess-q">
+                        <div class="assess-q-text">1. What is the value of 5 in 542? <span class="id-lang">Berapa nilai 5 pada 542?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g1q1" value="5"> 5</label>
+                            <label class="assess-opt-label"><input type="radio" name="g1q1" value="50"> 50</label>
+                            <label class="assess-opt-label"><input type="radio" name="g1q1" value="500"> 500</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g1q1"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">2. 700 + 30 + 8 = ? <span class="id-lang">700 + 30 + 8 = ?</span></div>
+                        <select class="assess-select" id="g1q2">
+                            <option value="">-- Select Answer --</option>
+                            <option value="738">738</option>
+                            <option value="730">730</option>
+                            <option value="708">708</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g1q2"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">3. What number has 6 hundreds, 2 tens, and 4 ones? <span class="id-lang">Angka apa yang memiliki 6 ratusan, 2 puluhan, dan 4 satuan?</span></div>
+                        <input type="text" class="assess-text" id="g1q3" placeholder="Type number..." maxlength="3">
+                        <div class="assess-fb" id="fb-g1q3"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">4. Which of the following are equal to 3 hundreds? (Select TWO) <span class="id-lang">Manakah yang sama dengan 3 ratusan? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q4" value="30_tens"> 30 tens</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q4" value="300_ones"> 300 ones</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q4" value="3_tens"> 3 tens</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q4" value="30_ones"> 30 ones</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g1q4"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">5. What is the value of 9 in 905? <span class="id-lang">Berapa nilai 9 pada 905?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g1q5" value="9"> 9</label>
+                            <label class="assess-opt-label"><input type="radio" name="g1q5" value="90"> 90</label>
+                            <label class="assess-opt-label"><input type="radio" name="g1q5" value="900"> 900</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g1q5"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">6. 4 hundreds + 5 ones = ? <span class="id-lang">4 ratusan + 5 satuan = ?</span></div>
+                        <select class="assess-select" id="g1q6">
+                            <option value="">-- Select Answer --</option>
+                            <option value="405">405</option>
+                            <option value="450">450</option>
+                            <option value="45">45</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g1q6"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">7. What digit is in the tens place of 876? <span class="id-lang">Digit apa yang berada di tempat puluhan pada 876?</span></div>
+                        <input type="text" class="assess-text" id="g1q7" placeholder="Type 1 digit..." maxlength="1">
+                        <div class="assess-fb" id="fb-g1q7"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">8. 600 + 40 + 2 is... <span class="id-lang">600 + 40 + 2 adalah...</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g1q8" value="642"> 642</label>
+                            <label class="assess-opt-label"><input type="radio" name="g1q8" value="624"> 624</label>
+                            <label class="assess-opt-label"><input type="radio" name="g1q8" value="602"> 602</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g1q8"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">9. Which numbers have a 0 in the tens place? (Select TWO) <span class="id-lang">Angka mana yang memiliki 0 di tempat puluhan? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q9" value="704"> 704</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q9" value="670"> 670</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q9" value="901"> 901</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g1q9" value="50"> 50</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g1q9"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">10. If I have 14 tens, what is the number? <span class="id-lang">Jika aku punya 14 puluhan, berapa angkanya?</span></div>
+                        <input type="text" class="assess-text" id="g1q10" placeholder="Type number...">
+                        <div class="assess-fb" id="fb-g1q10"></div>
+                    </div>
+
+                    <div class="action-btns" style="justify-content:center; margin-top:30px;">
+                        <button class="btn-check" onclick="checkAssessment('Group1')"><i class="fas fa-paper-plane"></i> Submit Group 1</button>
+                        <button class="btn-check" style="background: linear-gradient(135deg, #6b7280, #4b5563);" onclick="printAssessment('Group1')"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+
+                <!-- GROUP 2 -->
+                <div id="Group2" class="tab-content">
+                    <h3 style="color:var(--neon-pink); margin-bottom:20px;">Group 2 - Harder Challenges</h3>
+                    
+                    <div class="assess-q">
+                        <div class="assess-q-text">1. Change the digit in the tens place of 841 to a 9. What is the new number? <span class="id-lang">Ubah digit di tempat puluhan dari 841 menjadi 9. Berapa angka barunya?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g2q1" value="941"> 941</label>
+                            <label class="assess-opt-label"><input type="radio" name="g2q1" value="891"> 891</label>
+                            <label class="assess-opt-label"><input type="radio" name="g2q1" value="849"> 849</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g2q1"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">2. I am a number between 200 and 300. My ones digit is 5 and my tens digit is 2. Who am I? <span class="id-lang">Aku angka antara 200 dan 300. Digit satukanku 5 dan digit puluhanku 2. Siapakah aku?</span></div>
+                        <select class="assess-select" id="g2q2">
+                            <option value="">-- Select Answer --</option>
+                            <option value="225">225</option>
+                            <option value="252">252</option>
+                            <option value="522">522</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g2q2"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">3. How many hundreds are there in 1000? <span class="id-lang">Berapa banyak ratusan dalam 1000?</span></div>
+                        <input type="text" class="assess-text" id="g2q3" placeholder="Type number...">
+                        <div class="assess-fb" id="fb-g2q3"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">4. Which show the same value as 650? (Select TWO) <span class="id-lang">Manakah yang menunjukkan nilai yang sama dengan 650? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q4" value="600+50+0"> 600 + 50 + 0</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q4" value="65_tens"> 65 tens</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q4" value="6+5+0"> 6 + 5 + 0</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q4" value="500+150"> 500 + 150</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g2q4"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">5. What is the value of 2 in 321? <span class="id-lang">Berapa nilai 2 pada 321?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g2q5" value="2"> 2</label>
+                            <label class="assess-opt-label"><input type="radio" name="g2q5" value="20"> 20</label>
+                            <label class="assess-opt-label"><input type="radio" name="g2q5" value="200"> 200</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g2q5"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">6. 5 hundreds + 12 tens + 4 ones = ? <span class="id-lang">5 ratusan + 12 puluhan + 4 satuan = ?</span></div>
+                        <select class="assess-select" id="g2q6">
+                            <option value="">-- Select Answer --</option>
+                            <option value="624">624</option>
+                            <option value="5124">5124</option>
+                            <option value="516">516</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g2q6"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">7. A student wrote 400 + 5 + 20 = 425. Is this correct? <span class="id-lang">Seorang siswa menulis 400 + 5 + 20 = 425. Apakah ini benar?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g2q7" value="Yes"> Yes, because 400+20+5 is 425</label>
+                            <label class="assess-opt-label"><input type="radio" name="g2q7" value="No"> No, because the order is wrong</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g2q7"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">8. What is 300 + 20 + 9? <span class="id-lang">Berapa 300 + 20 + 9?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g2q8" value="329"> 329</label>
+                            <label class="assess-opt-label"><input type="radio" name="g2q8" value="392"> 392</label>
+                            <label class="assess-opt-label"><input type="radio" name="g2q8" value="322"> 322</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g2q8"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">9. Which numbers are greater than 500? (Select TWO) <span class="id-lang">Angka mana yang lebih besar dari 500? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q9" value="499"> 499</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q9" value="501"> 501</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q9" value="600"> 600</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g2q9" value="450"> 450</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g2q9"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">10. What is 10 less than 342? <span class="id-lang">Berapa 10 kurang dari 342?</span></div>
+                        <input type="text" class="assess-text" id="g2q10" placeholder="Type number...">
+                        <div class="assess-fb" id="fb-g2q10"></div>
+                    </div>
+
+                    <div class="action-btns" style="justify-content:center; margin-top:30px;">
+                        <button class="btn-check" onclick="checkAssessment('Group2')"><i class="fas fa-paper-plane"></i> Submit Group 2</button>
+                        <button class="btn-check" style="background: linear-gradient(135deg, #6b7280, #4b5563);" onclick="printAssessment('Group2')"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+
+                <!-- GROUP 3 -->
+                <div id="Group3" class="tab-content">
+                    <h3 style="color:var(--neon-pink); margin-bottom:20px;">Group 3 - Place Value Mastery</h3>
+                    
+                    <div class="assess-q">
+                        <div class="assess-q-text">1. What is the value of 8 in 182? <span class="id-lang">Berapa nilai 8 pada 182?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g3q1" value="8"> 8</label>
+                            <label class="assess-opt-label"><input type="radio" name="g3q1" value="80"> 80</label>
+                            <label class="assess-opt-label"><input type="radio" name="g3q1" value="800"> 800</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g3q1"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">2. 500 + 40 + 2 = ? <span class="id-lang">500 + 40 + 2 = ?</span></div>
+                        <select class="assess-select" id="g3q2">
+                            <option value="">-- Select --</option>
+                            <option value="542">542</option>
+                            <option value="524">524</option>
+                            <option value="452">452</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g3q2"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">3. What number has 9 hundreds, 1 ten, and 5 ones? <span class="id-lang">Angka apa yang memiliki 9 ratusan, 1 puluhan, dan 5 satuan?</span></div>
+                        <input type="text" class="assess-text" id="g3q3" placeholder="Type number..." maxlength="3">
+                        <div class="assess-fb" id="fb-g3q3"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">4. Which of the following equal 400? (Select TWO) <span class="id-lang">Manakah yang sama dengan 400? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q4" value="4_hundreds"> 4 hundreds</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q4" value="40_tens"> 40 tens</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q4" value="4_tens"> 4 tens</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q4" value="400_ones"> 400 ones</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g3q4"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">5. What digit is in the ones place of 589? <span class="id-lang">Digit apa di tempat satuan pada 589?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g3q5" value="5"> 5</label>
+                            <label class="assess-opt-label"><input type="radio" name="g3q5" value="8"> 8</label>
+                            <label class="assess-opt-label"><input type="radio" name="g3q5" value="9"> 9</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g3q5"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">6. 4 hundreds, 0 tens, 7 ones = ? <span class="id-lang">4 ratusan, 0 puluhan, 7 satuan = ?</span></div>
+                        <select class="assess-select" id="g3q6">
+                            <option value="">-- Select --</option>
+                            <option value="407">407</option>
+                            <option value="470">470</option>
+                            <option value="47">47</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g3q6"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">7. What is 100 more than 345? <span class="id-lang">Berapa 100 lebih dari 345?</span></div>
+                        <input type="text" class="assess-text" id="g3q7" placeholder="Type number..." maxlength="3">
+                        <div class="assess-fb" id="fb-g3q7"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">8. 800 + 0 + 3 = ? <span class="id-lang">800 + 0 + 3 = ?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g3q8" value="830"> 830</label>
+                            <label class="assess-opt-label"><input type="radio" name="g3q8" value="803"> 803</label>
+                            <label class="assess-opt-label"><input type="radio" name="g3q8" value="83"> 83</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g3q8"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">9. Which have 5 in the tens place? (Select TWO) <span class="id-lang">Mana yang memiliki 5 di tempat puluhan? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q9" value="352"> 352</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q9" value="523"> 523</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q9" value="259"> 259</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g3q9" value="505"> 505</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g3q9"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">10. 23 tens = ? <span class="id-lang">23 puluhan = ?</span></div>
+                        <input type="text" class="assess-text" id="g3q10" placeholder="Type number...">
+                        <div class="assess-fb" id="fb-g3q10"></div>
+                    </div>
+
+                    <div class="action-btns" style="justify-content:center; margin-top:30px;">
+                        <button class="btn-check" onclick="checkAssessment('Group3')"><i class="fas fa-paper-plane"></i> Submit Group 3</button>
+                        <button class="btn-check" style="background: linear-gradient(135deg, #6b7280, #4b5563);" onclick="printAssessment('Group3')"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+
+                <!-- GROUP 4 -->
+                <div id="Group4" class="tab-content">
+                    <h3 style="color:var(--neon-pink); margin-bottom:20px;">Group 4 - Number Building</h3>
+                    
+                    <div class="assess-q">
+                        <div class="assess-q-text">1. What is the value of 4 in 419? <span class="id-lang">Berapa nilai 4 pada 419?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g4q1" value="4"> 4</label>
+                            <label class="assess-opt-label"><input type="radio" name="g4q1" value="40"> 40</label>
+                            <label class="assess-opt-label"><input type="radio" name="g4q1" value="400"> 400</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g4q1"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">2. 100 + 90 + 9 = ? <span class="id-lang">100 + 90 + 9 = ?</span></div>
+                        <select class="assess-select" id="g4q2">
+                            <option value="">-- Select --</option>
+                            <option value="199">199</option>
+                            <option value="919">919</option>
+                            <option value="1099">1099</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g4q2"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">3. I have 7 hundreds and 3 ones. What number am I? <span class="id-lang">Aku punya 7 ratusan dan 3 satuan. Angka berapa aku?</span></div>
+                        <input type="text" class="assess-text" id="g4q3" placeholder="Type number..." maxlength="3">
+                        <div class="assess-fb" id="fb-g4q3"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">4. Which numbers equal 250? (Select TWO) <span class="id-lang">Angka mana yang sama dengan 250? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q4" value="25_tens"> 25 tens</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q4" value="200+50+0"> 200 + 50 + 0</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q4" value="2+5+0"> 2 + 5 + 0</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q4" value="250_ones"> 250 ones</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g4q4"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">5. What digit is in the hundreds place of 982? <span class="id-lang">Digit apa di tempat ratusan pada 982?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g4q5" value="9"> 9</label>
+                            <label class="assess-opt-label"><input type="radio" name="g4q5" value="8"> 8</label>
+                            <label class="assess-opt-label"><input type="radio" name="g4q5" value="2"> 2</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g4q5"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">6. 5 hundreds + 6 tens = ? <span class="id-lang">5 ratusan + 6 puluhan = ?</span></div>
+                        <select class="assess-select" id="g4q6">
+                            <option value="">-- Select --</option>
+                            <option value="560">560</option>
+                            <option value="506">506</option>
+                            <option value="56">56</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g4q6"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">7. What is 10 less than 815? <span class="id-lang">Berapa 10 kurang dari 815?</span></div>
+                        <input type="text" class="assess-text" id="g4q7" placeholder="Type number..." maxlength="3">
+                        <div class="assess-fb" id="fb-g4q7"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">8. 300 + 20 + 0 = ? <span class="id-lang">300 + 20 + 0 = ?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g4q8" value="302"> 302</label>
+                            <label class="assess-opt-label"><input type="radio" name="g4q8" value="320"> 320</label>
+                            <label class="assess-opt-label"><input type="radio" name="g4q8" value="32"> 32</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g4q8"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">9. Which are less than 200? (Select TWO) <span class="id-lang">Mana yang kurang dari 200? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q9" value="201"> 201</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q9" value="150"> 150</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q9" value="199"> 199</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g4q9" value="210"> 210</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g4q9"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">10. How many tens are in 100? <span class="id-lang">Berapa banyak puluhan dalam 100?</span></div>
+                        <input type="text" class="assess-text" id="g4q10" placeholder="Type number...">
+                        <div class="assess-fb" id="fb-g4q10"></div>
+                    </div>
+
+                    <div class="action-btns" style="justify-content:center; margin-top:30px;">
+                        <button class="btn-check" onclick="checkAssessment('Group4')"><i class="fas fa-paper-plane"></i> Submit Group 4</button>
+                        <button class="btn-check" style="background: linear-gradient(135deg, #6b7280, #4b5563);" onclick="printAssessment('Group4')"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+
+                <!-- GROUP 5 -->
+                <div id="Group5" class="tab-content">
+                    <h3 style="color:var(--neon-pink); margin-bottom:20px;">Group 5 - Master Challenge</h3>
+                    
+                    <div class="assess-q">
+                        <div class="assess-q-text">1. In the number 532, the digit 5 is in the... <span class="id-lang">Pada angka 532, digit 5 berada di...</span></div>
+                        <select class="assess-select" id="g5q1">
+                            <option value="">-- Select --</option>
+                            <option value="Ones">Ones / Satuan</option>
+                            <option value="Tens">Tens / Puluhan</option>
+                            <option value="Hundreds">Hundreds / Ratusan</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g5q1"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">2. In the number 532, the digit 3 is in the... <span class="id-lang">Pada angka 532, digit 3 berada di...</span></div>
+                        <select class="assess-select" id="g5q2">
+                            <option value="">-- Select --</option>
+                            <option value="Ones">Ones / Satuan</option>
+                            <option value="Tens">Tens / Puluhan</option>
+                            <option value="Hundreds">Hundreds / Ratusan</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g5q2"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">3. In the number 532, the digit 2 is in the... <span class="id-lang">Pada angka 532, digit 2 berada di...</span></div>
+                        <select class="assess-select" id="g5q3">
+                            <option value="">-- Select --</option>
+                            <option value="Ones">Ones / Satuan</option>
+                            <option value="Tens">Tens / Puluhan</option>
+                            <option value="Hundreds">Hundreds / Ratusan</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g5q3"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">4. 600 + 70 = ? <span class="id-lang">600 + 70 = ?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g5q4" value="607"> 607</label>
+                            <label class="assess-opt-label"><input type="radio" name="g5q4" value="670"> 670</label>
+                            <label class="assess-opt-label"><input type="radio" name="g5q4" value="67"> 67</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g5q4"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">5. What number is 10 more than 299? <span class="id-lang">Berapa 10 lebih dari 299?</span></div>
+                        <input type="text" class="assess-text" id="g5q5" placeholder="Type number..." maxlength="3">
+                        <div class="assess-fb" id="fb-g5q5"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">6. Which equal 1000? (Select TWO) <span class="id-lang">Manakah yang sama dengan 1000? (Pilih DUA)</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="checkbox" name="g5q6" value="10_hundreds"> 10 hundreds</label>
+                            <label class="assess-opt-label"><input type="radio" name="g5q6" value="100_tens"> 100 tens</label> <!-- Using radio as trick, but logic checks value -->
+                            <label class="assess-opt-label"><input type="checkbox" name="g5q6" value="1000_ones"> 1000 ones</label>
+                            <label class="assess-opt-label"><input type="checkbox" name="g5q6" value="1_hundred"> 1 hundred</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g5q6"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">7. What is the expanded form of 844? <span class="id-lang">Bentuk ekspansi dari 844 adalah?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g5q7" value="800+40+4"> 800 + 40 + 4</label>
+                            <label class="assess-opt-label"><input type="radio" name="g5q7" value="8+4+4"> 8 + 4 + 4</label>
+                            <label class="assess-opt-label"><input type="radio" name="g5q7" value="800+44"> 800 + 44</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g5q7"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">8. 9 hundreds + 0 tens + 9 ones = ? <span class="id-lang">9 ratusan + 0 puluhan + 9 satuan = ?</span></div>
+                        <select class="assess-select" id="g5q8">
+                            <option value="">-- Select --</option>
+                            <option value="909">909</option>
+                            <option value="990">990</option>
+                            <option value="99">99</option>
+                        </select>
+                        <div class="assess-fb" id="fb-g5q8"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">9. I am a 3-digit number. My hundreds is 1, my ones is 2, and my tens is 3. What number am I? <span class="id-lang">Aku angka 3 digit. Ratusanku 1, satukanku 2, puluhanku 3. Angka berapa aku?</span></div>
+                        <input type="text" class="assess-text" id="g5q9" placeholder="Type number..." maxlength="3">
+                        <div class="assess-fb" id="fb-g5q9"></div>
+                    </div>
+
+                    <div class="assess-q">
+                        <div class="assess-q-text">10. Which is the biggest? <span class="id-lang">Mana yang paling besar?</span></div>
+                        <div class="assess-options">
+                            <label class="assess-opt-label"><input type="radio" name="g5q10" value="890"> 890</label>
+                            <label class="assess-opt-label"><input type="radio" name="g5q10" value="809"> 809</label>
+                            <label class="assess-opt-label"><input type="radio" name="g5q10" value="980"> 980</label>
+                        </div>
+                        <div class="assess-fb" id="fb-g5q10"></div>
+                    </div>
+
+                    <div class="action-btns" style="justify-content:center; margin-top:30px;">
+                        <button class="btn-check" onclick="checkAssessment('Group5')"><i class="fas fa-paper-plane"></i> Submit Group 5</button>
+                        <button class="btn-check" style="background: linear-gradient(135deg, #6b7280, #4b5563);" onclick="printAssessment('Group5')"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+
+            </div> <!-- End Assessment Section -->
+        </div>
+
+        <!-- RIGHT: CANVAS AREA (1/4) -->
+        <div class="canvas-sidebar">
+            <div class="canvas-container">
+                <div class="canvas-header">
+                    <div style="font-weight: bold; color: #0f172a; text-align: center;">Scratch Pad <br><span style="font-size:0.7rem; font-weight:normal;">(Area Corat-coret)</span></div>
+                    <div class="canvas-colors">
+                        <button class="color-btn active" style="background: #000000;" onclick="setColor('#000000', this)"></button>
+                        <button class="color-btn" style="background: #FF0000;" onclick="setColor('#FF0000', this)"></button>
+                        <button class="color-btn" style="background: #0000FF;" onclick="setColor('#0000FF', this)"></button>
+                        <button class="color-btn" style="background: #008000;" onclick="setColor('#008000', this)"></button>
+                    </div>
+                    <div class="canvas-tools">
+                        <button class="tool-btn" onclick="setTool('eraser')"><i class="fas fa-eraser"></i> Eraser</button>
+                        <button class="tool-btn" onclick="clearCanvas()"><i class="fas fa-trash"></i> Erase All</button>
+                    </div>
+                </div>
+                <canvas id="drawCanvas" width="300" height="500"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Part 1 -->
+    <script>
+        // --- Canvas Logic ---
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+        let currentColor = '#000000';
+        let currentTool = 'pen';
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        canvas.addEventListener('mousedown', (e) => {
+            painting = true;
+            draw(e);
+        });
+        canvas.addEventListener('mouseup', () => painting = false);
+        canvas.addEventListener('mouseleave', () => painting = false);
+        canvas.addEventListener('mousemove', draw);
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); painting = true; draw(e.touches[0]); });
+        canvas.addEventListener('touchend', () => painting = false);
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+
+        function draw(e) {
+            if (!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineWidth = currentTool === 'eraser' ? 20 : 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        function setColor(color, btn) {
+            currentColor = color;
+            currentTool = 'pen';
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            if(tool === 'eraser') {
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            }
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // --- Interactive Game Logic (Section 1) ---
+        let selectedOptions = {};
+
+        function selectOption(btn, qNumber) {
+            const parent = btn.parentElement;
+            // Remove previous selection in this question
+            parent.querySelectorAll('.opt-btn').forEach(b => {
+                b.classList.remove('selected');
+            });
+            // Add selection
+            btn.classList.add('selected');
+            selectedOptions[qNumber] = btn.innerText.trim();
+            
+            // Hide previous feedback
+            const fb = document.getElementById(`fb${qNumber}`);
+            if(fb) { fb.classList.remove('show'); fb.innerHTML = ''; }
+        }
+
+        function checkGame(gameId) {
+            const gameArea = document.getElementById(gameId);
+            const cards = gameArea.querySelectorAll('.question-card');
+            
+            cards.forEach((card, index) => {
+                const qNumber = index + 1;
+                const correctAnswer = card.getAttribute('data-answer');
+                const fb = document.getElementById(`fb${qNumber}`);
+                const buttons = card.querySelectorAll('.opt-btn');
+
+                // Reset styles
+                buttons.forEach(btn => {
+                    btn.classList.remove('correct', 'wrong');
+                });
+
+                if (selectedOptions[qNumber] === correctAnswer) {
+                    buttons.forEach(btn => {
+                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
+                    });
+                    fb.className = 'feedback-msg show success';
+                    fb.innerHTML = '<i class="fas fa-check-circle"></i> Awesome! / Hebat!';
+                } else if (selectedOptions[qNumber]) {
+                    buttons.forEach(btn => {
+                        if (btn.innerText.trim() === selectedOptions[qNumber]) btn.classList.add('wrong');
+                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
+                    });
+                    fb.className = 'feedback-msg show error';
+                    fb.innerHTML = `<i class="fas fa-times-circle"></i> Oops! The correct answer is ${correctAnswer}. / Ups! Jawaban yang benar adalah ${correctAnswer}.`;
+                } else {
+                    fb.className = 'feedback-msg show error';
+                    fb.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please select an answer. / Silakan pilih jawaban.';
+                }
+            });
+        }
+
+        function resetGame(gameId) {
+            const gameArea = document.getElementById(gameId);
+            const cards = gameArea.querySelectorAll('.question-card');
+            
+            selectedOptions = {}; // Reset stored answers
+            
+            cards.forEach((card, index) => {
+                const qNumber = index + 1;
+                const fb = document.getElementById(`fb${qNumber}`);
+                const buttons = card.querySelectorAll('.opt-btn');
+                
+                buttons.forEach(btn => {
+                    btn.classList.remove('selected', 'correct', 'wrong');
+                });
+                
+                fb.className = 'feedback-msg';
+                fb.innerHTML = '';
+            });
+        }
+        // --- Game 3: Drag & Drop Labels Logic ---
+        let droppedLabels = { 'drop-ones': '', 'drop-tens': '', 'drop-hundreds': '' };
+
+        function dragLabel(e, label) {
+            e.dataTransfer.setData("text/plain", label);
+        }
+        
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function dropLabel(e, targetId) {
+            e.preventDefault();
+            var data = e.dataTransfer.getData("text/plain");
+            droppedLabels[targetId] = data;
+            document.getElementById(targetId).querySelector('.drop-label-text').innerText = data;
+        }
+
+        function checkLabels() {
+            let correct = 0;
+            const answers = { 'drop-ones': 'Ones', 'drop-tens': 'Tens', 'drop-hundreds': 'Hundreds' };
+            const fb = document.getElementById('fb-game3');
+
+            for(let id in answers) {
+                if(droppedLabels[id] === answers[id]) {
+                    correct++;
+                    document.getElementById(id).style.borderColor = "var(--success)";
+                } else {
+                    document.getElementById(id).style.borderColor = "var(--error)";
+                }
+            }
+
+            if(correct === 3) {
+                fb.className = 'feedback-msg show success';
+                fb.innerHTML = '<i class="fas fa-check-circle"></i> Perfect! You know your blocks! / Sempurna! Kamu tahu blokmu!';
+            } else {
+                fb.className = 'feedback-msg show error';
+                fb.innerHTML = '<i class="fas fa-times-circle"></i> Oops! Some labels are in the wrong place. Try again! / Ups! Beberapa label salah tempat. Coba lagi!';
+            }
+        }
+
+        function resetLabels() {
+            droppedLabels = { 'drop-ones': '', 'drop-tens': '', 'drop-hundreds': '' };
+            document.querySelectorAll('.drop-label-text').forEach(el => el.innerText = '');
+            document.querySelectorAll('.drop-column').forEach(el => el.style.borderColor = "var(--text-sub)");
+            document.getElementById('fb-game3').className = 'feedback-msg';
+        }
+
+
+        // --- Game 4 Logic (Re-using functions from Part 1) ---
+        // selectOption, checkGame, and resetGame already handle dynamic qNumbers and data-attributes!
+        // Just ensure the qNumbers are unique. I used 'g4q1', 'g4q2', 'g4q3' in HTML.
+        // Need slight modification to checkGame to handle string IDs properly if needed, but the previous logic is robust.
+        
+        // Modify selectOption for string IDs
+        function selectOption(btn, qNumber) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedOptions[qNumber] = btn.innerText.trim();
+            
+            const fb = document.getElementById(`fb-${qNumber}`);
+            if(fb) { fb.classList.remove('show'); fb.innerHTML = ''; }
+        }
+
+        function checkGame(gameId) {
+            const gameArea = document.getElementById(gameId);
+            const cards = gameArea.querySelectorAll('.question-card');
+            
+            cards.forEach((card) => {
+                const qNumber = card.querySelector('.q-options').querySelector('.opt-btn').onclick.toString().match(/'([^']+)'/)[1]; // Extracts qNumber dynamically
+                const correctAnswer = card.getAttribute('data-answer');
+                const fb = document.getElementById(`fb-${qNumber}`);
+                const buttons = card.querySelectorAll('.opt-btn');
+
+                buttons.forEach(btn => btn.classList.remove('correct', 'wrong'));
+
+                if (selectedOptions[qNumber] === correctAnswer) {
+                    buttons.forEach(btn => {
+                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
+                    });
+                    fb.className = 'feedback-msg show success';
+                    fb.innerHTML = '<i class="fas fa-check-circle"></i> Awesome! / Hebat!';
+                } else if (selectedOptions[qNumber]) {
+                    buttons.forEach(btn => {
+                        if (btn.innerText.trim() === selectedOptions[qNumber]) btn.classList.add('wrong');
+                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
+                    });
+                    fb.className = 'feedback-msg show error';
+                    fb.innerHTML = `<i class="fas fa-times-circle"></i> Oops! Correct is ${correctAnswer}. / Ups! Jawaban benar ${correctAnswer}.`;
+                } else {
+                    fb.className = 'feedback-msg show error';
+                    fb.innerHTML = '<i class="fas fa-exclamation-circle"></i> Select an answer. / Pilih jawaban.';
+                }
+            });
+        }
+
+        function resetGame(gameId) {
+            const gameArea = document.getElementById(gameId);
+            const cards = gameArea.querySelectorAll('.question-card');
+            
+            cards.forEach((card) => {
+                const qNumber = card.querySelector('.q-options').querySelector('.opt-btn').onclick.toString().match(/'([^']+)'/)[1];
+                const fb = document.getElementById(`fb-${qNumber}`);
+                const buttons = card.querySelectorAll('.opt-btn');
+                
+                buttons.forEach(btn => btn.classList.remove('selected', 'correct', 'wrong'));
+                fb.className = 'feedback-msg';
+                fb.innerHTML = '';
+                delete selectedOptions[qNumber];
+            });
+        }
+
+
+        // --- Game 5: Guided Practice Drag & Drop Blocks ---
+        let blockCounts = { 'col-h': 0, 'col-t': 0, 'col-o': 0 };
+
+        function dragBlock(e, val) {
+            e.dataTransfer.setData("text/plain", val);
+        }
+
+        function dropBlock(e, targetId) {
+            e.preventDefault();
+            var val = e.dataTransfer.getData("text/plain");
+            blockCounts[targetId]++;
+            
+            const target = document.getElementById(targetId);
+            const svgMap = {
+                '100': '<svg width="40" height="40" viewBox="0 0 80 80" class="dropped-item"><rect width="80" height="80" fill="#ff2d95" rx="3"/><text x="40" y="45" font-size="25" fill="white" text-anchor="middle">100</text></svg>',
+                '10': '<svg width="12" height="40" viewBox="0 0 20 80" class="dropped-item"><rect width="20" height="80" fill="#7b2ff7" rx="3"/></svg>',
+                '1': '<svg width="15" height="15" viewBox="0 0 30 30" class="dropped-item"><rect width="30" height="30" fill="#00f0ff"/></svg>'
+            };
+
+            // Append visual block
+            target.innerHTML += svgMap[val];
+        }
+
+        function checkGuided() {
+            const fb = document.getElementById('fb-game5');
+            const hVal = document.getElementById('exp-h').value.trim();
+            const tVal = document.getElementById('exp-t').value.trim();
+            const oVal = document.getElementById('exp-o').value.trim();
+
+            // Check blocks
+            let blockCorrect = (blockCounts['col-h'] === 2 && blockCounts['col-t'] === 6 && blockCounts['col-o'] === 3);
+            // Check inputs
+            let inputCorrect = (hVal === '200' && tVal === '60' && oVal === '3');
+
+            if(blockCorrect && inputCorrect) {
+                fb.className = 'feedback-msg show success';
+                fb.innerHTML = '<i class="fas fa-trophy"></i> Amazing Architect! You built 263 perfectly! / Arsitek Luar Biasa! Kamu membangun 263 dengan sempurna!';
+                document.getElementById('build-chart').style.borderColor = "var(--success)";
+            } else {
+                let hints = [];
+                if(!blockCorrect) hints.push("Check your blocks (Need 2 hundreds, 6 tens, 3 ones) / Cek blokmu (Butuh 2 ratusan, 6 puluhan, 3 satuan)");
+                if(!inputCorrect) hints.push("Check your expanded form (200 + 60 + 3) / Cek bentuk ekspansimu (200 + 60 + 3)");
+                
+                fb.className = 'feedback-msg show error';
+                fb.innerHTML = `<i class="fas fa-times-circle"></i> Not quite! ${hints.join(' & ')}.`;
+                document.getElementById('build-chart').style.borderColor = "var(--error)";
+            }
+        }
+
+        function resetGuided() {
+            blockCounts = { 'col-h': 0, 'col-t': 0, 'col-o': 0 };
+            
+            // Clear dropped blocks but keep headers
+            document.getElementById('col-h').innerHTML = '<div class="drop-column-header">Hundreds<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Ratusan</span></div>';
+            document.getElementById('col-t').innerHTML = '<div class="drop-column-header">Tens<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Puluhan</span></div>';
+            document.getElementById('col-o').innerHTML = '<div class="drop-column-header">Ones<br><span style="font-size:0.7em; font-weight:normal; color:var(--text-sub)">Satuan</span></div>';
+            
+            document.getElementById('exp-h').value = '';
+            document.getElementById('exp-t').value = '';
+            document.getElementById('exp-o').value = '';
+            
+            document.getElementById('build-chart').style.borderColor = "var(--neon-cyan)";
+            document.getElementById('fb-game5').className = 'feedback-msg';
+        }
+        // --- Game 6: Treasure Hunt Logic ---
+        let treasureOptions = {};
+
+        function selectTreasure(btn, qNum) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.treasure-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            treasureOptions[qNum] = btn.innerText.trim();
+            
+            const fb = document.getElementById(`tfb${qNum}`);
+            if(fb) { fb.innerText = ''; fb.style.color = ''; }
+        }
+
+        // We need to update the checkGame function from Part 1/2 slightly to handle the new Treasure Card HTML structure
+        function checkGame(gameId) {
+            const gameArea = document.getElementById(gameId);
+            const cards = gameArea.querySelectorAll('.treasure-card, .question-card'); // Select both types
+            
+            cards.forEach((card) => {
+                let qNumber = "";
+                let correctAnswer = card.getAttribute('data-answer');
+                let fb = null;
+                let buttons = [];
+
+                if (card.classList.contains('treasure-card')) {
+                    // Handle Treasure Hunt Cards
+                    qNumber = card.querySelector('.q-num').innerText.replace('Q', '');
+                    fb = document.getElementById(`tfb${qNumber}`);
+                    buttons = card.querySelectorAll('.treasure-btn');
+                    selectedOptions[qNumber] = treasureOptions[qNumber]; // Map to global checker
+                } else {
+                    // Handle Standard Question Cards (from Part 1 & 2)
+                    qNumber = card.querySelector('.q-options').querySelector('.opt-btn').onclick.toString().match(/'([^']+)'/)[1];
+                    fb = document.getElementById(`fb-${qNumber}`);
+                    buttons = card.querySelectorAll('.opt-btn');
+                }
+
+                buttons.forEach(btn => btn.classList.remove('correct', 'wrong'));
+
+                if (selectedOptions[qNumber] === correctAnswer) {
+                    buttons.forEach(btn => {
+                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
+                    });
+                    if(fb) { fb.className = 'treasure-fb'; fb.style.color = 'var(--success)'; fb.innerText = '✓ Correct!'; }
+                } else if (selectedOptions[qNumber]) {
+                    buttons.forEach(btn => {
+                        if (btn.innerText.trim() === selectedOptions[qNumber]) btn.classList.add('wrong');
+                        if (btn.innerText.trim() === correctAnswer) btn.classList.add('correct');
+                    });
+                    if(fb) { fb.className = 'treasure-fb'; fb.style.color = 'var(--error)'; fb.innerText = `✗ Answer: ${correctAnswer}`; }
+                } else {
+                    if(fb) { fb.className = 'treasure-fb'; fb.style.color = 'var(--error)'; fb.innerText = 'Must select!'; }
+                }
+            });
+        }
+
+
+        // --- Assessment Tab Logic ---
+        function openTab(evt, groupName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(groupName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // --- Assessment Checking Logic (Group 1 & 2) ---
+        const answerKeys = {
+            'Group1': {
+                'g1q1': { type: 'radio', answer: '500', hint: '5 is in the hundreds place (5x100=500)' },
+                'g1q2': { type: 'select', answer: '738', hint: '700+30+8 equals 738' },
+                'g1q3': { type: 'text', answer: '624', hint: '6 hundreds=600, 2 tens=20, 4 ones=4' },
+                'g1q4': { type: 'checkbox', answer: ['30_tens', '300_ones'], hint: '3 hundreds = 30 tens = 300 ones' },
+                'g1q5': { type: 'radio', answer: '900', hint: '9 is in the hundreds place (9x100=900)' },
+                'g1q6': { type: 'select', answer: '405', hint: '400 + 0 + 5 = 405' },
+                'g1q7': { type: 'text', answer: '7', hint: 'The middle digit is the tens place' },
+                'g1q8': { type: 'radio', answer: '642', hint: '600 + 40 + 2 = 642' },
+                'g1q9': { type: 'checkbox', answer: ['704', '901'], hint: '704 has 0 tens, 901 has 0 tens' },
+                'g1q10': { type: 'text', answer: '140', hint: '14 tens = 10 tens + 4 tens = 100 + 40 = 140' }
+            },
+            'Group2': {
+                'g2q1': { type: 'radio', answer: '891', hint: 'Replace 4 with 9 in tens place: 800+90+1' },
+                'g2q2': { type: 'select', answer: '225', hint: 'Between 200-300, tens is 2, ones is 5' },
+                'g2q3': { type: 'text', answer: '10', hint: '10 hundreds make 1000' },
+                'g2q4': { type: 'checkbox', answer: ['600+50+0', '65_tens'], hint: '650 is 600+50 and 65x10' },
+                'g2q5': { type: 'radio', answer: '20', hint: '2 is in the tens place (2x10=20)' },
+                'g2q6': { type: 'select', answer: '624', hint: '12 tens = 120. 500+120+4 = 624' },
+                'g2q7': { type: 'radio', answer: 'Yes', hint: 'Addition order doesn\'t change the total' },
+                'g2q8': { type: 'radio', answer: '329', hint: '300+20+9 = 329' },
+                'g2q9': { type: 'checkbox', answer: ['501', '600'], hint: '501 and 600 are > 500' },
+                'g2q10': { type: 'text', answer: '332', hint: '342 - 10 = 332' }
+            }
+        };
+
+        function checkAssessment(groupName) {
+            const answers = answerKeys[groupName];
+            let score = 0;
+            const totalQ = Object.keys(answers).length;
+
+            for(let qId in answers) {
+                const qData = answers[qId];
+                const fbEl = document.getElementById(`fb-${qId}`);
+                let studentAnswer = '';
+                let isCorrect = false;
+
+                fbEl.className = 'assess-fb'; // reset
+
+                if(qData.type === 'radio') {
+                    const sel = document.querySelector(`input[name="${qId}"]:checked`);
+                    studentAnswer = sel ? sel.value : "";
+                    isCorrect = studentAnswer === qData.answer;
+                } 
+                else if(qData.type === 'select' || qData.type === 'text') {
+                    studentAnswer = document.getElementById(qId).value.trim();
+                    isCorrect = studentAnswer === qData.answer;
+                }
+                else if(qData.type === 'checkbox') {
+                    const checkedBoxes = document.querySelectorAll(`input[name="${qId}"]:checked`);
+                    studentAnswer = Array.from(checkedBoxes).map(cb => cb.value);
+                    isCorrect = studentAnswer.length === qData.answer.length && qData.answer.every(a => studentAnswer.includes(a));
+                }
+
+                if(isCorrect) {
+                    score++;
+                    fbEl.innerHTML = `<i class="fas fa-check-circle"></i> Correct!`;
+                    fbEl.classList.add('show', 'success');
+                } else {
+                    fbEl.innerHTML = `<i class="fas fa-times-circle"></i> Incorrect. Hint: ${qData.hint}`;
+                    fbEl.classList.add('show', 'error');
+                }
+            }
+
+            alert(`Score for ${groupName}: ${score}/${totalQ}`);
+        }
+
+        // Tambahkan ini di dalam const answerKeys = { ... }
+        // Sehingga menjadi answerKeys = { Group1: {...}, Group2: {...}, Group3: {...}, dst... }
+        'Group3': {
+            'g3q1': { type: 'radio', answer: '80', hint: '8 is in the tens place (8x10=80)' },
+            'g3q2': { type: 'select', answer: '542', hint: '500+40+2 equals 542' },
+            'g3q3': { type: 'text', answer: '915', hint: '900+10+5 = 915' },
+            'g3q4': { type: 'checkbox', answer: ['4_hundreds', '40_tens'], hint: '4 hundreds = 40 tens = 400' },
+            'g3q5': { type: 'radio', answer: '9', hint: 'The rightmost digit is the ones place' },
+            'g3q6': { type: 'select', answer: '407', hint: '400 + 0 + 7 = 407' },
+            'g3q7': { type: 'text', answer: '445', hint: '345 + 100 = 445' },
+            'g3q8': { type: 'radio', answer: '803', hint: '800 + 0 + 3 = 803' },
+            'g3q9': { type: 'checkbox', answer: ['352', '259'], hint: '352 has 5 tens, 259 has 5 tens' },
+            'g3q10': { type: 'text', answer: '230', hint: '23 tens = 23 x 10 = 230' }
+        },
+        'Group4': {
+            'g4q1': { type: 'radio', answer: '400', hint: '4 is in the hundreds place (4x100=400)' },
+            'g4q2': { type: 'select', answer: '199', hint: '100+90+9 equals 199' },
+            'g4q3': { type: 'text', answer: '703', hint: '700 + 0 + 3 = 703' },
+            'g4q4': { type: 'checkbox', answer: ['25_tens', '200+50+0'], hint: '25x10=250 and 200+50=250' },
+            'g4q5': { type: 'radio', answer: '9', hint: '9 is the leftmost digit (Hundreds)' },
+            'g4q6': { type: 'select', answer: '560', hint: '500 + 60 + 0 = 560' },
+            'g4q7': { type: 'text', answer: '805', hint: '815 - 10 = 805' },
+            'g4q8': { type: 'radio', answer: '320', hint: '300 + 20 + 0 = 320' },
+            'g4q9': { type: 'checkbox', answer: ['150', '199'], hint: '150 and 199 are smaller than 200' },
+            'g4q10': { type: 'text', answer: '10', hint: '10 tens make 100' }
+        },
+        'Group5': {
+            'g5q1': { type: 'select', answer: 'Hundreds', hint: '5 is in the leftmost place' },
+            'g5q2': { type: 'select', answer: 'Tens', hint: '3 is in the middle place' },
+            'g5q3': { type: 'select', answer: 'Ones', hint: '2 is in the rightmost place' },
+            'g5q4': { type: 'radio', answer: '670', hint: '600 + 70 + 0 = 670' },
+            'g5q5': { type: 'text', answer: '309', hint: '299 + 10 = 309' },
+            'g5q6': { type: 'checkbox', answer: ['10_hundreds', '1000_ones'], hint: '10x100=1000 and 1000x1=1000' },
+            'g5q7': { type: 'radio', answer: '800+40+4', hint: 'Expanded form breaks down each digit' },
+            'g5q8': { type: 'select', answer: '909', hint: '900 + 0 + 9 = 909' },
+            'g5q9': { type: 'text', answer: '132', hint: '1 hundred, 3 tens, 2 ones' },
+            'g5q10': { type: 'radio', answer: '980', hint: '980 is greater than 890 and 809' }
+        }
+    };
+
+    // Ganti fungsi printAssessment yang lama dengan ini:
+    function printAssessment(groupName) {
+        const name = document.getElementById('studentName').value || 'No Name';
+        const date = document.getElementById('assessDate').value || 'No Date';
+        const answers = answerKeys[groupName];
+        let score = 0;
+        const totalQ = Object.keys(answers).length;
+
+        // Buat HTML untuk Pop-up Window Print
+        let printHTML = `
+        <html>
+        <head>
+            <title>Assessment Report - ${groupName}</title>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #1e293b; }
+                h1 { color: #7b2ff7; border-bottom: 2px solid #7b2ff7; padding-bottom: 10px; }
+                .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 1.1rem; background: #f8fafc; padding: 15px; border-radius: 8px;}
+                .q-block { margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+                .q-text { font-weight: 600; margin-bottom: 8px; }
+                .correct { color: #16a34a; font-weight: bold; }
+                .incorrect { color: #dc2626; font-weight: bold; }
+                .student-ans { font-weight: bold; }
+                .key-ans { color: #16a34a; font-weight: bold; }
+                .score-box { text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border: 2px solid #7b2ff7; border-radius: 12px; }
+                .score-num { font-size: 2rem; font-weight: 800; color: #7b2ff7; }
+            </style>
+        </head>
+        <body>
+            <h1>Assessment Report: ${groupName}</h1>
+            <div class="header-info">
+                <div><strong>Student Name:</strong> ${name}</div>
+                <div><strong>Date:</strong> ${date}</div>
+            </div>
+        `;
+
+        let qNum = 1;
+        for(let qId in answers) {
+            const qData = answers[qId];
+            // Ambil teks soal dari DOM
+            const qTextEl = document.getElementById(qId)?.closest('.assess-q')?.querySelector('.assess-q-text');
+            const qText = qTextEl ? qTextEl.innerText : `Question ${qNum}`;
+
+            let studentAnswer = '';
+            let isCorrect = false;
+
+            if(qData.type === 'radio') {
+                const sel = document.querySelector(`input[name="${qId}"]:checked`);
+                studentAnswer = sel ? sel.value : "Unanswered";
+                isCorrect = studentAnswer === qData.answer;
+            } else if(qData.type === 'select' || qData.type === 'text') {
+                studentAnswer = document.getElementById(qId).value.trim() || "Unanswered";
+                isCorrect = studentAnswer === qData.answer;
+            } else if(qData.type === 'checkbox') {
+                const checkedBoxes = document.querySelectorAll(`input[name="${qId}"]:checked`);
+                studentAnswer = checkedBoxes.length > 0 ? Array.from(checkedBoxes).map(cb => cb.value).join(', ') : "Unanswered";
+                isCorrect = qData.answer.every(a => studentAnswer.includes(a)) && checkedBoxes.length === qData.answer.length;
+            }
+
+            if(isCorrect) score++;
+
+            const correctAnswerStr = Array.isArray(qData.answer) ? qData.answer.join(', ') : qData.answer;
+            const statusClass = isCorrect ? 'correct' : 'incorrect';
+            const statusText = isCorrect ? 'Correct' : 'Incorrect';
+
+            printHTML += `
+            <div class="q-block">
+                <div class="q-text">${qNum}. ${qText}</div>
+                <div>Your Answer: <span class="student-ans ${statusClass}">${studentAnswer} (${statusText})</span></div>
+                ${!isCorrect ? `<div>Correct Answer: <span class="key-ans">${correctAnswerStr}</span></div>` : ''}
+            </div>
+            `;
+            qNum++;
+        }
+
+        printHTML += `
+            <div class="score-box">
+                <h2>Final Score</h2>
+                <div class="score-num">${score} / ${totalQ}</div>
+            </div>
+        </body>
+        </html>
+        `;
+
+        // Buka window baru dan print
+        const printWindow = window.open('', '_blank', 'height=600,width=800');
+        printWindow.document.write(printHTML);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(function() {
+            printWindow.print();
+        }, 500);
+    }
+    </script>
+</body>
+</html>
