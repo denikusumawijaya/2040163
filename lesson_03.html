@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutoring - Harvest Moon Theme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --hm-green: #8FBC8F;
+            --hm-dark-green: #556B2F;
+            --hm-brown: #8B4513;
+            --hm-light-brown: #D2B48C;
+            --hm-gold: #FFD700;
+            --hm-sky: #87CEEB;
+            --hm-soil: #5C4033;
+            --hm-white: #FFF8DC;
+            --hm-red: #CD5C5C;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f0f4f0;
+            background-image: radial-gradient(#556B2F 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .pixel-font {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--hm-dark-green);
+            text-shadow: 2px 2px 0px var(--hm-light-brown);
+        }
+
+        .math-font { font-family: 'Times New Roman', serif; font-style: italic; font-weight: bold; font-size: 1.2em; }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: var(--hm-white);
+            border: 4px solid var(--hm-brown);
+            border-radius: 15px;
+            box-shadow: 10px 10px 0px var(--hm-dark-green);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(180deg, var(--hm-sky) 0%, #B0E0E6 100%);
+            padding: 20px;
+            border-bottom: 4px solid var(--hm-brown);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sun {
+            position: absolute; top: -20px; right: -20px;
+            width: 100px; height: 100px;
+            background: var(--hm-gold);
+            border-radius: 50%;
+            box-shadow: 0 0 40px var(--hm-gold);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+
+        .header-content { position: relative; z-index: 2; }
+        .header-title { font-size: 1.5rem; color: var(--hm-brown); margin-bottom: 10px; }
+        .header-info { font-size: 0.9rem; color: var(--hm-dark-green); background: rgba(255,255,255,0.7); display: inline-block; padding: 5px 15px; border-radius: 20px; border: 2px solid var(--hm-green); margin: 5px; }
+        
+        /* Class Rules */
+        .rules-box {
+            background: var(--hm-light-brown);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-bottom: 2px dashed var(--hm-brown);
+        }
+        .rule-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: bold; color: var(--hm-soil); }
+        .rule-item i { color: var(--hm-red); }
+
+        /* Sections */
+        .section {
+            padding: 30px;
+            border-bottom: 4px dashed var(--hm-green);
+            position: relative;
+        }
+        .section:last-child { border-bottom: none; }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: var(--hm-green);
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
+        }
+        .section-title { font-size: 1rem; margin: 0; color: white; text-shadow: 1px 1px 0 var(--hm-dark-green); }
+        .timer { background: var(--hm-brown); padding: 5px 10px; border-radius: 15px; font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--hm-gold); }
+
+        /* Content Styles */
+        .bilingual { margin-bottom: 15px; }
+        .bilingual p { margin-bottom: 5px; }
+        .translate { font-size: 0.85em; color: #666; font-style: italic; }
+
+        .visual-box {
+            background: white;
+            border: 2px solid var(--hm-green);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        /* Interactive Games */
+        .game-area {
+            background: #E8F5E9;
+            border: 3px solid var(--hm-dark-green);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+        .game-title { font-size: 0.9rem; color: var(--hm-brown); text-align: center; margin-bottom: 15px; }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Quicksand';
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn-check { background: var(--hm-green); color: white; border: 2px solid var(--hm-dark-green); }
+        .btn-reset { background: var(--hm-light-brown); color: var(--hm-soil); border: 2px solid var(--hm-brown); }
+        .btn-submit-assess { background: var(--hm-brown); color: white; }
+        .btn-print { background: var(--hm-dark-green); color: white; }
+        
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+
+        /* Specific Game Elements */
+        .place-value-table { width: 100%; border-collapse: collapse; margin: 10px auto; }
+        .place-value-table th { background: var(--hm-dark-green); color: white; padding: 10px; border: 2px solid white; }
+        .place-value-table td { background: white; border: 2px solid var(--hm-green); padding: 10px; text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--hm-brown); }
+
+        .alligator-container { display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 2rem; font-weight: bold; margin: 15px 0; }
+        .gator-sign { font-size: 3rem; color: var(--hm-dark-green); transition: transform 0.3s; }
+        
+        .drag-container { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 10px 0; min-height: 60px; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 10px; border: 2px dashed var(--hm-green); }
+        .drag-item {
+            background: var(--hm-gold);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--hm-brown);
+            cursor: grab;
+            user-select: none;
+            font-weight: bold;
+            color: var(--hm-soil);
+        }
+        .drag-item:active { cursor: grabbing; }
+        
+        .drop-zone {
+            display: inline-block; width: 60px; height: 45px; border: 2px dashed var(--hm-brown);
+            background: rgba(255,255,255,0.8); margin: 0 5px; border-radius: 5px; text-align: center; line-height: 45px; vertical-align: middle;
+        }
+        .drop-zone.drag-over { background: #e0e0e0; border-style: solid; }
+        .drop-zone.filled { background: #fff; border-style: solid; }
+
+        .quiz-item { margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px; }
+        .quiz-item.correct { border: 2px solid green; background: #e8ffe8; }
+        .quiz-item.wrong { border: 2px solid red; background: #ffe8e8; animation: shake 0.3s; }
+        .feedback { font-size: 0.85rem; margin-top: 5px; font-weight: bold; }
+        .feedback.correct-fb { color: green; }
+        .feedback.wrong-fb { color: red; }
+
+        input[type="text"], select {
+            padding: 5px 10px; border: 2px solid var(--hm-green); border-radius: 5px; font-family: 'Quicksand'; font-weight: bold;
+        }
+
+        /* Assessment Tabs */
+        .tabs { display: flex; border-bottom: 2px solid var(--hm-brown); }
+        .tab-btn {
+            padding: 10px 20px; background: var(--hm-light-brown); border: none; cursor: pointer; font-family: 'Press Start 2P'; font-size: 0.7rem; border-radius: 10px 10px 0 0; margin-right: 5px;
+        }
+        .tab-btn.active { background: var(--hm-brown); color: white; }
+        .tab-content { display: none; padding: 20px; background: #fff; border: 2px solid var(--hm-brown); border-top: none; }
+        .tab-content.active { display: block; }
+
+        .assessment-header { display: flex; justify-content: space-between; background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; }
+            .container { box-shadow: none; border: none; }
+            header, .rules-box, .section, .tab-btn, .btn, .no-print { display: none !important; }
+            .tab-content { display: block !important; border: none; page-break-inside: avoid; }
+            .assessment-section { display: block !important; }
+            #printArea { display: block !important; }
+        }
+        
+        #printArea { display: none; margin-top: 20px; font-size: 12pt; }
+        .print-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .print-table th, .print-table td { border: 1px solid black; padding: 8px; text-align: left; }
+        .print-table th { background: #eee; }
+
+        /* Custom Icons/SVGs */
+        .veggie-icon { display: inline-block; width: 24px; height: 24px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="sun"></div>
+        <div class="header-content">
+            <h1 class="header-title pixel-font">MATH TUTORING 🧮</h1>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                <div class="header-info"><i class="fas fa-book"></i> Topic: Comparing & Ordering Numbers to 1000</div>
+                <div class="header-info"><i class="fas fa-user-tie"></i> Tutor: Deni</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="rules-box no-print">
+        <div class="rule-item"><i class="fas fa-comments"></i> Take turns speaking / Berbicara secara bergantian</div>
+        <div class="rule-item"><i class="fas fa-door-open"></i> Ask permission to leave Zoom / Minta izin jika mau pergi (toilet/minum)</div>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-seedling"></i> 1. Spiral Review Warm-up</h2>
+            <div class="timer">00:00 - 00:10</div>
+        </div>
+        <div class="bilingual">
+            <p><strong>Place Value Recap:</strong> Every digit in a number has a value based on its position. The three main rooms are Hundreds (H), Tens (T), and Ones (O).</p>
+            <p class="translate"><strong>Review Nilai Tempat:</strong> Setiap angka memiliki nilai berdasarkan posisinya. Tiga ruangan utama adalah Ratusan (H), Puluhan (T), dan Satuan (O).</p>
+        </div>
+
+        <div class="visual-box">
+            <svg width="300" height="100" viewBox="0 0 300 100">
+                <rect x="10" y="20" width="80" height="60" fill="#556B2F" stroke="#333" stroke-width="2"/>
+                <text x="50" y="45" fill="#FFD700" font-family="Press Start 2P" font-size="10" text-anchor="middle">H</text>
+                <text x="50" y="65" fill="#FFF" font-family="Quicksand" font-size="20" font-weight="bold" text-anchor="middle">7</text>
+                
+                <rect x="110" y="20" width="80" height="60" fill="#8FBC8F" stroke="#333" stroke-width="2"/>
+                <text x="150" y="45" fill="#333" font-family="Press Start 2P" font-size="10" text-anchor="middle">T</text>
+                <text x="150" y="65" fill="#FFF" font-family="Quicksand" font-size="20" font-weight="bold" text-anchor="middle">3</text>
+                
+                <rect x="210" y="20" width="80" height="60" fill="#D2B48C" stroke="#333" stroke-width="2"/>
+                <text x="250" y="45" fill="#333" font-family="Press Start 2P" font-size="10" text-anchor="middle">O</text>
+                <text x="250" y="65" fill="#FFF" font-family="Quicksand" font-size="20" font-weight="bold" text-anchor="middle">2</text>
+                
+                <text x="150" y="95" fill="#556B2F" font-family="Quicksand" font-size="14" font-weight="bold" text-anchor="middle">= 732</text>
+            </svg>
+        </div>
+
+        <div class="game-area" id="game1">
+            <div class="game-title pixel-font">🌱 Quick Quest: Place Value</div>
+            
+            <div class="quiz-item" id="q1_1">
+                1. In the number <span class="math-font">805</span>, what is the value of the digit 8?<br>
+                <select id="ans1_1"><option value="">Select...</option><option value="8">8</option><option value="80">80</option><option value="800">800</option></select>
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q1_2">
+                2. Combine <span class="math-font">400 + 50 + 8</span> into a single number.<br>
+                <input type="text" id="ans1_2" placeholder="Type number...">
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q1_3">
+                3. Which is bigger, <span class="math-font">12</span> or <span class="math-font">19</span>?<br>
+                <select id="ans1_3"><option value="">Select...</option><option value="12">12</option><option value="19">19</option></select>
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q1_4">
+                4. Solve: <span class="math-font">15 - 5</span> = <input type="text" id="ans1_4" size="5">
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q1_5">
+                5. Solve: <span class="math-font">10 + 7</span> = <input type="text" id="ans1_5" size="5">
+                <div class="feedback"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-check" onclick="checkGame1()"><i class="fas fa-check-circle"></i> Check</button>
+                <button class="btn btn-reset" onclick="resetGame1()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-store"></i> 2. Introduction & Real-World Connection</h2>
+            <div class="timer">00:10 - 00:15</div>
+        </div>
+        <div class="bilingual">
+            <p><strong>The Alligator Mouth:</strong> When comparing numbers, we use the greater than (<span class="math-font">&gt;</span>) and less than (<span class="math-font">&lt;</span>) symbols. Think of them as an alligator's mouth that always wants to eat the BIGGER number!</p>
+            <p class="translate"><strong>Mulut Buaya:</strong> Saat membandingkan angka, kita menggunakan tanda lebih besar dari (<span class="math-font">&gt;</span>) dan kurang dari (<span class="math-font">&lt;</span>). Bayangkan itu adalah mulut buaya yang selalu ingin memakan angka yang LEBIH BESAR!</p>
+        </div>
+        
+        <div class="visual-box">
+            <div class="alligator-container">
+                <span>450</span>
+                <span class="gator-sign" style="transform: rotate(180deg);">&#x1F40A;</span>
+                <span>540</span>
+            </div>
+            <p style="text-align:center; font-weight:bold; color:var(--hm-dark-green);">The alligator eats 540 because it's bigger! / Buaya memakan 540 karena lebih besar!</p>
+        </div>
+
+        <div class="game-area" id="game2">
+            <div class="game-title pixel-font">🛒 Market Compare</div>
+            <p style="text-align:center; margin-bottom:15px;">Click the BIGGER number to feed the alligator!</p>
+            <div id="g2_questions"></div>
+            <div class="btn-group">
+                <button class="btn btn-check" onclick="checkGame2()"><i class="fas fa-check-circle"></i> Check</button>
+                <button class="btn btn-reset" onclick="resetGame2()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-home"></i> 3. Review of Prior Knowledge - Hundreds</h2>
+            <div class="timer">00:15 - 00:20</div>
+        </div>
+        <div class="bilingual">
+            <p><strong>The "Biggest Room" Rule:</strong> When comparing two 3-digit numbers, ALWAYS look at the Hundreds place first. The number with the bigger digit in the Hundreds place is the bigger number, no matter what the Tens and Ones are!</p>
+            <p class="translate"><strong>Aturan "Ruangan Terbesar":</strong> Saat membandingkan dua angka 3-digit, SELALU lihat tempat Ratusan terlebih dahulu. Angka dengan digit lebih besar di Ratusan adalah angka yang lebih besar, terlepas dari Puluhan dan Satuannya!</p>
+        </div>
+
+        <div class="game-area" id="game3">
+            <div class="game-title pixel-font">🏘️ Hundreds Room Rule</div>
+            <p style="text-align:center; margin-bottom:15px;">Drag the correct symbol (<span class="math-font">&gt;</span>, <span class="math-font">&lt;</span>, <span class="math-font">=</span>) into the box.</p>
+            
+            <div class="drag-container" id="dragBank3">
+                <div class="drag-item" draggable="true" data-value=">">&gt;</div>
+                <div class="drag-item" draggable="true" data-value="<">&lt;</div>
+                <div class="drag-item" draggable="true" data-value="=">=</div>
+            </div>
+
+            <div id="g3_questions"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-check" onclick="checkGame3()"><i class="fas fa-check-circle"></i> Check</button>
+                <button class="btn btn-reset" onclick="resetGame3()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-search"></i> 4. Problem Introduction - Tens & Ones</h2>
+            <div class="timer">00:20 - 00:30</div>
+        </div>
+        <div class="bilingual">
+            <p><strong>What if Hundreds are the same?</strong> If the hundreds digits are equal, move to the next room: the Tens. If Tens are also equal, move to the Ones. If all digits are the same, the numbers are equal (<span class="math-font">=</span>).</p>
+            <p class="translate"><strong>Bagaimana jika Ratusannya sama?</strong> Jika digit ratusannya sama, pindah ke ruangan berikutnya: Puluhan. Jika Puluhan juga sama, pindah ke Satuan. Jika semua digit sama, angkanya sama (<span class="math-font">=</span>).</p>
+        </div>
+
+        <div class="visual-box">
+            <table class="place-value-table">
+                <tr><th>Number</th><th>Hundreds</th><th>Tens</th><th>Ones</th></tr>
+                <tr><td>456</td><td style="background:#e8ffe8">4</td><td style="background:#ffe8e8">5</td><td>6</td></tr>
+                <tr><td>482</td><td style="background:#e8ffe8">4</td><td style="background:#ffe8e8">8</td><td>2</td></tr>
+            </table>
+            <p style="margin-top:10px;">Hundreds are the same (4). Move to Tens: <strong>8 is bigger than 5</strong>. So, 482 <span class="math-font">&gt;</span> 456.</p>
+        </div>
+
+        <div class="game-area" id="game4">
+            <div class="game-title pixel-font">🕵️ Step-by-Step Detective</div>
+            <p style="text-align:center; margin-bottom:15px;">Fill in the blanks with <span class="math-font">&gt;</span>, <span class="math-font">&lt;</span>, or <span class="math-font">=</span></p>
+            
+            <div id="g4_questions"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-check" onclick="checkGame4()"><i class="fas fa-check-circle"></i> Check</button>
+                <button class="btn btn-reset" onclick="resetGame4()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-sort-amount-up"></i> 5. Guided Practice - Ordering</h2>
+            <div class="timer">00:30 - 00:45</div>
+        </div>
+        <div class="bilingual">
+            <p><strong>Ascending & Descending:</strong> Arranging numbers from Smallest to Biggest is called Ascending order. Arranging from Biggest to Smallest is Descending order. Always compare hundreds first, then tens, then ones!</p>
+            <p class="translate"><strong>Urutan Naik & Turun:</strong> Mengurutkan angka dari Terkecil ke Terbesar disebut urutan Ascending. Dari Terbesar ke Terkecil disebut Descending. Selalu bandingkan ratusan dulu, lalu puluhan, lalu satuan!</p>
+        </div>
+
+        <div class="game-area" id="game5">
+            <div class="game-title pixel-font">🚜 Harvest Tractor Ordering (Drag to sort)</div>
+            
+            <div style="margin-bottom:20px;">
+                <p><strong>1. Ascending (Smallest to Biggest)</strong></p>
+                <div class="drag-container" id="sortBank1" style="min-height:60px;"></div>
+                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:10px;">
+                    Drop here: 
+                    <div class="drop-zone" id="sort1_1" data-pos="0"></div>
+                    <div class="drop-zone" id="sort1_2" data-pos="1"></div>
+                    <div class="drop-zone" id="sort1_3" data-pos="2"></div>
+                    <div class="drop-zone" id="sort1_4" data-pos="3"></div>
+                </div>
+                <div class="feedback" id="fb_sort1"></div>
+            </div>
+
+            <div>
+                <p><strong>2. Descending (Biggest to Smallest)</strong></p>
+                <div class="drag-container" id="sortBank2" style="min-height:60px;"></div>
+                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:10px;">
+                    Drop here: 
+                    <div class="drop-zone" id="sort2_1" data-pos="0"></div>
+                    <div class="drop-zone" id="sort2_2" data-pos="1"></div>
+                    <div class="drop-zone" id="sort2_3" data-pos="2"></div>
+                    <div class="drop-zone" id="sort2_4" data-pos="3"></div>
+                </div>
+                <div class="feedback" id="fb_sort2"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-check" onclick="checkGame5()"><i class="fas fa-check-circle"></i> Check</button>
+                <button class="btn btn-reset" onclick="resetGame5()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 6 -->
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-puzzle-piece"></i> 6. Independent Practice - Riddles</h2>
+            <div class="timer">00:45 - 00:55</div>
+        </div>
+        <div class="bilingual">
+            <p><strong>Number Riddles:</strong> Use the clues about range and place value to find the mystery number. Read carefully!</p>
+            <p class="translate"><strong>Teka-teki Angka:</strong> Gunakan petunjuk tentang rentang dan nilai tempat untuk menemukan angka misteri. Baca dengan teliti!</p>
+        </div>
+
+        <div class="game-area" id="game6">
+            <div class="game-title pixel-font">📜 Logic Riddles</div>
+            
+            <div class="quiz-item" id="q6_1">
+                1. I am a number between 450 and 460. My last digit is 5. What am I?<br>
+                <input type="text" id="ans6_1" size="10">
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q6_2">
+                2. I am bigger than 700 but smaller than 710. My ones digit is 2. What number am I?<br>
+                <input type="text" id="ans6_2" size="10">
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q6_3">
+                3. I have 4 in the hundreds place. I am between 420 and 430. I am an even number that ends in 6. Who am I?<br>
+                <input type="text" id="ans6_3" size="10">
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q6_4">
+                4. True or False: <span class="math-font">8 hundreds + 2 tens</span> is greater than <span class="math-font">7 hundreds + 12 tens</span>?<br>
+                <select id="ans6_4"><option value="">Select...</option><option value="true">True</option><option value="false">False</option></select>
+                <div class="feedback"></div>
+            </div>
+            <div class="quiz-item" id="q6_5">
+                5. What is the largest 3-digit number you can make using digits 1, 9, and 5?<br>
+                <input type="text" id="ans6_5" size="10">
+                <div class="feedback"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-check" onclick="checkGame6()"><i class="fas fa-check-circle"></i> Check</button>
+                <button class="btn btn-reset" onclick="resetGame6()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 7: ASSESSMENT -->
+    <div class="section assessment-section">
+        <div class="section-header" style="background: var(--hm-brown);">
+            <h2 class="section-title" style="color: var(--hm-gold);"><i class="fas fa-clipboard-check"></i> Assessment</h2>
+            <div class="timer">00:55 - 01:00</div>
+        </div>
+
+        <div class="assessment-header">
+            <div>
+                <label><strong>Name / Nama:</strong></label><br>
+                <input type="text" id="studentName" style="width: 200px;">
+            </div>
+            <div>
+                <label><strong>Date / Tanggal:</strong></label><br>
+                <input type="date" id="studentDate">
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'Tab1')">Group 1</button>
+            <button class="tab-btn" onclick="openTab(event, 'Tab2')">Group 2</button>
+            <button class="tab-btn" onclick="openTab(event, 'Tab3')">Group 3</button>
+            <button class="tab-btn" onclick="openTab(event, 'Tab4')">Group 4</button>
+            <button class="tab-btn" onclick="openTab(event, 'Tab5')">Group 5</button>
+        </div>
+
+        <div id="Tab1" class="tab-content active">
+            <div id="assess_g1"></div>
+            <div class="btn-group">
+                <button class="btn btn-submit-assess" onclick="submitAssess(1)"><i class="fas fa-paper-plane"></i> Submit Group 1</button>
+                <button class="btn btn-print" onclick="printAssess(1)"><i class="fas fa-print"></i> Print</button>
+            </div>
+        </div>
+        <div id="Tab2" class="tab-content">
+            <div id="assess_g2"></div>
+            <div class="btn-group">
+                <button class="btn btn-submit-assess" onclick="submitAssess(2)"><i class="fas fa-paper-plane"></i> Submit Group 2</button>
+                <button class="btn btn-print" onclick="printAssess(2)"><i class="fas fa-print"></i> Print</button>
+            </div>
+        </div>
+        <div id="Tab3" class="tab-content">
+            <div id="assess_g3"></div>
+            <div class="btn-group">
+                <button class="btn btn-submit-assess" onclick="submitAssess(3)"><i class="fas fa-paper-plane"></i> Submit Group 3</button>
+                <button class="btn btn-print" onclick="printAssess(3)"><i class="fas fa-print"></i> Print</button>
+            </div>
+        </div>
+        <div id="Tab4" class="tab-content">
+            <div id="assess_g4"></div>
+            <div class="btn-group">
+                <button class="btn btn-submit-assess" onclick="submitAssess(4)"><i class="fas fa-paper-plane"></i> Submit Group 4</button>
+                <button class="btn btn-print" onclick="printAssess(4)"><i class="fas fa-print"></i> Print</button>
+            </div>
+        </div>
+        <div id="Tab5" class="tab-content">
+            <div id="assess_g5"></div>
+            <div class="btn-group">
+                <button class="btn btn-submit-assess" onclick="submitAssess(5)"><i class="fas fa-paper-plane"></i> Submit Group 5</button>
+                <button class="btn btn-print" onclick="printAssess(5)"><i class="fas fa-print"></i> Print</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 8: REFLECTION -->
+    <div class="section" style="background: var(--hm-sky); border-bottom: none;">
+        <div class="section-header" style="background: var(--hm-dark-green);">
+            <h2 class="section-title"><i class="fas fa-star"></i> Consolidation & Reflection</h2>
+            <div class="timer">End of Class</div>
+        </div>
+        <div class="bilingual">
+            <p style="text-align:center; font-size:1.2rem;"><strong>Great job today, Detective! 🌟</strong></p>
+            <p style="text-align:center;">Remember: Always check the Hundreds first! Tomorrow, we'll use these skills for addition.</p>
+            <p class="translate" style="text-align:center;">Ingat: Selalu periksa Ratusan terlebih dahulu! Besok, kita akan menggunakan keterampilan ini untuk penjumlahan.</p>
+        </div>
+        <div style="text-align:center; margin-top:20px;">
+            <a href="https://learn.algonova.id/login" target="_blank" class="btn btn-check" style="font-size:1.2rem; padding:15px 30px; text-decoration:none;">
+                <i class="fas fa-gift"></i> Get Rewards & Homework at learn.algonova.id
+            </a>
+        </div>
+    </div>
+
+    <div id="printArea">
+        <h2 style="text-align:center;">Assessment Results</h2>
+        <div id="printContent"></div>
+    </div>
+
+</div>
+
+<script>
+// --- Utility Functions ---
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// --- Section 1 Logic ---
+function checkGame1() {
+    const answers = { ans1_1: "800", ans1_2: "458", ans1_3: "19", ans1_4: "10", ans1_5: "17" };
+    const solutions = { ans1_1: "Value of 8 in Hundreds place is 800.", ans1_2: "400+50+8 = 458.", ans1_3: "19 is bigger than 12.", ans1_4: "15-5=10.", ans1_5: "10+7=17." };
+    let score = 0;
+    for(let id in answers) {
+        const el = document.getElementById(id);
+        const fb = el.parentElement.querySelector('.feedback');
+        if(el.value.trim() === answers[id]) {
+            el.parentElement.classList.add('correct');
+            el.parentElement.classList.remove('wrong');
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
+            score++;
+        } else {
+            el.parentElement.classList.add('wrong');
+            el.parentElement.classList.remove('correct');
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Wrong. Solution: ${solutions[id]}</span>`;
+        }
+    }
+}
+function resetGame1() {
+    const ids = ['ans1_1','ans1_2','ans1_3','ans1_4','ans1_5'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        el.value = el.tagName === 'SELECT' ? '' : '';
+        el.parentElement.classList.remove('correct', 'wrong');
+        el.parentElement.querySelector('.feedback').innerHTML = '';
+    });
+}
+
+// --- Section 2 Logic ---
+const g2Pairs = [
+    [320, 250], [810, 890], [550, 550], [499, 500], [678, 670]
+];
+let g2Scores = Array(5).fill(false);
+
+window.onload = function() {
+    // Init Game 2
+    let html2 = '';
+    g2Pairs.forEach((pair, i) => {
+        html2 += `<div class="quiz-item" id="q2_${i}" style="display:flex; justify-content:center; gap:20px; align-items:center;">
+            <button class="btn" style="background:#FFD700; border:2px solid #8B4513;" onclick="selG2(${i}, 0)">${pair[0]}</button>
+            <span class="math-font">OR</span>
+            <button class="btn" style="background:#FFD700; border:2px solid #8B4513;" onclick="selG2(${i}, 1)">${pair[1]}</button>
+            <div class="feedback" id="fb2_${i}"></div>
+        </div>`;
+    });
+    document.getElementById('g2_questions').innerHTML = html2;
+
+    // Init Game 3
+    let html3 = '';
+    const g3Qs = [
+        {a: 300, b: 200, ans: ">"}, {a: 400, b: 400, ans: "="}, {a: 150, b: 500, ans: "<"}, {a: 900, b: 899, ans: ">"}, {a: 600, b: 700, ans: "<"}
+    ];
+    window.g3Data = g3Qs;
+    g3Qs.forEach((q, i) => {
+        html3 += `<div class="quiz-item" style="text-align:center; font-size:1.5rem; margin:10px 0;">
+            ${q.a} <div class="drop-zone" id="dz3_${i}" style="display:inline-block; width:60px; height:40px; line-height:40px;"></div> ${q.b}
+            <div class="feedback" id="fb3_${i}"></div>
+        </div>`;
+    });
+    document.getElementById('g3_questions').innerHTML = html3;
+    initDragDrop('dragBank3', 'dz3_');
+
+    // Init Game 4
+    let html4 = '';
+    const g4Qs = [
+        {a: 456, b: 482, ans: "<"}, {a: 721, b: 719, ans: ">"}, {a: 333, b: 333, ans: "="}, {a: 291, b: 301, ans: "<"}, {a: 880, b: 808, ans: ">"}
+    ];
+    window.g4Data = g4Qs;
+    g4Qs.forEach((q, i) => {
+        html4 += `<div class="quiz-item" id="q4_${i}" style="text-align:center; font-size:1.2rem;">
+            ${q.a} <select id="ans4_${i}"><option value="">?</option><option value="<">&lt;</option><option value=">">&gt;</option><option value="=">=</option></select> ${q.b}
+            <div class="feedback" id="fb4_${i}"></div>
+        </div>`;
+    });
+    document.getElementById('g4_questions').innerHTML = html4;
+
+    // Init Game 5
+    window.g5Data = {
+        asc: shuffleArray([231, 105, 890, 450]),
+        desc: shuffleArray([678, 687, 670, 768])
+    };
+    initSortingGame();
+
+    // Init Assessment
+    initAssessment();
+};
+
+function selG2(qIdx, choiceIdx) {
+    const pair = g2Pairs[qIdx];
+    const bigger = Math.max(pair[0], pair[1]);
+    const selected = pair[choiceIdx];
+    const fb = document.getElementById(`fb2_${qIdx}`);
+    const btns = document.querySelectorAll(`#q2_${qIdx} button`);
+    
+    btns.forEach(b => b.style.border = '2px solid #8B4513');
+    btns[choiceIdx].style.border = '4px solid #556B2F';
+
+    if(selected === bigger) {
+        fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Yum!</span>';
+        g2Scores[qIdx] = true;
+    } else {
+        fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> The bigger number is ${bigger}.</span>`;
+        g2Scores[qIdx] = false;
+    }
+}
+function checkGame2() { selG2(0,0); selG2(1,1); selG2(2,0); selG2(3,1); selG2(4,0); } // Trigger check visual
+function resetGame2() {
+    g2Scores = Array(5).fill(false);
+    for(let i=0; i<5; i++) {
+        document.getElementById(`fb2_${i}`).innerHTML = '';
+        const btns = document.querySelectorAll(`#q2_${i} button`);
+        btns.forEach(b => b.style.border = '2px solid #8B4513');
+    }
+}
+
+// --- Section 3 Drag and Drop ---
+function initDragDrop(bankId, targetPrefix) {
+    const items = document.querySelectorAll(`#${bankId} .drag-item`);
+    const zones = document.querySelectorAll(`[id^="${targetPrefix}"]`);
+    
+    items.forEach(item => {
+        item.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', e.target.dataset.value);
+            e.dataTransfer.setData('id', e.target.id);
+        });
+    });
+
+    zones.forEach(zone => {
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            const val = e.dataTransfer.getData('text/plain');
+            zone.innerText = val;
+            zone.classList.add('filled');
+        });
+    });
+}
+
+function checkGame3() {
+    window.g3Data.forEach((q, i) => {
+        const zone = document.getElementById(`dz3_${i}`);
+        const fb = document.getElementById(`fb3_${i}`);
+        const userAns = zone.innerText.trim();
+        if(userAns === q.ans) {
+            zone.style.background = '#e8ffe8';
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
+        } else {
+            zone.style.background = '#ffe8e8';
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Answer: ${q.ans}</span>`;
+        }
+    });
+}
+function resetGame3() {
+    window.g3Data.forEach((q, i) => {
+        const zone = document.getElementById(`dz3_${i}`);
+        zone.innerText = ''; zone.style.background = ''; zone.classList.remove('filled');
+        document.getElementById(`fb3_${i}`).innerHTML = '';
+    });
+}
+
+// --- Section 4 Logic ---
+function checkGame4() {
+    window.g4Data.forEach((q, i) => {
+        const sel = document.getElementById(`ans4_${i}`);
+        const fb = document.getElementById(`fb4_${i}`);
+        if(sel.value === q.ans) {
+            sel.parentElement.style.background = '#e8ffe8';
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
+        } else {
+            sel.parentElement.style.background = '#ffe8e8';
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Correct symbol is ${q.ans}</span>`;
+        }
+    });
+}
+function resetGame4() {
+    window.g4Data.forEach((q, i) => {
+        const sel = document.getElementById(`ans4_${i}`);
+        sel.value = ""; sel.parentElement.style.background = '';
+        document.getElementById(`fb4_${i}`).innerHTML = '';
+    });
+}
+
+// --- Section 5 Drag Sort ---
+function initSortingGame() {
+    const bank1 = document.getElementById('sortBank1');
+    const bank2 = document.getElementById('sortBank2');
+    
+    const createDragItem = (val, groupId) => {
+        const div = document.createElement('div');
+        div.className = 'drag-item';
+        div.draggable = true;
+        div.id = `sort_item_${groupId}_${val}`;
+        div.dataset.value = val;
+        div.innerText = val;
+        div.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', e.target.dataset.value);
+            e.dataTransfer.setData('item_id', e.target.id);
+        });
+        return div;
+    };
+
+    window.g5Data.asc.forEach(v => bank1.appendChild(createDragItem(v, 'asc')));
+    window.g5Data.desc.forEach(v => bank2.appendChild(createDragItem(v, 'desc')));
+
+    ['sort1_', 'sort2_'].forEach(prefix => {
+        for(let i=1; i<=4; i++) {
+            const zone = document.getElementById(`${prefix}${i}`);
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                const val = e.dataTransfer.getData('text/plain');
+                const itemId = e.dataTransfer.getData('item_id');
+                const item = document.getElementById(itemId);
+                if(item) item.style.display = 'none'; // hide from bank
+                zone.innerText = val;
+                zone.classList.add('filled');
+            });
+        }
+    });
+}
+
+function checkGame5() {
+    // Ascending check
+    const ascCorrect = window.g5Data.asc.sort((a,b)=>a-b).join(',');
+    let ascUser = [];
+    for(let i=1; i<=4; i++) ascUser.push(document.getElementById(`sort1_${i}`).innerText.trim());
+    const ascUserStr = ascUser.join(',');
+    
+    const fb1 = document.getElementById('fb_sort1');
+    if(ascUserStr === ascCorrect) {
+        fb1.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Ascending Correct!</span>';
+    } else {
+        fb1.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Ascending Wrong. Correct order: ${window.g5Data.asc.sort((a,b)=>a-b).join(', ')}</span>`;
+    }
+
+    // Descending check
+    const descCorrect = window.g5Data.desc.sort((a,b)=>b-a).join(',');
+    let descUser = [];
+    for(let i=1; i<=4; i++) descUser.push(document.getElementById(`sort2_${i}`).innerText.trim());
+    const descUserStr = descUser.join(',');
+
+    const fb2 = document.getElementById('fb_sort2');
+    if(descUserStr === descCorrect) {
+        fb2.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Descending Correct!</span>';
+    } else {
+        fb2.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Descending Wrong. Correct order: ${window.g5Data.desc.sort((a,b)=>b-a).join(', ')}</span>`;
+    }
+}
+function resetGame5() {
+    ['sort1_', 'sort2_'].forEach(prefix => {
+        for(let i=1; i<=4; i++) {
+            const zone = document.getElementById(`${prefix}${i}`);
+            zone.innerText = ''; zone.classList.remove('filled');
+        }
+    });
+    document.getElementById('fb_sort1').innerHTML = '';
+    document.getElementById('fb_sort2').innerHTML = '';
+    
+    // Show all items in banks again
+    document.querySelectorAll('#sortBank1 .drag-item, #sortBank2 .drag-item').forEach(el => el.style.display = '');
+}
+
+// --- Section 6 Logic ---
+function checkGame6() {
+    const answers = { ans6_1: "455", ans6_2: "702", ans6_3: "426", ans6_4: "false", ans6_5: "951" };
+    const solutions = {
+        ans6_1: "Between 450 & 460, ends in 5 -> 455.",
+        ans6_2: "Bigger than 700, smaller than 710, ones is 2 -> 702.",
+        ans6_3: "4 in hundreds, 420-430, even, ends in 6 -> 426.",
+        ans6_4: "820 is EQUAL to 820 (700+120). So it's not greater.",
+        ans6_5: "Largest digit (9) in Hundreds, then 5, then 1 -> 951."
+    };
+    for(let id in answers) {
+        const el = document.getElementById(id);
+        const fb = el.parentElement.querySelector('.feedback');
+        if(el.value.trim().toLowerCase() === answers[id].toLowerCase()) {
+            el.parentElement.classList.add('correct');
+            el.parentElement.classList.remove('wrong');
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
+        } else {
+            el.parentElement.classList.add('wrong');
+            el.parentElement.classList.remove('correct');
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Wrong. Solution: ${solutions[id]}</span>`;
+        }
+    }
+}
+function resetGame6() {
+    ['ans6_1','ans6_2','ans6_3','ans6_4','ans6_5'].forEach(id => {
+        const el = document.getElementById(id);
+        el.value = '';
+        el.parentElement.classList.remove('correct', 'wrong');
+        el.parentElement.querySelector('.feedback').innerHTML = '';
+    });
+}
+
+
+// --- Assessment Logic ---
+const assessmentData = {
+    1: [
+        { type: "radio", q: "Which symbol means 'greater than'?", opts: ["<", ">", "="], ans: ">" },
+        { type: "dropdown", q: "Compare: 345 ___ 354", opts: ["<", ">", "="], ans: "<" },
+        { type: "text", q: "What is the value of digit 9 in 910?", ans: "900" },
+        { type: "radio", q: "Which is the largest? (A) 712  (B) 721  (C) 720", opts: ["A", "B", "C"], ans: "B" },
+        { type: "checkbox", q: "Which numbers are greater than 500? (Check all that apply)", opts: ["499", "501", "600", "500"], ans: ["501", "600"] },
+        { type: "text", q: "Order Ascending: 12, 9, 11. Write as 9,11,12", ans: "9,11,12" },
+        { type: "dropdown", q: "654 ___ 654", opts: ["<", ">", "="], ans: "=" },
+        { type: "radio", q: "Look at Hundreds: 8__ vs 9__. Which is smaller?", opts: ["8__", "9__"], ans: "8__" },
+        { type: "text", q: "I am between 100 and 110. My ones digit is 5. What am I?", ans: "105" },
+        { type: "checkbox", q: "Which are correct? (Check all)", opts: ["400 > 300", "200 < 100", "500 = 500"], ans: ["400 > 300", "500 = 500"] }
+    ],
+    2: [
+        { type: "radio", q: "Which symbol means 'less than'?", opts: ["<", ">", "="], ans: "<" },
+        { type: "dropdown", q: "Compare: 810 ___ 801", opts: ["<", ">", "="], ans: ">" },
+        { type: "text", q: "What is the value of digit 5 in 258?", ans: "50" },
+        { type: "radio", q: "Which is smallest? (A) 430  (B) 403  (C) 340", opts: ["A", "B", "C"], ans: "C" },
+        { type: "checkbox", q: "Which numbers are less than 600?", opts: ["599", "601", "600", "500"], ans: ["599", "500"] },
+        { type: "text", q: "Order Descending: 15, 18, 13. Write as 18,15,13", ans: "18,15,13" },
+        { type: "dropdown", q: "999 ___ 1000", opts: ["<", ">", "="], ans: "<" },
+        { type: "radio", q: "If Tens are same, look at:", opts: ["Hundreds", "Ones", "Tens"], ans: "Ones" },
+        { type: "text", q: "I am between 600 and 610. My ones digit is 9. What am I?", ans: "609" },
+        { type: "checkbox", q: "Which are correct? (Check all)", opts: ["700 < 800", "550 > 551", "999 = 999"], ans: ["700 < 800", "999 = 999"] }
+    ],
+    3: [
+        { type: "radio", q: "If 456 > 4__, what digit can fill the blank?", opts: ["5", "6", "4"], ans: "4" },
+        { type: "dropdown", q: "Compare: 222 ___ 222", opts: ["<", ">", "="], ans: "=" },
+        { type: "text", q: "Combine 500 + 40 + 3", ans: "543" },
+        { type: "radio", q: "Which is larger? (A) 890  (B) 900", opts: ["A", "B"], ans: "B" },
+        { type: "checkbox", q: "Numbers smaller than 200:", opts: ["199", "201", "200", "100"], ans: ["199", "100"] },
+        { type: "text", q: "Smallest to Largest: 30, 20, 10. Write 10,20,30", ans: "10,20,30" },
+        { type: "dropdown", q: "1000 ___ 999", opts: ["<", ">", "="], ans: ">" },
+        { type: "radio", q: "Compare 543 and 534. Which part is different?", opts: ["Hundreds", "Tens", "Ones"], ans: "Tens" },
+        { type: "text", q: "I have 7 in hundreds, 0 in tens, 5 in ones. What number?", ans: "705" },
+        { type: "checkbox", q: "Which are True?", opts: ["800+10+0 = 810", "810 < 801", "820 = 820"], ans: ["800+10+0 = 810", "820 = 820"] }
+    ],
+    4: [
+        { type: "radio", q: "What is the biggest 3-digit number?", opts: ["999", "1000", "900"], ans: "999" },
+        { type: "dropdown", q: "Compare: 111 ___ 112", opts: ["<", ">", "="], ans: "<" },
+        { type: "text", q: "Value of 0 in 408?", ans: "0" },
+        { type: "radio", q: "Order Ascending: A)12 B)21 C)11. Correct order:", opts: ["A,B,C", "C,A,B", "B,A,C"], ans: "C,A,B" },
+        { type: "checkbox", q: "Numbers from 500 to 600:", opts: ["550", "600", "499", "501"], ans: ["550", "501"] },
+        { type: "text", q: "Largest to Smallest: 44, 55, 33. Write 55,44,33", ans: "55,44,33" },
+        { type: "dropdown", q: "678 ___ 687", opts: ["<", ">", "="], ans: "<" },
+        { type: "radio", q: "What does the alligator mouth eat?", opts: ["Smaller number", "Bigger number", "Equal number"], ans: "Bigger number" },
+        { type: "text", q: "I am bigger than 999 but smaller than 1001.", ans: "1000" },
+        { type: "checkbox", q: "Which are False?", opts: ["100 < 99", "300 = 300", "500 > 499"], ans: ["100 < 99"] }
+    ],
+    5: [
+        { type: "radio", q: "If Hundreds are same, compare:", opts: ["Ones", "Tens", "Thousands"], ans: "Tens" },
+        { type: "dropdown", q: "Compare: 909 ___ 990", opts: ["<", ">", "="], ans: "<" },
+        { type: "text", q: "What is 200 + 30 + 1?", ans: "231" },
+        { type: "radio", q: "Smallest 3-digit from 3,1,0:", opts: ["310", "103", "130"], ans: "103" },
+        { type: "checkbox", q: "Odd numbers here:", opts: ["11", "12", "13", "14"], ans: ["11", "13"] },
+        { type: "text", q: "Order: 99, 101, 100. Ascending. Write 99,100,101", ans: "99,100,101" },
+        { type: "dropdown", q: "555 ___ 555", opts: ["<", ">", "="], ans: "=" },
+        { type: "radio", q: "Largest 3-digit from 9,1,5:", opts: ["951", "159", "519"], ans: "951" },
+        { type: "text", q: "I am between 888 and 898, ones is 9. What am I?", ans: "889" },
+        { type: "checkbox", q: "Correct statements:", opts: ["820 > 812", "999 < 1000", "400 = 40"], ans: ["820 > 812", "999 < 1000"] }
+    ]
+};
+
+function initAssessment() {
+    for(let g=1; g<=5; g++) {
+        const container = document.getElementById(`assess_g${g}`);
+        let html = '';
+        assessmentData[g].forEach((item, i) => {
+            html += `<div class="quiz-item" id="a${g}_${i}" style="margin-bottom:15px;">`;
+            html += `<p><strong>${i+1}. ${item.q}</strong></p>`;
+            
+            if(item.type === "radio") {
+                item.opts.forEach((opt, j) => {
+                    html += `<label style="margin-right:15px;"><input type="radio" name="a${g}_${i}" value="${opt}"> ${opt}</label>`;
+                });
+            } else if(item.type === "dropdown") {
+                html += `<select id="a${g}_${i}_sel"><option value="">Select...</option>`;
+                item.opts.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+                html += `</select>`;
+            } else if(item.type === "text") {
+                html += `<input type="text" id="a${g}_${i}_txt">`;
+            } else if(item.type === "checkbox") {
+                item.opts.forEach((opt, j) => {
+                    html += `<label style="margin-right:15px;"><input type="checkbox" class="a${g}_${i}_chk" value="${opt}"> ${opt}</label>`;
+                });
+            }
+            html += `<div class="feedback" id="afb${g}_${i}"></div></div>`;
+        });
+        container.innerHTML = html;
+    }
+}
+
+function submitAssess(g) {
+    let score = 0;
+    const data = assessmentData[g];
+    
+    data.forEach((item, i) => {
+        const fb = document.getElementById(`afb${g}_${i}`);
+        const qBox = document.getElementById(`a${g}_${i}`);
+        let userAns = "";
+        let isCorrect = false;
+
+        if(item.type === "radio") {
+            const sel = document.querySelector(`input[name="a${g}_${i}"]:checked`);
+            userAns = sel ? sel.value : "";
+            isCorrect = userAns === item.ans;
+        } else if(item.type === "dropdown") {
+            userAns = document.getElementById(`a${g}_${i}_sel`).value;
+            isCorrect = userAns === item.ans;
+        } else if(item.type === "text") {
+            userAns = document.getElementById(`a${g}_${i}_txt`).value.trim();
+            isCorrect = userAns.toLowerCase() === item.ans.toLowerCase();
+        } else if(item.type === "checkbox") {
+            const checked = document.querySelectorAll(`.a${g}_${i}_chk:checked`);
+            userAns = Array.from(checked).map(c => c.value);
+            isCorrect = JSON.stringify(userAns.sort()) === JSON.stringify(item.ans.sort());
+            userAns = userAns.join(", ");
+        }
+
+        if(isCorrect) {
+            qBox.classList.add('correct');
+            qBox.classList.remove('wrong');
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
+            score++;
+        } else {
+            qBox.classList.add('wrong');
+            qBox.classList.remove('correct');
+            const correctDisplay = Array.isArray(item.ans) ? item.ans.join(", ") : item.ans;
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Incorrect. Correct Answer: ${correctDisplay}</span>`;
+        }
+    });
+
+    alert(`Group ${g} Score: ${score} / ${data.length}`);
+}
+
+function printAssess(g) {
+    const name = document.getElementById('studentName').value || "No Name";
+    const date = document.getElementById('studentDate').value || "No Date";
+    const data = assessmentData[g];
+    let score = 0;
+    
+    let html = `<div><h3>Student: ${name} | Date: ${date} | Group: ${g}</h3></div>`;
+    html += `<table class="print-table"><tr><th>No</th><th>Question</th><th>Student Answer</th><th>Correct Answer</th><th>Status</th></tr>`;
+
+    data.forEach((item, i) => {
+        let userAns = "";
+        let isCorrect = false;
+
+        if(item.type === "radio") {
+            const sel = document.querySelector(`input[name="a${g}_${i}"]:checked`);
+            userAns = sel ? sel.value : "(blank)";
+            isCorrect = userAns === item.ans;
+        } else if(item.type === "dropdown") {
+            userAns = document.getElementById(`a${g}_${i}_sel`).value || "(blank)";
+            isCorrect = userAns === item.ans;
+        } else if(item.type === "text") {
+            userAns = document.getElementById(`a${g}_${i}_txt`).value.trim() || "(blank)";
+            isCorrect = userAns.toLowerCase() === item.ans.toLowerCase();
+        } else if(item.type === "checkbox") {
+            const checked = document.querySelectorAll(`.a${g}_${i}_chk:checked`);
+            userAns = Array.from(checked).map(c => c.value).join(", ") || "(blank)";
+            isCorrect = JSON.stringify(userAns.split(", ").sort()) === JSON.stringify(item.ans.sort());
+        }
+
+        if(isCorrect) score++;
+        const correctDisplay = Array.isArray(item.ans) ? item.ans.join(", ") : item.ans;
+
+        html += `<tr>
+            <td>${i+1}</td>
+            <td>${item.q}</td>
+            <td>${userAns}</td>
+            <td>${correctDisplay}</td>
+            <td style="color: ${isCorrect ? 'green' : 'red'}; font-weight:bold;">${isCorrect ? 'CORRECT' : 'WRONG'}</td>
+        </tr>`;
+    });
+
+    html += `</table><h2 style="margin-top:20px;">Total Score: ${score} / ${data.length}</h2>`;
+
+    document.getElementById('printContent').innerHTML = html;
+    window.print();
+}
+
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tab-btn");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+</script>
+</body>
+</html>
