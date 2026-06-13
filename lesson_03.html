@@ -219,6 +219,51 @@
 
         /* Custom Icons/SVGs */
         .veggie-icon { display: inline-block; width: 24px; height: 24px; vertical-align: middle; }
+
+        /* Grid Layouts */
+        .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-4col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+        
+        /* Animations */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popOut { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+        .anim-fade-up { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; }
+        .anim-pop { animation: popOut 0.4s ease-out forwards; }
+
+        /* Section 2: Rucksack Theme */
+        .rucksack-container { background: #F5DEB3; border: 4px solid #8B4513; border-radius: 15px; padding: 20px; position: relative; box-shadow: inset 0 0 20px rgba(139, 69, 19, 0.2); }
+        .rucksack-container::before { content: '🎒'; font-size: 3rem; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #FFF8DC; padding: 0 10px; border-radius: 10px;}
+        .item-slot { display: flex; justify-content: center; gap: 20px; align-items: center; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.6); border-radius: 10px; border: 2px dashed #D2B48C; }
+        .item-box { background: #FFF8DC; border: 3px solid #556B2F; border-radius: 8px; padding: 10px 20px; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; text-align: center; min-width: 80px; position: relative; }
+        .item-box:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.2); background: #FFD700; color: #333; }
+        .item-box.selected { border-color: #FFD700; background: #8FBC8F; color: white; transform: scale(1.05); box-shadow: 0 0 15px #FFD700; }
+        .item-box.wrong-select { animation: shake 0.3s; border-color: #CD5C5C; background: #CD5C5C; color: white; }
+
+        /* Section 3: 4 Column Compact */
+        .mini-quiz { background: white; border: 2px solid var(--hm-green); border-radius: 8px; padding: 10px; text-align: center; font-size: 0.9rem; transition: all 0.3s; }
+        .mini-quiz:hover { border-color: var(--hm-brown); }
+        .mini-quiz .q-text { font-weight: bold; margin-bottom: 8px; font-size: 1.1rem; color: var(--hm-dark-green); }
+        .mini-btn-group { display: flex; justify-content: center; gap: 5px; }
+        .mini-btn { padding: 5px 10px; border: 2px solid #8FBC8F; background: #E8F5E9; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 1rem; }
+        .mini-btn:hover { background: #8FBC8F; color: white; }
+        .mini-btn.active { background: #556B2F; color: white; border-color: #556B2F; }
+        .mini-quiz.correct { border-color: green; background: #e8ffe8; }
+        .mini-quiz.wrong { border-color: red; background: #ffe8e8; }
+        .mini-fb { font-size: 0.75rem; margin-top: 5px; font-weight: bold; height: 15px; }
+
+        /* Section 4 specific */
+        .tens-ones-box { background: #FFF8DC; border: 3px solid #8B4513; border-radius: 8px; padding: 10px; text-align: center; transition: all 0.3s; position: relative; }
+        .tens-ones-box:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .tens-ones-box.correct { border-color: green; background: #e8ffe8; }
+        .tens-ones-box.wrong { border-color: red; background: #ffe8e8; animation: shake 0.3s; }
+        .tens-ones-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        
+        /* Section 5 & 6 specific */
+        .order-riddle-box { background: white; border: 2px solid var(--hm-green); border-radius: 10px; padding: 15px; transition: 0.3s; }
+        .order-riddle-box:hover { border-color: var(--hm-brown); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .order-riddle-box.correct { border-color: green; background: #e8ffe8; }
+        .order-riddle-box.wrong { border-color: red; background: #ffe8e8; }
     </style>
 </head>
 <body>
@@ -271,31 +316,9 @@
 
         <div class="game-area" id="game1">
             <div class="game-title pixel-font">🌱 Quick Quest: Place Value</div>
-            
-            <div class="quiz-item" id="q1_1">
-                1. In the number <span class="math-font">805</span>, what is the value of the digit 8?<br>
-                <select id="ans1_1"><option value="">Select...</option><option value="8">8</option><option value="80">80</option><option value="800">800</option></select>
-                <div class="feedback"></div>
+            <div class="grid-2col" id="g1_questions">
+                <!-- Diisi oleh Javascript -->
             </div>
-            <div class="quiz-item" id="q1_2">
-                2. Combine <span class="math-font">400 + 50 + 8</span> into a single number.<br>
-                <input type="text" id="ans1_2" placeholder="Type number...">
-                <div class="feedback"></div>
-            </div>
-            <div class="quiz-item" id="q1_3">
-                3. Which is bigger, <span class="math-font">12</span> or <span class="math-font">19</span>?<br>
-                <select id="ans1_3"><option value="">Select...</option><option value="12">12</option><option value="19">19</option></select>
-                <div class="feedback"></div>
-            </div>
-            <div class="quiz-item" id="q1_4">
-                4. Solve: <span class="math-font">15 - 5</span> = <input type="text" id="ans1_4" size="5">
-                <div class="feedback"></div>
-            </div>
-            <div class="quiz-item" id="q1_5">
-                5. Solve: <span class="math-font">10 + 7</span> = <input type="text" id="ans1_5" size="5">
-                <div class="feedback"></div>
-            </div>
-
             <div class="btn-group">
                 <button class="btn btn-check" onclick="checkGame1()"><i class="fas fa-check-circle"></i> Check</button>
                 <button class="btn btn-reset" onclick="resetGame1()"><i class="fas fa-redo"></i> Reset</button>
@@ -324,9 +347,11 @@
         </div>
 
         <div class="game-area" id="game2">
-            <div class="game-title pixel-font">🛒 Market Compare</div>
-            <p style="text-align:center; margin-bottom:15px;">Click the BIGGER number to feed the alligator!</p>
-            <div id="g2_questions"></div>
+            <div class="game-title pixel-font">🛒 Rucksack Market Compare</div>
+            <p style="text-align:center; margin-bottom:15px; font-weight:bold;">Open your bag! Click the BIGGER number to keep it!</p>
+            <div class="rucksack-container" id="g2_questions">
+                <!-- Diisi oleh Javascript -->
+            </div>
             <div class="btn-group">
                 <button class="btn btn-check" onclick="checkGame2()"><i class="fas fa-check-circle"></i> Check</button>
                 <button class="btn btn-reset" onclick="resetGame2()"><i class="fas fa-redo"></i> Reset</button>
@@ -346,17 +371,11 @@
         </div>
 
         <div class="game-area" id="game3">
-            <div class="game-title pixel-font">🏘️ Hundreds Room Rule</div>
-            <p style="text-align:center; margin-bottom:15px;">Drag the correct symbol (<span class="math-font">&gt;</span>, <span class="math-font">&lt;</span>, <span class="math-font">=</span>) into the box.</p>
-            
-            <div class="drag-container" id="dragBank3">
-                <div class="drag-item" draggable="true" data-value=">">&gt;</div>
-                <div class="drag-item" draggable="true" data-value="<">&lt;</div>
-                <div class="drag-item" draggable="true" data-value="=">=</div>
+            <div class="game-title pixel-font">🏘️ Hundreds Room Rule (4x5 Grid)</div>
+            <p style="text-align:center; margin-bottom:15px;">Click the correct symbol for each comparison!</p>
+            <div class="grid-4col" id="g3_questions">
+                <!-- Diisi oleh Javascript -->
             </div>
-
-            <div id="g3_questions"></div>
-
             <div class="btn-group">
                 <button class="btn btn-check" onclick="checkGame3()"><i class="fas fa-check-circle"></i> Check</button>
                 <button class="btn btn-reset" onclick="resetGame3()"><i class="fas fa-redo"></i> Reset</button>
@@ -385,11 +404,11 @@
         </div>
 
         <div class="game-area" id="game4">
-            <div class="game-title pixel-font">🕵️ Step-by-Step Detective</div>
-            <p style="text-align:center; margin-bottom:15px;">Fill in the blanks with <span class="math-font">&gt;</span>, <span class="math-font">&lt;</span>, or <span class="math-font">=</span></p>
-            
-            <div id="g4_questions"></div>
-
+            <div class="game-title pixel-font">🕵️ Step-by-Step Detective (Tens & Ones)</div>
+            <p style="text-align:center; margin-bottom:15px;">Hundreds are the same? Move to Tens! Tens are the same? Move to Ones! Choose <, >, or =</p>
+            <div class="grid-4col" id="g4_questions">
+                <!-- Diisi oleh Javascript -->
+            </div>
             <div class="btn-group">
                 <button class="btn btn-check" onclick="checkGame4()"><i class="fas fa-check-circle"></i> Check</button>
                 <button class="btn btn-reset" onclick="resetGame4()"><i class="fas fa-redo"></i> Reset</button>
@@ -409,34 +428,11 @@
         </div>
 
         <div class="game-area" id="game5">
-            <div class="game-title pixel-font">🚜 Harvest Tractor Ordering (Drag to sort)</div>
-            
-            <div style="margin-bottom:20px;">
-                <p><strong>1. Ascending (Smallest to Biggest)</strong></p>
-                <div class="drag-container" id="sortBank1" style="min-height:60px;"></div>
-                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:10px;">
-                    Drop here: 
-                    <div class="drop-zone" id="sort1_1" data-pos="0"></div>
-                    <div class="drop-zone" id="sort1_2" data-pos="1"></div>
-                    <div class="drop-zone" id="sort1_3" data-pos="2"></div>
-                    <div class="drop-zone" id="sort1_4" data-pos="3"></div>
-                </div>
-                <div class="feedback" id="fb_sort1"></div>
+            <div class="game-title pixel-font">🚜 Harvest Tractor Ordering</div>
+            <p style="text-align:center; margin-bottom:15px;">Type the numbers in the correct order separated by commas (e.g., 10, 20, 30).</p>
+            <div class="grid-2col" id="g5_questions">
+                <!-- Diisi oleh Javascript -->
             </div>
-
-            <div>
-                <p><strong>2. Descending (Biggest to Smallest)</strong></p>
-                <div class="drag-container" id="sortBank2" style="min-height:60px;"></div>
-                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:10px;">
-                    Drop here: 
-                    <div class="drop-zone" id="sort2_1" data-pos="0"></div>
-                    <div class="drop-zone" id="sort2_2" data-pos="1"></div>
-                    <div class="drop-zone" id="sort2_3" data-pos="2"></div>
-                    <div class="drop-zone" id="sort2_4" data-pos="3"></div>
-                </div>
-                <div class="feedback" id="fb_sort2"></div>
-            </div>
-
             <div class="btn-group">
                 <button class="btn btn-check" onclick="checkGame5()"><i class="fas fa-check-circle"></i> Check</button>
                 <button class="btn btn-reset" onclick="resetGame5()"><i class="fas fa-redo"></i> Reset</button>
@@ -457,33 +453,9 @@
 
         <div class="game-area" id="game6">
             <div class="game-title pixel-font">📜 Logic Riddles</div>
-            
-            <div class="quiz-item" id="q6_1">
-                1. I am a number between 450 and 460. My last digit is 5. What am I?<br>
-                <input type="text" id="ans6_1" size="10">
-                <div class="feedback"></div>
+            <div class="grid-2col" id="g6_questions">
+                <!-- Diisi oleh Javascript -->
             </div>
-            <div class="quiz-item" id="q6_2">
-                2. I am bigger than 700 but smaller than 710. My ones digit is 2. What number am I?<br>
-                <input type="text" id="ans6_2" size="10">
-                <div class="feedback"></div>
-            </div>
-            <div class="quiz-item" id="q6_3">
-                3. I have 4 in the hundreds place. I am between 420 and 430. I am an even number that ends in 6. Who am I?<br>
-                <input type="text" id="ans6_3" size="10">
-                <div class="feedback"></div>
-            </div>
-            <div class="quiz-item" id="q6_4">
-                4. True or False: <span class="math-font">8 hundreds + 2 tens</span> is greater than <span class="math-font">7 hundreds + 12 tens</span>?<br>
-                <select id="ans6_4"><option value="">Select...</option><option value="true">True</option><option value="false">False</option></select>
-                <div class="feedback"></div>
-            </div>
-            <div class="quiz-item" id="q6_5">
-                5. What is the largest 3-digit number you can make using digits 1, 9, and 5?<br>
-                <input type="text" id="ans6_5" size="10">
-                <div class="feedback"></div>
-            </div>
-
             <div class="btn-group">
                 <button class="btn btn-check" onclick="checkGame6()"><i class="fas fa-check-circle"></i> Check</button>
                 <button class="btn btn-reset" onclick="resetGame6()"><i class="fas fa-redo"></i> Reset</button>
@@ -589,302 +561,367 @@ function shuffleArray(arr) {
     return arr;
 }
 
-// --- Section 1 Logic ---
+// --- Section 1 Logic (10 Questions, 2 Cols) ---
+const g1Data = [
+    { q: "Value of 8 in 805?", ans: "800", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">🍎</text></svg>' },
+    { q: "Combine 400+50+8", ans: "458", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">🧮</text></svg>' },
+    { q: "Bigger: 12 or 19?", ans: "19", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">🥕</text></svg>' },
+    { q: "Solve: 15 - 5", ans: "10", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">✂️</text></svg>' },
+    { q: "Solve: 10 + 7", ans: "17", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">➕</text></svg>' },
+    { q: "Value of 5 in 532?", ans: "500", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">🌟</text></svg>' },
+    { q: "Combine 600+20+1", ans: "621", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">🏗️</text></svg>' },
+    { q: "Smaller: 22 or 11?", ans: "11", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">🥒</text></svg>' },
+    { q: "Solve: 18 - 8", ans: "10", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">📉</text></svg>' },
+    { q: "Solve: 20 + 4", ans: "24", svg: '<svg viewBox="0 0 24 24" width="24" height="24"><text x="4" y="20" font-size="20">📈</text></svg>' }
+];
+
+function initGame1() {
+    const container = document.getElementById('g1_questions');
+    let html = '';
+    g1Data.forEach((item, i) => {
+        html += `<div class="quiz-item anim-fade-up" id="q1_${i}" style="animation-delay: ${i*0.1}s">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">${item.svg} <strong>${i+1}. ${item.q}</strong></div>
+            <input type="text" id="ans1_${i}" style="width: 100px;" placeholder="Answer...">
+            <div class="feedback" id="fb1_${i}"></div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
 function checkGame1() {
-    const answers = { ans1_1: "800", ans1_2: "458", ans1_3: "19", ans1_4: "10", ans1_5: "17" };
-    const solutions = { ans1_1: "Value of 8 in Hundreds place is 800.", ans1_2: "400+50+8 = 458.", ans1_3: "19 is bigger than 12.", ans1_4: "15-5=10.", ans1_5: "10+7=17." };
-    let score = 0;
-    for(let id in answers) {
-        const el = document.getElementById(id);
-        const fb = el.parentElement.querySelector('.feedback');
-        if(el.value.trim() === answers[id]) {
-            el.parentElement.classList.add('correct');
-            el.parentElement.classList.remove('wrong');
+    g1Data.forEach((item, i) => {
+        const input = document.getElementById(`ans1_${i}`);
+        const fb = document.getElementById(`fb1_${i}`);
+        const box = document.getElementById(`q1_${i}`);
+        if(input.value.trim() === item.ans) {
+            box.classList.add('correct'); box.classList.remove('wrong');
             fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
-            score++;
         } else {
-            el.parentElement.classList.add('wrong');
-            el.parentElement.classList.remove('correct');
-            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Wrong. Solution: ${solutions[id]}</span>`;
+            box.classList.add('wrong'); box.classList.remove('correct');
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Answer: ${item.ans}</span>`;
         }
-    }
+    });
 }
 function resetGame1() {
-    const ids = ['ans1_1','ans1_2','ans1_3','ans1_4','ans1_5'];
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        el.value = el.tagName === 'SELECT' ? '' : '';
-        el.parentElement.classList.remove('correct', 'wrong');
-        el.parentElement.querySelector('.feedback').innerHTML = '';
+    g1Data.forEach((item, i) => {
+        document.getElementById(`ans1_${i}`).value = '';
+        const box = document.getElementById(`q1_${i}`);
+        box.classList.remove('correct', 'wrong');
+        document.getElementById(`fb1_${i}`).innerHTML = '';
     });
 }
 
-// --- Section 2 Logic ---
+// --- Section 2 Logic (10 Quests, Rucksack Theme, Random Position) ---
 const g2Pairs = [
-    [320, 250], [810, 890], [550, 550], [499, 500], [678, 670]
+    [320, 250], [810, 890], [550, 550], [499, 500], [678, 670],
+    [123, 321], [999, 899], [450, 405], [111, 110], [777, 777]
 ];
-let g2Scores = Array(5).fill(false);
 
-window.onload = function() {
-    // Init Game 2
-    let html2 = '';
+function initGame2() {
+    const container = document.getElementById('g2_questions');
+    let html = '';
     g2Pairs.forEach((pair, i) => {
-        html2 += `<div class="quiz-item" id="q2_${i}" style="display:flex; justify-content:center; gap:20px; align-items:center;">
-            <button class="btn" style="background:#FFD700; border:2px solid #8B4513;" onclick="selG2(${i}, 0)">${pair[0]}</button>
-            <span class="math-font">OR</span>
-            <button class="btn" style="background:#FFD700; border:2px solid #8B4513;" onclick="selG2(${i}, 1)">${pair[1]}</button>
-            <div class="feedback" id="fb2_${i}"></div>
+        // Randomize position (left or right)
+        const isSwapped = Math.random() > 0.5;
+        const leftVal = isSwapped ? pair[1] : pair[0];
+        const rightVal = isSwapped ? pair[0] : pair[1];
+        
+        html += `<div class="item-slot anim-fade-up" style="animation-delay: ${i*0.1}s" id="q2_slot_${i}">
+            <div class="item-box" id="box_l_${i}" onclick="selG2(${i}, 'left', ${leftVal})">${leftVal}</div>
+            <span style="font-size:1.5rem;">⚔️</span>
+            <div class="item-box" id="box_r_${i}" onclick="selG2(${i}, 'right', ${rightVal})">${rightVal}</div>
+            <div class="feedback" id="fb2_${i}" style="min-width: 100px; text-align: left;"></div>
         </div>`;
     });
-    document.getElementById('g2_questions').innerHTML = html2;
-
-    // Init Game 3
-    let html3 = '';
-    const g3Qs = [
-        {a: 300, b: 200, ans: ">"}, {a: 400, b: 400, ans: "="}, {a: 150, b: 500, ans: "<"}, {a: 900, b: 899, ans: ">"}, {a: 600, b: 700, ans: "<"}
-    ];
-    window.g3Data = g3Qs;
-    g3Qs.forEach((q, i) => {
-        html3 += `<div class="quiz-item" style="text-align:center; font-size:1.5rem; margin:10px 0;">
-            ${q.a} <div class="drop-zone" id="dz3_${i}" style="display:inline-block; width:60px; height:40px; line-height:40px;"></div> ${q.b}
-            <div class="feedback" id="fb3_${i}"></div>
-        </div>`;
-    });
-    document.getElementById('g3_questions').innerHTML = html3;
-    initDragDrop('dragBank3', 'dz3_');
-
-    // Init Game 4
-    let html4 = '';
-    const g4Qs = [
-        {a: 456, b: 482, ans: "<"}, {a: 721, b: 719, ans: ">"}, {a: 333, b: 333, ans: "="}, {a: 291, b: 301, ans: "<"}, {a: 880, b: 808, ans: ">"}
-    ];
-    window.g4Data = g4Qs;
-    g4Qs.forEach((q, i) => {
-        html4 += `<div class="quiz-item" id="q4_${i}" style="text-align:center; font-size:1.2rem;">
-            ${q.a} <select id="ans4_${i}"><option value="">?</option><option value="<">&lt;</option><option value=">">&gt;</option><option value="=">=</option></select> ${q.b}
-            <div class="feedback" id="fb4_${i}"></div>
-        </div>`;
-    });
-    document.getElementById('g4_questions').innerHTML = html4;
-
-    // Init Game 5
-    window.g5Data = {
-        asc: shuffleArray([231, 105, 890, 450]),
-        desc: shuffleArray([678, 687, 670, 768])
-    };
-    initSortingGame();
-
-    // Init Assessment
-    initAssessment();
-};
-
-function selG2(qIdx, choiceIdx) {
-    const pair = g2Pairs[qIdx];
-    const bigger = Math.max(pair[0], pair[1]);
-    const selected = pair[choiceIdx];
-    const fb = document.getElementById(`fb2_${qIdx}`);
-    const btns = document.querySelectorAll(`#q2_${qIdx} button`);
-    
-    btns.forEach(b => b.style.border = '2px solid #8B4513');
-    btns[choiceIdx].style.border = '4px solid #556B2F';
-
-    if(selected === bigger) {
-        fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Yum!</span>';
-        g2Scores[qIdx] = true;
-    } else {
-        fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> The bigger number is ${bigger}.</span>`;
-        g2Scores[qIdx] = false;
-    }
+    container.innerHTML = html;
 }
-function checkGame2() { selG2(0,0); selG2(1,1); selG2(2,0); selG2(3,1); selG2(4,0); } // Trigger check visual
+
+window.g2Selections = {};
+
+function selG2(qIdx, side, val) {
+    document.getElementById(`box_l_${qIdx}`).classList.remove('selected', 'wrong-select');
+    document.getElementById(`box_r_${qIdx}`).classList.remove('selected', 'wrong-select');
+    
+    document.getElementById(`box_${side.charAt(0)}_${qIdx}`).classList.add('selected', 'anim-pop');
+    window.g2Selections[qIdx] = { side: side, val: val };
+}
+
+function checkGame2() {
+    g2Pairs.forEach((pair, i) => {
+        const bigger = Math.max(pair[0], pair[1]);
+        const fb = document.getElementById(`fb2_${i}`);
+        const sel = window.g2Selections[i];
+        
+        document.getElementById(`box_l_${i}`).classList.remove('wrong-select');
+        document.getElementById(`box_r_${i}`).classList.remove('wrong-select');
+
+        if(sel && sel.val === bigger) {
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Yum!</span>';
+        } else {
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> ${bigger} is bigger!</span>`;
+            if(sel) {
+                document.getElementById(`box_${sel.side.charAt(0)}_${i}`).classList.add('wrong-select');
+            }
+        }
+    });
+}
+
 function resetGame2() {
-    g2Scores = Array(5).fill(false);
-    for(let i=0; i<5; i++) {
+    window.g2Selections = {};
+    g2Pairs.forEach((pair, i) => {
+        document.getElementById(`box_l_${i}`).classList.remove('selected', 'wrong-select', 'anim-pop');
+        document.getElementById(`box_r_${i}`).classList.remove('selected', 'wrong-select', 'anim-pop');
         document.getElementById(`fb2_${i}`).innerHTML = '';
-        const btns = document.querySelectorAll(`#q2_${i} button`);
-        btns.forEach(b => b.style.border = '2px solid #8B4513');
-    }
+    });
 }
 
-// --- Section 3 Drag and Drop ---
-function initDragDrop(bankId, targetPrefix) {
-    const items = document.querySelectorAll(`#${bankId} .drag-item`);
-    const zones = document.querySelectorAll(`[id^="${targetPrefix}"]`);
-    
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', e.target.dataset.value);
-            e.dataTransfer.setData('id', e.target.id);
-        });
-    });
+// --- Section 3 Logic (20 Quests, 4 Cols Grid) ---
+const g3Data = [
+    {a:300, b:200}, {a:400, b:500}, {a:100, b:900}, {a:800, b:700}, {a:600, b:100},
+    {a:200, b:800}, {a:900, b:100}, {a:500, b:400}, {a:700, b:800}, {a:100, b:600},
+    {a:810, b:210}, {a:450, b:950}, {a:190, b:890}, {a:777, b:177}, {a:321, b:921},
+    {a:540, b:140}, {a:280, b:980}, {a:612, b:12},  {a:415, b:815}, {a:999, b:199}
+];
 
-    zones.forEach(zone => {
-        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-        zone.addEventListener('drop', e => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const val = e.dataTransfer.getData('text/plain');
-            zone.innerText = val;
-            zone.classList.add('filled');
-        });
+function initGame3() {
+    const container = document.getElementById('g3_questions');
+    let html = '';
+    g3Data.forEach((item, i) => {
+        html += `<div class="mini-quiz anim-fade-up" style="animation-delay: ${i*0.05}s" id="mq_${i}">
+            <div class="q-text">${item.a} <span class="math-font">?</span> ${item.b}</div>
+            <div class="mini-btn-group">
+                <button class="mini-btn" onclick="selG3(${i}, '<')">&lt;</button>
+                <button class="mini-btn" onclick="selG3(${i}, '=')">=</button>
+                <button class="mini-btn" onclick="selG3(${i}, '>')">&gt;</button>
+            </div>
+            <div class="mini-fb" id="mfb_${i}"></div>
+        </div>`;
     });
+    container.innerHTML = html;
+}
+
+window.g3Selections = {};
+
+function selG3(qIdx, symbol) {
+    const btns = document.querySelectorAll(`#mq_${qIdx} .mini-btn`);
+    btns.forEach(b => b.classList.remove('active'));
+    
+    if(symbol === '<') btns[0].classList.add('active');
+    if(symbol === '=') btns[1].classList.add('active');
+    if(symbol === '>') btns[2].classList.add('active');
+    
+    window.g3Selections[qIdx] = symbol;
 }
 
 function checkGame3() {
-    window.g3Data.forEach((q, i) => {
-        const zone = document.getElementById(`dz3_${i}`);
-        const fb = document.getElementById(`fb3_${i}`);
-        const userAns = zone.innerText.trim();
-        if(userAns === q.ans) {
-            zone.style.background = '#e8ffe8';
-            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
+    g3Data.forEach((item, i) => {
+        const box = document.getElementById(`mq_${i}`);
+        const fb = document.getElementById(`mfb_${i}`);
+        const correctAns = item.a > item.b ? '>' : item.a < item.b ? '<' : '=';
+        const userAns = window.g3Selections[i];
+
+        box.classList.remove('correct', 'wrong');
+
+        if(userAns === correctAns) {
+            box.classList.add('correct');
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i></span>';
         } else {
-            zone.style.background = '#ffe8e8';
-            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Answer: ${q.ans}</span>`;
+            box.classList.add('wrong');
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> ${correctAns}</span>`;
         }
-    });
-}
-function resetGame3() {
-    window.g3Data.forEach((q, i) => {
-        const zone = document.getElementById(`dz3_${i}`);
-        zone.innerText = ''; zone.style.background = ''; zone.classList.remove('filled');
-        document.getElementById(`fb3_${i}`).innerHTML = '';
     });
 }
 
-// --- Section 4 Logic ---
+function resetGame3() {
+    window.g3Selections = {};
+    g3Data.forEach((item, i) => {
+        const box = document.getElementById(`mq_${i}`);
+        const btns = box.querySelectorAll('.mini-btn');
+        btns.forEach(b => b.classList.remove('active'));
+        box.classList.remove('correct', 'wrong');
+        document.getElementById(`mfb_${i}`).innerHTML = '';
+    });
+}
+
+// --- Section 4 Logic (20 Quests, Tens & Ones Focus) ---
+const g4Data = [
+    {a:456, b:482}, {a:721, b:719}, {a:333, b:333}, {a:291, b:301}, {a:880, b:808},
+    {a:545, b:554}, {a:612, b:621}, {a:409, b:490}, {a:777, b:777}, {a:999, b:990},
+    {a:234, b:243}, {a:808, b:880}, {a:101, b:110}, {a:565, b:556}, {a:909, b:990},
+    {a:471, b:417}, {a:686, b:668}, {a:323, b:332}, {a:191, b:119}, {a:747, b:774}
+];
+const g4Icons = ['🔍', '🕵️', '👣', '🗝️', '🧩', '🔢', '💡', '🧠', '📝', '🎯', '🧐', '⚖️', '👁️', '🧲', '✨', '🎲', '🧩', '🗺️', '🧸', '🎲'];
+
+function initGame4() {
+    const container = document.getElementById('g4_questions');
+    let html = '';
+    g4Data.forEach((item, i) => {
+        const correctAns = item.a > item.b ? '>' : item.a < item.b ? '<' : '=';
+        html += `<div class="tens-ones-box anim-fade-up" style="animation-delay: ${i*0.05}s" id="tobox_${i}">
+            <div class="tens-ones-icon">${g4Icons[i]}</div>
+            <div style="font-size:1.2rem; font-weight:bold; margin-bottom:8px;">
+                ${item.a} <span class="math-font">?</span> ${item.b}
+            </div>
+            <div class="mini-btn-group">
+                <button class="mini-btn" onclick="selG4(${i}, '<')">&lt;</button>
+                <button class="mini-btn" onclick="selG4(${i}, '=')">=</button>
+                <button class="mini-btn" onclick="selG4(${i}, '>')">&gt;</button>
+            </div>
+            <div class="mini-fb" id="fb4_${i}"></div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+window.g4Selections = {};
+
+function selG4(qIdx, symbol) {
+    const btns = document.querySelectorAll(`#tobox_${qIdx} .mini-btn`);
+    btns.forEach(b => b.classList.remove('active'));
+    if(symbol === '<') btns[0].classList.add('active');
+    if(symbol === '=') btns[1].classList.add('active');
+    if(symbol === '>') btns[2].classList.add('active');
+    window.g4Selections[qIdx] = symbol;
+}
+
 function checkGame4() {
-    window.g4Data.forEach((q, i) => {
-        const sel = document.getElementById(`ans4_${i}`);
+    g4Data.forEach((item, i) => {
+        const box = document.getElementById(`tobox_${i}`);
         const fb = document.getElementById(`fb4_${i}`);
-        if(sel.value === q.ans) {
-            sel.parentElement.style.background = '#e8ffe8';
-            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
+        const correctAns = item.a > item.b ? '>' : item.a < item.b ? '<' : '=';
+        const userAns = window.g4Selections[i];
+        box.classList.remove('correct', 'wrong');
+        if(userAns === correctAns) {
+            box.classList.add('correct');
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Yes!</span>';
         } else {
-            sel.parentElement.style.background = '#ffe8e8';
-            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Correct symbol is ${q.ans}</span>`;
+            box.classList.add('wrong');
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> ${correctAns}</span>`;
         }
     });
 }
+
 function resetGame4() {
-    window.g4Data.forEach((q, i) => {
-        const sel = document.getElementById(`ans4_${i}`);
-        sel.value = ""; sel.parentElement.style.background = '';
+    window.g4Selections = {};
+    g4Data.forEach((item, i) => {
+        const box = document.getElementById(`tobox_${i}`);
+        box.classList.remove('correct', 'wrong');
+        box.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(`fb4_${i}`).innerHTML = '';
     });
 }
 
-// --- Section 5 Drag Sort ---
-function initSortingGame() {
-    const bank1 = document.getElementById('sortBank1');
-    const bank2 = document.getElementById('sortBank2');
-    
-    const createDragItem = (val, groupId) => {
-        const div = document.createElement('div');
-        div.className = 'drag-item';
-        div.draggable = true;
-        div.id = `sort_item_${groupId}_${val}`;
-        div.dataset.value = val;
-        div.innerText = val;
-        div.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', e.target.dataset.value);
-            e.dataTransfer.setData('item_id', e.target.id);
-        });
-        return div;
-    };
 
-    window.g5Data.asc.forEach(v => bank1.appendChild(createDragItem(v, 'asc')));
-    window.g5Data.desc.forEach(v => bank2.appendChild(createDragItem(v, 'desc')));
+// --- Section 5 Logic (10 Quests, Ordering 2 Cols) ---
+const g5Data = [
+    { nums: [231, 105, 890], type: "Asc", ans: "105, 231, 890" },
+    { nums: [678, 687, 670], type: "Desc", ans: "687, 678, 670" },
+    { nums: [450, 120, 560, 210], type: "Asc", ans: "120, 210, 450, 560" },
+    { nums: [909, 990, 919], type: "Desc", ans: "990, 919, 909" },
+    { nums: [300, 130, 310], type: "Asc", ans: "130, 300, 310" },
+    { nums: [820, 802, 880], type: "Desc", ans: "880, 820, 802" },
+    { nums: [411, 141, 114], type: "Asc", ans: "114, 141, 411" },
+    { nums: [543, 534, 545], type: "Desc", ans: "545, 543, 534" },
+    { nums: [700, 670, 707], type: "Asc", ans: "670, 700, 707" },
+    { nums: [222, 212, 221], type: "Desc", ans: "222, 221, 212" }
+];
 
-    ['sort1_', 'sort2_'].forEach(prefix => {
-        for(let i=1; i<=4; i++) {
-            const zone = document.getElementById(`${prefix}${i}`);
-            zone.addEventListener('dragover', e => e.preventDefault());
-            zone.addEventListener('drop', e => {
-                e.preventDefault();
-                const val = e.dataTransfer.getData('text/plain');
-                const itemId = e.dataTransfer.getData('item_id');
-                const item = document.getElementById(itemId);
-                if(item) item.style.display = 'none'; // hide from bank
-                zone.innerText = val;
-                zone.classList.add('filled');
-            });
-        }
+function initGame5() {
+    const container = document.getElementById('g5_questions');
+    let html = '';
+    g5Data.forEach((item, i) => {
+        const icon = item.type === 'Asc' ? '⬆️' : '⬇️';
+        const instr = item.type === 'Asc' ? 'Smallest to Biggest' : 'Biggest to Smallest';
+        html += `<div class="order-riddle-box anim-fade-up" style="animation-delay: ${i*0.1}s" id="obox_${i}">
+            <p><strong>${icon} ${item.type}ending Order (${instr}):</strong></p>
+            <p style="font-size:1.2rem; font-weight:bold; color:var(--hm-brown); margin:5px 0;">${item.nums.join(', ')}</p>
+            <input type="text" id="ans5_${i}" style="width: 100%; margin-top:5px;" placeholder="Type here...">
+            <div class="feedback" id="fb5_${i}"></div>
+        </div>`;
     });
+    container.innerHTML = html;
 }
 
 function checkGame5() {
-    // Ascending check
-    const ascCorrect = window.g5Data.asc.sort((a,b)=>a-b).join(',');
-    let ascUser = [];
-    for(let i=1; i<=4; i++) ascUser.push(document.getElementById(`sort1_${i}`).innerText.trim());
-    const ascUserStr = ascUser.join(',');
-    
-    const fb1 = document.getElementById('fb_sort1');
-    if(ascUserStr === ascCorrect) {
-        fb1.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Ascending Correct!</span>';
-    } else {
-        fb1.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Ascending Wrong. Correct order: ${window.g5Data.asc.sort((a,b)=>a-b).join(', ')}</span>`;
-    }
-
-    // Descending check
-    const descCorrect = window.g5Data.desc.sort((a,b)=>b-a).join(',');
-    let descUser = [];
-    for(let i=1; i<=4; i++) descUser.push(document.getElementById(`sort2_${i}`).innerText.trim());
-    const descUserStr = descUser.join(',');
-
-    const fb2 = document.getElementById('fb_sort2');
-    if(descUserStr === descCorrect) {
-        fb2.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Descending Correct!</span>';
-    } else {
-        fb2.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Descending Wrong. Correct order: ${window.g5Data.desc.sort((a,b)=>b-a).join(', ')}</span>`;
-    }
-}
-function resetGame5() {
-    ['sort1_', 'sort2_'].forEach(prefix => {
-        for(let i=1; i<=4; i++) {
-            const zone = document.getElementById(`${prefix}${i}`);
-            zone.innerText = ''; zone.classList.remove('filled');
+    g5Data.forEach((item, i) => {
+        const box = document.getElementById(`obox_${i}`);
+        const input = document.getElementById(`ans5_${i}`);
+        const fb = document.getElementById(`fb5_${i}`);
+        // Bersihkan spasi lalu bandingkan
+        const userAns = input.value.replace(/\s/g, '');
+        const correctAns = item.ans.replace(/\s/g, '');
+        
+        box.classList.remove('correct', 'wrong');
+        if(userAns === correctAns) {
+            box.classList.add('correct');
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct Order!</span>';
+        } else {
+            box.classList.add('wrong');
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Correct: ${item.ans}</span>`;
         }
     });
-    document.getElementById('fb_sort1').innerHTML = '';
-    document.getElementById('fb_sort2').innerHTML = '';
-    
-    // Show all items in banks again
-    document.querySelectorAll('#sortBank1 .drag-item, #sortBank2 .drag-item').forEach(el => el.style.display = '');
 }
 
-// --- Section 6 Logic ---
-function checkGame6() {
-    const answers = { ans6_1: "455", ans6_2: "702", ans6_3: "426", ans6_4: "false", ans6_5: "951" };
-    const solutions = {
-        ans6_1: "Between 450 & 460, ends in 5 -> 455.",
-        ans6_2: "Bigger than 700, smaller than 710, ones is 2 -> 702.",
-        ans6_3: "4 in hundreds, 420-430, even, ends in 6 -> 426.",
-        ans6_4: "820 is EQUAL to 820 (700+120). So it's not greater.",
-        ans6_5: "Largest digit (9) in Hundreds, then 5, then 1 -> 951."
-    };
-    for(let id in answers) {
-        const el = document.getElementById(id);
-        const fb = el.parentElement.querySelector('.feedback');
-        if(el.value.trim().toLowerCase() === answers[id].toLowerCase()) {
-            el.parentElement.classList.add('correct');
-            el.parentElement.classList.remove('wrong');
-            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
-        } else {
-            el.parentElement.classList.add('wrong');
-            el.parentElement.classList.remove('correct');
-            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Wrong. Solution: ${solutions[id]}</span>`;
-        }
-    }
+function resetGame5() {
+    g5Data.forEach((item, i) => {
+        document.getElementById(`obox_${i}`).classList.remove('correct', 'wrong');
+        document.getElementById(`ans5_${i}`).value = '';
+        document.getElementById(`fb5_${i}`).innerHTML = '';
+    });
 }
+
+
+// --- Section 6 Logic (10 Quests, Riddles 2 Cols) ---
+const g6Data = [
+    { q: "I am between 450 and 460. My last digit is 5.", ans: "455", hint: "It's 455" },
+    { q: "Bigger than 700 but smaller than 710. Ones digit is 2.", ans: "702", hint: "It's 702" },
+    { q: "4 in hundreds. Between 420 & 430. Even, ends in 6.", ans: "426", hint: "It's 426" },
+    { q: "True or False: 820 > 700 + 120?", ans: "false", hint: "820 = 820, so False" },
+    { q: "Largest 3-digit using 1, 9, 5?", ans: "951", hint: "951" },
+    { q: "Smallest 3-digit using 3, 0, 7?", ans: "307", hint: "307 (can't start with 0)" },
+    { q: "I am 10 more than 542.", ans: "552", hint: "Add 10 to Tens" },
+    { q: "I am 10 less than 890.", ans: "880", hint: "Subtract 10 from Tens" },
+    { q: "9 ones, 0 tens, 6 hundreds. What number am I?", ans: "609", hint: "609" },
+    { q: "My digits add to 10. I start with 5, end with 3. (5+_+3=10)", ans: "523", hint: "Middle is 2" }
+];
+
+function initGame6() {
+    const container = document.getElementById('g6_questions');
+    let html = '';
+    g6Data.forEach((item, i) => {
+        html += `<div class="order-riddle-box anim-fade-up" style="animation-delay: ${i*0.1}s" id="rbox_${i}">
+            <p><strong>🧩 Riddle ${i+1}:</strong> ${item.q}</p>
+            <input type="text" id="ans6_${i}" style="width: 100%; margin-top:5px;" placeholder="Your answer...">
+            <div class="feedback" id="fb6_${i}"></div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function checkGame6() {
+    g6Data.forEach((item, i) => {
+        const box = document.getElementById(`rbox_${i}`);
+        const input = document.getElementById(`ans6_${i}`);
+        const fb = document.getElementById(`fb6_${i}`);
+        const userAns = input.value.trim().toLowerCase();
+        const correctAns = item.ans.toLowerCase();
+        
+        box.classList.remove('correct', 'wrong');
+        if(userAns === correctAns) {
+            box.classList.add('correct');
+            fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Brilliant!</span>';
+        } else {
+            box.classList.add('wrong');
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Hint: ${item.hint}</span>`;
+        }
+    });
+}
+
 function resetGame6() {
-    ['ans6_1','ans6_2','ans6_3','ans6_4','ans6_5'].forEach(id => {
-        const el = document.getElementById(id);
-        el.value = '';
-        el.parentElement.classList.remove('correct', 'wrong');
-        el.parentElement.querySelector('.feedback').innerHTML = '';
+    g6Data.forEach((item, i) => {
+        document.getElementById(`rbox_${i}`).classList.remove('correct', 'wrong');
+        document.getElementById(`ans6_${i}`).value = '';
+        document.getElementById(`fb6_${i}`).innerHTML = '';
     });
 }
 
@@ -1009,14 +1046,13 @@ function submitAssess(g) {
             userAns = userAns.join(", ");
         }
 
+        qBox.classList.remove('correct', 'wrong');
         if(isCorrect) {
             qBox.classList.add('correct');
-            qBox.classList.remove('wrong');
             fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
             score++;
         } else {
             qBox.classList.add('wrong');
-            qBox.classList.remove('correct');
             const correctDisplay = Array.isArray(item.ans) ? item.ans.join(", ") : item.ans;
             fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Incorrect. Correct Answer: ${correctDisplay}</span>`;
         }
@@ -1086,6 +1122,16 @@ function openTab(evt, tabName) {
     evt.currentTarget.className += " active";
 }
 
+// --- BAGIAN INI YANG TADI HILANG ---
+window.onload = function() {
+    initGame1();
+    initGame2();
+    initGame3();
+    initGame4();
+    initGame5();
+    initGame6();
+    initAssessment();
+};
 </script>
 </body>
 </html>
