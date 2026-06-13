@@ -187,7 +187,7 @@
         .feedback.correct-fb { color: green; }
         .feedback.wrong-fb { color: red; }
 
-        input[type="text"], select {
+        input[type="text"], input[type="date"], select {
             padding: 5px 10px; border: 2px solid var(--hm-green); border-radius: 5px; font-family: 'Quicksand'; font-weight: bold;
         }
 
@@ -205,10 +205,10 @@
         /* Print Styles */
         @media print {
             body { background: white; }
-            .container { box-shadow: none; border: none; }
-            header, .rules-box, .section, .tab-btn, .btn, .no-print { display: none !important; }
-            .tab-content { display: block !important; border: none; page-break-inside: avoid; }
-            .assessment-section { display: block !important; }
+            .container { box-shadow: none; border: none; border-radius: 0; }
+            /* Sembunyikan SEMUA elemen interaktif dan section lain */
+            header, .rules-box, .section, .tab-btn, .btn, .no-print, .assessment-section { display: none !important; }
+            /* Tampilkan HANYA area cetak yang sudah berisi tabel rapi */
             #printArea { display: block !important; }
         }
         
@@ -233,8 +233,7 @@
 
         /* Section 2: Rucksack Theme */
         .rucksack-container { background: #F5DEB3; border: 4px solid #8B4513; border-radius: 15px; padding: 20px; position: relative; box-shadow: inset 0 0 20px rgba(139, 69, 19, 0.2); }
-        .rucksack-container::before { content: '🎒'; font-size: 3rem; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #FFF8DC; padding: 0 10px; border-radius: 10px;}
-        .item-slot { display: flex; justify-content: center; gap: 20px; align-items: center; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.6); border-radius: 10px; border: 2px dashed #D2B48C; }
+        .item-slot { display: flex; justify-content: center; gap: 20px; align-items: center; margin-bottom: 0px; padding: 15px; background: rgba(255,255,255,0.6); border-radius: 10px; border: 2px dashed #D2B48C; }
         .item-box { background: #FFF8DC; border: 3px solid #556B2F; border-radius: 8px; padding: 10px 20px; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; text-align: center; min-width: 80px; position: relative; }
         .item-box:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.2); background: #FFD700; color: #333; }
         .item-box.selected { border-color: #FFD700; background: #8FBC8F; color: white; transform: scale(1.05); box-shadow: 0 0 15px #FFD700; }
@@ -349,8 +348,10 @@
         <div class="game-area" id="game2">
             <div class="game-title pixel-font">🛒 Rucksack Market Compare</div>
             <p style="text-align:center; margin-bottom:15px; font-weight:bold;">Open your bag! Click the BIGGER number to keep it!</p>
-            <div class="rucksack-container" id="g2_questions">
-                <!-- Diisi oleh Javascript -->
+            <div class="rucksack-container">
+                <div class="grid-2col" id="g2_questions">
+                    <!-- Diisi oleh Javascript -->
+                </div>
             </div>
             <div class="btn-group">
                 <button class="btn btn-check" onclick="checkGame2()"><i class="fas fa-check-circle"></i> Check</button>
@@ -729,7 +730,7 @@ function checkGame3() {
             fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i></span>';
         } else {
             box.classList.add('wrong');
-            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> ${correctAns}</span>`;
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i></span>`;
         }
     });
 }
@@ -799,7 +800,7 @@ function checkGame4() {
             fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Yes!</span>';
         } else {
             box.classList.add('wrong');
-            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> ${correctAns}</span>`;
+            fb.innerHTML = `<span class="wrong-fb"><i class="fas fa-times"></i> Incorrect!</span>`;
         }
     });
 }
