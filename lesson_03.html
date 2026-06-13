@@ -593,6 +593,7 @@ function checkGame1() {
         const input = document.getElementById(`ans1_${i}`);
         const fb = document.getElementById(`fb1_${i}`);
         const box = document.getElementById(`q1_${i}`);
+        box.classList.remove('anim-fade-up');
         if(input.value.trim() === item.ans) {
             box.classList.add('correct'); box.classList.remove('wrong');
             fb.innerHTML = '<span class="correct-fb"><i class="fas fa-check"></i> Correct!</span>';
@@ -717,6 +718,7 @@ function checkGame3() {
     g3Data.forEach((item, i) => {
         const box = document.getElementById(`mq_${i}`);
         const fb = document.getElementById(`mfb_${i}`);
+        box.classList.remove('anim-fade-up');
         const correctAns = item.a > item.b ? '>' : item.a < item.b ? '<' : '=';
         const userAns = window.g3Selections[i];
 
@@ -788,6 +790,7 @@ function checkGame4() {
     g4Data.forEach((item, i) => {
         const box = document.getElementById(`tobox_${i}`);
         const fb = document.getElementById(`fb4_${i}`);
+        box.classList.remove('anim-fade-up');
         const correctAns = item.a > item.b ? '>' : item.a < item.b ? '<' : '=';
         const userAns = window.g4Selections[i];
         box.classList.remove('correct', 'wrong');
@@ -847,6 +850,7 @@ function checkGame5() {
         const box = document.getElementById(`obox_${i}`);
         const input = document.getElementById(`ans5_${i}`);
         const fb = document.getElementById(`fb5_${i}`);
+        box.classList.remove('anim-fade-up');
         // Bersihkan spasi lalu bandingkan
         const userAns = input.value.replace(/\s/g, '');
         const correctAns = item.ans.replace(/\s/g, '');
@@ -903,6 +907,7 @@ function checkGame6() {
         const box = document.getElementById(`rbox_${i}`);
         const input = document.getElementById(`ans6_${i}`);
         const fb = document.getElementById(`fb6_${i}`);
+        box.classList.remove('anim-fade-up');
         const userAns = input.value.trim().toLowerCase();
         const correctAns = item.ans.toLowerCase();
         
