@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Tutoring — Pairs and Spares</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+/* ============== DESIGN TOKENS ============== */
+:root{
+  --green:#58cc02; --green-dark:#58a700; --green-light:#d7ffb8;
+  --blue:#1cb0f6; --blue-light:#ddf4ff; --blue-dark:#0a87d6;
+  --red:#ff4b4b; --red-light:#ffdfe0;
+  --yellow:#ffc800; --yellow-dark:#e6a700;
+  --purple:#ce82ff; --orange:#ff9600;
+  --bg:#fff; --text:#3c3c3c; --text-light:#777;
+  --border:#e5e5e5; --border-hover:#bfbfbf;
+  --bg-gray:#f7f7f7; --shadow:0 4px 0 rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Nunito',sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+.app{max-width:820px;margin:0 auto;min-height:100vh;position:relative;background:#fff;
+     box-shadow:0 0 30px rgba(0,0,0,.05)}
+
+/* ============== TOPBAR (MAP) ============== */
+.topbar{display:flex;align-items:center;padding:14px 20px;background:#fff;
+        border-bottom:2px solid var(--border);position:sticky;top:0;z-index:10}
+.rules-btn{margin-left:auto;margin-right:20px;background:var(--blue-light);color:var(--blue-dark);
+           border:2px solid var(--blue);padding:8px 14px;border-radius:12px;font-weight:800;
+           font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.rules-btn:hover{background:#a4dcff}
+.rules-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;
+               display:none;align-items:center;justify-content:center;padding:20px}
+.rules-overlay.show{display:flex;animation:fadeUp .3s}
+.rules-modal{background:#fff;border-radius:20px;padding:30px 24px;max-width:380px;width:100%;
+             position:relative;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center}
+.rules-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:20px;
+             color:var(--text-light);cursor:pointer}
+.rules-title{font-size:24px;font-weight:900;color:var(--text);margin-bottom:6px}
+.rules-sub{font-size:14px;color:var(--text-light);margin-bottom:24px}
+.rule-item{display:flex;align-items:flex-start;gap:14px;text-align:left;
+           background:var(--bg-gray);padding:16px;border-radius:14px;margin-bottom:12px}
+.rule-icon{font-size:28px;background:#fff;width:50px;height:50px;border-radius:50%;
+           display:flex;align-items:center;justify-content:center;flex-shrink:0;
+           border:2px solid var(--border)}
+.rule-text b{font-size:16px;color:var(--text);display:block;margin-bottom:4px}
+.rule-text p{font-size:14px;color:var(--text-light);line-height:1.4}
+.topbar .logo{display:flex;flex-direction:column;line-height:1.1;cursor:pointer}
+.topbar .logo .logo-main{font-weight:900;font-size:18px;color:var(--green);letter-spacing:-.5px}
+.topbar .logo .logo-sub{font-weight:700;font-size:11px;color:var(--blue);letter-spacing:1.5px;margin-top:2px}
+.topbar .stats{display:flex;gap:18px;margin-left:auto;align-items:center}
+.stat{display:flex;align-items:center;gap:6px;font-weight:800;font-size:15px}
+.stat .ic{font-size:18px}
+
+/* ============== MAP VIEW ============== */
+.map-view{padding:24px 20px 120px}
+.map-header{text-align:center;margin-bottom:28px}
+.map-header h1{font-size:26px;font-weight:900;margin-bottom:6px}
+.map-header p{color:var(--text-light);font-size:14px}
+.map-container{position:relative;padding:30px 10px;min-height:1080px}
+.map-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.map-node{position:absolute;width:72px;height:72px;border-radius:50%;
+          display:flex;align-items:center;justify-content:center;
+          font-size:28px;font-weight:900;cursor:pointer;z-index:2;
+          transition:transform .2s;user-select:none;
+          transform:translate(-50%,-50%)}
+.map-node.locked{background:#e5e5e5;color:#afafaf;cursor:not-allowed;box-shadow:0 4px 0 #cfcfcf}
+.map-node.available{background:var(--green);color:#fff;box-shadow:0 6px 0 var(--green-dark);
+                     animation:bounce 2s infinite}
+.map-node.completed{background:var(--yellow);color:#fff;box-shadow:0 6px 0 var(--yellow-dark)}
+.map-node.current{background:var(--blue);color:#fff;box-shadow:0 6px 0 var(--blue-dark)}
+.map-node.available:hover,.map-node.completed:hover,.map-node.current:hover{transform:translate(-50%,calc(-50% - 3px))}
+@keyframes bounce{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 5px))}}
+.node-label{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:8px;
+            font-size:11px;font-weight:800;color:var(--text);white-space:nowrap;
+            background:#fff;padding:3px 10px;border-radius:8px;border:2px solid var(--border)}
+.node-progress{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:6px;
+               width:48px;height:6px;background:var(--border);border-radius:999px;overflow:hidden}
+.node-progress span{display:block;height:100%;background:var(--green);transition:width .4s}
+.node-tooltip{position:absolute;top:-46px;left:50%;transform:translateX(-50%);
+              background:#333;color:#fff;padding:6px 12px;border-radius:8px;
+              font-size:12px;font-weight:700;white-space:nowrap;opacity:0;pointer-events:none;
+              transition:opacity .2s;z-index:5}
+.node-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+                     border:5px solid transparent;border-top-color:#333}
+.map-node:hover .node-tooltip{opacity:1}
+
+/* ============== LESSON VIEW ============== */
+.lesson-view{display:none;position:fixed;inset:0;background:#fff;z-index:100;
+             flex-direction:column;max-width:820px;margin:0 auto}
+.lesson-view.active{display:flex}
+.lesson-topbar{display:flex;align-items:center;padding:14px 20px;gap:16px;
+               border-bottom:1px solid var(--border)}
+.lesson-close{background:none;border:none;font-size:24px;cursor:pointer;
+              color:var(--text-light);padding:4px;line-height:1}
+.lesson-progress{flex:1;height:14px;background:var(--border);border-radius:999px;overflow:hidden}
+.lesson-progress-bar{height:100%;background:var(--green);border-radius:999px;
+                     transition:width .4s ease;width:0%;position:relative}
+.lesson-progress-bar::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+                            background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+                            animation:shimmer 2s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.lesson-hearts{display:flex;align-items:center;gap:4px;font-weight:900;color:var(--red);font-size:18px}
+.lesson-time{font-size:13px;font-weight:800;color:var(--blue-dark);background:var(--blue-light);padding:5px 10px;border-radius:8px;border:1px solid var(--blue);white-space:nowrap}
+.node-time-label{font-size:10px;color:var(--text-light);font-weight:700;display:block;text-align:center;margin-top:2px}
+.lesson-content{flex:1;padding:24px 20px;overflow-y:auto}
+
+/* ============== THEORY CARD ============== */
+.theory-card{background:linear-gradient(135deg,#fffce8,#fff);
+             border:2px solid var(--yellow);border-radius:18px;padding:24px;
+             box-shadow:0 4px 0 var(--yellow-dark)}
+.theory-badge{display:inline-block;background:var(--yellow);color:#fff;
+              padding:4px 12px;border-radius:999px;font-size:12px;font-weight:800;
+              margin-bottom:12px;letter-spacing:.5px}
+.theory-card h2{font-size:24px;margin-bottom:14px;color:var(--text);font-weight:900}
+.theory-card .theory-body{font-size:16px;line-height:1.7;color:var(--text)}
+.theory-card .theory-body p{margin-bottom:12px}
+.formula-box{background:#fff;border-left:5px solid var(--green);padding:14px 18px;
+             margin:14px 0;font-family:'Courier New',monospace;font-size:20px;
+             font-weight:700;border-radius:6px;color:var(--green-dark)}
+.example-box{background:#fff;padding:14px 18px;margin:14px 0;border-radius:10px;
+             border:2px solid var(--border);font-size:15px}
+.example-box b{color:var(--blue-dark)}
+.tip-box{background:var(--blue-light);border:2px solid var(--blue);padding:12px 16px;
+         border-radius:10px;margin-top:14px;font-size:14px;color:var(--blue-dark)}
+.tip-box b{color:var(--blue-dark)}
+
+/* ============== QUESTION ============== */
+.q-prompt{font-size:22px;font-weight:900;margin-bottom:8px;line-height:1.3}
+.q-sub{font-size:14px;color:var(--text-light);margin-bottom:18px}
+.q-image{font-size:64px;text-align:center;margin:12px 0}
+.q-hint{font-size:13px;color:var(--text-light);font-style:italic;margin-top:8px}
+
+/* Bilingual Translation Class */
+.translation { font-size: 13px; color: var(--text-light); font-style: italic; display: block; margin-top: 4px; line-height: 1.4; }
+.option .translation, .checkbox-option .translation, .pair-item .translation { display: block; font-size: 12px; margin-top: 2px; }
+
+/* Multiple choice */
+.options{display:grid;gap:10px}
+.option{padding:14px 16px;border:2px solid var(--border);border-radius:14px;
+        cursor:pointer;font-size:16px;font-weight:700;transition:all .15s;
+        background:#fff;user-select:none;text-align:left;display:flex;
+        align-items:center;gap:12px}
+.option:hover{border-color:var(--border-hover)}
+.option .o-key{width:30px;height:30px;border-radius:8px;border:2px solid var(--border);
+               display:flex;align-items:center;justify-content:center;font-size:13px;
+               flex-shrink:0;font-weight:900;color:var(--text-light)}
+.option.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark)}
+.option.selected .o-key{border-color:var(--blue);background:var(--blue);color:#fff}
+.option.correct{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+.option.correct .o-key{border-color:var(--green);background:var(--green);color:#fff}
+.option.wrong{border-color:var(--red);background:var(--red-light);color:var(--red)}
+.option.wrong .o-key{border-color:var(--red);background:var(--red);color:#fff}
+.option.disabled{cursor:default;pointer-events:none}
+
+/* Typing */
+.typing-input{width:100%;padding:14px 16px;border:2px solid var(--border);
+              border-radius:14px;font-size:18px;font-weight:700;outline:none;
+              font-family:inherit;background:#fff;transition:all .15s}
+.typing-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light)}
+.typing-input.correct{border-color:var(--green);background:var(--green-light)}
+.typing-input.wrong{border-color:var(--red);background:var(--red-light)}
+
+/* Dropdown */
+.sentence{font-size:20px;line-height:2.4;font-weight:700}
+.dropdown-select{display:inline-block;padding:6px 14px;border:2px solid var(--border);
+                 border-radius:12px;background:#fff;font-size:16px;font-weight:800;
+                 cursor:pointer;font-family:inherit;margin:0 4px;outline:none;
+                 color:var(--blue-dark);transition:all .15s}
+.dropdown-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light)}
+.dropdown-select.correct{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+.dropdown-select.wrong{border-color:var(--red);background:var(--red-light);color:var(--red)}
+
+/* Drag and drop */
+.drag-bank{display:flex;flex-wrap:wrap;gap:8px;min-height:54px;padding:14px;
+           background:var(--bg-gray);border-radius:14px;border:2px dashed var(--border);margin-bottom:16px}
+.drag-item{padding:8px 16px;background:#fff;border:2px solid var(--border);
+           border-radius:12px;cursor:grab;font-weight:800;font-size:15px;
+           user-select:none;transition:all .15s;box-shadow:var(--shadow)}
+.drag-item:hover{transform:translateY(-2px);border-color:var(--border-hover)}
+.drag-item.dragging{opacity:.4;cursor:grabbing}
+.drag-item.placed{background:var(--blue);color:#fff;border-color:var(--blue);
+                  box-shadow:0 4px 0 var(--blue-dark)}
+.drop-zone{display:inline-flex;align-items:center;justify-content:center;
+           min-width:80px;min-height:40px;padding:4px 10px;
+           border:2px dashed var(--blue);border-radius:10px;vertical-align:middle;
+           margin:0 4px;background:var(--blue-light);transition:all .15s}
+.drop-zone.over{background:#a4dcff;border-style:solid}
+.drop-zone.filled{border-style:solid;background:#fff}
+.drop-zone.filled .drag-item{margin:0}
+
+/* Pairing */
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pair-col{display:grid;gap:10px}
+.pair-item{padding:14px;border:2px solid var(--border);border-radius:12px;
+           background:#fff;cursor:pointer;font-weight:800;text-align:center;
+           transition:all .15s;font-size:15px}
+.pair-item:hover{border-color:var(--border-hover)}
+.pair-item.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark)}
+.pair-item.matched{background:var(--green-light);border-color:var(--green);
+                   color:var(--green-dark);opacity:.5;pointer-events:none}
+.pair-item.wrong{border-color:var(--red);background:var(--red-light);
+                 animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* Checkbox */
+.checkbox-option{display:flex;align-items:center;gap:14px;padding:14px 16px;
+                 border:2px solid var(--border);border-radius:12px;cursor:pointer;
+                 user-select:none;transition:all .15s;background:#fff}
+.checkbox-option:hover{border-color:var(--border-hover)}
+.checkbox-option.checked{border-color:var(--blue);background:var(--blue-light)}
+.checkbox-box{width:26px;height:26px;border:2px solid var(--border);border-radius:8px;
+              display:flex;align-items:center;justify-content:center;flex-shrink:0;
+              font-weight:900;color:#fff;transition:all .15s}
+.checkbox-option.checked .checkbox-box{background:var(--blue);border-color:var(--blue)}
+.checkbox-option.correct{border-color:var(--green);background:var(--green-light)}
+.checkbox-option.correct .checkbox-box{background:var(--green);border-color:var(--green)}
+.checkbox-option.wrong{border-color:var(--red);background:var(--red-light)}
+.checkbox-option.wrong .checkbox-box{background:var(--red);border-color:var(--red)}
+
+/* Range */
+.range-wrap{padding:20px 0}
+.range-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.range-value{font-size:36px;font-weight:900;color:var(--green)}
+.range-unit{font-size:16px;color:var(--text-light);font-weight:700}
+.range-slider{width:100%;-webkit-appearance:none;height:14px;background:var(--border);
+              border-radius:999px;outline:none;margin:8px 0}
+.range-slider::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;
+              background:var(--green);border-radius:50%;cursor:pointer;border:5px solid #fff;
+              box-shadow:0 0 0 2px var(--green),0 2px 8px rgba(0,0,0,.2)}
+.range-slider::-moz-range-thumb{width:32px;height:32px;background:var(--green);
+              border-radius:50%;cursor:pointer;border:5px solid #fff;
+              box-shadow:0 0 0 2px var(--green),0 2px 8px rgba(0,0,0,.2)}
+.range-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;
+             color:var(--text-light);font-weight:700}
+
+/* ============== FOOTER ============== */
+.lesson-footer{padding:16px 20px;border-top:2px solid var(--border);background:#fff}
+.feedback{padding:16px;border-radius:14px;margin-bottom:12px;display:none}
+.feedback.show{display:block;animation:fadeUp .3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.feedback.correct{background:var(--green-light)}
+.feedback.wrong{background:var(--red-light)}
+.feedback-title{font-weight:900;font-size:17px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.feedback.correct .feedback-title{color:var(--green-dark)}
+.feedback.wrong .feedback-title{color:var(--red)}
+.feedback-text{font-size:14px;color:var(--text)}
+.action-btn{width:100%;padding:16px;border:none;border-radius:14px;font-size:16px;
+            font-weight:900;cursor:pointer;font-family:inherit;
+            background:var(--border);color:var(--text-light);transition:all .15s}
+.action-btn.active{background:var(--green);color:#fff;box-shadow:0 4px 0 var(--green-dark)}
+.action-btn.active:hover{filter:brightness(1.05)}
+.action-btn.active:active{transform:translateY(2px);box-shadow:0 2px 0 var(--green-dark)}
+.action-btn.skip{background:transparent;color:var(--text-light);box-shadow:none;
+                 border:2px solid var(--border);margin-top:8px}
+.action-btn.skip:hover{border-color:var(--border-hover)}
+
+/* ============== COMPLETE ============== */
+.complete-screen{display:none;text-align:center;padding:40px 20px;flex-direction:column;
+                 align-items:center;justify-content:center;flex:1}
+.complete-screen.show{display:flex}
+.complete-icon{font-size:90px;margin-bottom:16px;animation:pop .5s}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.complete-screen h1{font-size:34px;color:var(--yellow);margin-bottom:8px;font-weight:900;
+                    text-shadow:2px 2px 0 var(--yellow-dark)}
+.complete-screen .cs-sub{font-size:16px;color:var(--text-light);margin-bottom:24px}
+.complete-stats{display:flex;gap:14px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
+.complete-stat{background:#fff;padding:18px 28px;border-radius:16px;
+               border:2px solid var(--border);box-shadow:var(--shadow);min-width:110px}
+.complete-stat .stat-v{font-size:26px;font-weight:900;color:var(--green)}
+.complete-stat .stat-l{font-size:12px;color:var(--text-light);font-weight:700;
+                        text-transform:uppercase;letter-spacing:.5px}
+
+/* ============== RESPONSIVE ============== */
+@media (max-width:600px){
+  .pair-grid{grid-template-columns:1fr}
+  .map-node{width:60px;height:60px;font-size:22px}
+  .q-prompt{font-size:20px}
+  .topbar .stats{gap:12px;font-size:13px}
+  .lesson-content{padding:18px 16px}
+}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-main">🎪 Math Tutoring</span>
+      <span class="logo-sub">by Deni</span>
+    </div>
+    <button class="rules-btn" id="openRulesBtn" title="Class Rules">📋 Class Rules</button>
+    <div class="stats">
+      <div class="stat"><span class="ic">🔥</span><span id="streak">0</span></div>
+      <div class="stat"><span class="ic">💎</span><span id="gems">0</span></div>
+      <div class="stat"><span class="ic">❤️</span><span id="hearts">5</span></div>
+    </div>
+  </header>
+
+  <main class="map-view" id="mapView">
+    <div class="map-header">
+      <h1>Odd & Even Numbers</h1>
+      <p>Bilangan Ganjil, Genap, dan Sifatnya</p>
+    </div>
+    <div class="map-container" id="mapContainer">
+      <svg class="map-svg" id="mapSvg" viewBox="0 0 800 1080" preserveAspectRatio="none"></svg>
+    </div>
+  </main>
+
+  <div class="lesson-view" id="lessonView">
+    <header class="lesson-topbar">
+      <button class="lesson-close" id="lessonClose" title="Exit">✕</button>
+      <div class="lesson-progress"><div class="lesson-progress-bar" id="progressBar"></div></div>
+      <div class="lesson-time" id="lessonTime">No Timer</div>
+      <div class="lesson-hearts">❤️ <span id="lessonHearts">5</span></div>
+    </header>
+    <div class="lesson-content" id="lessonContent"></div>
+    <footer class="lesson-footer">
+      <div class="feedback" id="feedback"></div>
+      <button class="action-btn" id="actionBtn">Check</button>
+      <button class="action-btn skip hidden" id="resetBtn">🔄 Reset Answer</button>
+    </footer>
+  </div>
+
+  <div class="lesson-view" id="completeView" style="background:linear-gradient(135deg,#fffce8,#d7ffb8)">
+    <div class="complete-screen show" id="completeScreen">
+      <div class="complete-icon">🏆</div>
+      <h1 id="completeTitle">Excellent!</h1>
+      <p class="cs-sub" id="completeSub">Lesson completed</p>
+      <div class="complete-stats">
+        <div class="complete-stat"><div class="stat-v" id="finalXp">+10 XP</div><div class="stat-l">XP Earned</div></div>
+        <div class="complete-stat"><div class="stat-v" id="finalAccuracy">100%</div><div class="stat-l">Accuracy</div></div>
+        <div class="complete-stat"><div class="stat-v" id="finalCorrect">0/0</div><div class="stat-l">Correct</div></div>
+      </div>
+      <button class="action-btn active" id="continueBtn" style="max-width:320px">Continue</button>
+      <button class="action-btn" id="printResultBtn" style="max-width:320px; margin-top:10px; display:none; background:var(--blue); color:#fff; box-shadow:0 4px 0 var(--blue-dark);">🖨️ Print Result</button>
+    </div>
+  </div>
+
+  <div class="rules-overlay" id="rulesOverlay">
+    <div class="rules-modal">
+      <button class="rules-close" id="closeRulesBtn">✕</button>
+      <h2 class="rules-title">📋 Class Rules</h2>
+      <p class="rules-sub">Let's create a comfortable and conducive learning environment!</p>
+      <div class="rule-item">
+        <div class="rule-icon">🗣️</div>
+        <div class="rule-text">
+          <b>Take Turns Speaking</b>
+          <p>Respect the person speaking and wait for our turn.</p>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-icon">🚪</div>
+        <div class="rule-text">
+          <b>Ask for Permission</b>
+          <p>Always ask the teacher for permission if you need to leave the class.</p>
+        </div>
+      </div>
+      <button class="action-btn active" id="understandBtn" style="margin-top:20px">I Understand!</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<script>
+const App = {
+  state: {
+    hearts: 5, gems: 0, streak: 0,
+    completedLessons: [], currentLessonId: null,
+    currentStepIndex: 0, stepAnswered: false,
+    correctCount: 0, totalAnswered: 0,
+    selectedPair: null, dragSrc: null,
+    answeredHistory: [] 
+  },
+  nodePositions: [
+    { x: 400, y: 60 },   // 1. Spiral Review
+    { x: 560, y: 160 },  // 2. Intro
+    { x: 240, y: 260 },  // 3. Problem Intro
+    { x: 560, y: 360 },  // 4. Guided Practice
+    { x: 240, y: 460 },  // 5. Independent
+    { x: 400, y: 560 },  // 6. Consolidation
+    { x: 100, y: 720 },  // 7.1 Assessment A
+    { x: 250, y: 760 },  // 7.2 Assessment B
+    { x: 400, y: 780 },  // 7.3 Assessment C
+    { x: 550, y: 760 },  // 7.4 Assessment D
+    { x: 700, y: 720 },  // 7.5 Assessment E
+    { x: 400, y: 1000 }  // 8. Feedback Portal
+  ],
+  lessonMeta: [
+    { id: 0, icon: "1", title: "Spiral Review", desc: "Warm-up Basics", time: "00:00-00:10" },
+    { id: 1, icon: "2", title: "Real-World", desc: "Pairs & Spares", time: "00:10-00:15" },
+    { id: 2, icon: "3", title: "Ones Digit", desc: "The Secret Code", time: "00:15-00:25" },
+    { id: 3, icon: "4", title: "Parity Rules", desc: "Addition Magic", time: "00:25-00:40" },
+    { id: 4, icon: "5", title: "Guided Practice", desc: "Sorting Big Numbers", time: "00:40-00:55" },
+    { id: 5, icon: "6", title: "Independent", desc: "Secret Codes", time: "00:55-01:00" },
+    { id: 6, icon: "7.1", title: "Assessment A", desc: "Basic Odd & Even", time: "No Timer" },
+    { id: 7, icon: "7.2", title: "Assessment B", desc: "Ones Digit Rule", time: "No Timer" },
+    { id: 8, icon: "7.3", title: "Assessment C", desc: "Pairing Problems", time: "No Timer" },
+    { id: 9, icon: "7.4", title: "Assessment D", desc: "Parity Addition", time: "No Timer" },
+    { id: 10, icon: "7.5", title: "Assessment E", desc: "Advanced Logic", time: "No Timer" },
+    { id: 11, icon: "8", title: "Feedback Portal", desc: "Learn.algonova.id", time: "01:00-01:05" }
+  ],
+};
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+const el = (tag, cls, html) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+};
+
+const LESSONS = [
+  // ===== SECTION 1: SPIRAL REVIEW WARM-UP =====
+  {
+    id: 0,
+    steps: [
+      { 
+        type: "theory", 
+        title: "🧮 The Anatomy of Numbers", 
+        body: `<p>Welcome to the Math Tutoring! Let's warm up. Every number is made of blocks: Hundreds, Tens, and Ones.</p>
+               <p>In <b>452</b>, there are 4 Hundreds, 5 Tens, and 2 Ones!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 120 60" width="100%" style="max-width: 300px; display: block; margin: 0 auto;">
+				  <!-- 4 Hundreds -->
+				  <rect x="5" y="10" width="10" height="30" fill="#ff6b6b"/>
+				  <rect x="16" y="10" width="10" height="30" fill="#ff6b6b"/>
+				  <rect x="27" y="10" width="10" height="30" fill="#ff6b6b"/>
+				  <rect x="38" y="10" width="10" height="30" fill="#ff6b6b"/>
+				  <text x="22" y="55" font-size="8" text-anchor="middle" fill="#777">4 Hundreds</text>
+				  <!-- 5 Tens -->
+				  <rect x="55" y="10" width="8" height="6" fill="#4ecdc4"/>
+				  <rect x="55" y="17" width="8" height="6" fill="#4ecdc4"/>
+				  <rect x="55" y="24" width="8" height="6" fill="#4ecdc4"/>
+				  <rect x="55" y="31" width="8" height="6" fill="#4ecdc4"/>
+				  <rect x="55" y="38" width="8" height="6" fill="#4ecdc4"/>
+				  <text x="59" y="55" font-size="8" text-anchor="middle" fill="#777">5 Tens</text>
+				  <!-- 2 Ones -->
+				  <circle cx="75" cy="15" r="4" fill="#ffe66d"/>
+				  <circle cx="85" cy="15" r="4" fill="#ffe66d"/>
+				  <text x="80" y="55" font-size="8" text-anchor="middle" fill="#777">2 Ones</text>
+				</svg>
+               </div>
+               <p class="translation">Selamat datang di Petualangan Matematika! Mari pemanasan. Setiap angka terdiri dari balok: Ratusan, Puluhan, dan Satuan. Di 452, ada 4 Ratusan, 5 Puluhan, dan 2 Satuan!</p>` 
+      },
+      { 
+        type: "typing", 
+        prompt: "Look at the number 709. How many Tens are there? Type your answer below. <span class='translation'>(Lihat angka 709. Berapa puluhan yang ada? Ketik jawabanmu di bawah.)</span>", 
+        answer: "0", 
+        explanation: "In 709, the Tens digit is 0. <span class='translation'>Di 709, angka puluhan adalah 0.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "What is the value of the digit 5 in the number 452? <span class='translation'>(Berapakah nilai angka 5 pada bilangan 452?)</span>", 
+        options: ["5", "50", "500"], 
+        answer: 1, 
+        explanation: "The 5 is in the Tens place, so its value is 50. <span class='translation'>Angka 5 ada di tempat Puluhan, jadi nilainya 50.</span>" 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "In 813, the digit 8 is in the ________ place. <span class='translation'>(Pada 883, angka 8 berada di tempat ________.)</span>", 
+        sentence: "The digit 8 is in the [drop] place.", 
+        options: ["Hundreds", "Tens", "Ones"], 
+        answer: "Hundreds", 
+        explanation: "The first digit from the left is the Hundreds place. <span class='translation'>Angka pertama dari kiri adalah tempat Ratusan.</span>" 
+      },
+		{ 
+		  type: "checkbox", 
+		  prompt: "Which of these statements are true for the number 1000? <span class='translation'>(Manakah dari pernyataan ini yang benar untuk angka 1000?)</span>", 
+		  options: ["It is made of 10 Hundreds", "The Tens digit is 0", "It is made of 100 Tens", "The Ones digit is 1"], 
+		  answers: [0, 1, 2], 
+		  explanation: "1000 is made of 10 Hundreds or 100 Tens. The Tens digit is 0, and the Ones digit is also 0 (not 1). <span class='translation'>1000 terdiri dari 10 Ratusan atau 100 Puluhan. Angka Puluhan adalah 0, dan angka Satuan juga 0 (bukan 1).</span>" 
+		},
+      { 
+        type: "theory", 
+        title: "🪜 Counting Steps", 
+        body: `<p>Let's count up! If we are at 15, the next numbers are 16, 17, 18... Counting by 1s is like taking steps forward on a path.</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 200 40" width="100%" style="max-width: 300px; display: block; margin: 0 auto;">
+				  <path d="M10,30 Q50,10 90,30 T170,30" fill="none" stroke="#e5e5e5" stroke-width="2" stroke-dasharray="5,5"/>
+				  <circle cx="20" cy="23" r="8" fill="#a8e6cf"/><text x="20" y="26" font-size="8" text-anchor="middle" fill="#333">15</text>
+				  <circle cx="70" cy="23" r="8" fill="#dcedc1"/><text x="70" y="26" font-size="8" text-anchor="middle" fill="#333">16</text>
+				  <circle cx="120" cy="23" r="8" fill="#ffd3b6"/><text x="120" y="26" font-size="8" text-anchor="middle" fill="#333">17</text>
+				  <circle cx="170" cy="23" r="8" fill="#ffaaa5"/><text x="170" y="26" font-size="8" text-anchor="middle" fill="#333">18</text>
+				</svg>
+               </div>
+               <p class="translation">Mari berhitung maju! Jika kita di 15, angka berikutnya adalah 16, 17, 18... Berhitung maju 1 sama seperti melangkah ke depan.</p>` 
+      },
+      { 
+        type: "drag_drop", 
+        prompt: "Drag the numbers to complete the sequence from 15 to 20. <span class='translation'>(Seret angka untuk melengkapi urutan dari 15 ke 20.)</span>", 
+        sentence: "15, [drop], 17, [drop], [drop], 20", 
+        bank: ["16", "18", "19"], 
+        answer: "0,1,2", 
+        explanation: "The sequence is 15, 16, 17, 18, 19, 20. <span class='translation'>Urutannya adalah 15, 16, 17, 18, 19, 20.</span>" 
+      },
+      { 
+        type: "range", 
+        prompt: "We know 17 + 3 equals 20. Slide the pointer to the number 20. <span class='translation'>(Kita tahu 17 + 3 sama dengan 20. Geser pointer ke angka 20.)</span>", 
+        min: 0, max: 20, answer: 20, 
+        explanation: "17 plus 3 is exactly 20. <span class='translation'>17 ditambah 3 tepat 20.</span>" 
+      },
+      { 
+        type: "pairing", 
+        prompt: "Match the math problem to its correct answer. <span class='translation'>(Cocokkan soal matematika dengan jawaban yang benar.)</span>", 
+        pairs: [
+          { left: "12 - 4", right: "8" }, 
+          { left: "15 - 5", right: "10" }, 
+          { left: "10 - 2", right: "8" }
+        ] 
+      },
+      { 
+        type: "theory", 
+        title: "✨ Subtraction Magic", 
+        body: `<p>Subtraction is taking away! If you have 12 stickers and give 4 to a friend, you count backward: 12 minus 4 leaves you with 8.</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 120 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <text x="5" y="15" font-size="14">⭐⭐⭐⭐⭐⭐</text>
+				  <text x="5" y="35" font-size="14">⭐⭐<tspan fill="lightgray" stroke="red" stroke-width="1">⭐⭐⭐⭐</tspan></text>
+				</svg>
+               </div>
+               <p class="translation">Pengurangan adalah mengambil! Jika kamu punya 12 stiker dan memberikan 4 ke teman, kamu hitung mundur: 12 dikurangi 4 menyisakan 8.</p>` 
+      },
+      { 
+        type: "typing", 
+        prompt: "You have 10 apples. You eat 1. How many are left? Type your answer. <span class='translation'>(Kamu punya 10 apel. Kamu makan 1. Berapa sisanya? Ketik jawabanmu.)</span>", 
+        answer: "9", 
+        explanation: "10 - 1 = 9. <span class='translation'>10 - 1 = 9.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "What comes next? 15, 16, 17, ___ <span class='translation'>(Apa yang selanjutnya? 15, 16, 17, ___)</span>", 
+        options: ["14", "18", "20"], 
+        answer: 1, 
+        explanation: "We are counting up by 1, so the next number is 18. <span class='translation'>Kita berhitung maju 1, jadi angka berikutnya adalah 18.</span>" 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "If 10 is Even, 11 is ________. <span class='translation'>(Jika 10 Genap, 11 adalah ________.)</span>", 
+        sentence: "If 10 is Even, 11 is [drop].", 
+        options: ["Odd", "Even"], 
+        answer: "Odd", 
+        explanation: "11 ends in 1, which is an Odd number. <span class='translation'>11 berakhir di 1, yang merupakan bilangan Ganjil.</span>" 
+      }
+    ]
+  },
+
+  // ===== SECTION 2: INTRODUCTION & REAL-WORLD CONNECTION =====
+  {
+    id: 1,
+    steps: [
+      { 
+        type: "theory", 
+        title: "🦁 The Animal Dance Party", 
+        body: `<p>Imagine an animal dance party! Every lion needs a partner to dance. If 6 lions come, they form 3 perfect pairs. This is called an EVEN number!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 150 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <!-- Pair 1 -->
+				  <rect x="5" y="5" width="40" height="30" rx="5" fill="#e5e5e5"/>
+				  <circle cx="18" cy="20" r="8" fill="#f4a261"/>
+				  <circle cx="32" cy="20" r="8" fill="#f4a261"/>
+				  <!-- Pair 2 -->
+				  <rect x="55" y="5" width="40" height="30" rx="5" fill="#e5e5e5"/>
+				  <circle cx="68" cy="20" r="8" fill="#f4a261"/>
+				  <circle cx="82" cy="20" r="8" fill="#f4a261"/>
+				  <!-- Pair 3 -->
+				  <rect x="105" y="5" width="40" height="30" rx="5" fill="#e5e5e5"/>
+				  <circle cx="118" cy="20" r="8" fill="#f4a261"/>
+				  <circle cx="132" cy="20" r="8" fill="#f4a261"/>
+				</svg>
+               </div>
+               <p class="translation">Bayangkan pesta dansa hewan! Setiap singa butuh pasangan untuk menari. Jika 6 singa datang, mereka membentuk 3 pasangan sempurna. Ini disebut bilangan GENAP!</p>` 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "4 lions are dancing in pairs. Is 4 Even or Odd? <span class='translation'>(4 singa sedang menari berpasangan. Apakah 4 Genap atau Ganjil?)</span>", 
+        options: ["Even", "Odd"], 
+        answer: 0, 
+        explanation: "4 can be split into 2 perfect pairs, so it is Even. <span class='translation'>4 bisa dibagi menjadi 2 pasangan sempurna, jadi itu Genap.</span>" 
+      },
+      { 
+        type: "checkbox", 
+        prompt: "Which of these groups can be perfectly paired up without anyone left over? <span class='translation'>(Grup mana yang bisa berpasangan sempurna tanpa ada yang tersisa?)</span>", 
+        options: ["2", "5", "8", "10"], 
+        answers: [0, 2, 3], 
+        explanation: "2, 8, and 10 are Even numbers, so they have perfect pairs. <span class='translation'>2, 8, dan 10 adalah bilangan Genap, jadi mereka punya pasangan sempurna.</span>" 
+      },
+	{ 
+	  type: "drag_drop", 
+	  prompt: "Drag the lions into pairs. <span class='translation'>(Seret singa menjadi pasangan.)</span>", 
+	  sentence: "Pair 1: [drop] [drop] | Pair 2: [drop] [drop]", 
+	  bank: ["🦁", "🦁", "🦁", "🦁"], 
+	  answer: "0,1,2,3",
+	  unordered: true,
+	  explanation: "All 4 lions can be paired up evenly. <span class='translation'>Semua 4 singa bisa berpasangan dengan rata.</span>" 
+	},
+      { 
+        type: "theory", 
+        title: "🌧️ The Lonely Lion", 
+        body: `<p>Oh no! A 7th lion arrives! There is no partner for this lion. One is left 'lonely' or left over. This is called an ODD number!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 180 40" width="100%" style="max-width: 300px; display: block; margin: 0 auto;">
+				  <!-- 3 Pairs -->
+				  <rect x="5" y="5" width="40" height="30" rx="5" fill="#e5e5e5"/>
+				  <circle cx="18" cy="20" r="8" fill="#f4a261"/>
+				  <circle cx="32" cy="20" r="8" fill="#f4a261"/>
+				  <rect x="50" y="5" width="40" height="30" rx="5" fill="#e5e5e5"/>
+				  <circle cx="63" cy="20" r="8" fill="#f4a261"/>
+				  <circle cx="77" cy="20" r="8" fill="#f4a261"/>
+				  <rect x="95" y="5" width="40" height="30" rx="5" fill="#e5e5e5"/>
+				  <circle cx="108" cy="20" r="8" fill="#f4a261"/>
+				  <circle cx="122" cy="20" r="8" fill="#f4a261"/>
+				  <!-- 1 Alone -->
+				  <rect x="145" y="5" width="25" height="30" rx="5" fill="#ffdfe0"/>
+				  <circle cx="157" cy="20" r="8" fill="#264653"/>
+				  <text x="157" y="24" font-size="10" text-anchor="middle" fill="#fff">?</text>
+				</svg>
+               </div>
+               <p class="translation">Oh tidak! Singa ke-7 datang! Tidak ada pasangan untuk singa ini. Satu tersisa 'sendirian'. Ini disebut bilangan GANJIL!</p>` 
+      },
+      { 
+        type: "typing", 
+        prompt: "If 5 birds are on a wire, how many birds are left without a partner? Type the number. <span class='translation'>(Jika 5 burung di kawat, berapa burung yang tersisa tanpa pasangan? Ketik angkanya.)</span>", 
+        answer: "1", 
+        explanation: "4 birds pair up, leaving exactly 1 lonely bird. <span class='translation'>4 burung berpasangan, menyisakan tepat 1 burung sendirian.</span>" 
+      },
+      { 
+        type: "range", 
+        prompt: "Slide to the number of 'lonely' animals if there are 9 elephants. <span class='translation'>(Geser ke jumlah hewan 'sendirian' jika ada 9 gajah.)</span>", 
+        min: 0, max: 9, answer: 1, 
+        explanation: "No matter how big the Odd number is, there is always exactly 1 left over. <span class='translation'>Tidak peduli seberapa besar angka Ganjil, selalu ada tepat 1 yang tersisa.</span>" 
+      },
+      { 
+        type: "pairing", 
+        prompt: "Match the number to its status. <span class='translation'>(Cocokkan angka dengan statusnya.)</span>", 
+        pairs: [
+          { left: "2", right: "Partner / Even" }, 
+          { left: "3", right: "Lonely / Odd" }, 
+          { left: "4", right: "Partner / Even" }
+        ] 
+      },
+      { 
+        type: "theory", 
+        title: "⚖️ The Rule of Remainders", 
+        body: `<p>Even numbers have a 'partner' for everyone. Odd numbers always have exactly ONE 'lonely' one left over. This leftover is called a remainder!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 140 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <text x="10" y="15" font-size="10" fill="#777">Even (4)</text>
+				  <circle cx="15" cy="30" r="5" fill="#2a9d8f"/>
+				  <circle cx="30" cy="30" r="5" fill="#2a9d8f"/>
+				  <line x1="15" y1="30" x2="30" y2="30" stroke="#333" stroke-width="1"/>
+				  <circle cx="50" cy="30" r="5" fill="#2a9d8f"/>
+				  <circle cx="65" cy="30" r="5" fill="#2a9d8f"/>
+				  <line x1="50" y1="30" x2="65" y2="30" stroke="#333" stroke-width="1"/>
+				  <text x="85" y="15" font-size="10" fill="#777">Odd (5)</text>
+				  <circle cx="90" cy="30" r="5" fill="#e76f51"/>
+				  <circle cx="100" cy="30" r="5" fill="#e76f51"/>
+				  <circle cx="115" cy="30" r="5" fill="#e76f51"/>
+				  <circle cx="125" cy="30" r="5" fill="#e76f51"/>
+				  <line x1="90" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/>
+				  <line x1="115" y1="30" x2="125" y2="30" stroke="#333" stroke-width="1"/>
+				  <circle cx="135" cy="30" r="5" fill="#e76f51" stroke="#333" stroke-dasharray="2,2"/>
+				</svg>
+               </div>
+               <p class="translation">Bilangan genap memiliki 'pasangan' untuk semua. Bilangan ganjil selalu punya tepat SATU yang 'sendirian' tersisa. Sisa ini disebut sisa bagi!</p>` 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "8 turtles can form pairs perfectly. 8 is an ________ number. <span class='translation'>(8 kura-kura bisa berpasangan sempurna. 8 adalah bilangan ________.)</span>", 
+        sentence: "8 is an [drop] number.", 
+        options: ["Even", "Odd"], 
+        answer: "Even", 
+        explanation: "Because 8 pairs up perfectly with no remainders, it is Even. <span class='translation'>Karena 8 berpasangan sempurna tanpa sisa, itu Genap.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "Which number makes a lonely animal? <span class='translation'>(Angka mana yang membuat hewan sendirian?)</span>", 
+        options: ["6", "7", "10"], 
+        answer: 1, 
+        explanation: "7 is an Odd number, so one animal will be lonely. <span class='translation'>7 adalah Ganjil, jadi satu hewan akan sendirian.</span>" 
+      },
+      { 
+        type: "checkbox", 
+        prompt: "Which of these scenarios leaves ONE animal without a partner? <span class='translation'>(Skenario mana yang menyisahkan SATU hewan tanpa pasangan?)</span>", 
+        options: ["3 cats", "4 dogs", "7 birds", "8 fish"], 
+        answers: [0, 2], 
+        explanation: "3 and 7 are Odd numbers, meaning they leave exactly 1 leftover. <span class='translation'>3 dan 7 adalah Ganjil, berarti menyisakan tepat 1 tersisa.</span>" 
+      },
+		{ 
+		  type: "typing", 
+		  prompt: "I am the largest number less than 5. I have a partner. What number am I? <span class='translation'>(Saya angka terbesar kurang dari 5. Saya punya pasangan. Angka berapa saya?)</span>", 
+		  answer: "4", 
+		  explanation: "4 is the largest even number less than 5. (2 and 0 also have partners, but 4 is the largest). <span class='translation'>4 adalah bilangan genap terbesar kurang dari 5. (2 dan 0 juga punya pasangan, tapi 4 yang terbesar).</span>" 
+		}
+    ]
+  },
+  // ===== SECTION 3: REVIEW OF PRIOR KNOWLEDGE (THE ONES DIGIT) =====
+  {
+    id: 2,
+    steps: [
+      { 
+        type: "theory", 
+        title: "🔍 The King of the Ones", 
+        body: `<p>To tell if a huge number is Even or Odd, we ONLY need to look at the Ones place—the very last digit! In <b>128</b>, the 8 is the King of the Ones!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 120 50" width="100%" style="max-width: 200px; display: block; margin: 0 auto;">
+				  <text x="10" y="40" font-size="40" font-weight="bold" fill="#333">12<tspan fill="#e63946">8</tspan></text>
+				  <!-- Crown above the 8 -->
+				  <rect x="50" y="12" width="20" height="5" fill="#ffd700" stroke="#e6a700" stroke-width="1"/>
+				  <polygon points="50,12 55,2 60,12" fill="#ffd700" stroke="#e6a700" stroke-width="1"/>
+				  <polygon points="55,12 60,0 65,12" fill="#ffd700" stroke="#e6a700" stroke-width="1"/>
+				  <polygon points="60,12 65,2 70,12" fill="#ffd700" stroke="#e6a700" stroke-width="1"/>
+				  <circle cx="55" cy="4" r="1.5" fill="#ff4b4b"/>
+				  <circle cx="60" cy="2" r="1.5" fill="#1cb0f6"/>
+				  <circle cx="65" cy="4" r="1.5" fill="#ff4b4b"/>
+				</svg>
+               </div>
+               <p class="translation">Untuk mengetahui angka besar itu Genap atau Ganjil, kita HANYA perlu melihat tempat Satuan—angka paling terakhir! Di 128, si 8 adalah Raja Satuan!</p>` 
+      },
+      { 
+        type: "typing", 
+        prompt: "Look at 345. What digit is in the Ones place? Type it. <span class='translation'>(Lihat 345. Angka apa yang ada di tempat Satuan? Ketik.)</span>", 
+        answer: "5", 
+        explanation: "The last digit is 5. <span class='translation'>Angka terakhir adalah 5.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "In 682, which digit tells us if the number is even or odd? <span class='translation'>(Di 682, angka mana yang memberi tahu kita genap atau ganjil?)</span>", 
+        options: ["6", "8", "2"], 
+        answer: 2, 
+        explanation: "We only look at the very last digit to know. <span class='translation'>Kita hanya melihat angka paling akhir untuk mengetahui.</span>" 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "For the number 901, the Ones digit is ________. <span class='translation'>(Untuk angka 901, angka Satuannya adalah ________.)</span>", 
+        sentence: "The Ones digit is [drop].", 
+        options: ["9", "0", "1"], 
+        answer: "1", 
+        explanation: "The last digit of 901 is 1. <span class='translation'>Angka terakhir dari 901 adalah 1.</span>" 
+      },
+      { 
+        type: "theory", 
+        title: "🔑 The Secret Code: Even", 
+        body: `<p>The Secret Code! If the last digit is <b>0, 2, 4, 6,</b> or <b>8</b>, the number is EVEN. They all have partners! Let's say it together: 0, 2, 4, 6, 8!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 150 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <rect x="5" y="10" width="140" height="25" rx="12" fill="#d7ffb8"/>
+				  <text x="15" y="28" font-size="16" font-weight="bold" fill="#2a9d8f">0</text>
+				  <text x="40" y="28" font-size="16" font-weight="bold" fill="#2a9d8f">2</text>
+				  <text x="65" y="28" font-size="16" font-weight="bold" fill="#2a9d8f">4</text>
+				  <text x="90" y="28" font-size="16" font-weight="bold" fill="#2a9d8f">6</text>
+				  <text x="115" y="28" font-size="16" font-weight="bold" fill="#2a9d8f">8</text>
+				  <text x="25" y="29" font-size="12">👫</text>
+				  <text x="50" y="29" font-size="12">👫</text>
+				  <text x="75" y="29" font-size="12">👫</text>
+				  <text x="100" y="29" font-size="12">👫</text>
+				  <text x="125" y="29" font-size="12">👫</text>
+				</svg>
+               </div>
+               <p class="translation">Kode Rahasia! Jika angka terakhir adalah 0, 2, 4, 6, atau 8, bilangannya GENAP. Mereka semua punya pasangan! Mari ucapkan bersama: 0, 2, 4, 6, 8!</p>` 
+      },
+      { 
+        type: "checkbox", 
+        prompt: "Which of these numbers are Even? <span class='translation'>(Manakah dari bilangan ini yang Genap?)</span>", 
+        options: ["12", "34", "45", "88"], 
+        answers: [0, 1, 3], 
+        explanation: "12 ends in 2, 34 ends in 4, 88 ends in 8. All Even! <span class='translation'>12 berakhir di 2, 34 di 4, 88 di 8. Semua Genap!</span>" 
+      },
+      { 
+        type: "drag_drop", 
+        prompt: "Drag the Even numbers into the basket. <span class='translation'>(Seret bilangan Genap ke keranjang.)</span>", 
+        sentence: "Even Basket: [drop] [drop]", 
+        bank: ["10", "15", "22", "37"], 
+        answer: "0,2", 
+        explanation: "10 and 22 are Even because they end in 0 and 2. <span class='translation'>10 dan 22 Genap karena berakhir di 0 dan 2.</span>" 
+      },
+      { 
+        type: "range", 
+        prompt: "Choose the highest even digit. Slide to it! <span class='translation'>(Pilih digit genap tertinggi. Geser ke sana!)</span>", 
+        min: 0, max: 9, answer: 8, 
+        explanation: "8 is the highest even digit (0, 2, 4, 6, 8). <span class='translation'>8 adalah digit genap tertinggi.</span>" 
+      },
+      { 
+        type: "theory", 
+        title: "🌟 The Secret Code: Odd", 
+        body: `<p>What about the others? If the last digit is <b>1, 3, 5, 7,</b> or <b>9</b>, the number is ODD. One is always left over!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 150 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <rect x="5" y="10" width="140" height="25" rx="12" fill="#ffdfe0"/>
+				  <text x="15" y="28" font-size="16" font-weight="bold" fill="#e76f51">1</text>
+				  <text x="40" y="28" font-size="16" font-weight="bold" fill="#e76f51">3</text>
+				  <text x="65" y="28" font-size="16" font-weight="bold" fill="#e76f51">5</text>
+				  <text x="90" y="28" font-size="16" font-weight="bold" fill="#e76f51">7</text>
+				  <text x="115" y="28" font-size="16" font-weight="bold" fill="#e76f51">9</text>
+				  <text x="25" y="29" font-size="12">🧍</text>
+				  <text x="50" y="29" font-size="12">🧍</text>
+				  <text x="75" y="29" font-size="12">🧍</text>
+				  <text x="100" y="29" font-size="12">🧍</text>
+				  <text x="125" y="29" font-size="12">🧍</text>
+				</svg>
+               </div>
+               <p class="translation">Bagaimana dengan yang lain? Jika angka terakhir adalah 1, 3, 5, 7, atau 9, bilangannya GANJIL. Selalu ada satu tersisa!</p>` 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "Is the number 56 even or odd? <span class='translation'>(Apakah 56 genap atau ganjil?)</span>", 
+        options: ["Even", "Odd"], 
+        answer: 0, 
+        explanation: "56 ends in 6, which is Even. <span class='translation'>56 berakhir di 6, yang merupakan Genap.</span>" 
+      },
+      { 
+        type: "typing", 
+        prompt: "Identify the ones digit in 883 and type if it is Even or Odd. <span class='translation'>(Identifikasi angka satuan di 883 dan ketik Genap atau Ganjil.)</span>", 
+        answer: "Odd", 
+        explanation: "883 ends in 3. 3 is Odd. <span class='translation'>883 berakhir di 3. 3 itu Ganjil.</span>" 
+      },
+      { 
+        type: "pairing", 
+        prompt: "Match the ones digit to its group. <span class='translation'>(Cocokkan angka satuan ke grupnya.)</span>", 
+        pairs: [
+          { left: "4", right: "Even" }, 
+          { left: "7", right: "Odd" }, 
+          { left: "0", right: "Even" }
+        ] 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "Look at 21, 44, 75, 99. Which one is Even? <span class='translation'>(Lihat 21, 44, 75, 99. Mana yang Genap?)</span>", 
+        sentence: "The Even number is [drop].", 
+        options: ["21", "44", "75", "99"], 
+        answer: "44", 
+        explanation: "44 is the only one ending in an even digit (4). <span class='translation'>44 adalah satu-satunya yang berakhir di digit genap (4).</span>" 
+      }
+    ]
+  },
+
+  // ===== SECTION 4: PROBLEM INTRODUCTION (PARITY RULES) =====
+  {
+    id: 3,
+    steps: [
+      { 
+        type: "theory", 
+        title: "➕ Even Meets Odd", 
+        body: `<p>Let's discover the Secret Rules! What happens when Even meets Odd? 2 (Even) + 1 (Odd) = 3 (Odd). The 'lonely' one is still lonely! Rule: Even + Odd = Odd.</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 150 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <rect x="5" y="10" width="35" height="25" rx="5" fill="#e5e5e5"/>
+				  <circle cx="15" cy="22" r="6" fill="#2a9d8f"/>
+				  <circle cx="28" cy="22" r="6" fill="#2a9d8f"/>
+				  <text x="45" y="28" font-size="16" fill="#333">+</text>
+				  <rect x="55" y="10" width="20" height="25" rx="5" fill="#e5e5e5"/>
+				  <circle cx="65" cy="22" r="6" fill="#e76f51"/>
+				  <text x="80" y="28" font-size="16" fill="#333">=</text>
+				  <rect x="90" y="10" width="50" height="25" rx="5" fill="#ffdfe0"/>
+				  <circle cx="100" cy="22" r="6" fill="#e76f51"/>
+				  <circle cx="113" cy="22" r="6" fill="#e76f51"/>
+				  <circle cx="126" cy="22" r="6" fill="#e76f51"/>
+				  <line x1="100" y1="22" x2="113" y2="22" stroke="#333" stroke-width="1"/>
+				</svg>
+               </div>
+               <p class="translation">Mari temukan Aturan Rahasia! Apa yang terjadi saat Genap bertemu Ganjil? 2 (Genap) + 1 (Ganjil) = 3 (Ganjil). Si 'sendirian' tetap sendirian! Aturan: Genap + Ganjil = Ganjil.</p>` 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "Without adding, predict if 12 + 15 will be Even or Odd. <span class='translation'>(Tanpa menjumlahkan, prediksi apakah 12 + 15 Genap atau Ganjil.)</span>", 
+        options: ["Even", "Odd"], 
+        answer: 1, 
+        explanation: "12 is Even, 15 is Odd. Even + Odd = Odd. <span class='translation'>12 Genap, 15 Ganjil. Genap + Ganjil = Ganjil.</span>" 
+      },
+      { 
+        type: "typing", 
+        prompt: "Even + Odd = ________ (Type Even or Odd) <span class='translation'>(Genap + Ganjil = ________ Ketik Genap atau Ganjil)</span>", 
+        answer: "Odd", 
+        explanation: "An even number plus an odd number always results in an odd number. <span class='translation'>Genap ditambah Ganjil selalu menghasilkan Ganjil.</span>" 
+      },
+      { 
+        type: "checkbox", 
+        prompt: "Which of these addition problems will result in an Odd number? <span class='translation'>(Manakah dari soal penjumlahan ini yang hasilnya Ganjil?)</span>", 
+        options: ["4 + 1", "2 + 4", "8 + 3", "6 + 2"], 
+        answers: [0, 2], 
+        explanation: "4+1 (Even+Odd) and 8+3 (Even+Odd) result in Odd. <span class='translation'>4+1 dan 8+3 menghasilkan Ganjil.</span>" 
+      },
+      { 
+        type: "theory", 
+        title: "✨ The Magic Trick", 
+        body: `<p>Magic trick! What is Odd + Odd? 1 + 1 = 2. Two 'lonely' ones meet and become partners! The result is Even. Rule: Odd + Odd = Even.</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 150 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <rect x="5" y="10" width="20" height="25" rx="5" fill="#e5e5e5"/>
+				  <circle cx="15" cy="22" r="6" fill="#e76f51"/>
+				  <text x="30" y="28" font-size="16" fill="#333">+</text>
+				  <rect x="40" y="10" width="20" height="25" rx="5" fill="#e5e5e5"/>
+				  <circle cx="50" cy="22" r="6" fill="#e76f51"/>
+				  <text x="65" y="28" font-size="16" fill="#333">=</text>
+				  <rect x="75" y="10" width="35" height="25" rx="5" fill="#d7ffb8"/>
+				  <circle cx="85" cy="22" r="6" fill="#2a9d8f"/>
+				  <circle cx="98" cy="22" r="6" fill="#2a9d8f"/>
+				  <line x1="85" y1="22" x2="98" y2="22" stroke="#333" stroke-width="1"/>
+				  <text x="95" y="15" font-size="10">❤️</text>
+				</svg>
+               </div>
+               <p class="translation">Trik sulap! Berapa Ganjil + Ganjil? 1 + 1 = 2. Dua yang 'sendirian' bertemu dan jadi pasangan! Hasilnya Genap. Aturan: Ganjil + Ganjil = Genap.</p>` 
+      },
+      { 
+        type: "drag_drop", 
+        prompt: "Prove it! Drag the numbers to show 3 + 5 = 8. Is 8 Even or Odd? Drag the correct label. <span class='translation'>(Buktikan! Seret angka untuk menunjukkan 3 + 5 = 8. 8 Genap atau Ganjil? Seret label yang benar.)</span>", 
+        sentence: "3 + 5 = 8. The number 8 is [drop].", 
+        bank: ["Even", "Odd"], 
+        answer: "0", 
+        explanation: "8 ends in 8, so it is Even! Odd + Odd = Even. <span class='translation'>8 berakhir di 8, jadi Genap! Ganjil + Ganjil = Genap.</span>" 
+      },
+      { 
+        type: "range", 
+        prompt: "If you add two Odd numbers, the result is Even. Slide to the result of 7 + 3. <span class='translation'>(Jika menjumlahkan dua Ganjil, hasilnya Genap. Geser ke hasil dari 7 + 3.)</span>", 
+        min: 0, max: 20, answer: 10, 
+        explanation: "7 + 3 = 10. 10 is an Even number. <span class='translation'>7 + 3 = 10. 10 adalah bilangan Genap.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "3 + 5 = 8. Is 8 Even or Odd? <span class='translation'>(3 + 5 = 8. 8 Genap atau Ganjil?)</span>", 
+        options: ["Even", "Odd"], 
+        answer: 0, 
+        explanation: "8 ends in 8, making it Even. <span class='translation'>8 berakhir di 8, membuatnya Genap.</span>" 
+      },
+      { 
+        type: "theory", 
+        title: "🤝 Partners Stay Partners", 
+        body: `<p>Finally, what is Even + Even? Since both have partners, the result will also have partners! 2 + 2 = 4. Rule: Even + Even = Even.</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 180 40" width="100%" style="max-width: 300px; display: block; margin: 0 auto;">
+				  <rect x="5" y="10" width="35" height="25" rx="5" fill="#e5e5e5"/>
+				  <circle cx="15" cy="22" r="5" fill="#2a9d8f"/>
+				  <circle cx="27" cy="22" r="5" fill="#2a9d8f"/>
+				  <text x="45" y="28" font-size="16" fill="#333">+</text>
+				  <rect x="55" y="10" width="35" height="25" rx="5" fill="#e5e5e5"/>
+				  <circle cx="65" cy="22" r="5" fill="#2a9d8f"/>
+				  <circle cx="77" cy="22" r="5" fill="#2a9d8f"/>
+				  <text x="95" y="28" font-size="16" fill="#333">=</text>
+				  <rect x="105" y="10" width="65" height="25" rx="5" fill="#d7ffb8"/>
+				  <circle cx="115" cy="22" r="5" fill="#2a9d8f"/>
+				  <circle cx="127" cy="22" r="5" fill="#2a9d8f"/>
+				  <circle cx="139" cy="22" r="5" fill="#2a9d8f"/>
+				  <circle cx="151" cy="22" r="5" fill="#2a9d8f"/>
+				  <line x1="115" y1="22" x2="127" y2="22" stroke="#333" stroke-width="1"/>
+				  <line x1="139" y1="22" x2="151" y2="22" stroke="#333" stroke-width="1"/>
+				</svg>
+               </div>
+               <p class="translation">Terakhir, berapa Genap + Genap? Karena keduanya punya pasangan, hasilnya juga punya pasangan! 2 + 2 = 4. Aturan: Genap + Genap = Genap.</p>` 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "Even + Even = ________ <span class='translation'>(Genap + Genap = ________)</span>", 
+        sentence: "Even + Even = [drop].", 
+        options: ["Even", "Odd"], 
+        answer: "Even", 
+        explanation: "Partners + Partners = More Partners (Even). <span class='translation'>Pasangan + Pasangan = Lebih Banyak Pasangan (Genap).</span>" 
+      },
+      { 
+        type: "pairing", 
+        prompt: "Match the rule! <span class='translation'>(Cocokkan aturannya!)</span>", 
+        pairs: [
+          { left: "Odd + Odd", right: "Even" }, 
+          { left: "Even + Even", right: "Even" }, 
+          { left: "Even + Odd", right: "Odd" }
+        ] 
+      },
+      { 
+        type: "typing", 
+        prompt: "I add 100 + 200 + 1. Look at the last digit. Type if the sum is Even or Odd. <span class='translation'>(Aku menjumlahkan 100 + 200 + 1. Lihat angka terakhir. Ketik hasilnya Genap atau Ganjil.)</span>", 
+        answer: "Odd", 
+        explanation: "100 + 200 = 300. 300 + 1 = 301. The last digit is 1, which is Odd. <span class='translation'>300 + 1 = 301. Angka terakhir 1, itu Ganjil.</span>" 
+      },
+      { 
+        type: "checkbox", 
+        prompt: "Which sums will be Even? <span class='translation'>(Penjumlahan mana yang hasilnya Genap?)</span>", 
+        options: ["2 + 2", "3 + 4", "5 + 5", "6 + 1"], 
+        answers: [0, 2], 
+        explanation: "2+2 (Even+Even) and 5+5 (Odd+Odd) both give Even results. <span class='translation'>2+2 dan 5+5 keduanya memberi hasil Genap.</span>" 
+      }
+    ]
+  },
+
+  // ===== SECTION 5: GUIDED PRACTICE (SORTING BIG NUMBERS) =====
+  {
+    id: 4,
+    steps: [
+      { 
+        type: "theory", 
+        title: "🕵️‍♂️ Don't Be Scared of Big Numbers", 
+        body: `<p>Don't let big numbers scare you! Look at <b>682</b>. We don't need to count all of them. Just look at the last digit: 2. Is 2 even or odd? Yes, it's Even! So 682 is Even!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 120 50" width="100%" style="max-width: 200px; display: block; margin: 0 auto;">
+				  <text x="10" y="40" font-size="30" font-weight="bold" fill="#333">68<tspan fill="#2a9d8f">2</tspan></text>
+				  <!-- Magnifying Glass -->
+				  <circle cx="80" cy="25" r="15" fill="none" stroke="#1cb0f6" stroke-width="3"/>
+				  <line x1="90" y1="35" x2="100" y2="45" stroke="#1cb0f6" stroke-width="4" stroke-linecap="round"/>
+				</svg>
+               </div>
+               <p class="translation">Jangan takut angka besar! Lihat 682. Kita tidak perlu menghitung semuanya. Cukup lihat angka terakhir: 2. 2 genap atau ganjil? Ya, Genap! Jadi 682 Genap!</p>` 
+      },
+      { 
+        type: "drag_drop", 
+        prompt: "Drag 682 to the correct home. <span class='translation'>(Seret 682 ke rumah yang benar.)</span>", 
+        sentence: "682 goes to: [drop]", 
+        bank: ["Even Cave", "Odd Forest"], 
+        answer: "0", 
+        explanation: "682 ends in 2 (Even), so it goes to the Even Cave. <span class='translation'>682 berakhir di 2 (Genap), jadi masuk Goa Genap.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "Look at 47. Does 7 have a partner? <span class='translation'>(Lihat 47. Apakah 7 punya pasangan?)</span>", 
+        options: ["Yes", "No"], 
+        answer: 1, 
+        explanation: "7 is an Odd number, so it does not have a partner. <span class='translation'>7 adalah Ganjil, jadi tidak punya pasangan.</span>" 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "47 is a(n) ________ number. <span class='translation'>(47 adalah bilangan ________.)</span>", 
+        sentence: "47 is a(n) [drop] number.", 
+        options: ["Even", "Odd"], 
+        answer: "Odd", 
+        explanation: "Because 7 is Odd, the whole number 47 is Odd. <span class='translation'>Karena 7 Ganjil, seluruh angka 47 Ganjil.</span>" 
+      },
+      { 
+        type: "theory", 
+        title: "🏔️ The Even Cave & Odd Forest", 
+        body: `<p>Welcome to the Even Cave and the Odd Forest! If the last digit is 0,2,4,6,8, it goes to the Cave. If it's 1,3,5,7,9, it goes to the Forest. Let's sort them!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 120 60" width="100%" style="max-width: 200px; display: block; margin: 0 auto;">
+				  <!-- Cave -->
+				  <path d="M10,50 Q10,20 30,20 Q45,20 45,50 Z" fill="#6c757d"/>
+				  <text x="25" y="45" font-size="10" fill="#fff">Even</text>
+				  <!-- Forest -->
+				  <polygon points="70,50 80,20 90,50" fill="#283618"/>
+				  <polygon points="85,50 95,25 105,50" fill="#283618"/>
+				  <text x="87" y="45" font-size="10" fill="#fff">Odd</text>
+				</svg>
+               </div>
+               <p class="translation">Selamat datang di Goa Genap dan Hutan Ganjil! Jika angka terakhir 0,2,4,6,8, ia masuk Goa. Jika 1,3,5,7,9, ia masuk Hutan. Mari pilah!</p>` 
+      },
+      { 
+        type: "checkbox", 
+        prompt: "Which numbers belong in the Odd Forest? <span class='translation'>(Bilangan mana yang masuk ke Hutan Ganjil?)</span>", 
+        options: ["23", "44", "85", "99"], 
+        answers: [0, 2, 3], 
+        explanation: "23, 85, and 99 end in Odd digits (3, 5, 9). <span class='translation'>23, 85, dan 99 berakhir di angka Ganjil.</span>" 
+      },
+      { 
+        type: "typing", 
+        prompt: "I am 999. What digit is in my Ones place? Type it. <span class='translation'>(Saya 999. Angka apa di tempat Satuan saya? Ketik.)</span>", 
+        answer: "9", 
+        explanation: "The last digit of 999 is 9. <span class='translation'>Angka terakhir dari 999 adalah 9.</span>" 
+      },
+      { 
+        type: "pairing", 
+        prompt: "Send the numbers to their homes! <span class='translation'>(Kirim angka ke rumahnya!)</span>", 
+        pairs: [
+          { left: "122", right: "Even Cave" }, 
+          { left: "345", right: "Odd Forest" }, 
+          { left: "888", right: "Even Cave" }
+        ] 
+      },
+      { 
+        type: "theory", 
+        title: "🧑‍🤝‍🧑 The Leftover Student", 
+        body: `<p>Let's solve a problem! Can 47 students be paired up for a game? 47 ends in 7. 7 is Odd. No! One student will be left without a partner.</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 150 40" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <!-- Pairs -->
+				  <circle cx="10" cy="20" r="5" fill="#1cb0f6"/>
+				  <circle cx="22" cy="20" r="5" fill="#1cb0f6"/>
+				  <circle cx="40" cy="20" r="5" fill="#1cb0f6"/>
+				  <circle cx="52" cy="20" r="5" fill="#1cb0f6"/>
+				  <circle cx="70" cy="20" r="5" fill="#1cb0f6"/>
+				  <circle cx="82" cy="20" r="5" fill="#1cb0f6"/>
+				  <!-- Leftover -->
+				  <circle cx="110" cy="20" r="5" fill="#ff4b4b"/>
+				  <text x="105" y="10" font-size="8" fill="#ff4b4b">Lonely</text>
+				</svg>
+               </div>
+               <p class="translation">Mari selesaikan soal! Bisakah 47 siswa berpasangan untuk permainan? 47 berakhir di 7. 7 Ganjil. Tidak! Satu siswa akan tersisa tanpa pasangan.</p>` 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "A class has 47 students. The teacher wants to split them into pairs. Will there be one student left without a partner? <span class='translation'>(Sebuah kelas memiliki 47 siswa. Guru ingin membagi mereka berpasangan. Apakah akan ada satu siswa tersisa tanpa pasangan?)</span>", 
+        options: ["Yes", "No"], 
+        answer: 0, 
+        explanation: "Yes, because 47 is Odd, one student will be left out. <span class='translation'>Ya, karena 47 Ganjil, satu siswa akan tersisa.</span>" 
+      },
+      { 
+        type: "range", 
+        prompt: "How many students are left without a partner in a class of 47? <span class='translation'>(Berapa siswa yang tersisa tanpa pasangan di kelas 47?)</span>", 
+        min: 0, max: 9, answer: 1, 
+        explanation: "Odd numbers always have exactly 1 left over. <span class='translation'>Bilangan ganjil selalu menyisakan tepat 1.</span>" 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "If there are 40 students, can they be paired? 40 is ________. <span class='translation'>(Jika ada 40 siswa, bisakah berpasangan? 40 adalah ________.)</span>", 
+        sentence: "40 is [drop].", 
+        options: ["Even", "Odd"], 
+        answer: "Even", 
+        explanation: "40 ends in 0, so it is Even and can be paired perfectly. <span class='translation'>40 berakhir di 0, jadi Genap dan bisa berpasangan sempurna.</span>" 
+      },
+      { 
+        type: "drag_drop", 
+        prompt: "Drag the biggest Even number you can make using 4, 7, and 9. <span class='translation'>(Seret bilangan Genap terbesar yang bisa dibuat dari 4, 7, dan 9.)</span>", 
+        sentence: "The biggest Even number is: [drop]", 
+        bank: ["974", "971", "479"], 
+        answer: "0", 
+        explanation: "To make it Even, it must end in 4. To make it the biggest, the first digits must be 9 and 7. So, 974. <span class='translation'>Agar Genap, harus berakhir di 4. Agar terbesar, angka depan harus 9 dan 7. Jadi, 974.</span>" 
+      }
+    ]
+  },
+  
+  // ===== SECTION 6: INDEPENDENT PRACTICE (SECRET CODES) =====
+  {
+    id: 5,
+    steps: [
+      { 
+        type: "theory", 
+        title: "🕵️‍♂️ The Secret Agent", 
+        body: `<p>You are a math pro now! Let's use the Secret Code. I will show numbers, and you type 'E' for Even and 'O' for Odd. Be quick like a spy!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 100 50" width="100%" style="max-width: 150px; display: block; margin: 0 auto;">
+				  <rect x="20" y="20" width="60" height="25" rx="5" fill="#ce82ff"/>
+				  <path d="M30,20 L30,10 Q30,0 50,0 Q70,0 70,10 L70,20" fill="none" stroke="#ce82ff" stroke-width="5"/>
+				  <text x="35" y="38" font-size="12" fill="#fff" font-weight="bold">E</text>
+				  <text x="55" y="38" font-size="12" fill="#fff" font-weight="bold">O</text>
+				</svg>
+               </div>
+               <p class="translation">Kamu ahli matematika sekarang! Mari gunakan Kode Rahasia. Aku akan tunjukkan angka, kamu ketik 'E' untuk Genap dan 'O' untuk Ganjil. Cepat seperti mata-mata!</p>` 
+      },
+      { 
+        type: "typing", 
+        prompt: "156. Type 'E' for Even or 'O' for Odd. <span class='translation'>(156. Ketik 'E' untuk Genap atau 'O' untuk Ganjil.)</span>", 
+        answer: "E", 
+        explanation: "156 ends in 6 (Even), so the code is E. <span class='translation'>156 berakhir di 6 (Genap), kodenya E.</span>" 
+      },
+      { 
+        type: "typing", 
+        prompt: "231. Type 'E' or 'O'. <span class='translation'>(231. Ketik 'E' atau 'O'.)</span>", 
+        answer: "O", 
+        explanation: "231 ends in 1 (Odd), so the code is O. <span class='translation'>231 berakhir di 1 (Ganjil), kodenya O.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "999. Even or Odd? <span class='translation'>(999. Genap atau Ganjil?)</span>", 
+        options: ["Even", "Odd"], 
+        answer: 1, 
+        explanation: "999 ends in 9, which is Odd. <span class='translation'>999 berakhir di 9, yang merupakan Ganjil.</span>" 
+      },
+      { 
+        type: "theory", 
+        title: "✏️ Self-Correction Board", 
+        body: `<p>Self-correction time! Remember the rules: Even + Even = Even. Odd + Odd = Even. Even + Odd = Odd. Always check the last digit to prove it!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 150 50" width="100%" style="max-width: 250px; display: block; margin: 0 auto;">
+				  <!-- 2+2=4 -->
+				  <rect x="5" y="10" width="10" height="10" fill="#2a9d8f"/>
+				  <rect x="16" y="10" width="10" height="10" fill="#2a9d8f"/>
+				  <text x="32" y="20" font-size="12" fill="#333">+2 =</text>
+				  <rect x="55" y="10" width="10" height="10" fill="#2a9d8f"/>
+				  <rect x="66" y="10" width="10" height="10" fill="#2a9d8f"/>
+				  <rect x="77" y="10" width="10" height="10" fill="#2a9d8f"/>
+				  <rect x="88" y="10" width="10" height="10" fill="#2a9d8f"/>
+				  <!-- 3+3=6 -->
+				  <circle cx="10" cy="35" r="4" fill="#e76f51"/>
+				  <circle cx="20" cy="35" r="4" fill="#e76f51"/>
+				  <circle cx="30" cy="35" r="4" fill="#e76f51"/>
+				  <text x="40" y="40" font-size="12" fill="#333">+3 =</text>
+				  <circle cx="60" cy="35" r="4" fill="#2a9d8f"/>
+				  <circle cx="70" cy="35" r="4" fill="#2a9d8f"/>
+				  <circle cx="80" cy="35" r="4" fill="#2a9d8f"/>
+				  <circle cx="90" cy="35" r="4" fill="#2a9d8f"/>
+				  <circle cx="100" cy="35" r="4" fill="#2a9d8f"/>
+				  <circle cx="110" cy="35" r="4" fill="#2a9d8f"/>
+				</svg>
+               </div>
+               <p class="translation">Saat koreksi diri! Ingat aturannya: Genap + Genap = Genap. Ganjil + Ganjil = Genap. Genap + Ganjil = Ganjil. Selalu cek angka terakhir untuk membuktikannya!</p>` 
+      },
+      { 
+        type: "dropdown", 
+        prompt: "Even number + Even number = ________ <span class='translation'>(Genap + Genap = ________)</span>", 
+        sentence: "Even + Even = [drop].", 
+        options: ["Even", "Odd"], 
+        answer: "Even", 
+        explanation: "Partners + Partners = More Partners (Even). <span class='translation'>Pasangan + Pasangan = Lebih Banyak Pasangan (Genap).</span>" 
+      },
+      { 
+        type: "checkbox", 
+        prompt: "Which of these are Even sums? <span class='translation'>(Manakah dari ini hasil Genap?)</span>", 
+        options: ["2+2", "3+2", "4+4", "5+5"], 
+        answers: [0, 2, 3], 
+        explanation: "2+2=4, 4+4=8, 5+5=10. All Even results! 3+2=5 is Odd. <span class='translation'>2+2=4, 4+4=8, 5+5=10. Semua hasil Genap! 3+2=5 adalah Ganjil.</span>" 
+      },
+      { 
+        type: "drag_drop", 
+        prompt: "Drag the correct answer to complete the rule. <span class='translation'>(Seret jawaban benar untuk melengkapi aturan.)</span>", 
+        sentence: "Even + Odd = [drop]", 
+        bank: ["Odd", "Even"], 
+        answer: "0", 
+        explanation: "Even + Odd always results in Odd. <span class='translation'>Genap + Ganjil selalu menghasilkan Ganjil.</span>" 
+      },
+      { 
+        type: "theory", 
+        title: "🏆 The Big Recap", 
+        body: `<p>The Big Recap! Even numbers end in 0,2,4,6,8 and have partners. Odd numbers end in 1,3,5,7,9 and have one left over. You did amazing!</p>
+               <div style="text-align:center; margin:20px 0;">
+				<svg viewBox="0 0 100 80" width="100%" style="max-width: 100px; display: block; margin: 0 auto;">
+				  <path d="M30,10 L70,10 L70,30 Q70,50 50,50 Q30,50 30,30 Z" fill="#ffd700" stroke="#e6a700" stroke-width="2"/>
+				  <path d="M30,15 Q10,15 10,30 Q10,40 30,35" fill="none" stroke="#ffd700" stroke-width="3"/>
+				  <path d="M70,15 Q90,15 90,30 Q90,40 70,35" fill="none" stroke="#ffd700" stroke-width="3"/>
+				  <rect x="45" y="50" width="10" height="15" fill="#ffd700"/>
+				  <rect x="30" y="65" width="40" height="10" rx="3" fill="#ffd700"/>
+				  <text x="50" y="32" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff">1st</text>
+				</svg>
+               </div>
+               <p class="translation">Rekap Besar! Genap berakhir di 0,2,4,6,8 dan punya pasangan. Ganjil berakhir di 1,3,5,7,9 dan tersisa satu. Kamu luar biasa!</p>` 
+      },
+      { 
+        type: "typing", 
+        prompt: "Find the largest even number using digits 4, 7, 9. Type it. <span class='translation'>(Temukan bilangan genap terbesar dari angka 4, 7, 9. Ketik.)</span>", 
+        answer: "974", 
+        explanation: "Must end in 4 to be Even. Largest arrangement for the rest is 9 and 7. <span class='translation'>Harus berakhir di 4 agar Genap. Urutan terbesar lainnya adalah 9 dan 7.</span>" 
+      },
+      { 
+        type: "multiple_choice", 
+        prompt: "If you have 10 apples, can you give every apple a partner? Is 10 even or odd? <span class='translation'>(Jika ada 10 apel, bisakah setiap apel punya pasangan? 10 genap atau ganjil?)</span>", 
+        options: ["Yes, Even", "No, Odd"], 
+        answer: 0, 
+        explanation: "10 ends in 0, so it is Even. Everyone gets a partner! <span class='translation'>10 berakhir di 0, jadi Genap. Semua dapat pasangan!</span>" 
+      },
+      { 
+        type: "pairing", 
+        prompt: "Match the problem to the result type. <span class='translation'>(Cocokkan soal dengan tipe hasilnya.)</span>", 
+        pairs: [
+          { left: "Odd + Odd", right: "Even" }, 
+          { left: "Even + Odd", right: "Odd" }, 
+          { left: "Even + Even", right: "Even" }
+        ] 
+      },
+		{ 
+		  type: "range", 
+		  prompt: "Slide to ANY odd digit that makes 4_ an Odd number. <span class='translation'>(Geser ke angka ganjil APA SAJA yang membuat 4_ menjadi Ganjil.)</span>", 
+		  min: 1, max: 9, answer: [1, 3, 5, 7, 9], 
+		  explanation: "Any odd digit (1, 3, 5, 7, 9) works! 43, 41, 45 are all Odd. <span class='translation'>Angka ganjil apa saja bisa! 43, 41, 45 semuanya Ganjil.</span>" 
+		}
+    ]
+  },
+
+  // ===== SECTION 7.1: ASSESSMENT A (Basic Odd & Even) =====
+  {
+    id: 6,
+    steps: [
+      { type: "typing", prompt: "Is 56 even or odd? Type your answer. <span class='translation'>(Apakah 56 genap atau ganjil? Ketik jawabanmu.)</span>", answer: "even", explanation: "56 ends in 6, so it is even. <span class='translation'>56 berakhir di 6, jadi genap.</span>" },
+      { type: "multiple_choice", prompt: "Is 99 Even or Odd? <span class='translation'>(Apakah 99 Genap atau Ganjil?)</span>", options: ["Even", "Odd"], answer: 1, explanation: "99 ends in 9, so it is Odd. <span class='translation'>99 berakhir di 9, jadi Ganjil.</span>" },
+      { type: "checkbox", prompt: "Select all Even numbers. <span class='translation'>(Pilih semua bilangan Genap.)</span>", options: ["22", "45", "68", "71"], answers: [0, 2], explanation: "22 and 68 end in even digits. <span class='translation'>22 dan 68 berakhir di digit genap.</span>" },
+      { type: "dropdown", prompt: "14 is an ________ number. <span class='translation'>(14 adalah bilangan ________.)</span>", sentence: "14 is an [drop] number.", options: ["Even", "Odd"], answer: "Even", explanation: "14 ends in 4, so it is Even. <span class='translation'>14 berakhir di 4, jadi Genap.</span>" },
+      { type: "drag_drop", prompt: "Drag 33 to the correct group. <span class='translation'>(Seret 33 ke grup yang benar.)</span>", sentence: "33 belongs to: [drop]", bank: ["Even", "Odd"], answer: "1", explanation: "33 ends in 3, so it is Odd. <span class='translation'>33 berakhir di 3, jadi Ganjil.</span>" },
+      { type: "pairing", prompt: "Match the number to its type. <span class='translation'>(Cocokkan angka dengan tipenya.)</span>", pairs: [{ left: "12", right: "Even" }, { left: "17", right: "Odd" }, { left: "20", right: "Even" }] },
+      { type: "range", prompt: "Select the highest even digit. Slide to it. <span class='translation'>(Pilih digit genap tertinggi. Geser ke sana.)</span>", min: 0, max: 8, answer: 8, explanation: "8 is the highest even digit. <span class='translation'>8 adalah digit genap tertinggi.</span>" },
+		{ type: "typing", prompt: "Type an Odd number between 10 and 20. <span class='translation'>(Ketik satu bilangan Ganjil antara 10 dan 20.)</span>", answer: ["11", "13", "15", "17", "19"], explanation: "11, 13, 15, 17, 19 are all valid odd numbers. <span class='translation'>11, 13, 15, 17, 19 semuanya benar.</span>" },
+      { type: "multiple_choice", prompt: "Which is Odd? <span class='translation'>(Mana yang Ganjil?)</span>", options: ["40", "52", "63", "88"], answer: 2, explanation: "63 ends in 3, which is Odd. <span class='translation'>63 berakhir di 3, yang merupakan Ganjil.</span>" },
+      { type: "dropdown", prompt: "The ones digit in 405 is ________. <span class='translation'>(Angka satuan di 405 adalah ________.)</span>", sentence: "The ones digit is [drop].", options: ["5", "0", "4"], answer: "5", explanation: "The last digit is 5. <span class='translation'>Angka terakhir adalah 5.</span>" }
+    ]
+  },
+
+  // ===== SECTION 7.2: ASSESSMENT B (The Ones Digit Rule) =====
+  {
+    id: 7,
+    steps: [
+      { type: "typing", prompt: "What is the ones digit in 883? Type it. <span class='translation'>(Apa angka satuan di 883? Ketik.)</span>", answer: "3", explanation: "The last digit is 3. <span class='translation'>Angka terakhir adalah 3.</span>" },
+      { type: "multiple_choice", prompt: "Is 682 Even or Odd? <span class='translation'>(Apakah 682 Genap atau Ganjil?)</span>", options: ["Even", "Odd"], answer: 0, explanation: "682 ends in 2, so it is Even. <span class='translation'>682 berakhir di 2, jadi Genap.</span>" },
+      { type: "checkbox", prompt: "Which are Even? <span class='translation'>(Mana yang Genap?)</span>", options: ["122", "345", "888", "999"], answers: [0, 2], explanation: "122 and 888 end in even digits. <span class='translation'>122 dan 888 berakhir di digit genap.</span>" },
+      { type: "dropdown", prompt: "Look at 47. It is ________. <span class='translation'>(Lihat 47. Itu ________.)</span>", sentence: "47 is [drop].", options: ["Even", "Odd"], answer: "Odd", explanation: "47 ends in 7, so it is Odd. <span class='translation'>47 berakhir di 7, jadi Ganjil.</span>" },
+      { type: "drag_drop", prompt: "Drag 974 to the correct group. <span class='translation'>(Seret 974 ke grup yang benar.)</span>", sentence: "974 belongs to: [drop]", bank: ["Even", "Odd"], answer: "0", explanation: "974 ends in 4, so it is Even. <span class='translation'>974 berakhir di 4, jadi Genap.</span>" },
+      { type: "pairing", prompt: "Match the number to its type. <span class='translation'>(Cocokkan angka dengan tipenya.)</span>", pairs: [{ left: "345", right: "Odd" }, { left: "200", right: "Even" }, { left: "777", right: "Odd" }] },
+      { type: "range", prompt: "Slide to the ones digit of 909. <span class='translation'>(Geser ke angka satuan dari 909.)</span>", min: 0, max: 9, answer: 9, explanation: "909 ends in 9. <span class='translation'>909 berakhir di 9.</span>" },
+      { type: "typing", prompt: "Is 1000 Even or Odd? Type your answer. <span class='translation'>(Apakah 1000 Genap atau Ganjil? Ketik jawabanmu.)</span>", answer: "even", explanation: "1000 ends in 0, so it is Even. <span class='translation'>1000 berakhir di 0, jadi Genap.</span>" },
+      { type: "multiple_choice", prompt: "Which is Odd? <span class='translation'>(Mana yang Ganjil?)</span>", options: ["246", "135", "864", "200"], answer: 1, explanation: "135 ends in 5, which is Odd. <span class='translation'>135 berakhir di 5, yang merupakan Ganjil.</span>" },
+      { type: "dropdown", prompt: "To find if a big number is odd, look at the ________ place. <span class='translation'>(Untuk mengetahui angka besar ganjil, lihat tempat ________.)</span>", sentence: "Look at the [drop] place.", options: ["Hundreds", "Tens", "Ones"], answer: "Ones", explanation: "The Ones place (last digit) tells us everything! <span class='translation'>Tempat Satuan (angka terakhir) memberi tahu kita segalanya!</span>" }
+    ]
+  },
+
+  // ===== SECTION 7.3: ASSESSMENT C (Pairing and Word Problems) =====
+  {
+    id: 8,
+    steps: [
+      { type: "multiple_choice", prompt: "Can 10 apples be paired perfectly? <span class='translation'>(Bisakah 10 apel berpasangan sempurna?)</span>", options: ["Yes", "No"], answer: 0, explanation: "10 is Even, so everyone gets a partner. <span class='translation'>10 Genap, jadi semua dapat pasangan.</span>" },
+      { type: "typing", prompt: "47 students want to pair up. How many are left without a partner? Type the number. <span class='translation'>(47 siswa ingin berpasangan. Berapa yang tersisa tanpa pasangan? Ketik angkanya.)</span>", answer: "1", explanation: "47 is Odd, so exactly 1 is left over. <span class='translation'>47 Ganjil, jadi tepat 1 tersisa.</span>" },
+      { type: "checkbox", prompt: "Which groups can be paired perfectly? <span class='translation'>(Grup mana yang bisa berpasangan sempurna?)</span>", options: ["8", "11", "14", "15"], answers: [0, 2], explanation: "8 and 14 are Even. <span class='translation'>8 dan 14 adalah Genap.</span>" },
+      { type: "dropdown", prompt: "A class of 22 students is ________. <span class='translation'>(Kelas dengan 22 siswa adalah ________.)</span>", sentence: "22 is [drop].", options: ["Even", "Odd"], answer: "Even", explanation: "22 ends in 2, so it is Even. <span class='translation'>22 berakhir di 2, jadi Genap.</span>" },
+      { type: "drag_drop", prompt: "Drag the numbers that leave a remainder into the 'Odd' basket. <span class='translation'>(Seret angka yang menyisakan sisa ke keranjang 'Ganjil'.)</span>", sentence: "Odd Basket: [drop] [drop]", bank: ["12", "15", "22", "37"], answer: "1,3", explanation: "15 and 37 are Odd, leaving 1 leftover. <span class='translation'>15 dan 37 Ganjil, menyisakan 1.</span>" },
+      { type: "pairing", prompt: "Match the number to its state. <span class='translation'>(Cocokkan angka dengan statusnya.)</span>", pairs: [{ left: "4", right: "Partner" }, { left: "5", right: "Lonely" }, { left: "6", right: "Partner" }] },
+      { type: "range", prompt: "How many lonely animals in a group of 9? Slide to it. <span class='translation'>(Berapa hewan sendirian di grup 9? Geser ke sana.)</span>", min: 0, max: 9, answer: 1, explanation: "Odd numbers always have exactly 1 lonely animal. <span class='translation'>Bilangan ganjil selalu punya tepat 1 hewan sendirian.</span>" },
+      { type: "typing", prompt: "I have 12 stickers. Can everyone get a partner? Type Yes or No. <span class='translation'>(Saya punya 12 stiker. Bisakah semua dapat pasangan? Ketik Yes atau No.)</span>", answer: "Yes", explanation: "12 is Even, so Yes! <span class='translation'>12 Genap, jadi Yes!</span>" },
+      { type: "multiple_choice", prompt: "5 lions dancing. Is there a lonely lion? <span class='translation'>(5 singa menari. Adakah singa sendirian?)</span>", options: ["Yes", "No"], answer: 0, explanation: "5 is Odd, so one lion is lonely. <span class='translation'>5 Ganjil, jadi satu singa sendirian.</span>" },
+      { type: "dropdown", prompt: "If one is left over, the number is ________. <span class='translation'>(Jika tersisa satu, angka tersebut ________.)</span>", sentence: "The number is [drop].", options: ["Even", "Odd"], answer: "Odd", explanation: "Odd numbers have exactly 1 left over. <span class='translation'>Bilangan ganjil menyisakan tepat 1.</span>" }
+    ]
+  },
+
+  // ===== SECTION 7.4: ASSESSMENT D (Parity Addition Rules) =====
+  {
+    id: 9,
+    steps: [
+      { type: "typing", prompt: "Even + Odd = ________ (Type Even or Odd) <span class='translation'>(Genap + Ganjil = ________)</span>", answer: "Odd", explanation: "Even + Odd always equals Odd. <span class='translation'>Genap + Ganjil selalu sama dengan Ganjil.</span>" },
+      { type: "multiple_choice", prompt: "Odd + Odd = ? <span class='translation'>(Ganjil + Ganjil = ?)</span>", options: ["Even", "Odd"], answer: 0, explanation: "Odd + Odd always equals Even. <span class='translation'>Ganjil + Ganjil selalu sama dengan Genap.</span>" },
+      { type: "checkbox", prompt: "Which sums are Even? <span class='translation'>(Jumlah mana yang Genap?)</span>", options: ["3+5", "2+4", "1+6", "7+7"], answers: [0, 1, 3], explanation: "3+5=8, 2+4=6, 7+7=14. All are Even! <span class='translation'>3+5=8, 2+4=6, 7+7=14. Semuanya Genap!</span>" },
+      { type: "dropdown", prompt: "Even + Even = ________ <span class='translation'>(Genap + Genap = ________)</span>", sentence: "Even + Even = [drop].", options: ["Even", "Odd"], answer: "Even", explanation: "Even + Even always equals Even. <span class='translation'>Genap + Genap selalu sama dengan Genap.</span>" },
+      { type: "drag_drop", prompt: "Drag 'Odd' to the correct equation. <span class='translation'>(Seret 'Odd' ke persamaan yang benar.)</span>", sentence: "Even + Odd = [drop]", bank: ["Odd", "Even"], answer: "0", explanation: "Even + Odd results in Odd. <span class='translation'>Genap + Ganjil menghasilkan Ganjil.</span>" },
+      { type: "pairing", prompt: "Match the problem to the result type. <span class='translation'>(Cocokkan soal dengan tipe hasilnya.)</span>", pairs: [{ left: "2+2", right: "Even" }, { left: "3+4", right: "Odd" }, { left: "5+5", right: "Even" }] },
+      { type: "range", prompt: "Slide to the result of 7+3. <span class='translation'>(Geser ke hasil dari 7+3.)</span>", min: 0, max: 10, answer: 10, explanation: "7+3=10. Odd + Odd = Even. <span class='translation'>7+3=10. Ganjil + Ganjil = Genap.</span>" },
+      { type: "typing", prompt: "Predict 12 + 15. Type Even or Odd. <span class='translation'>(Prediksi 12 + 15. Ketik Genap atau Ganjil.)</span>", answer: "Odd", explanation: "12(Even) + 15(Odd) = Odd. <span class='translation'>12(Genap) + 15(Ganjil) = Ganjil.</span>" },
+      { type: "multiple_choice", prompt: "100 + 200 + 1 is? <span class='translation'>(100 + 200 + 1 adalah?)</span>", options: ["Even", "Odd"], answer: 1, explanation: "301 ends in 1, so it is Odd. <span class='translation'>301 berakhir di 1, jadi Ganjil.</span>" },
+      { type: "dropdown", prompt: "Odd + Even = ________ <span class='translation'>(Ganjil + Genap = ________)</span>", sentence: "Odd + Even = [drop].", options: ["Even", "Odd"], answer: "Odd", explanation: "Same as Even + Odd, it equals Odd. <span class='translation'>Sama seperti Genap + Ganjil, hasilnya Ganjil.</span>" }
+    ]
+  },
+
+  // ===== SECTION 7.5: ASSESSMENT E (Advanced Logic & Digits) =====
+  {
+    id: 10,
+    steps: [
+      { type: "typing", prompt: "Make the largest even number from 4, 7, 9. Type it. <span class='translation'>(Buat angka genap terbesar dari 4, 7, 9. Ketik.)</span>", answer: "974", explanation: "Must end in 4. Largest is 974. <span class='translation'>Harus berakhir di 4. Terbesar adalah 974.</span>" },
+      { type: "multiple_choice", prompt: "What makes 4_ an Odd number? <span class='translation'>(Apa yang membuat 4_ menjadi Ganjil?)</span>", options: ["2", "4", "5"], answer: 2, explanation: "5 is Odd, making 45 an Odd number. <span class='translation'>5 Ganjil, membuat 45 menjadi Ganjil.</span>" },
+      { type: "checkbox", prompt: "Which digits make 8_ Even? <span class='translation'>(Digit mana yang membuat 8_ Genap?)</span>", options: ["1", "2", "3", "8"], answers: [1, 3], explanation: "2 and 8 are Even digits. <span class='translation'>2 dan 8 adalah digit Genap.</span>" },
+      { type: "dropdown", prompt: "The result of 100+200+1 ends in ________. <span class='translation'>(Hasil dari 100+200+1 berakhir di ________.)</span>", sentence: "Ends in [drop].", options: ["1", "0", "2"], answer: "1", explanation: "301 ends in 1. <span class='translation'>301 berakhir di 1.</span>" },
+      { type: "drag_drop", prompt: "Drag 971 to the Odd Forest. <span class='translation'>(Seret 971 ke Hutan Ganjil.)</span>", sentence: "971 goes to: [drop]", bank: ["Even Cave", "Odd Forest"], answer: "1", explanation: "971 ends in 1, so it is Odd. <span class='translation'>971 berakhir di 1, jadi Ganjil.</span>" },
+      { type: "pairing", prompt: "Match the problem to its result type. <span class='translation'>(Cocokkan soal dengan tipe hasilnya.)</span>", pairs: [{ left: "3+3", right: "Even" }, { left: "4+3", right: "Odd" }] },
+		{ 
+		  type: "range", 
+		  prompt: "Select ANY odd digit to complete 2_. Slide to it. <span class='translation'>(Pilih digit ganjil APA SAJA untuk melengkapi 2_. Geser ke sana.)</span>", 
+		  min: 1, max: 9, answer: [1, 3, 5, 7, 9], 
+		  explanation: "1, 3, 5, 7, 9 all work. For example, 3 makes 23 Odd. <span class='translation'>1, 3, 5, 7, 9 semua bisa. Contohnya, 3 membuat 23 Ganjil.</span>" 
+		},
+		{ type: "typing", prompt: "I am Odd. I am between 20 and 25. What number am I? (Type one) <span class='translation'>(Saya Ganjil. Saya di antara 20 dan 25. Saya angka berapa? Ketik satu)</span>", answer: ["21", "23"], explanation: "21 and 23 are valid odd numbers. <span class='translation'>21 dan 23 adalah angka ganjil yang valid.</span>" },
+      { type: "multiple_choice", prompt: "Which is the largest Odd number? <span class='translation'>(Mana angka Ganjil terbesar?)</span>", options: ["974", "971", "970"], answer: 1, explanation: "971 is Odd and larger than 970. <span class='translation'>971 Ganjil dan lebih besar dari 970.</span>" },
+      { type: "dropdown", prompt: "To make a 3-digit number Even, the ________ digit must be 0,2,4,6,8. <span class='translation'>(Untuk membuat angka 3-digit Genap, digit ________ harus 0,2,4,6,8.)</span>", sentence: "The [drop] digit must be Even.", options: ["First", "Last"], answer: "Last", explanation: "We only look at the last digit to know! <span class='translation'>Kita hanya melihat digit terakhir untuk mengetahuinya!</span>" }
+    ]
+  },
+
+  // ===== SECTION 8: CONSOLIDATION & REFLECTION =====
+  {
+    id: 11,
+    steps: [
+      { 
+        type: "theory", 
+        title: "🎉 The Great Party Recap!", 
+        body: `<p>What a great party! Today we learned that Even numbers always have a friend, and Odd numbers have one left over. To check any big number up to 1000, we just look at the ones digit! You did amazing!</p>
+               <div style="text-align:center; margin:20px 0;">
+                 <svg viewBox="0 0 100 40" width="30%">
+                   <path d="M30,5 L70,5 L70,15 Q70,30 50,30 Q30,30 30,15 Z" fill="#ffd700"/>
+                   <text x="40" y="20" font-size="10">1st</text>
+                 </svg>
+               </div>
+               <p class="translation">Pesta yang hebat! Hari ini kita belajar bahwa bilangan Genap selalu punya teman, dan Ganjil punya satu tersisa. Untuk mengecek angka besar sampai 1000, kita cukup lihat angka satuannya! Kamu luar biasa!</p>
+               <div style="background:#ddf4ff; border:2px solid #1cb0f6; padding:16px; border-radius:12px; margin-top:20px; text-align:center;">
+                 <p style="font-weight:800; color:#0a87d6; margin-bottom:10px;">Don't forget to claim your virtual party trophy and stickers! / Jangan lupa klaim trofi pesta virtual dan stikermu!</p>
+                 <a href="https://learn.algonova.id/login" target="_blank" style="background:#1cb0f6; color:#fff; padding:14px 24px; border-radius:12px; text-decoration:none; font-weight:800; display:inline-block; box-shadow:0 4px 0 #0a87d6;">🔗 Click here to login & give feedback</a>
+               </div>` 
+      }
+    ]
+  }
+];
+
+// ============== APP LOGIC ==============
+function initApp() {
+  const mapContainer = $('#mapContainer');
+  const svg = $('#mapSvg');
+  let pathD = '';
+
+  // 1. Garis lurus dari node 1 sampai 6 (index 0 to 5)
+  for (let i = 1; i <= 5; i++) {
+    const prev = App.nodePositions[i-1];
+    const pos = App.nodePositions[i];
+    pathD += `M ${prev.x} ${prev.y} Q ${(prev.x+pos.x)/2} ${Math.min(prev.y, pos.y) + 50}, ${pos.x} ${pos.y} `;
+  }
+
+  // 2. Garis cabang dari node 6 (index 5) ke node 7.1 - 7.5 (index 6 to 10)
+  const branchStart = App.nodePositions[5];
+  for (let i = 6; i <= 10; i++) {
+    const pos = App.nodePositions[i];
+    pathD += `M ${branchStart.x} ${branchStart.y} C ${branchStart.x} ${branchStart.y + 60}, ${pos.x} ${pos.y - 60}, ${pos.x} ${pos.y} `;
+  }
+
+  // 3. Garis menyatu dari node 7.1 - 7.5 (index 6 to 10) ke node 8 (index 11)
+  const branchEnd = App.nodePositions[11];
+  for (let i = 6; i <= 10; i++) {
+    const pos = App.nodePositions[i];
+    pathD += `M ${pos.x} ${pos.y} C ${pos.x} ${branchEnd.y - 60}, ${branchEnd.x} ${branchEnd.y - 60}, ${branchEnd.x} ${branchEnd.y} `;
+  }
+
+  // Render garis path SVG
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', pathD);
+  path.setAttribute('stroke', '#e5e5e5');
+  path.setAttribute('stroke-width', '6');
+  path.setAttribute('stroke-dasharray', '10,10');
+  path.setAttribute('fill', 'none');
+  svg.appendChild(path);
+
+  // Render setiap node
+  App.nodePositions.forEach((pos, i) => {
+    const node = el('div', 'map-node available', App.lessonMeta[i].icon);
+    node.style.left = `${(pos.x / 800) * 100}%`;
+    node.style.top = `${(pos.y / 1080) * 100}%`; 
+    node.dataset.id = i;
+    
+    const tooltip = el('div', 'node-tooltip', App.lessonMeta[i].title);
+    node.appendChild(tooltip);
+    
+    const labelContent = `
+      <span>${App.lessonMeta[i].title}</span>
+      <span class="node-time-label">${App.lessonMeta[i].time}</span>
+    `;
+    const label = el('div', 'node-label', labelContent);
+    node.appendChild(label);
+    
+    node.onclick = () => startLesson(i);
+    mapContainer.appendChild(node);
+  });
+
+  // Event Listeners
+  $('#openRulesBtn').onclick = () => $('#rulesOverlay').classList.add('show');
+  $('#closeRulesBtn').onclick = () => $('#rulesOverlay').classList.remove('show');
+  $('#understandBtn').onclick = () => $('#rulesOverlay').classList.remove('show');
+  
+  $('#lessonClose').onclick = () => {
+    $('#lessonView').classList.remove('active');
+    $('#mapView').style.display = 'block';
+    updateMapNodes();
+  };
+  $('#continueBtn').onclick = () => {
+    $('#completeView').classList.remove('active');
+    $('#mapView').style.display = 'block';
+    updateMapNodes();
+  };
+  $('#printResultBtn').onclick = printResult;
+  $('#actionBtn').onclick = handleAction;
+  $('#resetBtn').onclick = renderStep;
+  
+  updateMapNodes();
+
+  // Event listener untuk tombol Enter
+  document.addEventListener('keydown', (e) => {
+    if (!$('#lessonView').classList.contains('active')) return;
+    if (e.key === 'Enter') {
+      const actionBtn = $('#actionBtn');
+      if (actionBtn.classList.contains('active')) {
+        e.preventDefault();
+        handleAction();
+      }
+    }
+  });
+}
+
+function updateMapNodes() {
+  const nodes = $$('.map-node');
+  nodes.forEach((node, i) => {
+    if (App.state.completedLessons.includes(i)) {
+      node.classList.remove('available');
+      node.classList.add('completed');
+    }
+  });
+}
+
+function startLesson(id) {
+  App.currentLessonId = id;
+  App.currentStepIndex = 0;
+  App.correctCount = 0;
+  App.totalAnswered = 0;
+  App.state.hearts = 5;
+  App.state.stepAnswered = false;
+  App.state.answeredHistory = []; 
+  $('#lessonHearts').innerText = App.state.hearts;
+  $('#lessonTime').innerText = App.lessonMeta[id].time; 
+  $('#mapView').style.display = 'none';
+  $('#lessonView').classList.add('active');
+  renderStep();
+}
+
+function renderStep() {
+  const lesson = LESSONS[App.currentLessonId];
+  const step = lesson.steps[App.currentStepIndex];
+  const content = $('#lessonContent');
+  content.innerHTML = '';
+  App.state.stepAnswered = false;
+  $('#feedback').classList.remove('show');
+  $('#actionBtn').innerText = 'Check';
+  $('#actionBtn').classList.remove('active');
+  $('#resetBtn').classList.add('hidden'); 
+
+  const progress = ((App.currentStepIndex) / lesson.steps.length) * 100;
+  $('#progressBar').style.width = `${progress}%`;
+
+  if (step.type === 'theory') {
+    const card = el('div', 'theory-card');
+    card.innerHTML = `<span class="theory-badge">MATERIAL</span><h2>${step.title}</h2><div class="theory-body">${step.body}</div>`;
+    content.appendChild(card);
+    $('#actionBtn').innerText = 'Continue';
+    $('#actionBtn').classList.add('active');
+    App.state.stepAnswered = true;
+  } else {
+    const prompt = el('div', 'q-prompt', step.prompt);
+    content.appendChild(prompt);
+    
+    if (step.type === 'multiple_choice') renderMultipleChoice(step, content);
+    else if (step.type === 'typing') renderTyping(step, content);
+    else if (step.type === 'dropdown') renderDropdown(step, content);
+    else if (step.type === 'checkbox') renderCheckbox(step, content);
+    else if (step.type === 'drag_drop') renderDragDrop(step, content);
+    else if (step.type === 'pairing') renderPairing(step, content);
+    else if (step.type === 'range') renderRange(step, content);
+    
+    if (step.hint) {
+      content.appendChild(el('div', 'q-hint', step.hint));
+    }
+    
+    $('#resetBtn').classList.remove('hidden');
+  }
+  
+  if (window.renderMathInElement) {
+    renderMathInElement(content, {
+      delimiters: [{left: "\\(", right: "\\)", display: false}, {left: "\\[", right: "\\]", display: true}]
+    });
+  }
+  content.scrollTop = 0;
+}
+
+function renderMultipleChoice(step, content) {
+  const opts = el('div', 'options');
+  step.options.forEach((opt, i) => {
+    const o = el('div', 'option', `<div class="o-key">${String.fromCharCode(65+i)}</div><div>${opt}</div>`);
+    o.dataset.index = i;
+    o.onclick = () => {
+      if(App.state.stepAnswered) return;
+      $$('.option').forEach(x => x.classList.remove('selected'));
+      o.classList.add('selected');
+      $('#actionBtn').classList.add('active');
+    };
+    opts.appendChild(o);
+  });
+  content.appendChild(opts);
+}
+
+function renderTyping(step, content) {
+  const input = el('input', 'typing-input');
+  input.type = 'text';
+  input.placeholder = 'Type your answer here...';
+  input.oninput = () => {
+    if(input.value.trim() !== '') $('#actionBtn').classList.add('active');
+    else $('#actionBtn').classList.remove('active');
+  };
+  content.appendChild(input);
+  input.focus();
+}
+
+function renderDropdown(step, content) {
+  const sentence = el('div', 'sentence');
+  const select = el('select', 'dropdown-select');
+  select.innerHTML = `<option value="">?</option>`;
+  step.options.forEach(opt => {
+    select.innerHTML += `<option value="${opt}">${opt}</option>`;
+  });
+  select.onchange = () => {
+    if(select.value !== '') $('#actionBtn').classList.add('active');
+    else $('#actionBtn').classList.remove('active');
+  };
+  
+  const parts = step.sentence.split('[drop]');
+  sentence.innerHTML = parts[0]; 
+  sentence.appendChild(select);
+  
+  const restSpan = el('span', '', parts.slice(1).join(''));
+  sentence.appendChild(restSpan);
+  
+  content.appendChild(sentence);
+}
+
+function renderCheckbox(step, content) {
+  step.options.forEach((opt, i) => {
+    const c = el('div', 'checkbox-option', `<div class="checkbox-box"></div><div>${opt}</div>`);
+    c.dataset.index = i;
+    c.onclick = () => {
+      if(App.state.stepAnswered) return;
+      c.classList.toggle('checked');
+      $('#actionBtn').classList.add('active');
+    };
+    content.appendChild(c);
+  });
+}
+
+function renderDragDrop(step, content) {
+  const bank = el('div', 'drag-bank');
+  
+  let bankIndexes = step.bank.map((_, i) => i);
+  for (let i = bankIndexes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [bankIndexes[i], bankIndexes[j]] = [bankIndexes[j], bankIndexes[i]];
+  }
+  
+  bankIndexes.forEach(i => {
+    const item = step.bank[i];
+    const d = el('div', 'drag-item', item);
+    d.draggable = true;
+    d.dataset.id = i;
+    d.ondragstart = (e) => {
+      App.state.dragSrc = d;
+      d.classList.add('dragging');
+    };
+    d.ondragend = () => d.classList.remove('dragging');
+    bank.appendChild(d);
+  });
+  content.appendChild(bank);
+
+  const sentence = el('div', 'sentence');
+  const parts = step.sentence.split('[drop]');
+  parts.forEach((p, i) => {
+    const textSpan = el('span', '', p);
+    sentence.appendChild(textSpan);
+    if(i < parts.length - 1) {
+      const zone = el('span', 'drop-zone');
+      zone.ondragover = (e) => { e.preventDefault(); zone.classList.add('over'); };
+      zone.ondragleave = () => zone.classList.remove('over');
+      zone.ondrop = (e) => {
+        e.preventDefault();
+        zone.classList.remove('over');
+        if(App.state.dragSrc) {
+          if(zone.dataset.placed) {
+            bank.appendChild(document.querySelector(`.drag-item[data-id="${zone.dataset.placed}"]`));
+          }
+          zone.appendChild(App.state.dragSrc);
+          zone.classList.add('filled');
+          zone.dataset.placed = App.state.dragSrc.dataset.id;
+          $('#actionBtn').classList.add('active');
+        }
+      };
+      sentence.appendChild(zone);
+    }
+  });
+  content.appendChild(sentence);
+}
+
+function renderPairing(step, content) {
+  const grid = el('div', 'pair-grid');
+  const col1 = el('div', 'pair-col');
+  const col2 = el('div', 'pair-col');
+  
+  let leftIndexes = step.pairs.map((_, i) => i);
+  let rightIndexes = [...leftIndexes];
+  
+  for (let i = leftIndexes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [leftIndexes[i], leftIndexes[j]] = [leftIndexes[j], leftIndexes[i]];
+    
+    const k = Math.floor(Math.random() * (i + 1));
+    [rightIndexes[i], rightIndexes[k]] = [rightIndexes[k], rightIndexes[i]];
+  }
+  
+  leftIndexes.forEach(idx => {
+    const p = step.pairs[idx];
+    const left = el('div', 'pair-item', p.left);
+    left.dataset.side = 'left';
+    left.dataset.id = idx;
+    left.onclick = () => handlePairClick(left);
+    col1.appendChild(left);
+  });
+
+  rightIndexes.forEach(idx => {
+    const p = step.pairs[idx];
+    const right = el('div', 'pair-item', p.right);
+    right.dataset.side = 'right';
+    right.dataset.id = idx;
+    right.onclick = () => handlePairClick(right);
+    col2.appendChild(right);
+  });
+  
+  grid.appendChild(col1);
+  grid.appendChild(col2);
+  content.appendChild(grid);
+}
+
+function handlePairClick(item) {
+  if(App.state.stepAnswered) return;
+  if(item.classList.contains('matched')) return;
+  
+  if(!App.state.selectedPair) {
+    App.state.selectedPair = item;
+    item.classList.add('selected');
+  } else {
+    if(App.state.selectedPair.dataset.side === item.dataset.side) {
+      App.state.selectedPair.classList.remove('selected');
+      App.state.selectedPair = item;
+      item.classList.add('selected');
+      return;
+    }
+    
+    if(App.state.selectedPair.dataset.id === item.dataset.id) {
+      App.state.selectedPair.classList.add('matched');
+      item.classList.add('matched');
+      App.state.selectedPair.classList.remove('selected');
+      App.state.selectedPair = null;
+      
+      if($$('.pair-item.matched').length === stepPairsLength()) {
+        $('#actionBtn').classList.add('active');
+      }
+    } else {
+      const wrong = [App.state.selectedPair, item];
+      wrong.forEach(w => w.classList.add('wrong'));
+      setTimeout(() => {
+        wrong.forEach(w => {
+          w.classList.remove('wrong');
+          w.classList.remove('selected');
+        });
+      }, 500);
+      App.state.selectedPair = null;
+    }
+  }
+}
+
+function stepPairsLength() {
+  const step = LESSONS[App.currentLessonId].steps[App.currentStepIndex];
+  return step.pairs.length * 2;
+}
+
+function renderRange(step, content) {
+  const wrap = el('div', 'range-wrap');
+  wrap.innerHTML = `
+    <div class="range-row" style="position:relative; align-items:center; min-height:50px;">
+      <div class="range-value" style="font-size:20px; color:var(--text-light);">${step.min}</div>
+      <div class="range-value" id="rangeCurr" style="font-size:36px; flex:1; text-align:center;">${step.min}</div>
+      <div class="range-value" style="font-size:20px; color:var(--text-light);">${step.max}</div>
+    </div>
+    <input type="range" class="range-slider" min="${step.min}" max="${step.max}" value="${step.min}">
+    <div class="range-ticks">
+      <span>Min</span>
+      <span>Max</span>
+    </div>
+  `;
+  const slider = wrap.querySelector('.range-slider');
+  const curr = wrap.querySelector('#rangeCurr');
+  slider.oninput = () => {
+    curr.innerText = slider.value;
+    $('#actionBtn').classList.add('active');
+  };
+  content.appendChild(wrap);
+}
+
+function handleAction() {
+  if(!App.state.stepAnswered) {
+    checkAnswer();
+  } else {
+    nextStep();
+  }
+}
+
+function checkAnswer() {
+  const step = LESSONS[App.currentLessonId].steps[App.currentStepIndex];
+  let isCorrect = false;
+  let studentAnsText = "";
+  let correctAnsText = "";
+
+  if (step.type === 'multiple_choice') {
+    const selected = $('.option.selected');
+    if (!selected) return;
+    const idx = parseInt(selected.dataset.index);
+    isCorrect = idx === step.answer;
+    studentAnsText = step.options[idx];
+    correctAnsText = step.options[step.answer];
+    $$('.option').forEach(o => o.classList.add('disabled'));
+    selected.classList.add(isCorrect ? 'correct' : 'wrong');
+    if(!isCorrect) {
+      const correct = $(`.option[data-index="${step.answer}"]`);
+      correct.classList.remove('wrong');
+      correct.classList.add('correct');
+    }
+  } else if (step.type === 'typing') {
+    const input = $('.typing-input');
+    if (!input.value.trim()) return;
+    // Menghapus SEMUA spasi dan menyeragamkan huruf kecil
+    // Contoh: "x > 3" menjadi "x>3", "2m = 8" menjadi "2m=8"
+    const cleanInput = input.value.replace(/\s+/g, '').toLowerCase();
+    const cleanAnswer = step.answer.replace(/\s+/g, '').toLowerCase();
+    
+    // Menambahkan toleransi untuk simbol >= dan <=
+    isCorrect = cleanInput === cleanAnswer || 
+                cleanInput === cleanAnswer.replace('>=', '≥') || 
+                cleanInput === cleanAnswer.replace('<=', '≤');
+                
+    studentAnsText = input.value.trim();
+    correctAnsText = step.answer;
+    input.classList.add(isCorrect ? 'correct' : 'wrong');
+    input.disabled = true;
+  } else if (step.type === 'dropdown') {
+    const select = $('.dropdown-select');
+    if (!select.value) return;
+    isCorrect = select.value === step.answer;
+    studentAnsText = select.value;
+    correctAnsText = step.answer;
+    select.classList.add(isCorrect ? 'correct' : 'wrong');
+    select.disabled = true;
+  } else if (step.type === 'checkbox') {
+    const opts = $$('.checkbox-option.checked');
+    const selectedIdx = Array.from(opts).map(o => parseInt(o.dataset.index));
+    const correctIdx = step.answers;
+    isCorrect = correctIdx.every(i => selectedIdx.includes(i)) && selectedIdx.length === correctIdx.length;
+    studentAnsText = selectedIdx.map(i => step.options[i]).join(', ');
+    correctAnsText = correctIdx.map(i => step.options[i]).join(', ');
+    opts.forEach(o => o.classList.add(isCorrect ? 'correct' : 'wrong'));
+    if(!isCorrect) {
+      correctIdx.forEach(i => {
+        const c = $(`.checkbox-option[data-index="${i}"]`);
+        c.classList.remove('wrong');
+        c.classList.add('correct');
+      });
+    }
+    $$('.checkbox-option').forEach(o => o.style.pointerEvents = 'none');
+  } else if (step.type === 'range') {
+    const slider = $('.range-slider');
+    // Cek jika ada banyak jawaban benar (Array)
+    if (Array.isArray(step.answer)) {
+      isCorrect = step.answer.includes(parseInt(slider.value));
+      correctAnsText = step.answer.join(' OR ');
+    } else {
+      isCorrect = parseInt(slider.value) === step.answer;
+      correctAnsText = step.answer;
+    }
+    studentAnsText = slider.value;
+    slider.disabled = true;
+    slider.style.opacity = 0.7;
+  } else if (step.type === 'drag_drop') {
+    const zones = $$('.drop-zone');
+    const currentArr = Array.from(zones).map(z => z.dataset.placed || "");
+    // Cek apakah urutan tidak dipedulikan (misal: memasukkan ke keranjang yang sama)
+    if (step.unordered) {
+      isCorrect = currentArr.slice().sort().join(',') === step.answer.split(',').sort().join(',');
+    } else {
+      isCorrect = currentArr.join(',') === step.answer;
+    }
+    studentAnsText = currentArr.map(id => id ? step.bank[id] : "?").join(' -> ');
+    const correctArr = step.answer.split(',');
+    correctAnsText = correctArr.map(id => step.bank[id]).join(' -> ');
+    zones.forEach(z => z.style.borderColor = isCorrect ? 'var(--green)' : 'var(--red)');
+  } else if (step.type === 'pairing') {
+    isCorrect = $$('.pair-item.matched').length === stepPairsLength();
+    studentAnsText = isCorrect ? "All Matched Correctly" : "Incomplete/Some Wrong";
+    correctAnsText = "All Matched Correctly";
+  }
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = step.prompt;
+  const translations = tempDiv.querySelectorAll('.translation');
+  translations.forEach(t => t.remove());
+  const cleanPrompt = tempDiv.textContent.trim();
+
+  App.state.answeredHistory.push({
+    question: cleanPrompt,
+    studentAnswer: studentAnsText,
+    correctAnswer: correctAnsText,
+    isCorrect: isCorrect
+  });
+
+  App.totalAnswered++;
+  if (isCorrect) {
+    App.correctCount++;
+    App.state.streak++;
+    App.state.gems += 10;
+    showFeedback(true, step.explanation);
+  } else {
+    App.state.streak = 0;
+    App.state.hearts--;
+    $('#lessonHearts').innerText = App.state.hearts;
+    showFeedback(false, step.explanation);
+  }
+
+  updateStats();
+  App.state.stepAnswered = true;
+  $('#actionBtn').innerText = 'Continue';
+  $('#actionBtn').classList.add('active');
+  $('#resetBtn').classList.add('hidden');
+}
+
+function showFeedback(correct, explanation) {
+  const fb = $('#feedback');
+  fb.className = `feedback show ${correct ? 'correct' : 'wrong'}`;
+  fb.innerHTML = `
+    <div class="feedback-title">
+      ${correct ? '✅ Correct!' : '❌ Not quite!'}
+    </div>
+    <div class="feedback-text">${explanation || 'Keep practicing!'}</div>
+  `;
+  
+  // TAMBAHAN INI agar simbol matematika di Feedback terbaca dengan baik
+  if (window.renderMathInElement) {
+    renderMathInElement(fb, {
+      delimiters: [
+        {left: "\\(", right: "\\)", display: false},
+        {left: "\\[", right: "\\]", display: true}
+      ]
+    });
+  }
+}
+
+function nextStep() {
+  const lesson = LESSONS[App.currentLessonId];
+  App.currentStepIndex++;
+  if (App.currentStepIndex >= lesson.steps.length) {
+    completeLesson();
+  } else {
+    renderStep();
+  }
+}
+
+function completeLesson() {
+  $('#lessonView').classList.remove('active');
+  $('#completeView').classList.add('active');
+  
+  const accuracy = App.totalAnswered > 0 ? Math.round((App.correctCount / App.totalAnswered) * 100) : 0;
+  $('#finalXp').innerText = `+${App.correctCount * 10} XP`;
+  $('#finalAccuracy').innerText = `${accuracy}%`;
+  $('#finalCorrect').innerText = `${App.correctCount}/${App.totalAnswered}`;
+  
+  App.state.completedLessons.push(App.currentLessonId);
+  updateStats();
+
+  if (App.currentLessonId >= 6 && App.currentLessonId <= 10) {
+    $('#printResultBtn').style.display = 'block';
+  } else {
+    $('#printResultBtn').style.display = 'none';
+  }
+}
+
+function printResult() {
+  const lessonTitle = App.lessonMeta[App.currentLessonId].title;
+  const accuracy = App.totalAnswered > 0 ? Math.round((App.correctCount / App.totalAnswered) * 100) : 0;
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+  const topic = "Bilangan Ganjil, Genap, dan Sifatnya";
+
+  let tableRows = "";
+  App.state.answeredHistory.forEach((item, index) => {
+    tableRows += `
+      <tr>
+        <td style="text-align:center;">${index + 1}</td>
+        <td>${item.question}</td>
+        <td>${item.studentAnswer}</td>
+        <td>${item.correctAnswer}</td>
+        <td style="text-align:center; font-weight:bold; color:${item.isCorrect ? '#58cc02' : '#ff4b4b'};">${item.isCorrect ? '✓' : '✗'}</td>
+      </tr>
+    `;
+  });
+
+  const printWindow = window.open('', '', 'width=800,height=600');
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>Print Result - ${lessonTitle}</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+        h1 { color: #58cc02; text-align: center; margin-bottom: 20px; }
+        .header-info { margin-bottom: 30px; border: 2px solid #e5e5e5; padding: 15px; border-radius: 10px; }
+        .header-info p { margin: 5px 0; font-size: 14px; }
+        .header-info b { color: #777; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; vertical-align: top; }
+        th { background-color: #f7f7f7; font-weight: bold; }
+        .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #aaa; }
+      </style>
+    </head>
+    <body>
+      <h1>Math Assessment Result</h1>
+      <div class="header-info">
+        <p><b>Name:</b> ___________________________</p>
+        <p><b>Date:</b> ${dateStr}</p>
+        <p><b>Topic:</b> ${topic}</p>
+        <p><b>Assessment Group:</b> ${lessonTitle}</p>
+        <p><b>Score:</b> ${App.correctCount} / ${App.totalAnswered} (${accuracy}%)</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:5%; text-align:center;">No.</th>
+            <th style="width:45%;">Question</th>
+            <th style="width:20%;">Student Answer</th>
+            <th style="width:20%;">Correct Answer</th>
+            <th style="width:10%; text-align:center;">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+      <div class="footer">
+        <p>Bilangan Ganjil, Genap, dan Sifatnya - Math Tutoring Portal</p>
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 300);
+}
+
+function updateStats() {
+  $('#streak').innerText = App.state.streak;
+  $('#gems').innerText = App.state.gems;
+  $('#hearts').innerText = App.state.hearts;
+}
+
+initApp();
+</script>
+</body>
+</html>
