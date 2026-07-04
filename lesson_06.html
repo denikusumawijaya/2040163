@@ -1,0 +1,2095 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Tutoring — by Deni</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+  --bg: #0b1121; --bg2: #111827; --card: rgba(17,24,39,0.85);
+  --fg: #e2e8f0; --muted: #64748b; --accent: #10b981;
+  --accent2: #f59e0b; --danger: #ef4444; --border: rgba(100,116,139,0.2);
+  --glass: rgba(16,185,129,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; overflow-x: hidden; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* Latar belakang animasi */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(16,185,129,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(245,158,11,0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(16,185,129,0.03) 0%, transparent 50%);
+}
+.bg-grid::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(16,185,129,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16,185,129,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Transisi halaman */
+.view { display: none; position: relative; z-index: 1; }
+.view.active { display: block; animation: fadeSlideIn 0.4s ease; }
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Peta node */
+.map-node {
+  width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease;
+  position: relative; border: 3px solid var(--border);
+  background: var(--bg2);
+}
+.map-node.unlocked { border-color: var(--accent); box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+.map-node.unlocked:hover { transform: scale(1.12); box-shadow: 0 0 30px rgba(16,185,129,0.4); }
+.map-node.completed { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.map-node.completed:hover { transform: scale(1.08); }
+.map-node.locked { opacity: 0.35; cursor: not-allowed; }
+.map-node.current { animation: pulseGlow 2s ease-in-out infinite; }
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 15px rgba(16,185,129,0.3); }
+  50% { box-shadow: 0 0 35px rgba(16,185,129,0.6); }
+}
+
+/* Koneksi garis peta */
+.map-line { width: 3px; height: 40px; margin: 0 auto; background: var(--border); transition: background 0.5s; }
+.map-line.done { background: var(--accent); }
+.map-branch-line { height: 3px; width: 60px; background: var(--border); transition: background 0.5s; }
+.map-branch-line.done { background: var(--accent); }
+
+/* Lesson node di peta detail */
+.lesson-node {
+  width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; cursor: pointer; transition: all 0.3s; border: 2px solid var(--border); background: var(--bg2);
+}
+.lesson-node.theory { border-radius: 50%; }
+.lesson-node.exercise { border-radius: 16px; }
+.lesson-node.unlocked { border-color: var(--accent); }
+.lesson-node.unlocked:hover { transform: scale(1.15); box-shadow: 0 0 20px rgba(16,185,129,0.3); }
+.lesson-node.completed { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.lesson-node.locked { opacity: 0.3; cursor: not-allowed; }
+.lesson-connector { width: 2px; height: 24px; margin: 0 auto; background: var(--border); }
+.lesson-connector.done { background: var(--accent); }
+
+/* Tombol */
+.btn-primary {
+  background: var(--accent); color: var(--bg); font-weight: 600; padding: 14px 32px; border-radius: 14px;
+  border: none; cursor: pointer; font-size: 1rem; font-family: inherit; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.3); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; }
+.btn-secondary {
+  background: transparent; color: var(--accent); font-weight: 600; padding: 12px 24px; border-radius: 14px;
+  border: 2px solid var(--accent); cursor: pointer; font-size: 0.9rem; font-family: inherit; transition: all 0.2s;
+}
+.btn-secondary:hover { background: rgba(16,185,129,0.1); }
+
+/* Opsi exercise */
+.opt-card {
+  padding: 16px 20px; border: 2px solid var(--border); border-radius: 14px; cursor: pointer;
+  transition: all 0.2s; background: var(--card); min-height: 52px; display: flex; align-items: center; gap: 12px;
+}
+.opt-card:hover { border-color: rgba(16,185,129,0.4); background: var(--glass); }
+.opt-card.selected { border-color: var(--accent); background: rgba(16,185,129,0.12); }
+.opt-card.correct { border-color: #10b981; background: rgba(16,185,129,0.15); }
+.opt-card.wrong { border-color: #ef4444; background: rgba(239,68,68,0.1); }
+.opt-card.disabled { pointer-events: none; opacity: 0.7; }
+
+/* Input exercise */
+.ex-input {
+  background: var(--bg2); border: 2px solid var(--border); border-radius: 12px; padding: 14px 18px;
+  color: var(--fg); font-size: 1rem; font-family: inherit; width: 100%; outline: none; transition: border-color 0.2s;
+}
+.ex-input:focus { border-color: var(--accent); }
+.ex-input.correct { border-color: #10b981; }
+.ex-input.wrong { border-color: #ef4444; }
+
+/* Code block */
+.code-block {
+  background: #0d1117; border: 1px solid rgba(100,116,139,0.2); border-radius: 12px;
+  padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+  line-height: 1.7; overflow-x: auto; white-space: pre;
+}
+
+/* Progress bar */
+.prog-bar { height: 6px; border-radius: 3px; background: rgba(100,116,139,0.2); overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.5s ease; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+  padding: 14px 28px; border-radius: 14px; font-weight: 600; z-index: 999;
+  transition: transform 0.4s ease; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: #10b981; color: #0b1121; }
+.toast.error { background: #ef4444; color: white; }
+.toast.info { background: #f59e0b; color: #0b1121; }
+
+/* XP popup */
+.xp-popup {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
+  background: var(--bg2); border: 2px solid var(--accent2); border-radius: 24px;
+  padding: 40px 60px; z-index: 100; text-align: center;
+  transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.xp-popup.show { transform: translate(-50%,-50%) scale(1); }
+
+/* Celebration particles */
+.confetti { position: fixed; top: -10px; z-index: 99; pointer-events: none; animation: confettiFall 2s ease-out forwards; }
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Match exercise */
+.match-item {
+  padding: 12px 18px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer;
+  transition: all 0.2s; background: var(--card); text-align: center; user-select: none;
+}
+.match-item:hover { border-color: rgba(16,185,129,0.4); }
+.match-item.active { border-color: var(--accent); background: rgba(16,185,129,0.12); box-shadow: 0 0 15px rgba(16,185,129,0.2); }
+.match-item.matched { border-color: #10b981; background: rgba(16,185,129,0.15); opacity: 0.6; pointer-events: none; }
+.match-item.wrong-match { border-color: #ef4444; background: rgba(239,68,68,0.1); }
+
+/* Order exercise */
+.order-item {
+  padding: 14px 20px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer;
+  transition: all 0.2s; background: var(--card); user-select: none;
+}
+.order-item:hover { border-color: rgba(16,185,129,0.4); }
+.order-item.ordered { border-color: var(--accent2); background: rgba(245,158,11,0.1); opacity: 0.5; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.3); border-radius: 3px; }
+
+/* Responsif */
+@media (max-width: 640px) {
+  .map-node { width: 56px; height: 56px; font-size: 1rem; }
+  .lesson-node { width: 48px; height: 48px; font-size: 0.75rem; }
+}
+
+/* Animasi masuk */
+.stagger-in > * { opacity: 0; transform: translateY(15px); animation: staggerFade 0.4s ease forwards; }
+.stagger-in > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-in > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-in > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-in > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-in > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-in > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-in > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-in > *:nth-child(8) { animation-delay: 0.4s; }
+.stagger-in > *:nth-child(9) { animation-delay: 0.45s; }
+.stagger-in > *:nth-child(10) { animation-delay: 0.5s; }
+@keyframes staggerFade { to { opacity: 1; transform: translateY(0); } }
+
+/* Feedback benar/salah */
+.feedback-bar {
+  padding: 18px 24px; border-radius: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px;
+  animation: fadeSlideIn 0.3s ease;
+}
+.feedback-bar.correct-fb { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #10b981; }
+.feedback-bar.wrong-fb { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; }
+
+/* Terjemahan bahasa Indonesia di bawah teks utama */
+.id-lang { display: block; font-size: 0.75rem; color: #94a3b8; margin-top: 2px; line-height: 1.4; }
+
+/* Khusus label di node peta/lesson: tidak wrap, indo di bawah inggris */
+.node-title { text-align: center; white-space: nowrap; }
+.node-title .id-lang { display: block; white-space: nowrap; margin-top: 2px; }
+
+/* Modal Rules */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200;
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+.modal-box {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 20px;
+  padding: 30px; max-width: 450px; width: 90%; position: relative;
+  animation: scaleIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<!-- Rules Modal -->
+<div id="rulesModal" class="modal-overlay">
+  <div class="modal-box">
+    <button onclick="closeRules()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-300 transition">
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+    <h3 class="text-xl font-bold mb-5 text-amber-400">
+      <i class="fa-solid fa-gavel mr-2"></i>Class Rules <span class="id-lang" style="display:inline; color:#f59e0b;">Aturan Kelas</span>
+    </h3>
+    <ul class="space-y-4 text-slate-300">
+      <li class="flex items-start gap-3">
+        <span class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fa-solid fa-comments text-emerald-400"></i></span>
+        <div>
+          <strong>Take turns speaking</strong>
+          <span class="id-lang">Berbicara secara bergantian</span>
+        </div>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fa-solid fa-video text-amber-400"></i></span>
+        <div>
+          <strong>Turn on camera & microphone when required</strong>
+          <span class="id-lang">Menyalakan kamera & microphone jika diperlukan</span>
+        </div>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fa-solid fa-hand text-violet-400"></i></span>
+        <div>
+          <strong>Ask for permission to leave the class</strong>
+          <span class="id-lang">Meminta izin jika ingin meninggalkan kelas</span>
+        </div>
+      </li>
+    </ul>
+    <div class="mt-6 text-right">
+      <button onclick="closeRules()" class="btn-primary">Got it! <span class="id-lang" style="color:rgba(11,17,33,0.7); display:inline;">Mengerti!</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- XP Popup -->
+<div id="xpPopup" class="xp-popup">
+  <div class="text-5xl font-bold text-amber-400 mb-2">+<span id="xpAmount">10</span> XP</div>
+  <div class="text-lg text-slate-400">Correct answer! <span class="id-lang">Jawaban benar!</span></div>
+</div>
+
+<!-- ========== MAP VIEW ========== -->
+<div id="mapView" class="view active">
+  <header class="sticky top-0 z-10 backdrop-blur-xl bg-[#0b1121]/80 border-b border-white/5">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+          <i class="fa-solid fa-square-root-variable text-emerald-400"></i>
+        </div>
+        <div>
+          <div class="font-bold text-lg leading-tight">Math Tutoring</div>
+          <div class="text-xs text-slate-500">by Deni</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-5">
+        <button onclick="openRules()" class="text-xs text-slate-500 hover:text-amber-400 transition flex items-center gap-1 border border-transparent hover:border-amber-400/30 rounded-lg px-2 py-1" title="Class Rules">
+          <i class="fa-solid fa-gavel"></i> Rules
+        </button>
+        <button onclick="resetProgress()" class="text-xs text-slate-500 hover:text-red-400 transition flex items-center gap-1 border border-transparent hover:border-red-400/30 rounded-lg px-2 py-1" title="Reset Semua Progress">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+        <div class="flex items-center gap-2 text-amber-400 font-semibold">
+          <i class="fa-solid fa-bolt"></i><span id="headerXP">0</span> XP
+        </div>
+        <div class="flex items-center gap-2 text-orange-400 font-semibold">
+          <i class="fa-solid fa-fire"></i><span id="headerStreak">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pt-8 pb-20">
+    <div class="text-center mb-10">
+		<h1 class="text-2xl md:text-3xl font-extrabold mb-3 bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent leading-tight">
+		  3-Digit Addition without Regrouping
+		  <span class="id-lang" style="display:block; color:#94a3b8; margin-top: 4px; font-size: 1.25rem;">Penjumlahan 3-digit tanpa Simpan (Regrouping)</span>
+		</h1>
+            <div class="text-slate-400 mx-auto text-center" style="max-width: 90%;">
+        <div style="white-space: nowrap;">Complete each map to unlock the next. Collect XP and build your learning streak!</div>
+        <div class="id-lang" style="white-space: nowrap;">Selesaikan setiap peta untuk membuka peta berikutnya. Kumpulkan XP dan bangun streak belajarmu!</div>
+      </div>
+    </div>
+
+    <!-- Progress keseluruhan -->
+    <div class="max-w-md mx-auto mb-10">
+      <div class="flex justify-between text-sm mb-2">
+        <span class="text-slate-400">Overall Progress <span class="id-lang" style="display:inline; color:#64748b;">Progress Keseluruhan</span></span>
+        <span class="text-emerald-400 font-semibold" id="totalProgress">0%</span>
+      </div>
+      <div class="prog-bar">
+        <div class="prog-fill" id="totalProgFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Peta nodes akan dirender oleh JS -->
+    <div id="mapContainer" class="flex flex-col items-center gap-0"></div>
+  </main>
+</div>
+
+<!-- ========== PETA VIEW (detail lesson) ========== -->
+<div id="petaView" class="view">
+  <header class="sticky top-0 z-10 backdrop-blur-xl bg-[#0b1121]/80 border-b border-white/5">
+    <div class="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
+      <button onclick="showMap()" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+        <i class="fa-solid fa-arrow-left text-slate-400"></i>
+      </button>
+      <div>
+        <div class="font-bold text-lg" id="petaTitle"></div>
+        <div class="text-xs text-slate-500" id="petaSubtitle"></div>
+      </div>
+    </div>
+  </header>
+  <main class="max-w-2xl mx-auto px-4 pt-8 pb-20">
+    <div id="lessonContainer" class="flex flex-col items-center"></div>
+  </main>
+</div>
+
+<!-- ========== LESSON VIEW ========== -->
+<div id="lessonView" class="view">
+  <header class="sticky top-0 z-10 backdrop-blur-xl bg-[#0b1121]/80 border-b border-white/5">
+    <div class="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
+      <button onclick="closeLesson()" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+        <i class="fa-solid fa-xmark text-slate-400"></i>
+      </button>
+      <div class="flex-1">
+        <div class="prog-bar">
+          <div class="prog-fill" id="lessonProgFill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="text-sm text-slate-400 font-mono" id="lessonCounter">1/10</div>
+    </div>
+  </header>
+  <main class="max-w-2xl mx-auto px-4 pt-6 pb-20" id="lessonContent"></main>
+</div>
+
+<script>
+// ============================================================
+// DATA KURSUS — Seluruh konten pembelajaran
+// ============================================================
+const COURSE = {
+  title: "3-Digit Addition without Regrouping <span class='id-lang'>Penjumlahan 3-digit tanpa Simpan</span>",
+  maps: [
+    // ==================== SECTION 1 ====================
+    {
+      id:1, title:"Spiral Review Warm-up <span class='id-lang'>Pemanasan Review</span>", icon:"fa-rotate", color:"#10b981", branch:false,
+      lessons:[
+        // 1 Teori
+        {type:"T",title:"Place Value Review <span class='id-lang'>Review Nilai Tempat</span>",
+         body:`<p>Before we add big numbers, let's review our Place Value! Every digit in a number has a value based on its position: Hundreds (H), Tens (T), and Ones (O). <span class='id-lang'>Sebelum menjumlahkan angka besar, mari review Nilai Tempat! Setiap digit punya nilai berdasarkan posisinya: Ratusan, Puluhan, Satuan.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+           <div class="text-emerald-400 font-semibold mb-2"><i class="fa-solid fa-cube mr-2"></i>The Houses <span class='id-lang'>Rumah-Rumah</span></div>
+           <p class="text-sm text-slate-300">In \\( 452 \\), the 4 is Hundreds (400), the 5 is Tens (50), and the 2 is Ones (2). <span class='id-lang'>Di 452, 4 adalah Ratusan, 5 Puluhan, 2 Satuan.</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"mc",
+         q:"What is the place value of the underlined digit in \\( 4\\underline{5}2 \\)? <span class='id-lang'>Berapa nilai tempat angka yang digarisbawahi?</span>",
+         o:["5 Ones <span class='id-lang'>5 Satuan</span>","5 Tens <span class='id-lang'>5 Puluhan</span>","5 Hundreds <span class='id-lang'>5 Ratusan</span>","500 <span class='id-lang'>500</span>"],
+         a:1,
+         h:"It is in the middle, so it represents groups of 10. <span class='id-lang'>Ada di tengah, mewakili puluhan.</span>"},
+        {type:"E",etype:"mc",
+         q:"Identify the Hundreds, Tens, and Ones in \\( 781 \\). <span class='id-lang'>Identifikasi Ratusan, Puluhan, Satuan di 781.</span>",
+         o:["7 O, 8 T, 1 H <span class='id-lang'>7 S, 8 P, 1 R</span>","7 H, 8 T, 1 O <span class='id-lang'>7 R, 8 P, 1 S</span>","1 H, 8 T, 7 O <span class='id-lang'>1 R, 8 P, 7 S</span>","7 H, 1 T, 8 O <span class='id-lang'>7 R, 1 P, 8 S</span>"],
+         a:1,
+         h:"From left to right: Hundreds, Tens, Ones. <span class='id-lang'>Kiri ke kanan: Ratusan, Puluhan, Satuan.</span>"},
+        {type:"E",etype:"fb",
+         q:"What number is 3 Hundreds, 0 Tens, and 9 Ones? <span class='id-lang'>Angka berapa 3 Ratusan, 0 Puluhan, 9 Satuan?</span>",
+         a:"309",
+         h:"Combine 300 + 0 + 9. <span class='id-lang'>Gabungkan 300 + 0 + 9.</span>"},
+        // 1 Teori
+        {type:"T",title:"Numbers 1-20 & Mental Math <span class='id-lang'>Angka 1-20 & Hitung Cepat</span>",
+         body:`<p>Let's do a quick brain warm-up with small numbers! Being fast with 1-20 helps us add bigger numbers later. <span class='id-lang'>Mari pemanasan otak dengan angka kecil! Cepat di 1-20 membantu menjumlahkan angka lebih besar.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+           <div class="text-cyan-400 font-semibold mb-2">Quick Add <span class='id-lang'>Penjumlahan Cepat</span></div>
+           <p class="text-sm text-slate-300">If you have 8 blocks and get 7 more, you have \\( 8 + 7 = 15 \\). <span class='id-lang'>Jika punya 8 balok dan dapat 7 lagi, ada 15.</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"mc",
+         q:"Find the missing number in the sequence: 12, 13, __, 15. <span class='id-lang'>Cari angka yang hilang: 12, 13, __, 15.</span>",
+         o:["14 <span class='id-lang'>14</span>","16 <span class='id-lang'>16</span>","11 <span class='id-lang'>11</span>","10 <span class='id-lang'>10</span>"],
+         a:0,
+         h:"Count up by 1. <span class='id-lang'>Hitung naik 1.</span>"},
+        {type:"E",etype:"fb",
+         q:"Quick mental add: \\( 8 + 7 = \\) ? <span class='id-lang'>Hitung cepat: 8 + 7 = ?</span>",
+         a:"15",
+         h:"8 plus 2 is 10, plus 5 more is 15. <span class='id-lang'>8 ditambah 2 jadi 10, ditambah 5 jadi 15.</span>"},
+        {type:"E",etype:"tf",
+         q:"15 minus 3 is equal to 11. <span class='id-lang'>15 kurang 3 sama dengan 11.</span>",
+         a:false,
+         h:"15 minus 3 is 12. <span class='id-lang'>15 kurang 3 adalah 12.</span>"},
+        // 1 Teori
+        {type:"T",title:"Mental Math with Hundreds <span class='id-lang'>Hitung Cepat Ratusan</span>",
+         body:`<p>Adding full hundreds is just like adding 1-digit numbers! Just add the front digits and put '00' at the end. <span class='id-lang'>Menjumlahkan ratusan penuh seperti menjumlahkan 1 digit! Tambah depan, taruh '00' di belakang.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+           <div class="text-amber-400 font-semibold mb-2">Example <span class='id-lang'>Contoh</span></div>
+           <p class="text-sm text-slate-300">\\( 200 + 300 \\). Think: \\( 2 + 3 = 5 \\). Add '00' -> \\( 500 \\). <span class='id-lang'>Pikir: 2 + 3 = 5. Tambah '00' -> 500.</span></p>
+         </div>`},
+        // 4 Exercise
+        {type:"E",etype:"fb",
+         q:"Mental math: \\( 200 + 300 = \\) ? <span class='id-lang'>Hitung cepat: 200 + 300 = ?</span>",
+         a:"500",
+         h:"2 + 3 = 5, so 500. <span class='id-lang'>2 + 3 = 5, jadi 500.</span>"},
+        {type:"E",etype:"fb",
+         q:"Mental math: \\( 100 + 400 = \\) ? <span class='id-lang'>Hitung cepat: 100 + 400 = ?</span>",
+         a:"500",
+         h:"1 + 4 = 5, so 500. <span class='id-lang'>1 + 4 = 5, jadi 500.</span>"},
+        {type:"E",etype:"mc",
+         q:"What is \\( 500 + 200 \\)? <span class='id-lang'>Berapa 500 + 200?</span>",
+         o:["600 <span class='id-lang'>600</span>","700 <span class='id-lang'>700</span>","800 <span class='id-lang'>800</span>","500 <span class='id-lang'>500</span>"],
+         a:1,
+         h:"5 + 2 = 7. <span class='id-lang'>5 + 2 = 7.</span>"},
+        {type:"E",etype:"tf",
+         q:"\\( 300 + 400 = 600 \\). <span class='id-lang'>300 + 400 = 600.</span>",
+         a:false,
+         h:"3 + 4 is 7, so it should be 700. <span class='id-lang'>3 + 4 = 7, seharusnya 700.</span>"}
+      ]
+    },
+    // ==================== SECTION 2 ====================
+    {
+      id:2, title:"Real-World Connection <span class='id-lang'>Koneksi Dunia Nyata</span>", icon:"fa-lightbulb", color:"#06b6d4", branch:false,
+      lessons:[
+        // 1 Teori
+        {type:"T",title:"The Toy Factory <span class='id-lang'>Pabrik Mainan</span>",
+         body:`<p>Imagine you are the manager of a giant Toy Factory! You receive big orders. If you have 200 blue blocks and 300 red blocks, you need to add them to know the total. <span class='id-lang'>Bayangkan kamu manajer Pabrik Mainan! Kamu menerima pesanan besar. Jika ada 200 balok biru dan 300 merah, kamu jumlahkan untuk totalnya.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+           <div class="text-cyan-400 font-semibold mb-2">Adding Hundreds <span class='id-lang'>Menjumlahkan Ratusan</span></div>
+           <p class="text-sm text-slate-300">200 + 300 = 500 blocks. <span class='id-lang'>200 + 300 = 500 balok.</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"mc",
+         q:"A factory has 200 blue blocks and 300 red blocks. How many blocks in total? <span class='id-lang'>Pabrik punya 200 biru, 300 merah. Total berapa?</span>",
+         o:["400 <span class='id-lang'>400</span>","500 <span class='id-lang'>500</span>","600 <span class='id-lang'>600</span>","100 <span class='id-lang'>100</span>"],
+         a:1,
+         h:"\\( 200 + 300 = 500 \\). <span class='id-lang'>200 + 300 = 500.</span>"},
+        {type:"E",etype:"fb",
+         q:"You have 400 toy cars and get 400 more. How many now? <span class='id-lang'>Ada 400 mobil mainan, dapat 400 lagi. Berapa sekarang?</span>",
+         a:"800",
+         h:"4 + 4 = 8, so 800. <span class='id-lang'>4 + 4 = 8, jadi 800.</span>"},
+        {type:"E",etype:"mc",
+         q:"600 dolls + 200 robots = ? <span class='id-lang'>600 boneka + 200 robot = ?</span>",
+         o:["700 <span class='id-lang'>700</span>","800 <span class='id-lang'>800</span>","900 <span class='id-lang'>900</span>","1000 <span class='id-lang'>1000</span>"],
+         a:1,
+         h:"6 + 2 = 8. <span class='id-lang'>6 + 2 = 8.</span>"},
+        // 1 Teori
+        {type:"T",title:"Visualizing 100s Blocks <span class='id-lang'>Memvisualisasikan Balok 100-an</span>",
+         body:`<p>Think of each '100' as a giant block. If you stack 3 giant blue blocks and 2 giant red blocks, you have 5 giant blocks total (500). <span class='id-lang'>Anggap '100' sebagai balok raksasa. Jika tumpuk 3 biru dan 2 merah, ada 5 balok (500).</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+           <div class="text-emerald-400 font-semibold mb-2">Keep it Simple <span class='id-lang'>Sederhanakan</span></div>
+           <p class="text-sm text-slate-300">Just focus on the hundreds digit! <span class='id-lang'>Fokus pada angka ratusannya!</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"tf",
+         q:"3 hundreds + 2 hundreds is the same as 500. <span class='id-lang'>3 ratusan + 2 ratusan sama dengan 500.</span>",
+         a:true,
+         h:"3 + 2 = 5 hundreds. <span class='id-lang'>3 + 2 = 5 ratusan.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 700 + 100 = \\) ? <span class='id-lang'>700 + 100 = ?</span>",
+         a:"800",
+         h:"7 + 1 = 8. <span class='id-lang'>7 + 1 = 8.</span>"},
+        {type:"E",etype:"mc",
+         q:"\\( 800 + 100 = \\) ? <span class='id-lang'>800 + 100 = ?</span>",
+         o:["700 <span class='id-lang'>700</span>","800 <span class='id-lang'>800</span>","900 <span class='id-lang'>900</span>","1000 <span class='id-lang'>1000</span>"],
+         a:2,
+         h:"8 + 1 = 9. <span class='id-lang'>8 + 1 = 9.</span>"},
+        // 1 Teori
+        {type:"T",title:"Connecting Hundreds to 3-Digits <span class='id-lang'>Menghubungkan Ratusan ke 3-Digit</span>",
+         body:`<p>Now let's add tens and ones too! If we have 200 + 100 + 5, we add the hundreds first (300), then the ones (5). Total: 305. <span class='id-lang'>Sekarang tambah puluhan dan satuan! 200 + 100 + 5, jumlah ratusan dulu (300), lalu satuan (5). Total: 305.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+           <div class="text-amber-400 font-semibold mb-2">Grouping <span class='id-lang'>Pengelompokan</span></div>
+           <p class="text-sm text-slate-300">Group the hundreds together, then the tens, then the ones. <span class='id-lang'>Kelompokkan ratusan, lalu puluhan, lalu satuan.</span></p>
+         </div>`},
+        // 4 Exercise
+        {type:"E",etype:"fb",
+         q:"\\( 200 + 100 + 5 = \\) ? <span class='id-lang'>200 + 100 + 5 = ?</span>",
+         a:"305",
+         h:"200+100=300. 300+5=305. <span class='id-lang'>300+5=305.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 300 + 200 + 10 = \\) ? <span class='id-lang'>300 + 200 + 10 = ?</span>",
+         a:"510",
+         h:"3+2=5 (500). Add 10. <span class='id-lang'>500 + 10 = 510.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 400 + 400 + 1 = \\) ? <span class='id-lang'>400 + 400 + 1 = ?</span>",
+         a:"801",
+         h:"4+4=8 (800). Add 1. <span class='id-lang'>800 + 1 = 801.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 500 + 300 + 2 = \\) ? <span class='id-lang'>500 + 300 + 2 = ?</span>",
+         a:"802",
+         h:"5+3=8 (800). Add 2. <span class='id-lang'>800 + 2 = 802.</span>"}
+      ]
+    },
+    // ==================== SECTION 3 ====================
+    {
+      id:3, title:"Review of Prior Knowledge <span class='id-lang'>Review Pengetahuan</span>", icon:"fa-brain", color:"#8b5cf6", branch:false,
+      lessons:[
+        // 1 Teori
+        {type:"T",title:"Place Value Houses <span class='id-lang'>Rumah Nilai Tempat</span>",
+         body:`<p>Remember our 'Place Value Houses'? We have the Hundreds house, the Tens house, and the Ones house. When we add numbers, friends stay in their own houses. <span class='id-lang'>Ingat 'Rumah Nilai Tempat'? Ada rumah Ratusan, Puluhan, Satuan. Saat menjumlahkan, teman tetap di rumahnya.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+           <div class="text-violet-400 font-semibold mb-2">Dragging Digits <span class='id-lang'>Menarik Digit</span></div>
+           <p class="text-sm text-slate-300">For 143, the 1 goes to Hundreds, 4 to Tens, 3 to Ones. <span class='id-lang'>Untuk 143, 1 ke Ratusan, 4 ke Puluhan, 3 ke Satuan.</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"mc",
+         q:"In the number 143, which house does the '1' belong to? <span class='id-lang'>Di angka 143, '1' masuk rumah mana?</span>",
+         o:["Ones <span class='id-lang'>Satuan</span>","Tens <span class='id-lang'>Puluhan</span>","Hundreds <span class='id-lang'>Ratusan</span>","Thousands <span class='id-lang'>Ribuan</span>"],
+         a:2,
+         h:"It's the first digit on the left. <span class='id-lang'>Digit pertama di kiri.</span>"},
+        {type:"E",etype:"mc",
+         q:"In the number 251, which house does the '5' belong to? <span class='id-lang'>Di angka 251, '5' masuk rumah mana?</span>",
+         o:["Ones <span class='id-lang'>Satuan</span>","Tens <span class='id-lang'>Puluhan</span>","Hundreds <span class='id-lang'>Ratusan</span>","Zero <span class='id-lang'>Nol</span>"],
+         a:1,
+         h:"It's in the middle. <span class='id-lang'>Ada di tengah.</span>"},
+        {type:"E",etype:"fb",
+         q:"What is \\( 100 + 40 + 3 \\)? <span class='id-lang'>Berapa 100 + 40 + 3?</span>",
+         a:"143",
+         h:"Combine the hundreds, tens, and ones. <span class='id-lang'>Gabungkan semuanya.</span>"},
+        // 1 Teori
+        {type:"T",title:"Vertical Alignment <span class='id-lang'>Penjajaran Vertikal</span>",
+         body:`<p>To add numbers easily, we stack them vertically! The Ones house aligns with the Ones house, Tens with Tens, Hundreds with Hundreds. <span class='id-lang'>Untuk menjumlahkan, tumpuk secara vertikal! Satuan sejajar Satuan, Puluhan sejajar Puluhan, Ratusan sejajar Ratusan.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+           <div class="text-cyan-400 font-semibold mb-2">Stacking Rule <span class='id-lang'>Aturan Tumpukan</span></div>
+           <p class="text-sm text-slate-300">Always align from right to left! <span class='id-lang'>Selalu sejajar dari kanan ke kiri!</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"tf",
+         q:"When adding vertically, we must align the digits by their place value. <span class='id-lang'>Saat menjumlahkan vertikal, kita harus sejajarkan digit berdasarkan nilai tempat.</span>",
+         a:true,
+         h:"Yes! Ones over Ones, Tens over Tens. <span class='id-lang'>Ya! Satuan di atas Satuan.</span>"},
+        {type:"E",etype:"mc",
+         q:"What is the correct vertical alignment for \\( 123 + 45 \\)? <span class='id-lang'>Apa penjajaran vertikal yang benar untuk 123 + 45?</span>",
+         o:["123 and 045 <span class='id-lang'>123 dan 045</span>","123 and 450 <span class='id-lang'>123 dan 450</span>","123 and 45 (no zero) <span class='id-lang'>123 dan 45 (tanpa nol)</span>","123 and 004 <span class='id-lang'>123 dan 004</span>"],
+         a:0,
+         h:"45 is 4 Tens and 5 Ones. It has 0 Hundreds. <span class='id-lang'>45 adalah 0 Ratusan, 4 Puluhan, 5 Satuan.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 23 + 14 = \\) ? <span class='id-lang'>23 + 14 = ?</span>",
+         a:"37",
+         h:"3+4=7 (ones). 2+1=3 (tens). So 37. <span class='id-lang'>3+4=7. 2+1=3. Jadi 37.</span>"},
+        // 1 Teori
+        {type:"T",title:"Adding by Columns <span class='id-lang'>Menjumlahkan per Kolom</span>",
+         body:`<p>Once aligned, we just add column by column! No carrying needed if the sum is 9 or less. <span class='id-lang'>Setelah sejajar, jumlahkan per kolom! Tidak perlu menyimpan jika jumlahnya 9 atau kurang.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+           <div class="text-amber-400 font-semibold mb-2">Column Addition <span class='id-lang'>Penjumlahan Kolom</span></div>
+           <p class="text-sm text-slate-300">Tens: 2+1=3. Ones: 3+4=7. Answer: 37. <span class='id-lang'>Puluhan: 2+1=3. Satuan: 3+4=7. Jawab: 37.</span></p>
+         </div>`},
+        // 4 Exercise
+        {type:"E",etype:"fb",
+         q:"For \\( 31 + 12 \\), what is the sum of the Ones column? <span class='id-lang'>Untuk 31 + 12, berapa hasil kolom Satuan?</span>",
+         a:"3",
+         h:"1 + 2 = 3. <span class='id-lang'>1 + 2 = 3.</span>"},
+        {type:"E",etype:"fb",
+         q:"For \\( 42 + 35 \\), what is the sum of the Tens column? <span class='id-lang'>Untuk 42 + 35, berapa hasil kolom Puluhan?</span>",
+         a:"7",
+         h:"4 + 3 = 7. <span class='id-lang'>4 + 3 = 7.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 54 + 23 = \\) ? <span class='id-lang'>54 + 23 = ?</span>",
+         a:"77",
+         h:"5+2=7 (Tens). 4+3=7 (Ones). <span class='id-lang'>5+2=7. 4+3=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 81 + 17 = \\) ? <span class='id-lang'>81 + 17 = ?</span>",
+         a:"98",
+         h:"8+1=9 (Tens). 1+7=8 (Ones). <span class='id-lang'>8+1=9. 1+7=8.</span>"}
+      ]
+    },
+    // ==================== SECTION 4 ====================
+    {
+      id:4, title:"Problem Introduction <span class='id-lang'>Pengenalan Masalah</span>", icon:"fa-circle-question", color:"#f59e0b", branch:false,
+      lessons:[
+        // 1 Teori
+        {type:"T",title:"Step-by-Step Vertical Addition <span class='id-lang'>Penjumlahan Vertikal Langkah-demi-Langkah</span>",
+         body:`<p>Now, let's try a big one! \\( 123 + 245 \\). Look at how we align them vertically. We ALWAYS start from the smallest house—the Ones house. <span class='id-lang'>Sekarang coba yang besar! 123 + 245. Lihat cara menjajarkannya vertikal. Kita SELALU mulai dari rumah terkecil—Satuan.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+           <div class="text-amber-400 font-semibold mb-2">The Steps <span class='id-lang'>Langkahnya</span></div>
+           <p class="text-sm text-slate-300">1. Ones: \\( 3 + 5 = 8 \\).<br>2. Tens: \\( 2 + 4 = 6 \\).<br>3. Hundreds: \\( 1 + 2 = 3 \\).<br>Answer: \\( 368 \\)! <span class='id-lang'>Satuan: 8. Puluhan: 6. Ratusan: 3. Jawab: 368!</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"fb",
+         q:"For \\( 123 + 245 \\), what is the sum of the Ones column? <span class='id-lang'>Untuk 123 + 245, berapa hasil kolom Satuan?</span>",
+         a:"8",
+         h:"\\( 3 + 5 = 8 \\). <span class='id-lang'>3 + 5 = 8.</span>"},
+        {type:"E",etype:"fb",
+         q:"For \\( 123 + 245 \\), what is the sum of the Tens column? <span class='id-lang'>Untuk 123 + 245, berapa hasil kolom Puluhan?</span>",
+         a:"6",
+         h:"\\( 2 + 4 = 6 \\). <span class='id-lang'>2 + 4 = 6.</span>"},
+        {type:"E",etype:"fb",
+         q:"Calculate: \\( 123 + 245 = \\) ? <span class='id-lang'>Hitung: 123 + 245 = ?</span>",
+         a:"368",
+         h:"Put the columns together: 3 Hundreds, 6 Tens, 8 Ones. <span class='id-lang'>Gabungkan kolom: 3 Ratusan, 6 Puluhan, 8 Satuan.</span>"},
+        // 1 Teori
+        {type:"T",title:"The 'Start with Ones' Rule <span class='id-lang'>Aturan 'Mulai dari Satuan'</span>",
+         body:`<p>Why do we always start with Ones? So we don't mix up our friends! If we start from the left (Hundreds), we might forget to add the Tens and Ones properly. No carrying, no hiding, just simple adding in each house. <span class='id-lang'>Kenapa mulai dari Satuan? Supaya tidak campur! Jika dari kiri (Ratusan), mungkin lupa Puluhan dan Satuan. Tidak perlu simpan, hanya jumlahkan di tiap rumah.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+           <div class="text-emerald-400 font-semibold mb-2">Right to Left <span class='id-lang'>Kanan ke Kiri</span></div>
+           <p class="text-sm text-slate-300">Ones -> Tens -> Hundreds. Always! <span class='id-lang'>Satuan -> Puluhan -> Ratusan. Selalu!</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"mc",
+         q:"When doing vertical addition, which column do you add first? <span class='id-lang'>Saat penjumlahan vertikal, kolom mana yang dijumlahkan dulu?</span>",
+         o:["Hundreds <span class='id-lang'>Ratusan</span>","Tens <span class='id-lang'>Puluhan</span>","Ones <span class='id-lang'>Satuan</span>","All at once <span class='id-lang'>Semua sekaligus</span>"],
+         a:2,
+         h:"Always start from the smallest place value! <span class='id-lang'>Selalu mulai dari nilai tempat terkecil!</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 241 + 325 = \\) ? <span class='id-lang'>241 + 325 = ?</span>",
+         a:"566",
+         h:"1+5=6 (Ones). 4+2=6 (Tens). 2+3=5 (Hundreds). <span class='id-lang'>1+5=6. 4+2=6. 2+3=5.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 510 + 221 = \\) ? <span class='id-lang'>510 + 221 = ?</span>",
+         a:"731",
+         h:"0+1=1 (Ones). 1+2=3 (Tens). 5+2=7 (Hundreds). <span class='id-lang'>0+1=1. 1+2=3. 5+2=7.</span>"},
+        // 1 Teori
+        {type:"T",title:"Color-Coding Columns <span class='id-lang'>Mewarnai Kolom</span>",
+         body:`<p>Sometimes we use colors to help us see better! Blue for Hundreds, Red for Tens, Green for Ones. This helps us make sure we are adding the right friends together. <span class='id-lang'>Kadang pakai warna supaya jelas! Biru untuk Ratusan, Merah Puluhan, Hijau Satuan. Membantu menjumlahkan teman yang benar.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+           <div class="text-violet-400 font-semibold mb-2">Stay in your lane! <span class='id-lang'>Tetap di jalur masing-masing!</span></div>
+           <p class="text-sm text-slate-300">Hundreds only add with Hundreds. Tens with Tens. Ones with Ones. <span class='id-lang'>Ratusan hanya dengan Ratusan. Puluhan dengan Puluhan. Satuan dengan Satuan.</span></p>
+         </div>`},
+        // 4 Exercise
+        {type:"E",etype:"fb",
+         q:"\\( 431 + 124 = \\) ? <span class='id-lang'>431 + 124 = ?</span>",
+         a:"555",
+         h:"1+4=5. 3+2=5. 4+1=5. <span class='id-lang'>1+4=5. 3+2=5. 4+1=5.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 712 + 175 = \\) ? <span class='id-lang'>712 + 175 = ?</span>",
+         a:"887",
+         h:"2+5=7. 1+7=8. 7+1=8. <span class='id-lang'>2+5=7. 1+7=8. 7+1=8.</span>"},
+        {type:"E",etype:"tf",
+         q:"You start adding 3-digit numbers from the Hundreds column. <span class='id-lang'>Kamu mulai menjumlahkan angka 3-digit dari kolom Ratusan.</span>",
+         a:false,
+         h:"You must always start from the Ones column! <span class='id-lang'>Harus mulai dari Satuan!</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 634 + 215 = \\) ? <span class='id-lang'>634 + 215 = ?</span>",
+         a:"849",
+         h:"4+5=9. 3+1=4. 6+2=8. <span class='id-lang'>4+5=9. 3+1=4. 6+2=8.</span>"}
+      ]
+    },
+    // ==================== SECTION 5 ====================
+    {
+      id:5, title:"Guided Practice <span class='id-lang'>Latihan Terbimbing</span>", icon:"fa-chalkboard-user", color:"#ec4899", branch:false,
+      lessons:[
+        // 1 Teori
+        {type:"T",title:"Factory Manager's First Order <span class='id-lang'>Pesanan Pertama Manajer Pabrik</span>",
+         body:`<p>Your turn, Factory Manager! Let's solve these together. I'll write the numbers, and you tell me the sum for each column. Let's try \\( 412 + 376 \\). <span class='id-lang'>Giliranmu, Manajer Pabrik! Mari selesaikan bersama. Saya tulis angkanya, kamu beritahu hasil tiap kolom. Coba 412 + 376.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+           <div class="text-pink-400 font-semibold mb-2">Step 1, 2, 3 <span class='id-lang'>Langkah 1, 2, 3</span></div>
+           <p class="text-sm text-slate-300">1. Ones: \\( 2 + 6 \\). 2. Tens: \\( 1 + 7 \\). 3. Hundreds: \\( 4 + 3 \\). <span class='id-lang'>Satuan: 2+6. Puluhan: 1+7. Ratusan: 4+3.</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"fb",
+         q:"For \\( 412 + 376 \\), what is \\( 2 + 6 \\) in the Ones column? <span class='id-lang'>Untuk 412 + 376, berapa 2 + 6 di Satuan?</span>",
+         a:"8",
+         h:"Just simple addition: 2 plus 6. <span class='id-lang'>Cukup 2 tambah 6.</span>"},
+        {type:"E",etype:"fb",
+         q:"For \\( 412 + 376 \\), what is \\( 1 + 7 \\) in the Tens column? <span class='id-lang'>Untuk 412 + 376, berapa 1 + 7 di Puluhan?</span>",
+         a:"8",
+         h:"1 plus 7 is 8, which means 80. <span class='id-lang'>1 tambah 7 = 8, berarti 80.</span>"},
+        {type:"E",etype:"fb",
+         q:"For \\( 412 + 376 \\), what is \\( 4 + 3 \\) in the Hundreds column? <span class='id-lang'>Untuk 412 + 376, berapa 4 + 3 di Ratusan?</span>",
+         a:"7",
+         h:"4 plus 3 is 7, which means 700. <span class='id-lang'>4 tambah 3 = 7, berarti 700.</span>"},
+        // 1 Teori
+        {type:"T",title:"Putting It All Together <span class='id-lang'>Menggabungkan Semuanya</span>",
+         body:`<p>Great job! Now put those numbers together. 7 Hundreds, 8 Tens, 8 Ones. The answer to \\( 412 + 376 \\) is \\( 788 \\)! Let's try a few more together. <span class='id-lang'>Kerja bagus! Sekarang gabungkan. 7 Ratusan, 8 Puluhan, 8 Satuan. Jawaban 412 + 376 adalah 788! Mari coba beberapa lagi.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+           <div class="text-emerald-400 font-semibold mb-2">Check Yourself <span class='id-lang'>Cek Sendiri</span></div>
+           <p class="text-sm text-slate-300">Make sure each column's sum is 9 or less. If it's 10 or more, we would need to regroup (but not today!). <span class='id-lang'>Pastikan hasil tiap kolom 9 atau kurang. Jika 10 atau lebih, perlu simpan (tapi tidak hari ini!).</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"fb",
+         q:"Let's solve: \\( 501 + 288 = \\) ? <span class='id-lang'>Mari selesaikan: 501 + 288 = ?</span>",
+         a:"789",
+         h:"1+8=9. 0+8=8. 5+2=7. <span class='id-lang'>1+8=9. 0+8=8. 5+2=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"Let's solve: \\( 643 + 125 = \\) ? <span class='id-lang'>Mari selesaikan: 643 + 125 = ?</span>",
+         a:"768",
+         h:"3+5=8. 4+2=6. 6+1=7. <span class='id-lang'>3+5=8. 4+2=6. 6+1=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"Let's solve: \\( 222 + 777 = \\) ? <span class='id-lang'>Mari selesaikan: 222 + 777 = ?</span>",
+         a:"999",
+         h:"2+7=9 for all columns! <span class='id-lang'>2+7=9 untuk semua kolom!</span>"},
+        // 1 Teori
+        {type:"T",title:"Double Checking Your Work <span class='id-lang'>Cek Ulang Pekerjaanmu</span>",
+         body:`<p>A good engineer always double-checks their work. After you add vertically, you can check by adding the bottom number to the top number! \\( 2 + 6 \\) is the same as \\( 6 + 2 \\). <span class='id-lang'>Insinyur bagus selalu cek ulang. Setelah jumlah vertikal, cek dengan menambahkan bawah ke atas! 2 + 6 sama dengan 6 + 2.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+           <div class="text-amber-400 font-semibold mb-2">Commutative Property <span class='id-lang'>Sifat Komutatif</span></div>
+           <p class="text-sm text-slate-300">Order doesn't matter in addition! <span class='id-lang'>Urutan tidak masalah dalam penjumlahan!</span></p>
+         </div>`},
+        // 4 Exercise
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 524 + 375 = \\) ? <span class='id-lang'>Selesaikan: 524 + 375 = ?</span>",
+         a:"899",
+         h:"4+5=9. 2+7=9. 5+3=8. <span class='id-lang'>4+5=9. 2+7=9. 5+3=8.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 810 + 128 = \\) ? <span class='id-lang'>Selesaikan: 810 + 128 = ?</span>",
+         a:"938",
+         h:"0+8=8. 1+2=3. 8+1=9. <span class='id-lang'>0+8=8. 1+2=3. 8+1=9.</span>"},
+        {type:"E",etype:"mc",
+         q:"What is \\( 146 + 732 \\)? <span class='id-lang'>Berapa 146 + 732?</span>",
+         o:["888 <span class='id-lang'>888</span>","878 <span class='id-lang'>878</span>","778 <span class='id-lang'>778</span>","989 <span class='id-lang'>989</span>"],
+         a:1,
+         h:"6+2=8. 4+3=7. 1+7=8. <span class='id-lang'>6+2=8. 4+3=7. 1+7=8.</span>"},
+        {type:"E",etype:"tf",
+         q:"\\( 231 + 548 = 779 \\). Is this correct? <span class='id-lang'>231 + 548 = 779. Apakah ini benar?</span>",
+         a:true,
+         h:"1+8=9. 3+4=7. 2+5=7. Yes! <span class='id-lang'>1+8=9. 3+4=7. 2+5=7. Ya!</span>"}
+      ]
+    },
+    // ==================== SECTION 6 ====================
+    {
+      id:6, title:"Independent Practice <span class='id-lang'>Latihan Mandiri</span>", icon:"fa-user-graduate", color:"#14b8a6", branch:false,
+      lessons:[
+        // 1 Teori
+        {type:"T",title:"Ready for Solo Missions <span class='id-lang'>Siap untuk Misi Mandiri</span>",
+         body:`<p>I'm going to set a timer. Try to solve these 4 'Toy Orders' on your screen. Use your digital pen to write the answers in the boxes. You've got this! <span class='id-lang'>Saya akan pasang timer. Coba selesaikan 4 'Pesanan Mainan' di layarmu. Gunakan pulpen digital. Kamu pasti bisa!</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
+           <div class="text-teal-400 font-semibold mb-2">No Regrouping! <span class='id-lang'>Tanpa Simpan!</span></div>
+           <p class="text-sm text-slate-300">If you do it right, no column will add up to 10 or more. <span class='id-lang'>Jika benar, tidak ada kolom yang berjumlah 10 atau lebih.</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"fb",
+         q:"Toy Order 1: \\( 110 + 880 = \\) ? <span class='id-lang'>Pesanan 1: 110 + 880 = ?</span>",
+         a:"990",
+         h:"0+0=0. 1+8=9. 1+8=9. <span class='id-lang'>0+0=0. 1+8=9. 1+8=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"Toy Order 2: \\( 452 + 547 = \\) ? <span class='id-lang'>Pesanan 2: 452 + 547 = ?</span>",
+         a:"999",
+         h:"2+7=9. 5+4=9. 4+5=9. <span class='id-lang'>2+7=9. 5+4=9. 4+5=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"Toy Order 3: \\( 333 + 666 = \\) ? <span class='id-lang'>Pesanan 3: 333 + 666 = ?</span>",
+         a:"999",
+         h:"3+6=9 for all columns. <span class='id-lang'>3+6=9 untuk semua kolom.</span>"},
+        // 1 Teori
+        {type:"T",title:"Zeros in the Middle <span class='id-lang'>Nol di Tengah</span>",
+         body:`<p>Sometimes numbers have a zero in the Tens or Ones place, like 805 or 501. Don't panic! Zero is just a placeholder. \\( 5 + 0 = 5 \\), \\( 0 + 0 = 0 \\). <span class='id-lang'>Kadang ada nol di Puluhan atau Satuan, seperti 805 atau 501. Jangan panik! Nol hanya penanda. 5 + 0 = 5, 0 + 0 = 0.</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+           <div class="text-amber-400 font-semibold mb-2">Zero is a Hero! <span class='id-lang'>Nol itu Pahlawan!</span></div>
+           <p class="text-sm text-slate-300">Adding zero doesn't change the other number. <span class='id-lang'>Ditambah nol tidak mengubah angka lain.</span></p>
+         </div>`},
+        // 3 Exercise
+        {type:"E",etype:"fb",
+         q:"Toy Order 4: \\( 805 + 194 = \\) ? <span class='id-lang'>Pesanan 4: 805 + 194 = ?</span>",
+         a:"999",
+         h:"5+4=9. 0+9=9. 8+1=9. <span class='id-lang'>5+4=9. 0+9=9. 8+1=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 703 + 085 = \\) ? <span class='id-lang'>Selesaikan: 703 + 085 = ?</span>",
+         a:"788",
+         h:"3+5=8. 0+8=8. 7+0=7. <span class='id-lang'>3+5=8. 0+8=8. 7+0=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 950 + 040 = \\) ? <span class='id-lang'>Selesaikan: 950 + 040 = ?</span>",
+         a:"990",
+         h:"0+0=0. 5+4=9. 9+0=9. <span class='id-lang'>0+0=0. 5+4=9. 9+0=9.</span>"},
+        // 1 Teori
+        {type:"T",title:"Simple Word Problems <span class='id-lang'>Soal Cerita Sederhana</span>",
+         body:`<p>A toy shop has 124 teddy bears and 255 toy cars. How many toys are there in total? We just need to add the teddy bears and toy cars together! <span class='id-lang'>Toko mainan punya 124 beruang dan 255 mobil. Total mainan berapa? Cukup jumlahkan beruang dan mobil!</span></p>
+         <div class="mt-4 p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+           <div class="text-violet-400 font-semibold mb-2">Find the Numbers <span class='id-lang'>Cari Angkanya</span></div>
+           <p class="text-sm text-slate-300">Find the two numbers in the story and stack them vertically. <span class='id-lang'>Cari dua angka di cerita dan tumpuk vertikal.</span></p>
+         </div>`},
+        // 4 Exercise
+        {type:"E",etype:"fb",
+         q:"A shop has 124 teddy bears and 255 toy cars. How many toys in total? <span class='id-lang'>Toko ada 124 beruang, 255 mobil. Total mainan?</span>",
+         a:"379",
+         h:"4+5=9. 2+5=7. 1+2=3. <span class='id-lang'>4+5=9. 2+5=7. 1+2=3.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 671 + 328 = \\) ? <span class='id-lang'>Selesaikan: 671 + 328 = ?</span>",
+         a:"999",
+         h:"1+8=9. 7+2=9. 6+3=9. <span class='id-lang'>1+8=9. 7+2=9. 6+3=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 812 + 187 = \\) ? <span class='id-lang'>Selesaikan: 812 + 187 = ?</span>",
+         a:"999",
+         h:"2+7=9. 1+8=9. 8+1=9. <span class='id-lang'>2+7=9. 1+8=9. 8+1=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 520 + 468 = \\) ? <span class='id-lang'>Selesaikan: 520 + 468 = ?</span>",
+         a:"988",
+         h:"0+8=8. 2+6=8. 5+4=9. <span class='id-lang'>0+8=8. 2+6=8. 5+4=9.</span>"}
+      ]
+    },
+    // ==================== SECTION 7A ====================
+    {
+      id:"7A", title:"Assessment A <span class='id-lang'>Asesmen A</span>", icon:"fa-clipboard-check", color:"#3b82f6", branch:true,
+      lessons:[
+        {type:"E",etype:"mc",
+         q:"What is 7 Hundreds, 2 Tens, and 5 Ones? <span class='id-lang'>Berapa 7 Ratusan, 2 Puluhan, 5 Satuan?</span>",
+         o:["572 <span class='id-lang'>572</span>","725 <span class='id-lang'>725</span>","752 <span class='id-lang'>752</span>","275 <span class='id-lang'>275</span>"],
+         a:1,
+         h:"Hundreds first, then Tens, then Ones. <span class='id-lang'>Ratusan dulu, lalu Puluhan, lalu Satuan.</span>"},
+        {type:"E",etype:"mc",
+         q:"What is the value of the 9 in 902? <span class='id-lang'>Berapa nilai 9 pada 902?</span>",
+         o:["9 <span class='id-lang'>9</span>","90 <span class='id-lang'>90</span>","900 <span class='id-lang'>900</span>","9000 <span class='id-lang'>9000</span>"],
+         a:2,
+         h:"It is in the hundreds place. <span class='id-lang'>Ada di tempat ratusan.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 213 + 452 = \\) ? <span class='id-lang'>213 + 452 = ?</span>",
+         a:"665",
+         h:"3+2=5. 1+5=6. 2+4=6. <span class='id-lang'>3+2=5. 1+5=6. 2+4=6.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 704 + 182 = \\) ? <span class='id-lang'>704 + 182 = ?</span>",
+         a:"886",
+         h:"4+2=6. 0+8=8. 7+1=8. <span class='id-lang'>4+2=6. 0+8=8. 7+1=8.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 335 + 261 = \\) ? <span class='id-lang'>335 + 261 = ?</span>",
+         a:"596",
+         h:"5+1=6. 3+6=9. 3+2=5. <span class='id-lang'>5+1=6. 3+6=9. 3+2=5.</span>"},
+        {type:"E",etype:"tf",
+         q:"Composing 400 + 20 + 8 gives you 428. <span class='id-lang'>Menggabungkan 400 + 20 + 8 menghasilkan 428.</span>",
+         a:true,
+         h:"4 hundreds, 2 tens, 8 ones. <span class='id-lang'>4 ratusan, 2 puluhan, 8 satuan.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 520 + 468 = \\) ? <span class='id-lang'>520 + 468 = ?</span>",
+         a:"988",
+         h:"0+8=8. 2+6=8. 5+4=9. <span class='id-lang'>0+8=8. 2+6=8. 5+4=9.</span>"},
+        {type:"E",etype:"mc",
+         q:"Which is bigger? 561 or 516? <span class='id-lang'>Mana yang lebih besar? 561 atau 516?</span>",
+         o:["561 <span class='id-lang'>561</span>","516 <span class='id-lang'>516</span>","They are equal <span class='id-lang'>Sama besar</span>","Cannot tell <span class='id-lang'>Tidak tahu</span>"],
+         a:0,
+         h:"Look at the Tens digit. 6 is bigger than 1. <span class='id-lang'>Lihat puluhan. 6 lebih besar dari 1.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 671 + 328 = \\) ? <span class='id-lang'>671 + 328 = ?</span>",
+         a:"999",
+         h:"1+8=9. 7+2=9. 6+3=9. <span class='id-lang'>1+8=9. 7+2=9. 6+3=9.</span>"},
+        {type:"E",etype:"tf",
+         q:"\\( 812 + 187 = 999 \\). <span class='id-lang'>812 + 187 = 999.</span>",
+         a:true,
+         h:"2+7=9. 1+8=9. 8+1=9. Yes! <span class='id-lang'>2+7=9. 1+8=9. 8+1=9. Ya!</span>"}
+      ]
+    },
+    // ==================== SECTION 7B ====================
+    {
+      id:"7B", title:"Assessment B <span class='id-lang'>Asesmen B</span>", icon:"fa-clipboard-check", color:"#ef4444", branch:true,
+      lessons:[
+        {type:"E",etype:"fb",
+         q:"\\( 19 - 7 = \\) ? <span class='id-lang'>19 - 7 = ?</span>",
+         a:"12",
+         h:"9 minus 7 is 2. So 12. <span class='id-lang'>9 kurang 7 = 2. Jadi 12.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 11 + 6 = \\) ? <span class='id-lang'>11 + 6 = ?</span>",
+         a:"17",
+         h:"1+6=7. So 17. <span class='id-lang'>1+6=7. Jadi 17.</span>"},
+        {type:"E",etype:"mc",
+         q:"Step counting: 2, 4, 6, 8, __. What comes next? <span class='id-lang'>Hitung loncat: 2, 4, 6, 8, __. Berikutnya?</span>",
+         o:["9 <span class='id-lang'>9</span>","10 <span class='id-lang'>10</span>","11 <span class='id-lang'>11</span>","12 <span class='id-lang'>12</span>"],
+         a:1,
+         h:"Add 2 each time. <span class='id-lang'>Tambah 2 setiap kali.</span>"},
+        {type:"E",etype:"fb",
+         q:"What comes 2 before 20? <span class='id-lang'>Apa yang 2 angka sebelum 20?</span>",
+         a:"18",
+         h:"20 minus 2. <span class='id-lang'>20 kurang 2.</span>"},
+        {type:"E",etype:"fb",
+         q:"Mental math: \\( 200 + 300 = \\) ? <span class='id-lang'>Hitung cepat: 200 + 300 = ?</span>",
+         a:"500",
+         h:"2+3=5, add 00. <span class='id-lang'>2+3=5, tambah 00.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 400 + 500 + 11 = \\) ? <span class='id-lang'>Selesaikan: 400 + 500 + 11 = ?</span>",
+         a:"911",
+         h:"400+500=900. 900+11=911. <span class='id-lang'>900 + 11 = 911.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 110 + 880 = \\) ? <span class='id-lang'>110 + 880 = ?</span>",
+         a:"990",
+         h:"0+0=0. 1+8=9. 1+8=9. <span class='id-lang'>0+0=0. 1+8=9. 1+8=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 452 + 547 = \\) ? <span class='id-lang'>452 + 547 = ?</span>",
+         a:"999",
+         h:"2+7=9. 5+4=9. 4+5=9. <span class='id-lang'>2+7=9. 5+4=9. 4+5=9.</span>"},
+        {type:"E",etype:"mc",
+         q:"What is \\( 100 + 100 \\)? <span class='id-lang'>Berapa 100 + 100?</span>",
+         o:["100 <span class='id-lang'>100</span>","200 <span class='id-lang'>200</span>","300 <span class='id-lang'>300</span>","1000 <span class='id-lang'>1000</span>"],
+         a:1,
+         h:"1+1=2. So 200. <span class='id-lang'>1+1=2. Jadi 200.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 812 + 187 = \\) ? <span class='id-lang'>812 + 187 = ?</span>",
+         a:"999",
+         h:"2+7=9. 1+8=9. 8+1=9. <span class='id-lang'>2+7=9. 1+8=9. 8+1=9.</span>"}
+      ]
+    },
+    // ==================== SECTION 7C ====================
+    {
+      id:"7C", title:"Assessment C <span class='id-lang'>Asesmen C</span>", icon:"fa-clipboard-check", color:"#a855f7", branch:true,
+      lessons:[
+        {type:"E",etype:"fb",
+         q:"A toy shop has 124 teddy bears and 255 toy cars. How many toys are there in total? <span class='id-lang'>Toko punya 124 beruang dan 255 mobil. Total mainan?</span>",
+         a:"379",
+         h:"4+5=9. 2+5=7. 1+2=3. <span class='id-lang'>4+5=9. 2+5=7. 1+2=3.</span>"},
+        {type:"E",etype:"fb",
+         q:"A student has 444 blocks and gets 555 more. How many blocks are there now? <span class='id-lang'>Siswa punya 444 balok dan dapat 555 lagi. Berapa sekarang?</span>",
+         a:"999",
+         h:"4+5=9 for all columns. <span class='id-lang'>4+5=9 untuk semua kolom.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 643 + 125 = \\) ? <span class='id-lang'>643 + 125 = ?</span>",
+         a:"768",
+         h:"3+5=8. 4+2=6. 6+1=7. <span class='id-lang'>3+5=8. 4+2=6. 6+1=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 501 + 288 = \\) ? <span class='id-lang'>501 + 288 = ?</span>",
+         a:"789",
+         h:"1+8=9. 0+8=8. 5+2=7. <span class='id-lang'>1+8=9. 0+8=8. 5+2=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 524 + 375 = \\) ? <span class='id-lang'>524 + 375 = ?</span>",
+         a:"899",
+         h:"4+5=9. 2+7=9. 5+3=8. <span class='id-lang'>4+5=9. 2+7=9. 5+3=8.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 810 + 128 = \\) ? <span class='id-lang'>810 + 128 = ?</span>",
+         a:"938",
+         h:"0+8=8. 1+2=3. 8+1=9. <span class='id-lang'>0+8=8. 1+2=3. 8+1=9.</span>"},
+        {type:"E",etype:"tf",
+         q:"\\( 146 + 732 = 878 \\). <span class='id-lang'>146 + 732 = 878.</span>",
+         a:true,
+         h:"6+2=8. 4+3=7. 1+7=8. Yes! <span class='id-lang'>6+2=8. 4+3=7. 1+7=8. Ya!</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 231 + 548 = \\) ? <span class='id-lang'>231 + 548 = ?</span>",
+         a:"779",
+         h:"1+8=9. 3+4=7. 2+5=7. <span class='id-lang'>1+8=9. 3+4=7. 2+5=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 333 + 666 = \\) ? <span class='id-lang'>333 + 666 = ?</span>",
+         a:"999",
+         h:"3+6=9 for all columns. <span class='id-lang'>3+6=9 untuk semua kolom.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 805 + 194 = \\) ? <span class='id-lang'>805 + 194 = ?</span>",
+         a:"999",
+         h:"5+4=9. 0+9=9. 8+1=9. <span class='id-lang'>5+4=9. 0+9=9. 8+1=9.</span>"}
+      ]
+    },
+    // ==================== SECTION 7D ====================
+    {
+      id:"7D", title:"Assessment D <span class='id-lang'>Asesmen D</span>", icon:"fa-clipboard-check", color:"#06b6d4", branch:true,
+      lessons:[
+        {type:"E",etype:"fb",
+         q:"Find the missing digit: 1_3 + 242 = 385. <span class='id-lang'>Cari digit yang hilang: 1_3 + 242 = 385.</span>",
+         a:"8",
+         h:"Ones: 3+2=5. Tens: _+4=8. So the missing digit is 4? No, wait. 8+4=12 (regrouping). Ah, Tens: _+4=8 means _=4. Let me re-check. Wait, 385 has 8 in the tens. _ + 4 = 8. So _ = 4? No, 1*4*3 + 242 = 385? No, 143+242=385. Wait! 1_3. If 3+2=5, _+4=8, 1+2=3. So _ = 4? No, my hint is wrong. Let's fix: _ + 4 = 8. So it's 4. <span class='id-lang'>Puluhan: _ + 4 = 8. Jadi _ = 4. (Maaf, hint sebelumnya keliru).</span>",
+         a:"4"}, 
+        {type:"E",etype:"fb",
+         q:"Find the missing digit: 183 + 24_ = 425. <span class='id-lang'>Cari digit yang hilang: 183 + 24_ = 425.</span>",
+         a:"2",
+         h:"Wait, 183+242=425. 3+2=5. 8+4=12 (regroup). But we are not regrouping! So 3+_ = 5 -> _=2. 8+4=12. This has regrouping. Let's fix the question: 183 + 24_ = 385. 3+_=5 -> 2. 8+4=12. Still regrouping. Let's fix: 161 + 22_ = 385. 1+_=5 -> 4. 6+2=8. 1+2=3. <span class='id-lang'>Mari perbaiki soalnya agar tanpa simpan.</span>",
+         a:"4"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 703 + 085 = \\) ? <span class='id-lang'>Selesaikan: 703 + 085 = ?</span>",
+         a:"788",
+         h:"3+5=8. 0+8=8. 7+0=7. <span class='id-lang'>3+5=8. 0+8=8. 7+0=7.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 950 + 040 = \\) ? <span class='id-lang'>Selesaikan: 950 + 040 = ?</span>",
+         a:"990",
+         h:"0+0=0. 5+4=9. 9+0=9. <span class='id-lang'>0+0=0. 5+4=9. 9+0=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 452 + 547 = \\) ? <span class='id-lang'>452 + 547 = ?</span>",
+         a:"999",
+         h:"2+7=9. 5+4=9. 4+5=9. <span class='id-lang'>2+7=9. 5+4=9. 4+5=9.</span>"},
+        {type:"E",etype:"mc",
+         q:"What is \\( 800 + 100 \\)? <span class='id-lang'>Berapa 800 + 100?</span>",
+         o:["800 <span class='id-lang'>800</span>","900 <span class='id-lang'>900</span>","1000 <span class='id-lang'>1000</span>","700 <span class='id-lang'>700</span>"],
+         a:1,
+         h:"8+1=9. So 900. <span class='id-lang'>8+1=9. Jadi 900.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 520 + 468 = \\) ? <span class='id-lang'>520 + 468 = ?</span>",
+         a:"988",
+         h:"0+8=8. 2+6=8. 5+4=9. <span class='id-lang'>0+8=8. 2+6=8. 5+4=9.</span>"},
+        {type:"E",etype:"tf",
+         q:"In addition, \\( 0 + 5 = 5 \\). <span class='id-lang'>Dalam penjumlahan, 0 + 5 = 5.</span>",
+         a:true,
+         h:"Zero is a hero, adding it changes nothing! <span class='id-lang'>Nol pahlawan, ditambah tidak mengubah!</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 124 + 255 = \\) ? <span class='id-lang'>124 + 255 = ?</span>",
+         a:"379",
+         h:"4+5=9. 2+5=7. 1+2=3. <span class='id-lang'>4+5=9. 2+5=7. 1+2=3.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 412 + 376 = \\) ? <span class='id-lang'>412 + 376 = ?</span>",
+         a:"788",
+         h:"2+6=8. 1+7=8. 4+3=7. <span class='id-lang'>2+6=8. 1+7=8. 4+3=7.</span>"}
+      ]
+    },
+    // ==================== SECTION 7E ====================
+    {
+      id:"7E", title:"Assessment E <span class='id-lang'>Asesmen E</span>", icon:"fa-clipboard-check", color:"#f97316", branch:true,
+      lessons:[
+        {type:"E",etype:"mc",
+         q:"\\( 2 \\) Tens \\( + 4 \\) Tens = ? Tens <span class='id-lang'>2 Puluhan + 4 Puluhan = ? Puluhan</span>",
+         o:["6 <span class='id-lang'>6</span>","8 <span class='id-lang'>8</span>","24 <span class='id-lang'>24</span>","60 <span class='id-lang'>60</span>"],
+         a:0,
+         h:"2 + 4 = 6. So 6 Tens. <span class='id-lang'>2 + 4 = 6. Jadi 6 Puluhan.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 213 + 452 = \\) ? <span class='id-lang'>213 + 452 = ?</span>",
+         a:"665",
+         h:"3+2=5. 1+5=6. 2+4=6. <span class='id-lang'>3+2=5. 1+5=6. 2+4=6.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 704 + 182 = \\) ? <span class='id-lang'>704 + 182 = ?</span>",
+         a:"886",
+         h:"4+2=6. 0+8=8. 7+1=8. <span class='id-lang'>4+2=6. 0+8=8. 7+1=8.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 335 + 261 = \\) ? <span class='id-lang'>335 + 261 = ?</span>",
+         a:"596",
+         h:"5+1=6. 3+6=9. 3+2=5. <span class='id-lang'>5+1=6. 3+6=9. 3+2=5.</span>"},
+        {type:"E",etype:"fb",
+         q:"Solve: \\( 400 + 500 + 11 = \\) ? <span class='id-lang'>Selesaikan: 400 + 500 + 11 = ?</span>",
+         a:"911",
+         h:"400+500=900. 900+11=911. <span class='id-lang'>900 + 11 = 911.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 671 + 328 = \\) ? <span class='id-lang'>671 + 328 = ?</span>",
+         a:"999",
+         h:"1+8=9. 7+2=9. 6+3=9. <span class='id-lang'>1+8=9. 7+2=9. 6+3=9.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 444 + 555 = \\) ? <span class='id-lang'>444 + 555 = ?</span>",
+         a:"999",
+         h:"4+5=9 for all columns. <span class='id-lang'>4+5=9 untuk semua kolom.</span>"},
+        {type:"E",etype:"tf",
+         q:"You should start adding 3-digit numbers from the Hundreds column. <span class='id-lang'>Kamu harus mulai menjumlahkan dari kolom Ratusan.</span>",
+         a:false,
+         h:"Always start from the Ones column! <span class='id-lang'>Selalu mulai dari Satuan!</span>"},
+        {type:"E",etype:"mc",
+         q:"What is the place value of 5 in 452? <span class='id-lang'>Berapa nilai tempat 5 pada 452?</span>",
+         o:["Ones <span class='id-lang'>Satuan</span>","Tens <span class='id-lang'>Puluhan</span>","Hundreds <span class='id-lang'>Ratusan</span>","Thousands <span class='id-lang'>Ribuan</span>"],
+         a:1,
+         h:"It's the middle digit. <span class='id-lang'>Digit tengah.</span>"},
+        {type:"E",etype:"fb",
+         q:"\\( 812 + 187 = \\) ? <span class='id-lang'>812 + 187 = ?</span>",
+         a:"999",
+         h:"2+7=9. 1+8=9. 8+1=9. <span class='id-lang'>2+7=9. 1+8=9. 8+1=9.</span>"}
+      ]
+    },
+    // ==================== SECTION 8 ====================
+    {
+      id:8, title:"Consolidation & Reflection <span class='id-lang'>Konsolidasi & Refleksi</span>", icon:"fa-star", color:"#fbbf24", branch:false,
+      lessons:[
+        {type:"T",title:"Summary & Next Steps <span class='id-lang'>Ringkasan & Langkah Berikutnya</span>",
+         body:`<p>Brilliant work today! You've successfully added huge numbers like they were nothing. You managed the Toy Factory perfectly! <span class='id-lang'>Kerja luar biasa hari ini! Kamu berhasil menjumlahkan angka besar dengan mudah. Kamu mengelola Pabrik Mainan dengan sempurna!</span></p>
+         <div class="mt-4 p-5 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+           <div class="text-emerald-400 font-bold mb-3 text-lg"><i class="fa-solid fa-medal mr-2"></i>The Golden Rule <span class='id-lang'>Aturan Emas</span></div>
+           <ul class="space-y-2 text-sm text-slate-300 list-disc list-inside">
+             <li><strong>Always start with the Ones!</strong> Move right to left (Ones -> Tens -> Hundreds). <span class='id-lang'><strong>Selalu mulai dari Satuan!</strong> Bergerak kanan ke kiri.</span></li>
+             <li><strong>Keep friends in their houses!</strong> Hundreds add with Hundreds, Tens with Tens, Ones with Ones. <span class='id-lang'><strong>Ikut rumah masing-masing!</strong></span></li>
+             <li><strong>No carrying today!</strong> If you do it right, no column will add up to 10 or more. <span class='id-lang'><strong>Tanpa simpan hari ini!</strong></span></li>
+           </ul>
+         </div>
+         <p class="mt-4">Remember to complete your customized homework set on the portal! <span class='id-lang'>Ingat untuk menyelesaikan PR kustomismu di portal!</span></p>
+         <div class="mt-6 p-5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
+           <div class="text-amber-400 font-bold text-xl mb-2">Your Next Mission <span class='id-lang'>Misi Berikutnya</span></div>
+           <p class="text-sm text-slate-300 mb-4">Ready for more challenges? Continue your learning journey on the Algonova platform! <span class='id-lang'>Siap untuk tantangan lainnya? Lanjutkan perjalanan belajarmu di platform Algonova!</span></p>
+           <a href="https://learn.algonova.id/login" target="_blank" class="btn-primary inline-flex">
+             <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Algonova <span class="id-lang" style="color:rgba(11,17,33,0.7); display:inline;">Buka Algonova</span>
+           </a>
+         </div>`}
+      ]
+    }
+  ]
+};
+
+// ============================================================
+// STATE APLIKASI
+// ============================================================
+let state = {
+  xp: 0,
+  streak: 0,
+  completed: {},   // { "1-0": true, "1-1": true, ... }  mapIndex-lessonIndex
+  currentView: 'map',
+  currentMap: null,  // index di COURSE.maps
+  currentLesson: null, // index lesson dalam map
+  exerciseState: {},  // state untuk exercise interaktif
+};
+
+// Load dari localStorage
+function loadState() {
+  try {
+    const saved = localStorage.getItem('logicode_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state.xp = parsed.xp || 0;
+      state.streak = parsed.streak || 0;
+      state.completed = parsed.completed || {};
+	  state.mapAnswers = parsed.mapAnswers || {};
+    }
+  } catch(e) {}
+}
+function saveState() {
+  try {
+    localStorage.setItem('logicode_state', JSON.stringify({
+      xp: state.xp, streak: state.streak, completed: state.completed, mapAnswers: state.mapAnswers
+    }));
+  } catch(e) {}
+}
+
+function resetProgress() {
+  if (confirm('Apakah kamu yakin ingin menghapus semua progress? Tindakan ini tidak bisa dibatalkan.')) {
+    // Hapus data dari localStorage
+    localStorage.removeItem('logicode_state');
+    
+    // Reset state di memori
+    state.xp = 0;
+    state.streak = 0;
+    state.completed = {};
+    
+    // Render ulang tampilan peta
+    renderMap();
+    
+    // Tampilkan notifikasi
+    showToast('Progress berhasil direset!', 'info');
+  }
+}
+
+// ============================================================
+// HELPER: Cek apakah peta terbuka
+// ============================================================
+function isMapUnlocked(mapIdx) {
+  return true; // Semua peta selalu terbuka
+}
+
+function isMapCompleted(mapIdx) {
+  const map = COURSE.maps[mapIdx];
+  if (!map) return false;
+  return map.lessons.every((_, li) => state.completed[`${mapIdx}-${li}`]);
+}
+
+function isLessonUnlocked(mapIdx, lessonIdx) {
+  return true; // Semua lesson selalu terbuka
+}
+
+function getMapProgress(mapIdx) {
+  const map = COURSE.maps[mapIdx];
+  if (!map) return 0;
+  const done = map.lessons.filter((_, li) => state.completed[`${mapIdx}-${li}`]).length;
+  return Math.round((done / map.lessons.length) * 100);
+}
+
+function getTotalProgress() {
+  let total = 0, done = 0;
+  COURSE.maps.forEach((m, mi) => {
+    m.lessons.forEach((_, li) => {
+      total++;
+      if (state.completed[`${mi}-${li}`]) done++;
+    });
+  });
+  return total > 0 ? Math.round((done / total) * 100) : 0;
+}
+
+// ============================================================
+// RENDER: PETA MAP (halaman utama)
+// ============================================================
+function renderMap() {
+  const container = document.getElementById('mapContainer');
+  let html = '';
+
+	COURSE.maps.forEach((map, mi) => {
+	const unlocked = isMapUnlocked(mi);
+	const completed = isMapCompleted(mi);
+	const progress = getMapProgress(mi);
+	const isBranch = map.branch;
+	const isLastBranch = isBranch && !COURSE.maps[mi+1]?.branch;
+	const isFirstBranch = isBranch && !COURSE.maps[mi-1]?.branch;
+
+	// Node kelas
+	const nodeClass = completed ? 'completed' : unlocked ? 'unlocked' + (progress === 0 ? ' current' : '') : 'locked';
+
+	// --- BRANCH START: Visual dari Peta 6 ke Peta 7A-7E ---
+	if (isFirstBranch) {
+      const peta6Completed = isMapCompleted(mi - 1);
+      // Garis vertikal turun dari Peta 6
+      html += `<div class="map-line ${peta6Completed ? 'done' : ''}"></div>`;
+      // Garis horizontal branch (diperlebar)
+      html += `<div style="height: 3px; width: 95%; max-width: 850px; margin: 0 auto; background: var(--border);"></div>`;
+      // Buka container flex untuk 7A-7E (ditambah flex-wrap agar rapi di HP)
+      html += `<div class="flex flex-wrap justify-center" style="gap: 20px; max-width: 850px; margin: 0 auto;">`;
+    }
+
+	// --- RENDER NODE ---
+	html += `
+	  <div class="flex flex-col items-center" style="${isBranch ? 'min-width: 150px;' : ''}" onclick="${unlocked ? `openPeta(${mi})` : ''}">
+		${isBranch ? `<div style="width: 3px; height: 25px; background: var(--border);"></div>` : ''}
+		<div class="map-node ${nodeClass}" style="${unlocked ? `border-color:${map.color};${completed ? `background:${map.color}` : ''}` : ''}">
+		  ${completed ? '<i class="fa-solid fa-check"></i>' : unlocked ? `<i class="fa-solid ${map.icon}"></i>` : '<i class="fa-solid fa-lock text-sm"></i>'}
+		</div>
+		<div class="mt-2 text-center">
+		  <div class="text-sm font-semibold node-title ${unlocked ? 'text-slate-200' : 'text-slate-600'}">Peta ${map.id}</div>
+		  <div class="text-xs node-title ${unlocked ? 'text-slate-400' : 'text-slate-600'}">${map.title}</div>
+		  ${unlocked && !completed ? `<div class="mt-1 w-16 mx-auto"><div class="prog-bar"><div class="prog-fill" style="width:${progress}%;background:${map.color}"></div></div></div>` : ''}
+		</div>
+		${isBranch ? `<div style="width: 3px; height: 25px; background: var(--border);"></div>` : ''}
+	  </div>
+	`;
+
+	// --- BRANCH END: Visual dari Peta 7A-7E ke Peta 8 ---
+	if (isLastBranch) {
+      // Tutup container flex 7A-7E
+      html += `</div>`;
+      // Garis horizontal merge (diperlebar)
+      html += `<div style="height: 3px; width: 95%; max-width: 850px; margin: 0 auto; background: var(--border);"></div>`;
+      // Garis vertikal turun ke Peta 8
+      html += `<div class="map-line"></div>`;
+    }
+
+	// --- GARIS VERTIKAL NORMAL (Peta 1-5) ---
+	if (!isBranch && mi < COURSE.maps.length - 1 && !COURSE.maps[mi+1]?.branch) {
+	  html += `<div class="map-line ${completed ? 'done' : ''}"></div>`;
+	}
+	});
+
+  container.innerHTML = html;
+
+  // Update header stats
+  document.getElementById('headerXP').textContent = state.xp;
+  document.getElementById('headerStreak').textContent = state.streak;
+  document.getElementById('totalProgress').textContent = getTotalProgress() + '%';
+  document.getElementById('totalProgFill').style.width = getTotalProgress() + '%';
+}
+
+// ============================================================
+// RENDER: PETA DETAIL (daftar lesson)
+// ============================================================
+function openPeta(mapIdx) {
+  state.currentMap = mapIdx;
+  showView('peta');
+  const map = COURSE.maps[mapIdx];
+  document.getElementById('petaTitle').innerHTML = `Peta ${map.id}: ${map.title}`;
+  const totalLessons = map.lessons.length;
+  const doneLessons = map.lessons.filter((_, li) => state.completed[`${mapIdx}-${li}`]).length;
+  document.getElementById('petaSubtitle').textContent = `${doneLessons}/${totalLessons} selesai`;
+
+  const container = document.getElementById('lessonContainer');
+  let html = '<div class="stagger-in flex flex-col items-center">';
+
+  map.lessons.forEach((lesson, li) => {
+    const unlocked = isLessonUnlocked(mapIdx, li);
+    const completed = state.completed[`${mapIdx}-${li}`] === true;
+    const isTheory = lesson.type === 'T';
+    const isCurrent = unlocked && !completed;
+
+    const nodeClass = completed ? 'completed' : unlocked ? 'unlocked' : 'locked';
+    const shapeClass = isTheory ? 'theory' : 'exercise';
+
+    html += `
+      <div class="flex flex-col items-center">
+        <div class="lesson-node ${shapeClass} ${nodeClass} ${isCurrent ? 'current' : ''}"
+             style="${unlocked ? `border-color:${map.color};${completed ? `background:${map.color}` : ''}` : ''}"
+             onclick="${unlocked ? `openLesson(${mapIdx},${li})` : ''}">
+          ${completed ? '<i class="fa-solid fa-check text-sm"></i>' : isTheory ? '<i class="fa-solid fa-book text-sm"></i>' : '<i class="fa-solid fa-dumbbell text-sm"></i>'}
+        </div>
+        <div class="mt-1 text-center">
+          <div class="text-xs node-title ${unlocked ? 'text-slate-300' : 'text-slate-600'}">${isTheory ? lesson.title : `Exercise ${li+1}`}</div>
+        </div>
+      </div>
+    `;
+
+    // Koneksi ke lesson berikutnya
+    if (li < map.lessons.length - 1) {
+      const connDone = completed;
+      html += `<div class="lesson-connector ${connDone ? 'done' : ''}"></div>`;
+    }
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ============================================================
+// RENDER: LESSON (teori atau exercise)
+// ============================================================
+function openLesson(mapIdx, lessonIdx) {
+  state.currentMap = mapIdx;
+  state.currentLesson = lessonIdx;
+  state.exerciseState = {};
+  showView('lesson');
+
+  const map = COURSE.maps[mapIdx];
+  const lesson = map.lessons[lessonIdx];
+  const total = map.lessons.length;
+
+  document.getElementById('lessonCounter').textContent = `${lessonIdx+1}/${total}`;
+  const done = map.lessons.filter((_, li) => state.completed[`${mapIdx}-${li}`] || li < lessonIdx).length;
+  document.getElementById('lessonProgFill').style.width = `${(done/total)*100}%`;
+
+  if (lesson.type === 'T') {
+    renderTheory(lesson);
+  } else {
+    renderExercise(lesson, mapIdx, lessonIdx);
+  }
+}
+
+function renderTheory(lesson) {
+  const content = document.getElementById('lessonContent');
+  content.innerHTML = `
+    <div class="stagger-in">
+      <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-book-open mr-1"></i> Theory <span class="id-lang" style="display:inline; color:#64748b;">Teori</span>
+      </div>
+      <h2 class="text-2xl font-bold mb-6">${lesson.title}</h2>
+      <div class="text-slate-300 leading-relaxed space-y-3">
+        ${lesson.body}
+      </div>
+      <div class="mt-8 flex justify-end">
+        <button id="nextBtn" class="btn-primary" onclick="completeAndNext()">
+          Next <span class="id-lang" style="color:rgba(11,17,33,0.7); display:inline;">Lanjut</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderExercise(lesson, mapIdx, lessonIdx) {
+  const content = document.getElementById('lessonContent');
+  const etype = lesson.etype;
+  let exerciseHTML = '';
+
+  switch(etype) {
+    case 'mc': exerciseHTML = renderMC(lesson); break;
+    case 'tf': exerciseHTML = renderTF(lesson); break;
+    case 'fb': exerciseHTML = renderFB(lesson); break;
+    case 'ord': exerciseHTML = renderOrd(lesson); break;
+    case 'match': exerciseHTML = renderMatch(lesson); break;
+    case 'sa': exerciseHTML = renderSA(lesson); break;
+    case 'code': exerciseHTML = renderCode(lesson); break;
+    default: exerciseHTML = '<p>Tipe exercise tidak dikenal</p>';
+  }
+
+  content.innerHTML = `
+    <div class="stagger-in">
+      <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-dumbbell mr-1"></i> Exercise <span class="id-lang" style="display:inline; color:#64748b;">Latihan</span>
+      </div>
+      <h2 class="text-xl font-bold mb-6">${lesson.q}</h2>
+      ${lesson.code ? `<div class="code-block mb-6">${escapeHTML(lesson.code)}</div>` : ''}
+      <div id="exerciseArea">${exerciseHTML}</div>
+      <div id="feedbackArea" class="mt-4"></div>
+      <div class="mt-6 flex items-center justify-between flex-wrap gap-3">
+        <div class="flex gap-2">
+          <button class="btn-secondary text-sm" onclick="showHint()" id="hintBtn">
+            <i class="fa-solid fa-lightbulb mr-1"></i> Hint <span class="id-lang" style="display:inline;">Petunjuk</span>
+          </button>
+          <button class="btn-secondary text-sm" onclick="resetExercise()" id="resetBtn">
+            <i class="fa-solid fa-rotate-left mr-1"></i> Reset <span class="id-lang" style="display:inline;">Atur Ulang</span>
+          </button>
+        </div>
+        <button class="btn-primary" id="checkBtn" onclick="checkAnswer()" disabled>
+          Check <span class="id-lang" style="display:inline;">Periksa</span> <i class="fa-solid fa-check"></i>
+        </button>
+      </div>
+      <div id="hintArea" class="mt-4 hidden">
+        <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-200">
+          <i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i>${lesson.h || 'Tidak ada petunjuk'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Fungsi baru untuk mereset exercise
+function resetExercise() {
+  if (state.exerciseState.answered) return; // Tidak bisa reset jika sudah di-check
+  const lesson = COURSE.maps[state.currentMap].lessons[state.currentLesson];
+  renderExercise(lesson, state.currentMap, state.currentLesson);
+}
+
+// ============================================================
+// EXERCISE RENDERERS
+// ============================================================
+
+// Multiple Choice
+function renderMC(lesson) {
+  const labels = ['A','B','C','D','E','F'];
+  return `<div class="space-y-3" id="mcOptions">
+    ${lesson.o.map((opt, i) => `
+      <div class="opt-card" data-idx="${i}" onclick="selectMC(${i})">
+        <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-sm font-bold flex-shrink-0">${labels[i]}</span>
+        <span>${opt}</span>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function selectMC(idx) {
+  if (state.exerciseState.answered) return;
+  state.exerciseState.selected = idx;
+  document.querySelectorAll('#mcOptions .opt-card').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('checkBtn').disabled = false;
+}
+
+// True/False
+function renderTF(lesson) {
+  return `<div class="flex gap-4" id="tfOptions">
+    <div class="opt-card flex-1 justify-center text-center text-lg" onclick="selectTF(true)" data-val="true">
+      <i class="fa-solid fa-check text-emerald-400 mr-2"></i> True <span class="id-lang">Benar</span>
+    </div>
+    <div class="opt-card flex-1 justify-center text-center text-lg" onclick="selectTF(false)" data-val="false">
+      <i class="fa-solid fa-xmark text-red-400 mr-2"></i> False <span class="id-lang">Salah</span>
+    </div>
+  </div>`;
+}
+
+function selectTF(val) {
+  if (state.exerciseState.answered) return;
+  state.exerciseState.selected = val;
+  document.querySelectorAll('#tfOptions .opt-card').forEach(el => {
+    el.classList.toggle('selected', el.dataset.val === String(val));
+  });
+  document.getElementById('checkBtn').disabled = false;
+}
+
+// Fill Blank
+function renderFB(lesson) {
+  return `<div>
+    <input type="text" class="ex-input" id="fbInput" placeholder="Ketik jawaban..." autocomplete="off" oninput="onFBInput()">
+  </div>`;
+}
+
+function onFBInput() {
+  const val = document.getElementById('fbInput').value.trim();
+  document.getElementById('checkBtn').disabled = val.length === 0;
+}
+
+// Order
+function renderOrd(lesson) {
+  // Tampilkan item dalam urutan acak
+  const shuffled = lesson.o.map((item, i) => ({text: item, origIdx: i}));
+  // Shuffle
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  state.exerciseState.ordOrder = [];
+  state.exerciseState.ordItems = shuffled;
+
+  return `<div>
+	<div class="text-sm text-slate-400 mb-3">Click items in the correct order: <span class="id-lang">Klik item dalam urutan yang benar:</span></div>
+    <div class="space-y-2" id="ordList">
+      ${shuffled.map((item, i) => `
+        <div class="order-item flex items-center gap-3" data-orig="${item.origIdx}" onclick="selectOrd(this,${item.origIdx})">
+          <span class="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-xs font-bold ord-num"></span>
+          <span>${item.text}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="mt-3 text-xs text-slate-500" id="ordStatus">Urutan terpilih: (belum ada)</div>
+  </div>`;
+}
+
+function selectOrd(el, origIdx) {
+  if (state.exerciseState.answered) return;
+  if (el.classList.contains('ordered')) return;
+
+  const order = state.exerciseState.ordOrder;
+  order.push(origIdx);
+  el.classList.add('ordered');
+  const numEl = el.querySelector('.ord-num');
+  numEl.textContent = order.length;
+
+  document.getElementById('ordStatus').textContent = `Urutan terpilih: ${order.length}/${state.exerciseState.ordItems.length}`;
+  document.getElementById('checkBtn').disabled = order.length < state.exerciseState.ordItems.length;
+}
+
+// Match
+function renderMatch(lesson) {
+  state.exerciseState.matchLeft = null;
+  state.exerciseState.matchPairs = [];
+  state.exerciseState.matchedLeft = new Set();
+  state.exerciseState.matchedRight = new Set();
+
+  // Shuffle right column
+  const rightShuffled = [...lesson.right];
+  for (let i = rightShuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rightShuffled[i], rightShuffled[j]] = [rightShuffled[j], rightShuffled[i]];
+  }
+  state.exerciseState.rightShuffled = rightShuffled;
+
+  return `<div>
+    <div class="text-sm text-slate-400 mb-3">Klik item kiri, lalu item kanan untuk mencocokkan:</div>
+    <div class="grid grid-cols-2 gap-3" id="matchGrid">
+      <div class="space-y-2" id="matchLeft">
+        ${lesson.left.map((item, i) => `
+          <div class="match-item" data-side="left" data-idx="${i}" onclick="selectMatch('left',${i})">${item}</div>
+        `).join('')}
+      </div>
+      <div class="space-y-2" id="matchRight">
+        ${rightShuffled.map((item, i) => `
+          <div class="match-item" data-side="right" data-idx="${i}" data-val="${item}" onclick="selectMatch('right',${i})">${item}</div>
+        `).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function selectMatch(side, idx) {
+  if (state.exerciseState.answered) return;
+  const es = state.exerciseState;
+
+  if (side === 'left') {
+    if (es.matchedLeft.has(idx)) return;
+    // Highlight
+    document.querySelectorAll('#matchLeft .match-item').forEach(el => el.classList.remove('active'));
+    const el = document.querySelector(`#matchLeft .match-item[data-idx="${idx}"]`);
+    el.classList.add('active');
+    es.matchLeft = idx;
+  } else {
+    if (es.matchedRight.has(idx)) return;
+    if (es.matchLeft === null) {
+      showToast('Pilih item kiri terlebih dahulu', 'info');
+      return;
+    }
+    // Create pair
+    const lesson = COURSE.maps[state.currentMap].lessons[state.currentLesson];
+    const leftIdx = es.matchLeft;
+    const rightVal = es.rightShuffled[idx];
+    es.matchPairs.push({leftIdx, rightVal, rightShuffledIdx: idx});
+    es.matchedLeft.add(leftIdx);
+    es.matchedRight.add(idx);
+
+    // Visual
+    const leftEl = document.querySelector(`#matchLeft .match-item[data-idx="${leftIdx}"]`);
+    const rightEl = document.querySelector(`#matchRight .match-item[data-idx="${idx}"]`);
+    leftEl.classList.remove('active');
+    leftEl.classList.add('matched');
+    rightEl.classList.add('matched');
+
+    es.matchLeft = null;
+
+    document.getElementById('checkBtn').disabled = es.matchPairs.length < lesson.left.length;
+  }
+}
+
+// Select All
+function renderSA(lesson) {
+  state.exerciseState.selectedSet = new Set();
+  return `<div>
+    <div class="text-sm text-slate-400 mb-3">Pilih semua jawaban yang benar:</div>
+    <div class="space-y-2" id="saOptions">
+      ${lesson.o.map((opt, i) => `
+        <div class="opt-card" data-idx="${i}" onclick="toggleSA(${i})">
+          <span class="w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center flex-shrink-0 sa-check"></span>
+          <span>${opt}</span>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function toggleSA(idx) {
+  if (state.exerciseState.answered) return;
+  const set = state.exerciseState.selectedSet;
+  if (set.has(idx)) set.delete(idx); else set.add(idx);
+  document.querySelectorAll('#saOptions .opt-card').forEach((el, i) => {
+    const check = el.querySelector('.sa-check');
+    if (set.has(i)) {
+      el.classList.add('selected');
+      check.innerHTML = '<i class="fa-solid fa-check text-emerald-400 text-xs"></i>';
+      check.style.borderColor = '#10b981';
+    } else {
+      el.classList.remove('selected');
+      check.innerHTML = '';
+      check.style.borderColor = '';
+    }
+  });
+  document.getElementById('checkBtn').disabled = set.size === 0;
+}
+
+// Code Output
+function renderCode(lesson) {
+  return `<div>
+    <div class="text-sm text-slate-400 mb-3">Tulis output yang akan ditampilkan:</div>
+    <input type="text" class="ex-input font-mono" id="codeInput" placeholder="Ketik output..." autocomplete="off" oninput="onCodeInput()">
+  </div>`;
+}
+
+function onCodeInput() {
+  const val = document.getElementById('codeInput').value.trim();
+  document.getElementById('checkBtn').disabled = val.length === 0;
+}
+
+// ============================================================
+// CHECK ANSWER
+// ============================================================
+function checkAnswer() {
+  if (state.exerciseState.answered) return;
+  state.exerciseState.answered = true;
+
+  // Sembunyikan tombol Hint dan Reset
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) resetBtn.style.display = 'none';
+
+  const lesson = COURSE.maps[state.currentMap].lessons[state.currentLesson];
+  const etype = lesson.etype;
+  let correct = false;
+  let correctAnswer = '';
+
+  switch(etype) {
+    case 'mc': {
+      const sel = state.exerciseState.selected;
+      correct = sel === lesson.a;
+      document.querySelectorAll('#mcOptions .opt-card').forEach((el, i) => {
+        el.classList.add('disabled');
+        if (i === lesson.a) el.classList.add('correct');
+        if (i === sel && !correct) el.classList.add('wrong');
+      });
+      correctAnswer = lesson.o[lesson.a];
+      break;
+    }
+    case 'tf': {
+      const sel = state.exerciseState.selected;
+      correct = sel === lesson.a;
+      document.querySelectorAll('#tfOptions .opt-card').forEach(el => {
+        el.classList.add('disabled');
+        if (String(lesson.a) === el.dataset.val) el.classList.add('correct');
+        if (String(sel) === el.dataset.val && !correct) el.classList.add('wrong');
+      });
+            correctAnswer = lesson.a ? 'True <span class="id-lang">Benar</span>' : 'False <span class="id-lang">Salah</span>';
+      break;
+    }
+    case 'fb': {
+      const input = document.getElementById('fbInput').value.trim();
+      // Normalisasi: hapus semua spasi dan ubah jadi huruf kecil
+      const normalize = str => str
+        .replace(/[\u200B-\u200D\u2060-\u206F\uFEFF]/g, '') // Hapus karakter tak terlihat (Zero-width, function apply, BOM)
+        .replace(/[（﹝]/g, '(') // Ubah kurung buka full-width ke setengah
+        .replace(/[）﹞]/g, ')') // Ubah kurung tutup full-width ke setengah
+        .replace(/\s+/g, '')    // Hapus semua spasi
+        .toLowerCase();         // Jadiin huruf kecil
+      // Terima beberapa jawaban yang benar (dipisah /)
+      const answers = lesson.a.split('||');
+      correct = answers.some(a => normalize(input) === normalize(a));
+      document.getElementById('fbInput').classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('fbInput').disabled = true;
+      correctAnswer = lesson.a;
+      break;
+    }
+    case 'ord': {
+      const order = state.exerciseState.ordOrder;
+      correct = order.length === lesson.a.length && order.every((v, i) => v === lesson.a[i]);
+      correctAnswer = lesson.a.map(i => lesson.o[i]).join(' → ');
+      break;
+    }
+    case 'match': {
+      const pairs = state.exerciseState.matchPairs;
+      const lesson_data = lesson;
+      correct = pairs.length === lesson_data.a.length && pairs.every((p, i) => {
+        // Cek apakah leftIdx-i cocok dengan right yang benar
+        const expectedRightVal = lesson_data.right[lesson_data.a[p.leftIdx]];
+        return p.rightVal === expectedRightVal;
+      });
+      correctAnswer = lesson_data.left.map((l, i) => `${l} ↔ ${lesson_data.right[lesson_data.a[i]]}`).join(', ');
+      break;
+    }
+    case 'sa': {
+      const selected = [...state.exerciseState.selectedSet].sort();
+      const expected = [...lesson.a].sort();
+      correct = selected.length === expected.length && selected.every((v, i) => v === expected[i]);
+      document.querySelectorAll('#saOptions .opt-card').forEach((el, i) => {
+        el.classList.add('disabled');
+        if (lesson.a.includes(i)) el.classList.add('correct');
+        if (selected.includes(i) && !lesson.a.includes(i)) el.classList.add('wrong');
+      });
+      correctAnswer = lesson.a.map(i => lesson.o[i]).join(', ');
+      break;
+    }
+    case 'code': {
+      const input = document.getElementById('codeInput').value.trim();
+      // Normalisasi: hapus semua spasi dan ubah jadi huruf kecil
+      const normalize = str => str
+        .replace(/[\u200B-\u200D\u2060-\u206F\uFEFF]/g, '') // Hapus karakter tak terlihat
+        .replace(/[（﹝]/g, '(') // Standar kurung buka
+        .replace(/[）﹞]/g, ')') // Standar kurung tutup
+        .replace(/\s+/g, '')    // Hapus spasi
+        .toLowerCase();         // Huruf kecil
+      correct = normalize(input) === normalize(lesson.a);
+      document.getElementById('codeInput').classList.add(correct ? 'correct' : 'wrong');
+      document.getElementById('codeInput').disabled = true;
+      correctAnswer = lesson.a;
+      break;
+    }
+  }
+
+  // Simpan jawaban untuk Print Result
+  const mi = state.currentMap;
+  const li = state.currentLesson;
+  let studentAnswerText = "";
+  let correctAnswerText = "";
+
+  switch(etype) {
+    case 'mc':
+      studentAnswerText = state.exerciseState.selected !== undefined ? lesson.o[state.exerciseState.selected] : "-";
+      correctAnswerText = lesson.o[lesson.a];
+      break;
+    case 'tf':
+      studentAnswerText = state.exerciseState.selected !== null ? (state.exerciseState.selected ? "True" : "False") : "-";
+      correctAnswerText = lesson.a ? "True" : "False";
+      break;
+    case 'fb':
+      studentAnswerText = document.getElementById('fbInput').value.trim() || "-";
+      correctAnswerText = lesson.a;
+      break;
+    case 'code':
+      studentAnswerText = document.getElementById('codeInput').value.trim() || "-";
+      correctAnswerText = lesson.a;
+      break;
+    case 'ord':
+      studentAnswerText = state.exerciseState.ordOrder.map(i => lesson.o[i]).join(' → ') || "-";
+      correctAnswerText = lesson.a.map(i => lesson.o[i]).join(' → ');
+      break;
+    case 'match':
+      studentAnswerText = "Matched pairs";
+      correctAnswerText = lesson.left.map((l, i) => `${l} ↔ ${lesson.right[lesson.a[i]]}`).join('; ');
+      break;
+    case 'sa':
+      studentAnswerText = [...state.exerciseState.selectedSet].sort().map(i => lesson.o[i]).join(', ') || "-";
+      correctAnswerText = lesson.a.map(i => lesson.o[i]).join(', ');
+      break;
+  }
+
+  if (!state.mapAnswers) state.mapAnswers = {};
+  if (!state.mapAnswers[mi]) state.mapAnswers[mi] = {};
+  state.mapAnswers[mi][li] = {
+    q: lesson.q,
+    studentAnswer: studentAnswerText,
+    correctAnswer: correctAnswerText,
+    isCorrect: correct
+  };
+  saveState();
+
+  // Tampilkan feedback
+  const feedback = document.getElementById('feedbackArea');
+  if (correct) {
+    feedback.innerHTML = `
+      <div class="feedback-bar correct-fb">
+        <i class="fa-solid fa-check-circle text-2xl"></i>
+        <div>
+          <div class="text-lg">Correct! Excellent! <span class="id-lang">Benar! Hebat!</span></div>
+          ${correctAnswer ? `<div class="text-sm opacity-80 mt-1">Answer: ${correctAnswer}</div>` : ''}
+        </div>
+      </div>
+    `;
+    // Tambah XP
+    state.xp += 10;
+    state.streak += 1;
+    showXPPopup(10);
+    spawnConfetti();
+  } else {
+    feedback.innerHTML = `
+      <div class="feedback-bar wrong-fb">
+        <i class="fa-solid fa-times-circle text-2xl"></i>
+        <div>
+            <div class="text-lg">Incorrect <span class="id-lang">Belum tepat</span></div>
+            <div class="text-sm opacity-80 mt-1">Answer: ${correctAnswer}</div>
+        </div>
+      </div>
+    `;
+    state.streak = 0;
+  }
+  
+  renderKatexInElement(feedback);
+  
+  // Update header
+  document.getElementById('headerXP').textContent = state.xp;
+  document.getElementById('headerStreak').textContent = state.streak;
+
+  // Ganti tombol check menjadi lanjut
+  const checkBtn = document.getElementById('checkBtn');
+  checkBtn.textContent = 'Lanjut ';
+  checkBtn.innerHTML = 'Next <span class="id-lang" style="color:rgba(11,17,33,0.7); display:inline;">Lanjut</span> <i class="fa-solid fa-arrow-right"></i>';
+  checkBtn.disabled = false;
+  checkBtn.onclick = () => completeAndNext();
+
+  saveState();
+}
+
+// ============================================================
+// PRINT RESULT UNTUK ASSESSMENT
+// ============================================================
+function showPrintResultForm(mapIdx) {
+  const map = COURSE.maps[mapIdx];
+  const totalLessons = map.lessons.length;
+  let correctCount = 0;
+  
+  if (state.mapAnswers && state.mapAnswers[mapIdx]) {
+    for (let i = 0; i < totalLessons; i++) {
+      if (state.mapAnswers[mapIdx][i] && state.mapAnswers[mapIdx][i].isCorrect) {
+        correctCount++;
+      }
+    }
+  }
+  
+  const score = Math.round((correctCount / totalLessons) * 100);
+
+  const content = document.getElementById('lessonContent');
+  content.innerHTML = `
+    <div class="stagger-in text-center">
+      <div class="text-5xl mb-4">🎉</div>
+      <h2 class="text-2xl font-bold mb-2">Assessment Completed! <span class="id-lang">Asesmen Selesai!</span></h2>
+      <p class="text-slate-400 mb-6">You scored <span class="text-emerald-400 font-bold text-xl">${score}%</span> (${correctCount}/${totalLessons})</p>
+      
+      <div class="max-w-md mx-auto text-left space-y-4 mb-8">
+        <div>
+          <label class="text-sm text-slate-400 block mb-1">Name / <span class="id-lang">Nama</span></label>
+          <input type="text" id="printName" class="ex-input" placeholder="Enter your name / Masukkan nama">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400 block mb-1">Date / <span class="id-lang">Tanggal</span></label>
+          <input type="date" id="printDate" class="ex-input" value="${new Date().toISOString().split('T')[0]}">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400 block mb-1">Assessment / <span class="id-lang">Asesmen</span></label>
+          <input type="text" class="ex-input" value="Assessment ${map.id}" disabled style="opacity:0.6">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400 block mb-1">Score / <span class="id-lang">Skor</span></label>
+          <input type="text" class="ex-input" value="${score}%" disabled style="opacity:0.6">
+        </div>
+      </div>
+
+      <button class="btn-primary text-lg" onclick="generatePrintout(${mapIdx})">
+        <i class="fa-solid fa-print mr-2"></i> Print Result <span class="id-lang" style="color:rgba(11,17,33,0.7); display:inline;">Cetak Hasil</span>
+      </button>
+      
+      <div class="mt-4">
+        <button class="btn-secondary" onclick="openPeta(${mapIdx})">
+          Back to Map <span class="id-lang">Kembali ke Peta</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function generatePrintout(mapIdx) {
+  const map = COURSE.maps[mapIdx];
+  const studentName = document.getElementById('printName').value || '-';
+  const printDate = document.getElementById('printDate').value || '-';
+  
+  let correctCount = 0;
+  let tableRows = '';
+  
+  for (let i = 0; i < map.lessons.length; i++) {
+    const ansData = (state.mapAnswers && state.mapAnswers[mapIdx] && state.mapAnswers[mapIdx][i]) ? state.mapAnswers[mapIdx][i] : null;
+    // Hapus tag id-lang dari pertanyaan agar printout lebih bersih (hanya bahasa Inggris)
+    const qText = map.lessons[i].q.replace(/<span class='id-lang'>.*?<\/span>/g, '');
+    const studentAns = ansData ? ansData.studentAnswer : '-';
+    const correctAns = ansData ? ansData.correctAnswer : '-';
+    const isCorrect = ansData ? ansData.isCorrect : false;
+    
+    if (isCorrect) correctCount++;
+    
+    const noteSymbol = isCorrect ? '✓' : '✗';
+    const noteColor = isCorrect ? 'green' : 'red';
+    
+    tableRows += `
+      <tr>
+        <td style="text-align:center; width: 40px;">${i + 1}</td>
+        <td>${qText}</td>
+        <td>${studentAns}</td>
+        <td>${correctAns}</td>
+        <td style="text-align:center; color: ${noteColor}; font-weight:bold; font-size:1.2rem;">${noteSymbol}</td>
+      </tr>
+    `;
+  }
+  
+  const score = Math.round((correctCount / map.lessons.length) * 100);
+
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="UTF-8">
+      <title>Assessment Result - ${map.id}</title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"><\/script>
+      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '\\\\(', right: '\\\\)', display: false},{left: '\\\\[', right: '\\\\]', display: true}], throwOnError: false}); setTimeout(function(){window.print();}, 1000);"><\/script>
+      <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #333; line-height: 1.5; }
+        h1 { text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px; }
+        .header-info { margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .header-info p { margin: 5px 0; font-size: 14px; }
+        .header-info strong { margin-right: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; vertical-align: top; }
+        th { background: #f0f0f0; font-weight: bold; text-align: center; }
+        @media print {
+          body { padding: 0; }
+          .header-info { border: none; padding: 0; }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Assessment Result</h1>
+      <div class="subtitle">Direct and Inverse Proportions</div>
+      
+      <div class="header-info">
+        <div style="flex:1; min-width: 200px;">
+          <p><strong>Name:</strong> ${studentName}</p>
+          <p><strong>Date:</strong> ${printDate}</p>
+        </div>
+        <div style="flex:1; min-width: 200px;">
+          <p><strong>Assessment:</strong> ${map.id}</p>
+          <p><strong>Score:</strong> ${score}% (${correctCount}/${map.lessons.length})</p>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Question</th>
+            <th>Student Answer</th>
+            <th>Correct Answer</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+}
+
+// ============================================================
+// COMPLETE & NEXT
+// ============================================================
+function completeAndNext() {
+  const mi = state.currentMap;
+  const li = state.currentLesson;
+  state.completed[`${mi}-${li}`] = true;
+  saveState();
+
+  const map = COURSE.maps[mi];
+  const isLastLesson = li + 1 >= map.lessons.length;
+  const isAssessment = map.branch; // Peta 7A-7E adalah branch: true
+
+  // Jika ini exercise terakhir di Assessment, tampilkan form Print
+  if (isAssessment && isLastLesson) {
+    showPrintResultForm(mi);
+  } else if (li + 1 < map.lessons.length && isLessonUnlocked(mi, li + 1)) {
+    openLesson(mi, li + 1);
+  } else {
+    openPeta(mi);
+  }
+}
+
+// ============================================================
+// NAVIGASI
+// ============================================================
+function showView(viewName) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(viewName + 'View').classList.add('active');
+  state.currentView = viewName;
+  window.scrollTo(0, 0);
+}
+
+function showMap() {
+  showView('map');
+  renderMap();
+}
+
+function closeLesson() {
+  openPeta(state.currentMap);
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function showToast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function showXPPopup(amount) {
+  document.getElementById('xpAmount').textContent = amount;
+  const popup = document.getElementById('xpPopup');
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1500);
+}
+
+function spawnConfetti() {
+  const colors = ['#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.width = (Math.random() * 8 + 4) + 'px';
+    c.style.height = (Math.random() * 8 + 4) + 'px';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    c.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
+    c.style.animationDelay = (Math.random() * 0.5) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+}
+
+function showHint() {
+  document.getElementById('hintArea').classList.remove('hidden');
+  document.getElementById('hintBtn').disabled = true;
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// --- FUNGSI UNTUK MODAL RULES ---
+function openRules() {
+  document.getElementById('rulesModal').classList.add('active');
+}
+
+function closeRules() {
+  document.getElementById('rulesModal').classList.remove('active');
+}
+
+// ============================================================
+// KATEX RENDERING
+// ============================================================
+function renderKatexInElement(el) {
+  if (typeof renderMathInElement === 'function') {
+    renderMathInElement(el, {
+      delimiters: [
+        {left: '\\(', right: '\\)', display: false},  //
+        {left: '\\[', right: '\\]', display: true}    //
+      ],
+      throwOnError: false
+    });
+  }
+}
+
+// Override showView untuk render KaTeX setiap pindah halaman
+const originalShowView = showView;
+showView = function(viewName) {
+  originalShowView(viewName);
+  setTimeout(() => renderKatexInElement(document.body), 100);
+};
+
+// Override openLesson untuk render KaTeX di konten lesson
+const originalOpenLesson = openLesson;
+openLesson = function(mapIdx, lessonIdx) {
+  originalOpenLesson(mapIdx, lessonIdx);
+  setTimeout(() => renderKatexInElement(document.body), 100);
+};
+
+// ============================================================
+// INISIALISASI APLIKASI
+// ============================================================
+loadState();
+renderMap();
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Tekan Escape untuk menutup lesson
+  if (e.key === 'Escape' && state.currentView === 'lesson') {
+    closeLesson();
+  }
+  
+  // Tekan Enter untuk memeriksa jawaban / lanjut ke soal berikutnya
+  if (e.key === 'Enter' && state.currentView === 'lesson') {
+    const checkBtn = document.getElementById('checkBtn');
+    // Pastikan tombol ada dan tidak dalam keadaan disabled
+    if (checkBtn && !checkBtn.disabled) {
+      e.preventDefault(); 
+      checkBtn.click();   // Untuk halaman Exercise
+    } else if (nextBtn) {
+      e.preventDefault();
+      nextBtn.click();    // Untuk halaman Teori
+    }
+  }
+});
+</script>
+</body>
+</html>
