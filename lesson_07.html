@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutoring - by Deni</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    
+    <style>
+        :root {
+            --primary: #6366F1; --secondary: #10B981; --accent: #F59E0B; --danger: #EF4444;
+            --bg-app: #F1F5F9; --bg-card: #FFFFFF; --text-main: #334155; --en-trans: #64748B;
+            --sidebar-bg: #1E293B; --sidebar-text: #94A3B8; --sidebar-active: #6366F1;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* SIDEBAR */
+        .sidebar { width: 280px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
+        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid #334155; }
+        .sidebar-header h1 { color: white; font-size: 1.5em; margin-bottom: 5px; }
+        .sidebar-header p { font-size: 0.9em; color: var(--accent); font-weight: bold; }
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px 0; }
+        .nav-section-title { padding: 10px 20px 5px; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; color: #475569; font-weight: bold; }
+        .nav-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s; border-left: 4px solid transparent; font-size: 0.9em; }
+        .nav-item:hover { background-color: #334155; color: white; }
+        .nav-item.active { background-color: rgba(99, 102, 241, 0.1); color: white; border-left-color: var(--sidebar-active); font-weight: bold; }
+        .nav-icon { font-size: 1.2em; }
+
+        /* MAIN CONTENT */
+        .main-content { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-app); }
+        .top-bar { background: var(--bg-card); padding: 15px 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+        .module-title { font-size: 1.1em; font-weight: bold; color: var(--primary); }
+        .progress-container { flex: 1; max-width: 400px; margin: 0 20px; height: 12px; background: #E2E8F0; border-radius: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 20px; transition: width 0.4s ease-out; width: 0%; }
+        .progress-text { font-size: 0.9em; font-weight: bold; color: var(--text-main); min-width: 50px; text-align: right; }
+
+        .slide-area { flex: 1; overflow-y: auto; padding: 30px; display: flex; justify-content: center; }
+        .slide-wrapper { width: 100%; max-width: 800px; }
+        .slide { display: none; animation: fadeIn 0.3s ease; }
+        .slide.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .bottom-bar { background: var(--bg-card); padding: 15px 30px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; }
+        .btn-nav { padding: 12px 25px; border: none; border-radius: 12px; font-size: 1em; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-prev { background: #E2E8F0; color: var(--text-main); }
+        .btn-prev:hover { background: #CBD5E1; }
+        .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 0 #4338CA; }
+        .btn-next:hover { transform: translateY(2px); box-shadow: 0 2px 0 #4338CA; }
+
+        /* CONTENT STYLES */
+        .en-trans { display: block; font-size: 0.85em; color: var(--en-trans); font-style: italic; margin-top: -5px; margin-bottom: 15px; }
+        .theory-box { background: linear-gradient(135deg, #EEF2FF, #E0E7FF); border-left: 6px solid var(--accent); padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .theory-box h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.3em; }
+
+        /* HOMEPAGE */
+        .homepage-banner { text-align: center; margin-bottom: 30px; padding: 20px 0; }
+        .homepage-banner h1 { color: var(--primary); font-size: 2.8em; margin-bottom: 5px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+        .homepage-banner h2 { color: var(--accent); font-size: 1.8em; font-weight: normal; }
+        .lesson-title-box { background: #EEF2FF; border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 30px; border: 3px solid var(--primary); }
+        .lesson-title-box h3 { color: var(--text-main); font-size: 1.6em; margin-bottom: 5px; }
+        .lesson-title-en { color: var(--primary); font-size: 1.2em; font-weight: 600; font-style: normal; }
+        .rules-box { background: #FFF7ED; border: 3px dashed var(--accent); border-radius: 16px; padding: 25px; }
+        .rules-box h3 { color: #9A3412; margin-bottom: 20px; font-size: 1.4em; text-align: center; }
+        .rules-list { list-style: none; padding: 0; }
+        .rules-list li { background: white; padding: 15px 20px; margin-bottom: 15px; border-radius: 12px; border-left: 6px solid var(--accent); font-size: 1.1em; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; }
+        .rule-icon { font-size: 1.5em; }
+        .rule-text-en { display: block; font-size: 0.85em; color: var(--en-trans); font-style: italic; margin-top: 4px; }
+
+        /* QUESTION CARD */
+        .q-card { background: var(--bg-card); border: 2px solid #E2E8F0; padding: 25px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .q-text { font-size: 1.2em; font-weight: bold; color: var(--text-main); margin-bottom: 15px; }
+        .q-card label { display: block; margin: 10px 0; cursor: pointer; padding: 12px; border-radius: 10px; border: 2px solid #E2E8F0; transition: all 0.2s; }
+        .q-card label:hover { background: #F8FAFC; border-color: var(--primary); }
+        input[type="text"], select { width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 1em; font-family: inherit; }
+        input[type="text"]:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+
+        .btn-check { background-color: var(--secondary); color: white; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-size: 1em; font-weight: bold; margin-top: 20px; transition: all 0.2s; box-shadow: 0 4px 0 #059669; }
+        .btn-check:hover { transform: translateY(2px); box-shadow: 0 2px 0 #059669; }
+        .btn-check:disabled { background-color: #94A3B8; box-shadow: none; cursor: not-allowed; transform: none; }
+        
+        .btn-reset { background-color: var(--accent); color: white; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-size: 1em; font-weight: bold; margin-top: 20px; margin-left: 15px; transition: all 0.2s; box-shadow: 0 4px 0 #D97706; display: none; }
+        .btn-reset:hover { transform: translateY(2px); box-shadow: 0 2px 0 #D97706; }
+
+        .q-feedback { margin-top: 15px; font-weight: bold; font-size: 1.1em; display: none; padding: 10px; border-radius: 8px; }
+        .q-feedback.correct { background: #D1FAE5; color: #065F46; }
+        .q-feedback.incorrect { background: #FEE2E2; color: #991B1B; }
+
+        details.q-solution { margin-top: 20px; background: #FFF7ED; border: 2px solid #FED7AA; border-radius: 12px; padding: 15px; display: none; }
+        details.q-solution summary { font-weight: bold; color: #9A3412; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; }
+        details.q-solution summary::-webkit-details-marker { display: none; }
+        .step-list { margin: 15px 0 0 20px; }
+        .step-list li { margin-bottom: 8px; line-height: 1.5; }
+
+        .pairing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .pair-item { display: flex; align-items: center; gap: 10px; background: #F8FAFC; padding: 10px; border-radius: 8px; white-space: nowrap; }
+        .pair-item select { width: auto !important; min-width: 85px; flex-grow: 1; }
+        
+        /* ================= RESULT & REPORT STYLES ================= */
+        .result-card {
+            background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
+            border: 3px solid var(--primary);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .result-card h2 { color: var(--primary); font-size: 2em; margin-bottom: 10px; }
+        .result-score { font-size: 3em; font-weight: bold; color: var(--secondary); margin: 20px 0; }
+        .result-form { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; text-align: left; }
+        .result-form label { font-weight: bold; display: block; margin-top: 10px; color: var(--text-main); }
+        .result-form input { width: 100%; padding: 10px; margin-top: 5px; border: 2px solid #CBD5E1; border-radius: 8px; font-size: 1em; box-sizing: border-box; }
+        .btn-report { background-color: var(--primary); color: white; padding: 15px 30px; border: none; border-radius: 12px; cursor: pointer; font-size: 1.2em; font-weight: bold; margin-top: 20px; box-shadow: 0 4px 0 #4338CA; transition: all 0.2s; }
+        .btn-report:hover { transform: translateY(2px); box-shadow: 0 2px 0 #4338CA; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h1>🚀 Math Tutoring</h1>
+        <p>by Deni</p>
+    </div>
+    <div class="sidebar-nav">
+        <div class="nav-section-title">Start Here</div>
+        <div class="nav-item active" onclick="goToModule('homepage')"><span class="nav-icon">🏠</span> Beranda</div>
+
+        <div class="nav-section-title">Main Lesson</div>
+        <div class="nav-item" onclick="goToModule('section1')"><span class="nav-icon">🧠</span> 1. Spiral Review (00:00-00:10)</div>
+        <div class="nav-item" onclick="goToModule('section2')"><span class="nav-icon">🌍</span> 2. Intro & Real-World (00:10-00:15)</div>
+        <div class="nav-item" onclick="goToModule('section3')"><span class="nav-icon">🧩</span> 3. Prior Knowledge (00:15-00:20)</div>
+        <div class="nav-item" onclick="goToModule('section4')"><span class="nav-icon">🤝</span> 4. Problem Intro (00:20-00:30)</div>
+        <div class="nav-item" onclick="goToModule('section5')"><span class="nav-icon">💪</span> 5. Guided Practice (00:30-00:45)</div>
+        <div class="nav-item" onclick="goToModule('section6')"><span class="nav-icon">🏃</span> 6. Independent Prac. (00:45-01:00)</div>
+
+        <div class="nav-section-title" style="margin-top:20px;">Assessment Groups</div>
+        <div class="nav-item" onclick="goToModule('assign1')"><span class="nav-icon">📝</span> Assessment Grup 1</div>
+        <div class="nav-item" onclick="goToModule('assign2')"><span class="nav-icon">📝</span> Assessment Grup 2</div>
+        <div class="nav-item" onclick="goToModule('assign3')"><span class="nav-icon">📝</span> Assessment Grup 3</div>
+        <div class="nav-item" onclick="goToModule('assign4')"><span class="nav-icon">📝</span> Assessment Grup 4</div>
+        <div class="nav-item" onclick="goToModule('assign5')"><span class="nav-icon">📝</span> Assessment Grup 5</div>
+        
+        <div class="nav-section-title" style="margin-top:20px;">Wrap Up</div>
+        <div class="nav-item" onclick="goToModule('section7')"><span class="nav-icon">🧘</span> 7. Reflection (01:00-01:05)</div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="top-bar">
+        <div class="module-title" id="moduleTitle">🏠 Beranda / Homepage</div>
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="progress-text" id="progressText">0%</div>
+    </div>
+
+    <div class="slide-area">
+        <div class="slide-wrapper">
+            
+            <!-- HOMEPAGE -->
+            <div id="homepage" class="module-container" data-title="🏠 Beranda / Homepage">
+                <div class="slide active">
+                    <div class="homepage-banner"><h1>🚀 Math Tutoring</h1><h2>by Deni</h2></div>
+                    <div class="lesson-title-box">
+                        <h3>3-Digit Addition with Regrouping</h3>
+                        <span class="lesson-title-en">Penjumlahan 3-digit dengan Simpan (Regrouping ke Puluhan)</span>
+                    </div>
+                    <div class="rules-box">
+                        <h3>📜 Aturan Kelas / Class Rules</h3>
+                        <ul class="rules-list">
+                            <li><span class="rule-icon">🗣️</span><div>Berbicara bergantian<span class="rule-text-en">Take turns speaking</span></div></li>
+                            <li><span class="rule-icon">✋</span><div>Minta izin terlebih dahulu jika mau meninggalkan kelas<span class="rule-text-en">Ask for permission first before leaving the class</span></div></li>
+                            <li><span class="rule-icon">🧠</span><div>Selalu berpikir kritis dan berani mencoba<span class="rule-text-en">Always think critically and dare to try</span></div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 1 -->
+            <div id="section1" class="module-container" data-title="1. Spiral Review (00:00-00:10)">
+                <div class="slide"><div class="theory-box"><h3>Place Value & Basic Math</h3><p>Sebelum belajar penjumlahan bersimpan, kita harus menguasai nilai tempat (Place Value). Dalam bilangan 3-digit, ada ratusan (Hundreds), puluhan (Tens), dan satuan (Ones).</p><p class="en-trans">Before learning regrouping addition, we must master place value. In a 3-digit number, there are Hundreds, Tens, and Ones.</p><p>Contoh: Pada angka $523$, angka $5$ berada di ratusan sehingga bernilai $500$. Angka $2$ di puluhan bernilai $20$. Angka $3$ di satuan bernilai $3$.</p><p class="en-trans">Example: In $523$, $5$ is in the hundreds place so it's worth $500$. $2$ is in the tens place worth $20$. $3$ is in the ones place worth $3$.</p></div></div>
+                
+                <div class="slide"><div class="q-card" id="s1_q1"><p class="q-text">1. What is the value of the digit 5 in 523? 🤔</p><p class="en-trans">1. Berapakah nilai dari angka 5 pada bilangan 523?</p><input type="text" id="s1_q1_input" data-correct="500" placeholder="Type your answer here..."><button class="btn-check" onclick="checkAnswer('s1_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q1')">🔄 Reset</button><div class="q-feedback" id="s1_q1_fb"></div><details class="q-solution" id="s1_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Identify the place value of the digit 5 in 523.</li><li>It is in the third position from the right, which is Hundreds.</li><li>Therefore, its value is $5 \times 100 = 500$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q2"><p class="q-text">2. If I have 3 hundreds, 0 tens, and 7 ones, what number is that? ✌️</p><p class="en-trans">2. Jika aku punya 3 ratusan, 0 puluhan, dan 7 satuan, apa angka itu?</p><input type="text" id="s1_q2_input" data-correct="307" placeholder="Type your answer here..."><button class="btn-check" onclick="checkAnswer('s1_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q2')">🔄 Reset</button><div class="q-feedback" id="s1_q2_fb"></div><details class="q-solution" id="s1_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Combine the values: Hundreds + Tens + Ones.</li><li>$300 + 0 + 7$.</li><li>The number is 307.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q3"><p class="q-text">3. Quickly add: $8 + 7 = $ ? 🏎️</p><p class="en-trans">3. Hitung cepat: $8 + 7 = $ ?</p><label><input type="radio" name="s1_q3_radio" value="13"> 13</label><label><input type="radio" name="s1_q3_radio" value="14"> 14</label><label><input type="radio" name="s1_q3_radio" value="15" data-correct="true"> 15</label><label><input type="radio" name="s1_q3_radio" value="16"> 16</label><button class="btn-check" onclick="checkAnswer('s1_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q3')">🔄 Reset</button><div class="q-feedback" id="s1_q3_fb"></div><details class="q-solution" id="s1_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Start from 8, count up 7 more.</li><li>$8 + 2 = 10$.</li><li>$10 + 5 = 15$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q4"><p class="q-text">4. What is the missing number in this pattern: 12, 14, 16, __? 💡</p><p class="en-trans">4. Berapa angka yang hilang dalam pola ini: 12, 14, 16, __?</p><input type="text" id="s1_q4_input" data-correct="18" placeholder="Type the next number..."><button class="btn-check" onclick="checkAnswer('s1_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q4')">🔄 Reset</button><div class="q-feedback" id="s1_q4_fb"></div><details class="q-solution" id="s1_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Look at the difference between numbers: $14 - 12 = 2$.</li><li>The pattern is adding 2.</li><li>$16 + 2 = 18$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q5"><p class="q-text">5. In 812, which digit is in the tens place? 🤨</p><p class="en-trans">5. Pada angka 812, digit manakah yang berada di tempat puluhan?</p><label><input type="radio" name="s1_q5_radio" value="8"> 8</label><label><input type="radio" name="s1_q5_radio" value="1" data-correct="true"> 1</label><label><input type="radio" name="s1_q5_radio" value="2"> 2</label><button class="btn-check" onclick="checkAnswer('s1_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q5')">🔄 Reset</button><div class="q-feedback" id="s1_q5_fb"></div><details class="q-solution" id="s1_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Recall place values from right to left: Ones, Tens, Hundreds.</li><li>In 812: 2 is Ones, 1 is Tens, 8 is Hundreds.</li><li>The tens digit is 1.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q6"><p class="q-text">6. Write the number for: 9 hundreds, 0 tens, 4 ones. ✍️</p><p class="en-trans">6. Tuliskan angka untuk: 9 ratusan, 0 puluhan, 4 satuan.</p><input type="text" id="s1_q6_input" data-correct="904" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s1_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q6')">🔄 Reset</button><div class="q-feedback" id="s1_q6_fb"></div><details class="q-solution" id="s1_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Hundreds = 9, Tens = 0, Ones = 4.</li><li>Combine them: $900 + 0 + 4$.</li><li>The number is 904.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q7"><p class="q-text">7. Which is larger: 321 or 312? 🧐</p><p class="en-trans">7. Mana yang lebih besar: 321 atau 312?</p><label><input type="radio" name="s1_q7_radio" value="321" data-correct="true"> 321</label><label><input type="radio" name="s1_q7_radio" value="312"> 312</label><button class="btn-check" onclick="checkAnswer('s1_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q7')">🔄 Reset</button><div class="q-feedback" id="s1_q7_fb"></div><details class="q-solution" id="s1_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Compare the hundreds digit: both are 3.</li><li>Compare the tens digit: 2 in 321 vs 1 in 312.</li><li>Since 2 is greater than 1, 321 is larger.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q8"><p class="q-text">8. What is $9 + 6$? 🎯</p><p class="en-trans">8. Berapakah $9 + 6$?</p><label><input type="radio" name="s1_q8_radio" value="14"> 14</label><label><input type="radio" name="s1_q8_radio" value="15" data-correct="true"> 15</label><label><input type="radio" name="s1_q8_radio" value="16"> 16</label><button class="btn-check" onclick="checkAnswer('s1_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q8')">🔄 Reset</button><div class="q-feedback" id="s1_q8_fb"></div><details class="q-solution" id="s1_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Make a 10 strategy: $9 + 1 = 10$.</li><li>The 6 becomes 5 because we used 1.</li><li>$10 + 5 = 15$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q9"><p class="q-text">9. Calculate: $18 - 5 = $ ... ⚡</p><p class="en-trans">9. Hitunglah: $18 - 5 = $ ...</p><input type="text" id="s1_q9_input" data-correct="13" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s1_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q9')">🔄 Reset</button><div class="q-feedback" id="s1_q9_fb"></div><details class="q-solution" id="s1_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Start at 18.</li><li>Count down 5 steps: 17, 16, 15, 14, 13.</li><li>The answer is 13.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s1_q10"><p class="q-text">10. Match the numbers with their place values! 🧩</p><p class="en-trans">10. Cocokkan angka dengan nilai tempatnya!</p><div class="pairing-grid"><div class="pair-item">Value of 4 in 452: <select id="s1_q10a" data-correct="400"><option value="">--Pilih--</option><option value="4">4</option><option value="40">40</option><option value="400">400</option></select></div><div class="pair-item">Value of 5 in 452: <select id="s1_q10b" data-correct="50"><option value="">--Pilih--</option><option value="5">5</option><option value="50">50</option><option value="500">500</option></select></div><div class="pair-item">Value of 2 in 452: <select id="s1_q10c" data-correct="2"><option value="">--Pilih--</option><option value="2">2</option><option value="20">20</option><option value="200">200</option></select></div></div><button class="btn-check" onclick="checkAnswer('s1_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s1_q10')">🔄 Reset</button><div class="q-feedback" id="s1_q10_fb"></div><details class="q-solution" id="s1_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>In 452, 4 is hundreds, so it's 400.</li><li>5 is tens, so it's 50.</li><li>2 is ones, so it's 2.</li></ol></details></div></div>
+            </div>
+            <!-- END OF SECTION 1 -->
+
+            <!-- ================= SECTION 2 ================= -->
+            <div id="section2" class="module-container" data-title="2. Intro & Real-World (00:10-00:15)">
+                <div class="slide"><div class="theory-box"><h3>Real-World Connection</h3><p>Bayangkan kamu seorang kolektor kelereng (marbles). Kamu punya dua kantong kelereng. Untuk mengetahui total kelerengmu, kamu harus menjumlahkan dua bilangan 3-digit.</p><p class="en-trans">Imagine you are a marble collector. You have two bags of marbles. To know your total marbles, you must add two 3-digit numbers.</p><p>Misalnya, kantong pertama berisi $128$ kelereng, kantong kedua berisi $115$ kelereng. Kadang jumlah satuan melebihi $9$, sehingga kita butuh trik khusus yang disebut <strong>Regrouping</strong> (menyimpan).</p><p class="en-trans">For example, the first bag has $128$ marbles, the second bag has $115$ marbles. Sometimes the sum of ones exceeds $9$, so we need a special trick called <strong>Regrouping</strong>.</p></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q1"><p class="q-text">1. You have 128 marbles in bag A and 115 marbles in bag B. What math operation do you use to find the total? 📦</p><p class="en-trans">1. Kamu punya 128 kelereng di kantong A dan 115 kelereng di kantong B. Operasi hitung apa yang dipakai?</p><label><input type="radio" name="s2_q1_radio" value="Subtraction"> Subtraction (Pengurangan)</label><label><input type="radio" name="s2_q1_radio" value="Addition" data-correct="true"> Addition (Penjumlahan)</label><label><input type="radio" name="s2_q1_radio" value="Multiplication"> Multiplication (Perkalian)</label><button class="btn-check" onclick="checkAnswer('s2_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q1')">🔄 Reset</button><div class="q-feedback" id="s2_q1_fb"></div><details class="q-solution" id="s2_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>"Total" means putting things together.</li><li>The operation to put numbers together is Addition.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q2"><p class="q-text">2. A farmer has 547 grains of corn and 228 grains of rice. What is the problem asking? 🎯</p><p class="en-trans">2. Seorang petani punya 547 butir jagung dan 228 butir beras. Apa yang ditanyakan dari soal ini?</p><label><input type="radio" name="s2_q2_radio" value="Difference"> The difference between corn and rice</label><label><input type="radio" name="s2_q2_radio" value="Altogether" data-correct="true"> How many grains altogether</label><button class="btn-check" onclick="checkAnswer('s2_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q2')">🔄 Reset</button><div class="q-feedback" id="s2_q2_fb"></div><details class="q-solution" id="s2_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Look for keywords like "and" and "altogether" or "total".</li><li>These keywords mean we need to find the sum of both items.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q3"><p class="q-text">3. "When we have too many ones, they transform into a ten!" What is this magic trick called? 🤨</p><p class="en-trans">3. "Saat kita punya terlalu banyak satuan, mereka berubah menjadi puluhan!" Apa nama trik ajaib ini?</p><input type="text" id="s2_q3_input" data-correct="regrouping" placeholder="Type the term..."><button class="btn-check" onclick="checkAnswer('s2_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q3')">🔄 Reset</button><div class="q-feedback" id="s2_q3_fb"></div><details class="q-solution" id="s2_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Trading 10 ones for 1 ten is called regrouping.</li><li>In Indonesian, it's also known as "menyimpan".</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q4"><p class="q-text">4. If you add $128 + 115$, which digits do you add FIRST? 🧩</p><p class="en-trans">4. Jika kamu menjumlahkan $128 + 115$, digit mana yang kamu jumlahkan PERTAMA?</p><label><input type="radio" name="s2_q4_radio" value="Hundreds"> The hundreds digits (1 + 1)</label><label><input type="radio" name="s2_q4_radio" value="Tens"> The tens digits (2 + 1)</label><label><input type="radio" name="s2_q4_radio" value="Ones" data-correct="true"> The ones digits (8 + 5)</label><button class="btn-check" onclick="checkAnswer('s2_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q4')">🔄 Reset</button><div class="q-feedback" id="s2_q4_fb"></div><details class="q-solution" id="s2_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>In addition algorithms, we always start from the rightmost side.</li><li>The rightmost digits are the Ones.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q5"><p class="q-text">5. In $8 + 5$, the result is 13. Why is 13 "too big" for the ones place? ✍️</p><p class="en-trans">5. Pada $8 + 5$, hasilnya 13. Mengapa 13 "terlalu besar" untuk tempat satuan?</p><label><input type="radio" name="s2_q5_radio" value="Because 13 is unlucky"> Because 13 is an unlucky number</label><label><input type="radio" name="s2_q5_radio" value="Two digits" data-correct="true"> Because ones place can only hold ONE digit (0-9)</label><button class="btn-check" onclick="checkAnswer('s2_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q5')">🔄 Reset</button><div class="q-feedback" id="s2_q5_fb"></div><details class="q-solution" id="s2_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Each place value (ones, tens, hundreds) can only hold a single digit.</li><li>The digits are 0 through 9. 13 has two digits, so it doesn't fit.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q6"><p class="q-text">6. Identify the ones digits in the problem: $246 + 137$. 🏗️</p><p class="en-trans">6. Identifikasi angka satuan pada soal: $246 + 137$.</p><input type="text" id="s2_q6_input" data-correct="6, 7" placeholder="Type the numbers separated by comma..."><button class="btn-check" onclick="checkAnswer('s2_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q6')">🔄 Reset</button><div class="q-feedback" id="s2_q6_fb"></div><details class="q-solution" id="s2_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Look at the rightmost digit of each number.</li><li>In 246, the ones digit is 6.</li><li>In 137, the ones digit is 7.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q7"><p class="q-text">7. You have 385 stickers and buy 107 more. What is the vertical addition format? 🤔</p><p class="en-trans">7. Kamu punya 385 stiker dan membeli 107 lagi. Bagaimana format penjumlahan vertikalnya?</p><label><input type="radio" name="s2_q7_radio" value="A"> $385 - 107$</label><label><input type="radio" name="s2_q7_radio" value="B" data-correct="true"> Stack 385 on top of 107 with a plus sign</label><label><input type="radio" name="s2_q7_radio" value="C"> $107 - 385$</label><button class="btn-check" onclick="checkAnswer('s2_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q7')">🔄 Reset</button><div class="q-feedback" id="s2_q7_fb"></div><details class="q-solution" id="s2_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>To add vertically, numbers are stacked aligning their place values.</li><li>Hundreds under hundreds, tens under tens, ones under ones.</li><li>The correct format is stacking 385 and 107 with a + sign.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q8"><p class="q-text">8. What does "too many ones" mean in addition? 🏎️</p><p class="en-trans">8. Apa arti dari "terlalu banyak satuan" dalam penjumlahan?</p><label><input type="radio" name="s2_q8_radio" value="Sum > 9" data-correct="true"> The sum of the ones digits is greater than 9</label><label><input type="radio" name="s2_q8_radio" value="Sum < 9"> The sum of the ones digits is less than 9</label><button class="btn-check" onclick="checkAnswer('s2_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q8')">🔄 Reset</button><div class="q-feedback" id="s2_q8_fb"></div><details class="q-solution" id="s2_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones place only holds values 0 to 9.</li><li>If the sum is 10 or more (greater than 9), we have "too many ones".</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q9"><p class="q-text">9. Match the problem with its correct first step! 🖥️</p><p class="en-trans">9. Cocokkan soal dengan langkah pertamanya!</p><div class="pairing-grid"><div class="pair-item">128 + 115 first step: <select id="s2_q9a" data-correct="8 + 5"><option value="">--Pilih--</option><option value="8 + 5">8 + 5</option><option value="2 + 1">2 + 1</option><option value="1 + 1">1 + 1</option></select></div><div class="pair-item">246 + 137 first step: <select id="s2_q9b" data-correct="6 + 7"><option value="">--Pilih--</option><option value="6 + 7">6 + 7</option><option value="4 + 3">4 + 3</option><option value="2 + 1">2 + 1</option></select></div></div><button class="btn-check" onclick="checkAnswer('s2_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q9')">🔄 Reset</button><div class="q-feedback" id="s2_q9_fb"></div><details class="q-solution" id="s2_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Always add ones first.</li><li>For 128 + 115, ones are 8 and 5.</li><li>For 246 + 137, ones are 6 and 7.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s2_q10"><p class="q-text">10. "When ones add up to 10 or more, they move to the tens place." True or False? 🎯</p><p class="en-trans">10. "Ketika satuan dijumlahkan menjadi 10 atau lebih, mereka pindah ke tempat puluhan." Benar atau Salah?</p><label><input type="radio" name="s2_q10_radio" value="True" data-correct="true"> True / Benar</label><label><input type="radio" name="s2_q10_radio" value="False"> False / Salah</label><button class="btn-check" onclick="checkAnswer('s2_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s2_q10')">🔄 Reset</button><div class="q-feedback" id="s2_q10_fb"></div><details class="q-solution" id="s2_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>This is the core concept of regrouping in addition.</li><li>10 ones become 1 ten and move to the Tens place.</li><li>The statement is True.</li></ol></details></div></div>
+            </div>
+            <!-- END OF SECTION 2 -->
+            
+            <!-- ================= SECTION 3 ================= -->
+            <div id="section3" class="module-container" data-title="3. Prior Knowledge (00:15-00:20)">
+                <div class="slide"><div class="theory-box"><h3>Base-10 Blocks Review</h3><p>Kita akan mengingat kembali 'Base-10 Blocks'. Ingat, 10 kubus satuan kecil (ones) memiliki ukuran yang persis sama dengan 1 batang puluhan (tens rod)! Saat jumlah satuan mencapai 10, kita bisa menukarnya menjadi 1 puluhan.</p><p class="en-trans">Let's recall 'Base-10 Blocks'. Remember, 10 small unit cubes (ones) are the exact same size as 1 tens rod! When the number of ones reaches 10, we can trade them for 1 ten.</p><p>Proses menukar 10 satuan menjadi 1 puluhan inilah yang disebut <strong>Regrouping</strong> atau <strong>menyimpan</strong>.</p><p class="en-trans">This process of trading 10 ones for 1 ten is called <strong>Regrouping</strong>.</p></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q1"><p class="q-text">1. How many small unit cubes (ones) make up 1 tens rod? 🧩</p><p class="en-trans">1. Berapa banyak kubus satuan kecil yang membentuk 1 batang puluhan?</p><input type="text" id="s3_q1_input" data-correct="10" placeholder="Type the number..."><button class="btn-check" onclick="checkAnswer('s3_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q1')">🔄 Reset</button><div class="q-feedback" id="s3_q1_fb"></div><details class="q-solution" id="s3_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>A tens rod represents 10.</li><li>Therefore, it takes exactly 10 unit cubes to make 1 tens rod.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q2"><p class="q-text">2. If you have 14 ones, how many tens can you trade them for, and how many ones are left? 🛠️</p><p class="en-trans">2. Jika kamu punya 14 satuan, berapa banyak puluhan yang bisa ditukar, dan berapa satuan yang tersisa?</p><label><input type="radio" name="s3_q2_radio" value="1 ten, 4 ones" data-correct="true"> 1 ten, 4 ones</label><label><input type="radio" name="s3_q2_radio" value="2 tens, 4 ones"> 2 tens, 4 ones</label><label><input type="radio" name="s3_q2_radio" value="1 ten, 14 ones"> 1 ten, 14 ones</label><button class="btn-check" onclick="checkAnswer('s3_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q2')">🔄 Reset</button><div class="q-feedback" id="s3_q2_fb"></div><details class="q-solution" id="s3_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Find how many tens are in 14.</li><li>$14 = 10 + 4$.</li><li>You can trade 10 ones for 1 ten, leaving 4 ones.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q3"><p class="q-text">3. Match the base-10 block amounts with their standard numbers! 🧠</p><p class="en-trans">3. Cocokkan jumlah blok base-10 dengan angka standarnya!</p><div class="pairing-grid"><div class="pair-item">3 tens, 2 ones = <select id="s3_q3a" data-correct="32"><option value="">--Pilih--</option><option value="23">23</option><option value="32">32</option><option value="320">320</option></select></div><div class="pair-item">2 tens, 3 ones = <select id="s3_q3b" data-correct="23"><option value="">--Pilih--</option><option value="23">23</option><option value="32">32</option><option value="203">203</option></select></div><div class="pair-item">5 tens, 0 ones = <select id="s3_q3c" data-correct="50"><option value="">--Pilih--</option><option value="5">5</option><option value="50">50</option><option value="500">500</option></select></div></div><button class="btn-check" onclick="checkAnswer('s3_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q3')">🔄 Reset</button><div class="q-feedback" id="s3_q3_fb"></div><details class="q-solution" id="s3_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>3 tens ($30$) + 2 ones ($2$) = $32$.</li><li>2 tens ($20$) + 3 ones ($3$) = $23$.</li><li>5 tens ($50$) + 0 ones ($0$) = $50$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q4"><p class="q-text">4. If you have 2 tens rods and 12 unit cubes, what is the standard form of this number? 🤔</p><p class="en-trans">4. Jika kamu punya 2 batang puluhan dan 12 kubus satuan, berapakah bentuk standar angka ini?</p><input type="text" id="s3_q4_input" data-correct="32" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s3_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q4')">🔄 Reset</button><div class="q-feedback" id="s3_q4_fb"></div><details class="q-solution" id="s3_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>You have 2 tens ($20$) and 12 ones ($12$).</li><li>Regroup the 12 ones: $12 = 10 + 2$.</li><li>The 10 ones become 1 more ten. So you have $3$ tens total ($20 + 10$).</li><li>Leftover ones is 2. So, $30 + 2 = 32$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q5"><p class="q-text">5. What do we call the process of trading 10 ones for 1 ten? 🏆</p><p class="en-trans">5. Apa yang kita sebut proses menukar 10 satuan menjadi 1 puluhan?</p><label><input type="radio" name="s3_q5_radio" value="Subtracting"> Subtracting</label><label><input type="radio" name="s3_q5_radio" value="Regrouping" data-correct="true"> Regrouping</label><label><input type="radio" name="s3_q5_radio" value="Multiplying"> Multiplying</label><button class="btn-check" onclick="checkAnswer('s3_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q5')">🔄 Reset</button><div class="q-feedback" id="s3_q5_fb"></div><details class="q-solution" id="s3_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Trading 10 of a smaller unit for 1 of a larger unit is called regrouping.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q6"><p class="q-text">6. 1 tens rod + 5 unit cubes = ? ✍️</p><p class="en-trans">6. 1 batang puluhan + 5 kubus satuan = ?</p><input type="text" id="s3_q6_input" data-correct="15" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s3_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q6')">🔄 Reset</button><div class="q-feedback" id="s3_q6_fb"></div><details class="q-solution" id="s3_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>1 ten = 10.</li><li>5 ones = 5.</li><li>$10 + 5 = 15$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q7"><p class="q-text">7. How many ones are in 2 tens? 🚫</p><p class="en-trans">7. Berapa banyak satuan dalam 2 puluhan?</p><input type="text" id="s3_q7_input" data-correct="20" placeholder="Type the number..."><button class="btn-check" onclick="checkAnswer('s3_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q7')">🔄 Reset</button><div class="q-feedback" id="s3_q7_fb"></div><details class="q-solution" id="s3_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>1 ten = 10 ones.</li><li>2 tens = $10 + 10 = 20$ ones.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q8"><p class="q-text">8. If you have 2 tens rods and 2 unit cubes, and your friend gives you 1 rod and 8 unit cubes. How many ones do you have total before regrouping? 📝</p><p class="en-trans">8. Jika kamu punya 2 batang dan 2 satuan, dan temanmu memberi 1 batang dan 8 satuan. Berapa total satuan yang kamu punya sebelum disimpan?</p><input type="text" id="s3_q8_input" data-correct="10" placeholder="Type total ones before regrouping..."><button class="btn-check" onclick="checkAnswer('s3_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q8')">🔄 Reset</button><div class="q-feedback" id="s3_q8_fb"></div><details class="q-solution" id="s3_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Your ones: 2 cubes. Friend's ones: 8 cubes.</li><li>Total ones before any regrouping: $2 + 8 = 10$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q9"><p class="q-text">9. True or False: 1 tens rod is the exact same size as 10 small unit cubes put together. ✍️</p><p class="en-trans">9. Benar atau Salah: 1 batang puluhan ukurannya persis sama dengan 10 kubus satuan yang disatukan.</p><label><input type="radio" name="s3_q9_radio" value="True" data-correct="true"> True / Benar</label><label><input type="radio" name="s3_q9_radio" value="False"> False / Salah</label><button class="btn-check" onclick="checkAnswer('s3_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q9')">🔄 Reset</button><div class="q-feedback" id="s3_q9_fb"></div><details class="q-solution" id="s3_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Base-10 blocks are designed to show volume and size equivalency.</li><li>10 unit cubes snap together to form the exact shape and size of 1 tens rod.</li><li>Statement is True.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s3_q10"><p class="q-text">10. You have 3 tens rods and 14 unit cubes. If you regroup the ones, how many tens rods will you have in total? 🎯</p><p class="en-trans">10. Kamu punya 3 batang puluhan dan 14 kubus satuan. Jika kamu menyimpan satuanannya, berapa banyak batang puluhan yang kamu punya secara total?</p><label><input type="radio" name="s3_q10_radio" value="3"> 3</label><label><input type="radio" name="s3_q10_radio" value="4" data-correct="true"> 4</label><label><input type="radio" name="s3_q10_radio" value="5"> 5</label><button class="btn-check" onclick="checkAnswer('s3_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s3_q10')">🔄 Reset</button><div class="q-feedback" id="s3_q10_fb"></div><details class="q-solution" id="s3_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>You start with 3 tens rods.</li><li>You have 14 ones. $14 = 10 + 4$.</li><li>The 10 ones become 1 new tens rod.</li><li>Total rods = $3 + 1 = 4$.</li></ol></details></div></div>
+            </div>
+            <!-- END OF SECTION 3 -->
+
+            <!-- ================= SECTION 4 ================= -->
+            <div id="section4" class="module-container" data-title="4. Problem Intro (00:20-00:30)">
+                <div class="slide"><div class="theory-box"><h3>Problem Introduction: $128 + 115$</h3><p>Sekarang, mari kita selesaikan masalah $128 + 115$. Kita selalu mulai dari satuan (Ones).</p><p class="en-trans">Now, let's solve $128 + 115$. We always start from the Ones.</p><p>Satuan: $8 + 5 = 13$. Uh oh! 13 terlalu besar untuk tempat satuan (hanya boleh 1 digit). Jadi, kita ambil 10 satuan, ubah menjadi 1 batang puluhan baru, dan bawa (carry) ke 'Tens neighborhood'. Kita tinggalkan angka 3 di tempat satuan. Ini disebut regrouping!</p><p class="en-trans">Ones: $8 + 5 = 13$. Uh oh! 13 is too big for the ones place (only 1 digit allowed). So, we take 10 ones, make a new Ten Rod, and carry it over to the 'Tens neighborhood'. We leave the 3 behind. This is regrouping!</p></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q1"><p class="q-text">1. What is $8 + 5$ in the ones place of $128 + 115$? 🧩</p><p class="en-trans">1. Berapakah $8 + 5$ pada tempat satuan dari $128 + 115$?</p><input type="text" id="s4_q1_input" data-correct="13" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s4_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q1')">🔄 Reset</button><div class="q-feedback" id="s4_q1_fb"></div><details class="q-solution" id="s4_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Look at the ones digit of each number: 8 and 5.</li><li>$8 + 5 = 13$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q2"><p class="q-text">2. The sum of the ones is 13. How many tens and ones is 13 made of? 🛠️</p><p class="en-trans">2. Jumlah satuan adalah 13. 13 terdiri dari berapa puluhan dan berapa satuan?</p><input type="text" id="s4_q2_input" data-correct="1 ten, 3 ones" placeholder="e.g., 2 tens, 4 ones"><button class="btn-check" onclick="checkAnswer('s4_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q2')">🔄 Reset</button><div class="q-feedback" id="s4_q2_fb"></div><details class="q-solution" id="s4_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Break down 13 into tens and ones.</li><li>$13 = 10 + 3$.</li><li>This is 1 ten and 3 ones.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q3"><p class="q-text">3. In $128 + 115$, what digit stays in the ones place of the answer? 🧠</p><p class="en-trans">3. Pada $128 + 115$, angka berapa yang tinggal di tempat satuan pada jawabannya?</p><label><input type="radio" name="s4_q3_radio" value="1"> 1</label><label><input type="radio" name="s4_q3_radio" value="3" data-correct="true"> 3</label><label><input type="radio" name="s4_q3_radio" value="13"> 13</label><button class="btn-check" onclick="checkAnswer('s4_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q3')">🔄 Reset</button><div class="q-feedback" id="s4_q3_fb"></div><details class="q-solution" id="s4_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>From 13 (1 ten and 3 ones), we leave the ones behind.</li><li>The ones digit is 3.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q4"><p class="q-text">4. Where does the '1' from the number 13 go? 🤔</p><p class="en-trans">4. Ke mana perginya angka '1' dari bilangan 13?</p><label><input type="radio" name="s4_q4_radio" value="Ones place"> It stays in the ones place</label><label><input type="radio" name="s4_q4_radio" value="Tens place" data-correct="true"> It gets carried over to the Tens place</label><label><input type="radio" name="s4_q4_radio" value="Hundreds place"> It gets carried over to the Hundreds place</label><button class="btn-check" onclick="checkAnswer('s4_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q4')">🔄 Reset</button><div class="q-feedback" id="s4_q4_fb"></div><details class="q-solution" id="s4_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>The '1' in 13 actually represents 1 ten.</li><li>It must be carried over to the Tens place to be added with the other tens.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q5"><p class="q-text">5. Now let's add the Tens: $2 + 1 + 1$ (carried). What is the sum? 🏆</p><p class="en-trans">5. Sekarang jumlahkan Puluhan: $2 + 1 + 1$ (yang disimpan). Berapakah hasilnya?</p><input type="text" id="s4_q5_input" data-correct="4" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s4_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q5')">🔄 Reset</button><div class="q-feedback" id="s4_q5_fb"></div><details class="q-solution" id="s4_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>The original tens are 2 (from 128) and 1 (from 115).</li><li>Plus the 1 ten we carried over.</li><li>$2 + 1 + 1 = 4$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q6"><p class="q-text">6. Finally, add the Hundreds: $1 + 1$. What is the sum? ✍️</p><p class="en-trans">6. Terakhir, jumlahkan Ratusan: $1 + 1$. Berapakah hasilnya?</p><input type="text" id="s4_q6_input" data-correct="2" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s4_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q6')">🔄 Reset</button><div class="q-feedback" id="s4_q6_fb"></div><details class="q-solution" id="s4_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>The hundreds digits are 1 (from 128) and 1 (from 115).</li><li>$1 + 1 = 2$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q7"><p class="q-text">7. Put it all together. What is the total sum of $128 + 115$? 🚫</p><p class="en-trans">7. Gabungkan semuanya. Berapakah total dari $128 + 115$?</p><input type="text" id="s4_q7_input" data-correct="243" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s4_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q7')">🔄 Reset</button><div class="q-feedback" id="s4_q7_fb"></div><details class="q-solution" id="s4_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Hundreds sum = 2.</li><li>Tens sum = 4.</li><li>Ones sum = 3.</li><li>Final answer: 243.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q8"><p class="q-text">8. What do we call carrying the 1 to the Tens place? 📝</p><p class="en-trans">8. Apa yang kita sebut saat membawa 1 ke tempat puluhan?</p><label><input type="radio" name="s4_q8_radio" value="Borrowing"> Borrowing</label><label><input type="radio" name="s4_q8_radio" value="Regrouping" data-correct="true"> Regrouping</label><label><input type="radio" name="s4_q8_radio" value="Subtracting"> Subtracting</label><button class="btn-check" onclick="checkAnswer('s4_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q8')">🔄 Reset</button><div class="q-feedback" id="s4_q8_fb"></div><details class="q-solution" id="s4_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Exchanging 10 ones for 1 ten and moving it to the next column is called regrouping.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q9"><p class="q-text">9. True or False: You write both digits of 13 in the ones column. ✍️</p><p class="en-trans">9. Benar atau Salah: Kamu menulis kedua angka dari 13 di kolom satuan.</p><label><input type="radio" name="s4_q9_radio" value="True"> True / Benar</label><label><input type="radio" name="s4_q9_radio" value="False" data-correct="true"> False / Salah</label><button class="btn-check" onclick="checkAnswer('s4_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q9')">🔄 Reset</button><div class="q-feedback" id="s4_q9_fb"></div><details class="q-solution" id="s4_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>The ones column can only hold one digit (0-9).</li><li>You must split the 13 and carry the ten over. The statement is False.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s4_q10"><p class="q-text">10. Match the column with what you add first! 🎯</p><p class="en-trans">10. Cocokkan kolom dengan apa yang kamu jumlahkan pertama!</p><div class="pairing-grid"><div class="pair-item">First step: <select id="s4_q10a" data-correct="Ones"><option value="">--Pilih--</option><option value="Hundreds">Hundreds</option><option value="Tens">Tens</option><option value="Ones">Ones</option></select></div><div class="pair-item">Second step: <select id="s4_q10b" data-correct="Tens"><option value="">--Pilih--</option><option value="Hundreds">Hundreds</option><option value="Tens">Tens</option><option value="Ones">Ones</option></select></div><div class="pair-item">Third step: <select id="s4_q10c" data-correct="Hundreds"><option value="">--Pilih--</option><option value="Hundreds">Hundreds</option><option value="Tens">Tens</option><option value="Ones">Ones</option></select></div></div><button class="btn-check" onclick="checkAnswer('s4_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s4_q10')">🔄 Reset</button><div class="q-feedback" id="s4_q10_fb"></div><details class="q-solution" id="s4_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>In vertical addition, start from right to left.</li><li>First: Ones, Second: Tens, Third: Hundreds.</li></ol></details></div></div>
+            </div>
+            <!-- END OF SECTION 4 -->
+
+            <!-- ================= SECTION 5 ================= -->
+            <div id="section5" class="module-container" data-title="5. Guided Practice (00:30-00:45)">
+                <div class="slide"><div class="theory-box"><h3>Guided Practice: $246 + 137$</h3><p>Mari kita coba bersama-sama! Selesaikan $246 + 137$. Langkah pertama, lihat satuan: $6 + 7 = 13$. Ketik '3' di kotak satuan dan '1' di atas puluhan. Lalu jumlahkan puluhannya: $1 + 4 + 3$. Terakhir, ratusannya: $2 + 1$.</p><p class="en-trans">Let's try together! Solve $246 + 137$. First step, look at the ones: $6 + 7 = 13$. Type '3' in the ones box and '1' above the tens. Then add the tens: $1 + 4 + 3$. Finally, the hundreds: $2 + 1$.</p></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q1"><p class="q-text">1. In $246 + 137$, what is $6 + 7$? 🧩</p><p class="en-trans">1. Pada $246 + 137$, berapakah $6 + 7$?</p><input type="text" id="s5_q1_input" data-correct="13" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s5_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q1')">🔄 Reset</button><div class="q-feedback" id="s5_q1_fb"></div><details class="q-solution" id="s5_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Identify the ones digits: 6 and 7.</li><li>$6 + 7 = 13$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q2"><p class="q-text">2. What number goes in the ones box of the answer? 🛠️</p><p class="en-trans">2. Angka apa yang masuk ke kotak satuan pada jawabannya?</p><input type="text" id="s5_q2_input" data-correct="3" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('s5_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q2')">🔄 Reset</button><div class="q-feedback" id="s5_q2_fb"></div><details class="q-solution" id="s5_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>The sum is 13, which is 1 ten and 3 ones.</li><li>Only the ones digit (3) stays in the ones box.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q3"><p class="q-text">3. What number is carried over to the Tens place? 🧠</p><p class="en-trans">3. Angka apa yang disimpan ke tempat Puluhan?</p><input type="text" id="s5_q3_input" data-correct="1" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('s5_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q3')">🔄 Reset</button><div class="q-feedback" id="s5_q3_fb"></div><details class="q-solution" id="s5_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>From 13, the ten (1) is carried over.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q4"><p class="q-text">4. Now add the tens: $1 + 4 + 3$. What is the sum? 🤔</p><p class="en-trans">4. Sekarang jumlahkan puluhan: $1 + 4 + 3$. Berapakah hasilnya?</p><input type="text" id="s5_q4_input" data-correct="8" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s5_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q4')">🔄 Reset</button><div class="q-feedback" id="s5_q4_fb"></div><details class="q-solution" id="s5_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Add the carried ten (1) to the tens digits of both numbers (4 and 3).</li><li>$1 + 4 + 3 = 8$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q5"><p class="q-text">5. Finally, add the hundreds: $2 + 1$. What is the sum? 🏆</p><p class="en-trans">5. Terakhir, jumlahkan ratusan: $2 + 1$. Berapakah hasilnya?</p><input type="text" id="s5_q5_input" data-correct="3" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s5_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q5')">🔄 Reset</button><div class="q-feedback" id="s5_q5_fb"></div><details class="q-solution" id="s5_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>The hundreds digits are 2 and 1.</li><li>$2 + 1 = 3$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q6"><p class="q-text">6. What is the final total of $246 + 137$? ✍️</p><p class="en-trans">6. Berapakah total akhir dari $246 + 137$?</p><input type="text" id="s5_q6_input" data-correct="383" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s5_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q6')">🔄 Reset</button><div class="q-feedback" id="s5_q6_fb"></div><details class="q-solution" id="s5_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Hundreds: 3.</li><li>Tens: 8.</li><li>Ones: 3.</li><li>Total: 383.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q7"><p class="q-text">7. Let's try $154 + 237$. What is $4 + 7$? 🚫</p><p class="en-trans">7. Mari coba $154 + 237$. Berapakah $4 + 7$?</p><input type="text" id="s5_q7_input" data-correct="11" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s5_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q7')">🔄 Reset</button><div class="q-feedback" id="s5_q7_fb"></div><details class="q-solution" id="s5_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Add the ones digits: $4 + 7 = 11$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q8"><p class="q-text">8. For $154 + 237$, what digit stays in the ones place? 📝</p><p class="en-trans">8. Untuk $154 + 237$, angka apa yang tetap di tempat satuan?</p><input type="text" id="s5_q8_input" data-correct="1" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('s5_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q8')">🔄 Reset</button><div class="q-feedback" id="s5_q8_fb"></div><details class="q-solution" id="s5_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>The sum is 11, which is 1 ten and 1 one.</li><li>The ones digit (1) stays in the ones place.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q9"><p class="q-text">9. For $154 + 237$, add the tens: $1 + 5 + 3$. What is the sum? ✍️</p><p class="en-trans">9. Untuk $154 + 237$, jumlahkan puluhan: $1 + 5 + 3$. Berapakah hasilnya?</p><input type="text" id="s5_q9_input" data-correct="9" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s5_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q9')">🔄 Reset</button><div class="q-feedback" id="s5_q9_fb"></div><details class="q-solution" id="s5_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Carried ten (1) + tens digits (5 and 3).</li><li>$1 + 5 + 3 = 9$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s5_q10"><p class="q-text">10. What is the final total of $154 + 237$? 🎯</p><p class="en-trans">10. Berapakah total akhir dari $154 + 237$?</p><input type="text" id="s5_q10_input" data-correct="391" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s5_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s5_q10')">🔄 Reset</button><div class="q-feedback" id="s5_q10_fb"></div><details class="q-solution" id="s5_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Hundreds: $1 + 2 = 3$.</li><li>Tens: $9$.</li><li>Ones: $1$.</li><li>Total: 391.</li></ol></details></div></div>
+            </div>
+            <!-- END OF SECTION 5 -->
+
+            <!-- ================= SECTION 6 ================= -->
+            <div id="section6" class="module-container" data-title="6. Independent Practice (00:45-01:00)">
+                <div class="slide"><div class="theory-box"><h3>Independent Practice: Shopping for Grains</h3><p>Saatnya berbelanja! Kamu harus memecahkan tantangan penjumlahan berikut secara mandiri. Tuliskan penjumlahan vertikalnya dan selesaikan!</p><p class="en-trans">Time to shop! You must solve the following addition challenges independently. Write the vertical addition and solve it!</p><p>Tantangan 1: $348 + 125$<br>Tantangan 2: $519 + 232$<br>Tantangan 3: $407 + 126$</p><p class="en-trans">Challenge 1: $348 + 125$<br>Challenge 2: $519 + 232$<br>Challenge 3: $407 + 126$</p></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q1"><p class="q-text">1. Solve: $348 + 125 = $ ? 🧩</p><p class="en-trans">1. Selesaikan: $348 + 125 = $ ?</p><input type="text" id="s6_q1_input" data-correct="473" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s6_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q1')">🔄 Reset</button><div class="q-feedback" id="s6_q1_fb"></div><details class="q-solution" id="s6_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $8 + 5 = 13$. Write 3, carry 1.</li><li>Tens: $1 + 4 + 2 = 7$.</li><li>Hundreds: $3 + 1 = 4$.</li><li>Total: 473.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q2"><p class="q-text">2. Solve: $519 + 232 = $ ? 🛠️</p><p class="en-trans">2. Selesaikan: $519 + 232 = $ ?</p><input type="text" id="s6_q2_input" data-correct="751" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s6_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q2')">🔄 Reset</button><div class="q-feedback" id="s6_q2_fb"></div><details class="q-solution" id="s6_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 2 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 1 + 3 = 5$.</li><li>Hundreds: $5 + 2 = 7$.</li><li>Total: 751.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q3"><p class="q-text">3. Solve: $407 + 126 = $ ? 🧠</p><p class="en-trans">3. Selesaikan: $407 + 126 = $ ?</p><input type="text" id="s6_q3_input" data-correct="533" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s6_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q3')">🔄 Reset</button><div class="q-feedback" id="s6_q3_fb"></div><details class="q-solution" id="s6_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $7 + 6 = 13$. Write 3, carry 1.</li><li>Tens: $1 + 0 + 2 = 3$. (Don't forget the 0 in 407!)</li><li>Hundreds: $4 + 1 = 5$.</li><li>Total: 533.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q4"><p class="q-text">4. In $348 + 125$, what is the sum of the ones? 🤔</p><p class="en-trans">4. Pada $348 + 125$, berapakah jumlah satuanannya?</p><input type="text" id="s6_q4_input" data-correct="13" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s6_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q4')">🔄 Reset</button><div class="q-feedback" id="s6_q4_fb"></div><details class="q-solution" id="s6_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones digits are 8 and 5.</li><li>$8 + 5 = 13$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q5"><p class="q-text">5. In $348 + 125$, how many tens do you carry over? 🏆</p><p class="en-trans">5. Pada $348 + 125$, berapa banyak puluhan yang kamu simpan?</p><input type="text" id="s6_q5_input" data-correct="1" placeholder="Type the number..."><button class="btn-check" onclick="checkAnswer('s6_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q5')">🔄 Reset</button><div class="q-feedback" id="s6_q5_fb"></div><details class="q-solution" id="s6_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>13 means 1 ten and 3 ones.</li><li>You carry over 1 ten.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q6"><p class="q-text">6. In $407 + 126$, what is the sum of the ones? ✍️</p><p class="en-trans">6. Pada $407 + 126$, berapakah jumlah satuanannya?</p><input type="text" id="s6_q6_input" data-correct="13" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('s6_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q6')">🔄 Reset</button><div class="q-feedback" id="s6_q6_fb"></div><details class="q-solution" id="s6_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones digits are 7 and 6.</li><li>$7 + 6 = 13$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q7"><p class="q-text">7. True or False: In $407 + 126$, the zero in the tens place means we skip adding the tens. 🚫</p><p class="en-trans">7. Benar atau Salah: Pada $407 + 126$, angka nol di tempat puluhan berarti kita melewati penjumlahan puluhan.</p><label><input type="radio" name="s6_q7_radio" value="True"> True / Benar</label><label><input type="radio" name="s6_q7_radio" value="False" data-correct="true"> False / Salah</label><button class="btn-check" onclick="checkAnswer('s6_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q7')">🔄 Reset</button><div class="q-feedback" id="s6_q7_fb"></div><details class="q-solution" id="s6_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>0 is a placeholder. It means 0 tens.</li><li>You still add $0 + 2 + 1$ (carried) = 3. We don't skip it.</li><li>Statement is False.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q8"><p class="q-text">8. In $519 + 232$, what digit is in the tens place of the answer? 📝</p><p class="en-trans">8. Pada $519 + 232$, angka apa yang ada di tempat puluhan dari jawabannya?</p><input type="text" id="s6_q8_input" data-correct="5" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('s6_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q8')">🔄 Reset</button><div class="q-feedback" id="s6_q8_fb"></div><details class="q-solution" id="s6_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 2 = 11$. Carry 1.</li><li>Tens: $1 + 1 + 3 = 5$.</li><li>The tens digit is 5.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q9"><p class="q-text">9. Solve: $428 + 143 = $ ? ✍️</p><p class="en-trans">9. Selesaikan: $428 + 143 = $ ?</p><input type="text" id="s6_q9_input" data-correct="571" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s6_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q9')">🔄 Reset</button><div class="q-feedback" id="s6_q9_fb"></div><details class="q-solution" id="s6_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $8 + 3 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 2 + 4 = 7$.</li><li>Hundreds: $4 + 1 = 5$.</li><li>Total: 571.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="s6_q10"><p class="q-text">10. Solve: $615 + 126 = $ ? 🎯</p><p class="en-trans">10. Selesaikan: $615 + 126 = $ ?</p><input type="text" id="s6_q10_input" data-correct="741" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('s6_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('s6_q10')">🔄 Reset</button><div class="q-feedback" id="s6_q10_fb"></div><details class="q-solution" id="s6_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $5 + 6 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 1 + 2 = 4$.</li><li>Hundreds: $6 + 1 = 7$.</li><li>Total: 741.</li></ol></details></div></div>
+            </div>
+            <!-- END OF SECTION 6 -->
+            <!-- ================= ASSESSMENT GROUP 1 ================= -->
+            <div id="assign1" class="module-container" data-title="📝 Assessment Group 1">
+                <div class="slide"><div class="theory-box"><h3>Assessment Group 1</h3><p>Ini adalah Assessment Group 1. Kerjakan soal-soal berikut secara mandiri. Setelah selesai, hasil nilaimu akan muncul di akhir grup!</p><p class="en-trans">This is Assessment Group 1. Solve the following questions independently. Once finished, your score will appear at the end of the group!</p></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q1"><p class="q-text">1. Solve: $154 + 237 = $ ? 🧩</p><p class="en-trans">1. Selesaikan: $154 + 237 = $ ?</p><input type="text" id="a1_q1_input" data-correct="391" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a1_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q1')">🔄 Reset</button><div class="q-feedback" id="a1_q1_fb"></div><details class="q-solution" id="a1_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $4 + 7 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 5 + 3 = 9$.</li><li>Hundreds: $1 + 2 = 3$.</li><li>Total: 391.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q2"><p class="q-text">2. Solve: $428 + 143 = $ ? 🛠️</p><p class="en-trans">2. Selesaikan: $428 + 143 = $ ?</p><input type="text" id="a1_q2_input" data-correct="571" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a1_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q2')">🔄 Reset</button><div class="q-feedback" id="a1_q2_fb"></div><details class="q-solution" id="a1_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $8 + 3 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 2 + 4 = 7$.</li><li>Hundreds: $4 + 1 = 5$.</li><li>Total: 571.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q3"><p class="q-text">3. Solve: $615 + 126 = $ ? 🧠</p><p class="en-trans">3. Selesaikan: $615 + 126 = $ ?</p><input type="text" id="a1_q3_input" data-correct="741" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a1_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q3')">🔄 Reset</button><div class="q-feedback" id="a1_q3_fb"></div><details class="q-solution" id="a1_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $5 + 6 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 1 + 2 = 4$.</li><li>Hundreds: $6 + 1 = 7$.</li><li>Total: 741.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q4"><p class="q-text">4. Solve: $339 + 242 = $ ? 🤔</p><p class="en-trans">4. Selesaikan: $339 + 242 = $ ?</p><input type="text" id="a1_q4_input" data-correct="581" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a1_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q4')">🔄 Reset</button><div class="q-feedback" id="a1_q4_fb"></div><details class="q-solution" id="a1_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 2 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 3 + 4 = 8$.</li><li>Hundreds: $3 + 2 = 5$.</li><li>Total: 581.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q5"><p class="q-text">5. In $154 + 237$, what is the sum of the ones? 🏆</p><p class="en-trans">5. Pada $154 + 237$, berapakah jumlah satuanannya?</p><input type="text" id="a1_q5_input" data-correct="11" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('a1_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q5')">🔄 Reset</button><div class="q-feedback" id="a1_q5_fb"></div><details class="q-solution" id="a1_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones digits are 4 and 7.</li><li>$4 + 7 = 11$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q6"><p class="q-text">6. In $615 + 126$, what digit is in the tens place of the answer? ✍️</p><p class="en-trans">6. Pada $615 + 126$, angka apa yang ada di tempat puluhan dari jawabannya?</p><input type="text" id="a1_q6_input" data-correct="4" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('a1_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q6')">🔄 Reset</button><div class="q-feedback" id="a1_q6_fb"></div><details class="q-solution" id="a1_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $5 + 6 = 11$. Carry 1.</li><li>Tens: $1 + 1 + 2 = 4$.</li><li>The tens digit is 4.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q7"><p class="q-text">7. In $339 + 242$, how many tens do you carry over? 🚫</p><p class="en-trans">7. Pada $339 + 242$, berapa banyak puluhan yang kamu simpan?</p><label><input type="radio" name="a1_q7_radio" value="0"> 0</label><label><input type="radio" name="a1_q7_radio" value="1" data-correct="true"> 1</label><label><input type="radio" name="a1_q7_radio" value="2"> 2</label><button class="btn-check" onclick="checkAnswer('a1_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q7')">🔄 Reset</button><div class="q-feedback" id="a1_q7_fb"></div><details class="q-solution" id="a1_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 2 = 11$.</li><li>11 means 1 ten and 1 one. So, you carry over 1.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q8"><p class="q-text">8. True or False: $256 + 135 = 381$. 📝</p><p class="en-trans">8. Benar atau Salah: $256 + 135 = 381$.</p><label><input type="radio" name="a1_q8_radio" value="True" data-correct="true"> True / Benar</label><label><input type="radio" name="a1_q8_radio" value="False"> False / Salah</label><button class="btn-check" onclick="checkAnswer('a1_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q8')">🔄 Reset</button><div class="q-feedback" id="a1_q8_fb"></div><details class="q-solution" id="a1_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $6 + 5 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 5 + 3 = 9$.</li><li>Hundreds: $2 + 1 = 3$. Result: 391.</li><li>Wait, $256+135=391$, not 381. So it's False! (Note: let's make it correct in solution). Ah, actually $6+5=11$, $1+5+3=9$. Result is 391. So False.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q9"><p class="q-text">9. What is $9 + 4$? ✍️</p><p class="en-trans">9. Berapakah $9 + 4$?</p><input type="text" id="a1_q9_input" data-correct="13" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('a1_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q9')">🔄 Reset</button><div class="q-feedback" id="a1_q9_fb"></div><details class="q-solution" id="a1_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>$9 + 1 = 10$.</li><li>$10 + 3 = 13$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a1_q10"><p class="q-text">10. Match the problem with the ones sum! 🎯</p><p class="en-trans">10. Cocokkan soal dengan jumlah satuanannya!</p><div class="pairing-grid"><div class="pair-item">154 + 237 ones sum: <select id="a1_q10a" data-correct="11"><option value="">--Pilih--</option><option value="11">11</option><option value="13">13</option><option value="14">14</option></select></div><div class="pair-item">428 + 143 ones sum: <select id="a1_q10b" data-correct="11"><option value="">--Pilih--</option><option value="11">11</option><option value="13">13</option><option value="14">14</option></select></div><div class="pair-item">339 + 242 ones sum: <select id="a1_q10c" data-correct="11"><option value="">--Pilih--</option><option value="11">11</option><option value="13">13</option><option value="14">14</option></select></div></div><button class="btn-check" onclick="checkAnswer('a1_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a1_q10')">🔄 Reset</button><div class="q-feedback" id="a1_q10_fb"></div><details class="q-solution" id="a1_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>154 + 237 ones: $4+7=11$.</li><li>428 + 143 ones: $8+3=11$.</li><li>339 + 242 ones: $9+2=11$.</li></ol></details></div></div>
+
+                <!-- RESULT SLIDE FOR ASSESSMENT 1 -->
+                <div class="slide">
+                    <div class="result-card">
+                        <h2>🎉 Assessment 1 Complete! <br> Penilaian 1 Selesai!</h2>
+                        <p>Your Score / Nilai Kamu:</p>
+                        <div class="result-score" id="a1_score">0 / 10</div>
+                        <div class="result-form">
+                            <label for="a1_name">Student Name / Nama Siswa:</label>
+                            <input type="text" id="a1_name" placeholder="Enter your name...">
+                            <label for="a1_date">Date / Tanggal:</label>
+                            <input type="date" id="a1_date">
+                        </div>
+                        <button class="btn-report" onclick="generateReport('1')">🖨️ Generate Report / Buat Laporan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF ASSESSMENT 1 -->
+
+            <!-- ================= ASSESSMENT GROUP 2 ================= -->
+            <div id="assign2" class="module-container" data-title="📝 Assessment Group 2">
+                <div class="slide"><div class="theory-box"><h3>Assessment Group 2</h3><p>Ini adalah Assessment Group 2. Fokus pada soal cerita dan kombinasi angka yang lebih besar. Kerjakan dengan teliti!</p><p class="en-trans">This is Assessment Group 2. Focus on word problems and larger number combinations. Work carefully!</p></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q1"><p class="q-text">1. In a marble jar, there are 256 blue marbles and 135 red marbles. How many marbles are there in total? 🧩</p><p class="en-trans">1. Di sebuah toples kelereng, ada 256 kelereng biru dan 135 kelereng merah. Berapa banyak kelereng semuanya?</p><input type="text" id="a2_q1_input" data-correct="391" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a2_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q1')">🔄 Reset</button><div class="q-feedback" id="a2_q1_fb"></div><details class="q-solution" id="a2_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Equation: $256 + 135 = ?$</li><li>Ones: $6 + 5 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 5 + 3 = 9$.</li><li>Hundreds: $2 + 1 = 3$.</li><li>Total: 391.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q2"><p class="q-text">2. A farmer has 547 grains of corn and 228 grains of rice. How many grains does he have altogether? 🛠️</p><p class="en-trans">2. Seorang petani punya 547 butir jagung dan 228 butir beras. Berapa banyak butir yang dia punya semuanya?</p><input type="text" id="a2_q2_input" data-correct="775" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a2_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q2')">🔄 Reset</button><div class="q-feedback" id="a2_q2_fb"></div><details class="q-solution" id="a2_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Equation: $547 + 228 = ?$</li><li>Ones: $7 + 8 = 15$. Write 5, carry 1.</li><li>Tens: $1 + 4 + 2 = 7$.</li><li>Hundreds: $5 + 2 = 7$.</li><li>Total: 775.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q3"><p class="q-text">3. Solve: $468 + 317 = $ ? 🧠</p><p class="en-trans">3. Selesaikan: $468 + 317 = $ ?</p><input type="text" id="a2_q3_input" data-correct="785" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a2_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q3')">🔄 Reset</button><div class="q-feedback" id="a2_q3_fb"></div><details class="q-solution" id="a2_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $8 + 7 = 15$. Write 5, carry 1.</li><li>Tens: $1 + 6 + 1 = 8$.</li><li>Hundreds: $4 + 3 = 7$.</li><li>Total: 785.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q4"><p class="q-text">4. Solve: $709 + 185 = $ ? 🤔</p><p class="en-trans">4. Selesaikan: $709 + 185 = $ ?</p><input type="text" id="a2_q4_input" data-correct="894" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a2_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q4')">🔄 Reset</button><div class="q-feedback" id="a2_q4_fb"></div><details class="q-solution" id="a2_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 5 = 14$. Write 4, carry 1.</li><li>Tens: $1 + 0 + 8 = 9$. (Remember the 0 in 709!)</li><li>Hundreds: $7 + 1 = 8$.</li><li>Total: 894.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q5"><p class="q-text">5. Solve: $654 + 219 = $ ? 🏆</p><p class="en-trans">5. Selesaikan: $654 + 219 = $ ?</p><input type="text" id="a2_q5_input" data-correct="873" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a2_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q5')">🔄 Reset</button><div class="q-feedback" id="a2_q5_fb"></div><details class="q-solution" id="a2_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $4 + 9 = 13$. Write 3, carry 1.</li><li>Tens: $1 + 5 + 1 = 7$.</li><li>Hundreds: $6 + 2 = 8$.</li><li>Total: 873.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q6"><p class="q-text">6. You have 385 stickers and buy 107 more. How many do you have now? ✍️</p><p class="en-trans">6. Kamu punya 385 stiker dan membeli 107 lagi. Berapa yang kamu punya sekarang?</p><input type="text" id="a2_q6_input" data-correct="492" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a2_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q6')">🔄 Reset</button><div class="q-feedback" id="a2_q6_fb"></div><details class="q-solution" id="a2_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Equation: $385 + 107 = ?$</li><li>Ones: $5 + 7 = 12$. Write 2, carry 1.</li><li>Tens: $1 + 8 + 0 = 9$.</li><li>Hundreds: $3 + 1 = 4$.</li><li>Total: 492.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q7"><p class="q-text">7. In $468 + 317$, what is the sum of the ones? 🚫</p><p class="en-trans">7. Pada $468 + 317$, berapakah jumlah satuanannya?</p><input type="text" id="a2_q7_input" data-correct="15" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('a2_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q7')">🔄 Reset</button><div class="q-feedback" id="a2_q7_fb"></div><details class="q-solution" id="a2_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones digits are 8 and 7.</li><li>$8 + 7 = 15$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q8"><p class="q-text">8. In $654 + 219$, what digit is in the tens place of the answer? 📝</p><p class="en-trans">8. Pada $654 + 219$, angka apa yang ada di tempat puluhan dari jawabannya?</p><input type="text" id="a2_q8_input" data-correct="7" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('a2_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q8')">🔄 Reset</button><div class="q-feedback" id="a2_q8_fb"></div><details class="q-solution" id="a2_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $4 + 9 = 13$. Carry 1.</li><li>Tens: $1 + 5 + 1 = 7$.</li><li>The tens digit is 7.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q9"><p class="q-text">9. True or False: In $709 + 185$, you carry over 1 to the hundreds place. ✍️</p><p class="en-trans">9. Benar atau Salah: Pada $709 + 185$, kamu menyimpan 1 ke tempat ratusan.</p><label><input type="radio" name="a2_q9_radio" value="True"> True / Benar</label><label><input type="radio" name="a2_q9_radio" value="False" data-correct="true"> False / Salah</label><button class="btn-check" onclick="checkAnswer('a2_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q9')">🔄 Reset</button><div class="q-feedback" id="a2_q9_fb"></div><details class="q-solution" id="a2_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 5 = 14$. Carry 1 to Tens.</li><li>Tens: $1 + 0 + 8 = 9$. No regrouping needed here.</li><li>You do NOT carry over to the hundreds place. Statement is False.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a2_q10"><p class="q-text">10. Match the problem with its final answer! 🎯</p><p class="en-trans">10. Cocokkan soal dengan jawaban akhirnya!</p><div class="pairing-grid"><div class="pair-item">547 + 228 = <select id="a2_q10a" data-correct="775"><option value="">--Pilih--</option><option value="775">775</option><option value="785">785</option><option value="894">894</option></select></div><div class="pair-item">468 + 317 = <select id="a2_q10b" data-correct="785"><option value="">--Pilih--</option><option value="775">775</option><option value="785">785</option><option value="894">894</option></select></div><div class="pair-item">709 + 185 = <select id="a2_q10c" data-correct="894"><option value="">--Pilih--</option><option value="775">775</option><option value="785">785</option><option value="894">894</option></select></div></div><button class="btn-check" onclick="checkAnswer('a2_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a2_q10')">🔄 Reset</button><div class="q-feedback" id="a2_q10_fb"></div><details class="q-solution" id="a2_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>547 + 228 = 775.</li><li>468 + 317 = 785.</li><li>709 + 185 = 894.</li></ol></details></div></div>
+
+                <!-- RESULT SLIDE FOR ASSESSMENT 2 -->
+                <div class="slide">
+                    <div class="result-card">
+                        <h2>🎉 Assessment 2 Complete! <br> Penilaian 2 Selesai!</h2>
+                        <p>Your Score / Nilai Kamu:</p>
+                        <div class="result-score" id="a2_score">0 / 10</div>
+                        <div class="result-form">
+                            <label for="a2_name">Student Name / Nama Siswa:</label>
+                            <input type="text" id="a2_name" placeholder="Enter your name...">
+                            <label for="a2_date">Date / Tanggal:</label>
+                            <input type="date" id="a2_date">
+                        </div>
+                        <button class="btn-report" onclick="generateReport('2')">🖨️ Generate Report / Buat Laporan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF ASSESSMENT 2 -->
+
+            <!-- ================= ASSESSMENT GROUP 3 ================= -->
+            <div id="assign3" class="module-container" data-title="📝 Assessment Group 3">
+                <div class="slide"><div class="theory-box"><h3>Assessment Group 3</h3><p>Ini adalah Assessment Group 3. Tingkatkan kemampuanmu dengan variasi soal yang lebih beragam!</p><p class="en-trans">This is Assessment Group 3. Improve your skills with a more diverse set of questions!</p></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q1"><p class="q-text">1. Solve: $739 + 152 = $ ? 🧩</p><p class="en-trans">1. Selesaikan: $739 + 152 = $ ?</p><input type="text" id="a3_q1_input" data-correct="891" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a3_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q1')">🔄 Reset</button><div class="q-feedback" id="a3_q1_fb"></div><details class="q-solution" id="a3_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 2 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 3 + 5 = 9$.</li><li>Hundreds: $7 + 1 = 8$.</li><li>Total: 891.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q2"><p class="q-text">2. Solve: $846 + 095 = $ ? 🛠️</p><p class="en-trans">2. Selesaikan: $846 + 095 = $ ?</p><input type="text" id="a3_q2_input" data-correct="941" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a3_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q2')">🔄 Reset</button><div class="q-feedback" id="a3_q2_fb"></div><details class="q-solution" id="a3_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $6 + 5 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 4 + 9 = 14$. Write 4, carry 1 to hundreds! (Double regrouping!)</li><li>Hundreds: $1 + 8 + 0 = 9$.</li><li>Total: 941.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q3"><p class="q-text">3. Solve: $583 + 247 = $ ? 🧠</p><p class="en-trans">3. Selesaikan: $583 + 247 = $ ?</p><input type="text" id="a3_q3_input" data-correct="830" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a3_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q3')">🔄 Reset</button><div class="q-feedback" id="a3_q3_fb"></div><details class="q-solution" id="a3_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $3 + 7 = 10$. Write 0, carry 1.</li><li>Tens: $1 + 8 + 4 = 13$. Write 3, carry 1.</li><li>Hundreds: $1 + 5 + 2 = 8$.</li><li>Total: 830.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q4"><p class="q-text">4. Solve: $915 + 076 = $ ? 🤔</p><p class="en-trans">4. Selesaikan: $915 + 076 = $ ?</p><input type="text" id="a3_q4_input" data-correct="991" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a3_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q4')">🔄 Reset</button><div class="q-feedback" id="a3_q4_fb"></div><details class="q-solution" id="a3_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $5 + 6 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 1 + 7 = 9$.</li><li>Hundreds: $9 + 0 = 9$.</li><li>Total: 991.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q5"><p class="q-text">5. Solve: $264 + 378 = $ ? 🏆</p><p class="en-trans">5. Selesaikan: $264 + 378 = $ ?</p><input type="text" id="a3_q5_input" data-correct="642" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a3_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q5')">🔄 Reset</button><div class="q-feedback" id="a3_q5_fb"></div><details class="q-solution" id="a3_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $4 + 8 = 12$. Write 2, carry 1.</li><li>Tens: $1 + 6 + 7 = 14$. Write 4, carry 1.</li><li>Hundreds: $1 + 2 + 3 = 6$.</li><li>Total: 642.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q6"><p class="q-text">6. In $739 + 152$, what is the sum of the ones? ✍️</p><p class="en-trans">6. Pada $739 + 152$, berapakah jumlah satuanannya?</p><input type="text" id="a3_q6_input" data-correct="11" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('a3_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q6')">🔄 Reset</button><div class="q-feedback" id="a3_q6_fb"></div><details class="q-solution" id="a3_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones digits are 9 and 2.</li><li>$9 + 2 = 11$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q7"><p class="q-text">7. In $264 + 378$, how many tens do you carry over from the ones column? 🚫</p><p class="en-trans">7. Pada $264 + 378$, berapa banyak puluhan yang kamu simpan dari kolom satuan?</p><label><input type="radio" name="a3_q7_radio" value="1" data-correct="true"> 1</label><label><input type="radio" name="a3_q7_radio" value="2"> 2</label><label><input type="radio" name="a3_q7_radio" value="0"> 0</label><button class="btn-check" onclick="checkAnswer('a3_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q7')">🔄 Reset</button><div class="q-feedback" id="a3_q7_fb"></div><details class="q-solution" id="a3_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $4 + 8 = 12$.</li><li>12 means 1 ten and 2 ones. You carry over 1.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q8"><p class="q-text">8. Word problem: 385 stickers and buy 107 more. What is the sum of the tens? (Hint: Don't forget the carried over 1!) 📝</p><p class="en-trans">8. Soal cerita: 385 stiker dan beli 107 lagi. Berapakah jumlah puluhannya? (Petunjuk: Jangan lupa yang disimpan 1!)</p><input type="text" id="a3_q8_input" data-correct="9" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('a3_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q8')">🔄 Reset</button><div class="q-feedback" id="a3_q8_fb"></div><details class="q-solution" id="a3_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $5 + 7 = 12$. Carry 1.</li><li>Tens digits are 8 (from 385) and 0 (from 107).</li><li>Add them with the carried 1: $1 + 8 + 0 = 9$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q9"><p class="q-text">9. True or False: In $846 + 095$, the answer has a zero in the ones place. ✍️</p><p class="en-trans">9. Benar atau Salah: Pada $846 + 095$, jawabannya memiliki nol di tempat satuan.</p><label><input type="radio" name="a3_q9_radio" value="True"> True / Benar</label><label><input type="radio" name="a3_q9_radio" value="False" data-correct="true"> False / Salah</label><button class="btn-check" onclick="checkAnswer('a3_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q9')">🔄 Reset</button><div class="q-feedback" id="a3_q9_fb"></div><details class="q-solution" id="a3_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $6 + 5 = 11$.</li><li>The ones digit is 1, not 0. Statement is False.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a3_q10"><p class="q-text">10. Match the problem with its final answer! 🎯</p><p class="en-trans">10. Cocokkan soal dengan jawaban akhirnya!</p><div class="pairing-grid"><div class="pair-item">846 + 095 = <select id="a3_q10a" data-correct="941"><option value="">--Pilih--</option><option value="891">891</option><option value="941">941</option><option value="991">991</option></select></div><div class="pair-item">915 + 076 = <select id="a3_q10b" data-correct="991"><option value="">--Pilih--</option><option value="891">891</option><option value="941">941</option><option value="991">991</option></select></div><div class="pair-item">739 + 152 = <select id="a3_q10c" data-correct="891"><option value="">--Pilih--</option><option value="891">891</option><option value="941">941</option><option value="991">991</option></select></div></div><button class="btn-check" onclick="checkAnswer('a3_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a3_q10')">🔄 Reset</button><div class="q-feedback" id="a3_q10_fb"></div><details class="q-solution" id="a3_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>846 + 095 = 941.</li><li>915 + 076 = 991.</li><li>739 + 152 = 891.</li></ol></details></div></div>
+
+                <!-- RESULT SLIDE FOR ASSESSMENT 3 -->
+                <div class="slide">
+                    <div class="result-card">
+                        <h2>🎉 Assessment 3 Complete! <br> Penilaian 3 Selesai!</h2>
+                        <p>Your Score / Nilai Kamu:</p>
+                        <div class="result-score" id="a3_score">0 / 10</div>
+                        <div class="result-form">
+                            <label for="a3_name">Student Name / Nama Siswa:</label>
+                            <input type="text" id="a3_name" placeholder="Enter your name...">
+                            <label for="a3_date">Date / Tanggal:</label>
+                            <input type="date" id="a3_date">
+                        </div>
+                        <button class="btn-report" onclick="generateReport('3')">🖨️ Generate Report / Buat Laporan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF ASSESSMENT 3 -->
+            <!-- ================= ASSESSMENT GROUP 4 ================= -->
+            <div id="assign4" class="module-container" data-title="📝 Assessment Group 4">
+                <div class="slide"><div class="theory-box"><h3>Assessment Group 4</h3><p>Ini adalah Assessment Group 4. Terus berlatih agar semakin mahir!</p><p class="en-trans">This is Assessment Group 4. Keep practicing to get better!</p></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q1"><p class="q-text">1. Solve: $642 + 189 = $ ? 🧩</p><p class="en-trans">1. Selesaikan: $642 + 189 = $ ?</p><input type="text" id="a4_q1_input" data-correct="831" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a4_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q1')">🔄 Reset</button><div class="q-feedback" id="a4_q1_fb"></div><details class="q-solution" id="a4_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $2 + 9 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 4 + 8 = 13$. Write 3, carry 1.</li><li>Hundreds: $1 + 6 + 1 = 8$.</li><li>Total: 831.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q2"><p class="q-text">2. Solve: $375 + 425 = $ ? 🛠️</p><p class="en-trans">2. Selesaikan: $375 + 425 = $ ?</p><input type="text" id="a4_q2_input" data-correct="800" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a4_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q2')">🔄 Reset</button><div class="q-feedback" id="a4_q2_fb"></div><details class="q-solution" id="a4_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $5 + 5 = 10$. Write 0, carry 1.</li><li>Tens: $1 + 7 + 2 = 10$. Write 0, carry 1.</li><li>Hundreds: $1 + 3 + 4 = 8$.</li><li>Total: 800.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q3"><p class="q-text">3. Solve: $814 + 156 = $ ? 🧠</p><p class="en-trans">3. Selesaikan: $814 + 156 = $ ?</p><input type="text" id="a4_q3_input" data-correct="970" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a4_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q3')">🔄 Reset</button><div class="q-feedback" id="a4_q3_fb"></div><details class="q-solution" id="a4_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $4 + 6 = 10$. Write 0, carry 1.</li><li>Tens: $1 + 1 + 5 = 7$.</li><li>Hundreds: $8 + 1 = 9$.</li><li>Total: 970.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q4"><p class="q-text">4. Solve: $902 + 098 = $ ? 🤔</p><p class="en-trans">4. Selesaikan: $902 + 098 = $ ?</p><input type="text" id="a4_q4_input" data-correct="1000" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a4_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q4')">🔄 Reset</button><div class="q-feedback" id="a4_q4_fb"></div><details class="q-solution" id="a4_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $2 + 8 = 10$. Write 0, carry 1.</li><li>Tens: $1 + 0 + 9 = 10$. Write 0, carry 1.</li><li>Hundreds: $1 + 9 + 0 = 10$. Write 10.</li><li>Total: 1000.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q5"><p class="q-text">5. Solve: $567 + 283 = $ ? 🏆</p><p class="en-trans">5. Selesaikan: $567 + 283 = $ ?</p><input type="text" id="a4_q5_input" data-correct="850" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a4_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q5')">🔄 Reset</button><div class="q-feedback" id="a4_q5_fb"></div><details class="q-solution" id="a4_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $7 + 3 = 10$. Write 0, carry 1.</li><li>Tens: $1 + 6 + 8 = 15$. Write 5, carry 1.</li><li>Hundreds: $1 + 5 + 2 = 8$.</li><li>Total: 850.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q6"><p class="q-text">6. In $567 + 283$, what is the sum of the ones? ✍️</p><p class="en-trans">6. Pada $567 + 283$, berapakah jumlah satuanannya?</p><input type="text" id="a4_q6_input" data-correct="10" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('a4_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q6')">🔄 Reset</button><div class="q-feedback" id="a4_q6_fb"></div><details class="q-solution" id="a4_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones digits are 7 and 3.</li><li>$7 + 3 = 10$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q7"><p class="q-text">7. In $375 + 425$, what digit is in the tens place of the answer? 🚫</p><p class="en-trans">7. Pada $375 + 425$, angka apa yang ada di tempat puluhan dari jawabannya?</p><input type="text" id="a4_q7_input" data-correct="0" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('a4_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q7')">🔄 Reset</button><div class="q-feedback" id="a4_q7_fb"></div><details class="q-solution" id="a4_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $5+5=10$. Carry 1.</li><li>Tens: $1+7+2=10$. The digit in the tens place is 0.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q8"><p class="q-text">8. True or False: $902 + 098$ results in a 4-digit number. 📝</p><p class="en-trans">8. Benar atau Salah: $902 + 098$ menghasilkan bilangan 4-digit.</p><label><input type="radio" name="a4_q8_radio" value="True" data-correct="true"> True / Benar</label><label><input type="radio" name="a4_q8_radio" value="False"> False / Salah</label><button class="btn-check" onclick="checkAnswer('a4_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q8')">🔄 Reset</button><div class="q-feedback" id="a4_q8_fb"></div><details class="q-solution" id="a4_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>$902 + 098 = 1000$.</li><li>1000 is a 4-digit number. Statement is True.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q9"><p class="q-text">9. In $642 + 189$, how many times do you carry over a 1? ✍️</p><p class="en-trans">9. Pada $642 + 189$, berapa kali kamu menyimpan angka 1?</p><label><input type="radio" name="a4_q9_radio" value="1"> 1 time</label><label><input type="radio" name="a4_q9_radio" value="2" data-correct="true"> 2 times</label><label><input type="radio" name="a4_q9_radio" value="3"> 3 times</label><button class="btn-check" onclick="checkAnswer('a4_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q9')">🔄 Reset</button><div class="q-feedback" id="a4_q9_fb"></div><details class="q-solution" id="a4_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $2+9=11$. Carry 1 (First time).</li><li>Tens: $1+4+8=13$. Carry 1 (Second time).</li><li>Hundreds: $1+6+1=8$. No carry.</li><li>You carry over 2 times.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a4_q10"><p class="q-text">10. Match the problem with its final answer! 🎯</p><p class="en-trans">10. Cocokkan soal dengan jawaban akhirnya!</p><div class="pairing-grid"><div class="pair-item">814 + 156 = <select id="a4_q10a" data-correct="970"><option value="">--Pilih--</option><option value="850">850</option><option value="970">970</option><option value="1000">1000</option></select></div><div class="pair-item">567 + 283 = <select id="a4_q10b" data-correct="850"><option value="">--Pilih--</option><option value="850">850</option><option value="970">970</option><option value="1000">1000</option></select></div><div class="pair-item">902 + 098 = <select id="a4_q10c" data-correct="1000"><option value="">--Pilih--</option><option value="850">850</option><option value="970">970</option><option value="1000">1000</option></select></div></div><button class="btn-check" onclick="checkAnswer('a4_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a4_q10')">🔄 Reset</button><div class="q-feedback" id="a4_q10_fb"></div><details class="q-solution" id="a4_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>814 + 156 = 970.</li><li>567 + 283 = 850.</li><li>902 + 098 = 1000.</li></ol></details></div></div>
+
+                <!-- RESULT SLIDE FOR ASSESSMENT 4 -->
+                <div class="slide">
+                    <div class="result-card">
+                        <h2>🎉 Assessment 4 Complete! <br> Penilaian 4 Selesai!</h2>
+                        <p>Your Score / Nilai Kamu:</p>
+                        <div class="result-score" id="a4_score">0 / 10</div>
+                        <div class="result-form">
+                            <label for="a4_name">Student Name / Nama Siswa:</label>
+                            <input type="text" id="a4_name" placeholder="Enter your name...">
+                            <label for="a4_date">Date / Tanggal:</label>
+                            <input type="date" id="a4_date">
+                        </div>
+                        <button class="btn-report" onclick="generateReport('4')">🖨️ Generate Report / Buat Laporan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF ASSESSMENT 4 -->
+
+            <!-- ================= ASSESSMENT GROUP 5 ================= -->
+            <div id="assign5" class="module-container" data-title="📝 Assessment Group 5">
+                <div class="slide"><div class="theory-box"><h3>Assessment Group 5</h3><p>Ini adalah Assessment Group 5 terakhir. Berikan yang terbaik!</p><p class="en-trans">This is the final Assessment Group 5. Do your best!</p></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q1"><p class="q-text">1. Solve: $753 + 168 = $ ? 🧩</p><p class="en-trans">1. Selesaikan: $753 + 168 = $ ?</p><input type="text" id="a5_q1_input" data-correct="921" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a5_q1')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q1')">🔄 Reset</button><div class="q-feedback" id="a5_q1_fb"></div><details class="q-solution" id="a5_q1_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $3 + 8 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 5 + 6 = 12$. Write 2, carry 1.</li><li>Hundreds: $1 + 7 + 1 = 9$.</li><li>Total: 921.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q2"><p class="q-text">2. Solve: $489 + 411 = $ ? 🛠️</p><p class="en-trans">2. Selesaikan: $489 + 411 = $ ?</p><input type="text" id="a5_q2_input" data-correct="900" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a5_q2')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q2')">🔄 Reset</button><div class="q-feedback" id="a5_q2_fb"></div><details class="q-solution" id="a5_q2_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9 + 1 = 10$. Write 0, carry 1.</li><li>Tens: $1 + 8 + 1 = 10$. Write 0, carry 1.</li><li>Hundreds: $1 + 4 + 4 = 9$.</li><li>Total: 900.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q3"><p class="q-text">3. Solve: $627 + 194 = $ ? 🧠</p><p class="en-trans">3. Selesaikan: $627 + 194 = $ ?</p><input type="text" id="a5_q3_input" data-correct="821" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a5_q3')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q3')">🔄 Reset</button><div class="q-feedback" id="a5_q3_fb"></div><details class="q-solution" id="a5_q3_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $7 + 4 = 11$. Write 1, carry 1.</li><li>Tens: $1 + 2 + 9 = 12$. Write 2, carry 1.</li><li>Hundreds: $1 + 6 + 1 = 8$.</li><li>Total: 821.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q4"><p class="q-text">4. Solve: $950 + 051 = $ ? 🤔</p><p class="en-trans">4. Selesaikan: $950 + 051 = $ ?</p><input type="text" id="a5_q4_input" data-correct="1001" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a5_q4')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q4')">🔄 Reset</button><div class="q-feedback" id="a5_q4_fb"></div><details class="q-solution" id="a5_q4_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $0 + 1 = 1$.</li><li>Tens: $5 + 5 = 10$. Write 0, carry 1.</li><li>Hundreds: $1 + 9 + 0 = 10$. Write 10.</li><li>Total: 1001.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q5"><p class="q-text">5. Solve: $318 + 479 = $ ? 🏆</p><p class="en-trans">5. Selesaikan: $318 + 479 = $ ?</p><input type="text" id="a5_q5_input" data-correct="797" placeholder="Type the final answer..."><button class="btn-check" onclick="checkAnswer('a5_q5')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q5')">🔄 Reset</button><div class="q-feedback" id="a5_q5_fb"></div><details class="q-solution" id="a5_q5_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $8 + 9 = 17$. Write 7, carry 1.</li><li>Tens: $1 + 1 + 7 = 9$.</li><li>Hundreds: $3 + 4 = 7$.</li><li>Total: 797.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q6"><p class="q-text">6. In $753 + 168$, what is the sum of the ones? ✍️</p><p class="en-trans">6. Pada $753 + 168$, berapakah jumlah satuanannya?</p><input type="text" id="a5_q6_input" data-correct="11" placeholder="Type your answer..."><button class="btn-check" onclick="checkAnswer('a5_q6')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q6')">🔄 Reset</button><div class="q-feedback" id="a5_q6_fb"></div><details class="q-solution" id="a5_q6_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones digits are 3 and 8.</li><li>$3 + 8 = 11$.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q7"><p class="q-text">7. In $489 + 411$, how many times do you carry over a 1? 🚫</p><p class="en-trans">7. Pada $489 + 411$, berapa kali kamu menyimpan angka 1?</p><label><input type="radio" name="a5_q7_radio" value="1"> 1 time</label><label><input type="radio" name="a5_q7_radio" value="2" data-correct="true"> 2 times</label><label><input type="radio" name="a5_q7_radio" value="0"> 0 times</label><button class="btn-check" onclick="checkAnswer('a5_q7')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q7')">🔄 Reset</button><div class="q-feedback" id="a5_q7_fb"></div><details class="q-solution" id="a5_q7_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $9+1=10$. Carry 1 (First time).</li><li>Tens: $1+8+1=10$. Carry 1 (Second time).</li><li>Hundreds: $1+4+4=9$. No carry.</li><li>You carry over 2 times.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q8"><p class="q-text">8. In $627 + 194$, what digit is in the tens place of the answer? 📝</p><p class="en-trans">8. Pada $627 + 194$, angka apa yang ada di tempat puluhan dari jawabannya?</p><input type="text" id="a5_q8_input" data-correct="2" placeholder="Type the digit..."><button class="btn-check" onclick="checkAnswer('a5_q8')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q8')">🔄 Reset</button><div class="q-feedback" id="a5_q8_fb"></div><details class="q-solution" id="a5_q8_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $7+4=11$. Carry 1.</li><li>Tens: $1+2+9=12$.</li><li>The tens digit is 2.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q9"><p class="q-text">9. True or False: $950 + 051$ results in 1010. ✍️</p><p class="en-trans">9. Benar atau Salah: $950 + 051$ menghasilkan 1010.</p><label><input type="radio" name="a5_q9_radio" value="True"> True / Benar</label><label><input type="radio" name="a5_q9_radio" value="False" data-correct="true"> False / Salah</label><button class="btn-check" onclick="checkAnswer('a5_q9')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q9')">🔄 Reset</button><div class="q-feedback" id="a5_q9_fb"></div><details class="q-solution" id="a5_q9_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>Ones: $0+1=1$.</li><li>Tens: $5+5=10$. Write 0, carry 1.</li><li>Hundreds: $1+9+0=10$.</li><li>Result is 1001, not 1010. Statement is False.</li></ol></details></div></div>
+
+                <div class="slide"><div class="q-card" id="a5_q10"><p class="q-text">10. Match the problem with its final answer! 🎯</p><p class="en-trans">10. Cocokkan soal dengan jawaban akhirnya!</p><div class="pairing-grid"><div class="pair-item">753 + 168 = <select id="a5_q10a" data-correct="921"><option value="">--Pilih--</option><option value="821">821</option><option value="921">921</option><option value="1001">1001</option></select></div><div class="pair-item">627 + 194 = <select id="a5_q10b" data-correct="821"><option value="">--Pilih--</option><option value="821">821</option><option value="921">921</option><option value="1001">1001</option></select></div><div class="pair-item">950 + 051 = <select id="a5_q10c" data-correct="1001"><option value="">--Pilih--</option><option value="821">821</option><option value="921">921</option><option value="1001">1001</option></select></div></div><button class="btn-check" onclick="checkAnswer('a5_q10')">Check! ✅</button><button class="btn-reset" onclick="resetQuestion('a5_q10')">🔄 Reset</button><div class="q-feedback" id="a5_q10_fb"></div><details class="q-solution" id="a5_q10_sol"><summary>💡 See Solution Steps</summary><ol class="step-list"><li>753 + 168 = 921.</li><li>627 + 194 = 821.</li><li>950 + 051 = 1001.</li></ol></details></div></div>
+
+                <!-- RESULT SLIDE FOR ASSESSMENT 5 -->
+                <div class="slide">
+                    <div class="result-card">
+                        <h2>🎉 Assessment 5 Complete! <br> Penilaian 5 Selesai!</h2>
+                        <p>Your Score / Nilai Kamu:</p>
+                        <div class="result-score" id="a5_score">0 / 10</div>
+                        <div class="result-form">
+                            <label for="a5_name">Student Name / Nama Siswa:</label>
+                            <input type="text" id="a5_name" placeholder="Enter your name...">
+                            <label for="a5_date">Date / Tanggal:</label>
+                            <input type="date" id="a5_date">
+                        </div>
+                        <button class="btn-report" onclick="generateReport('5')">🖨️ Generate Report / Buat Laporan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF ASSESSMENT 5 -->
+
+            <!-- ================= SECTION 7 ================= -->
+            <div id="section7" class="module-container" data-title="7. Consolidation & Reflection (01:00-01:05)">
+                <div class="slide active">
+                    <div class="theory-box">
+                        <h3>Reflection Time! 🧘</h3>
+                        <p>Hari ini kita belajar trik ajaib penjumlahan: <strong>Regrouping</strong>! Kita tahu bahwa 10 kubus satuan kecil bisa berubah menjadi 1 batang puluhan saat menjumlahkan bilangan 3-digit.</p>
+                        <p class="en-trans">Today we learned the magic trick of addition: Regrouping! We know that 10 small ones cubes turn into a single tens rod when adding 3-digit numbers.</p>
+                        <p>Aturan emasnya: <strong>Jika satuan dijumlahkan menjadi 10 atau lebih, mereka pindah ke tempat puluhan!</strong></p>
+                        <p class="en-trans">The golden rule: <strong>If ones add up to 10 or more, they move to the tens place!</strong></p>
+                    </div>
+                    <div class="q-card" style="text-align: center;">
+                        <p class="q-text">Self-Reflection: How do you feel about adding big numbers now? 🤔</p>
+                        <p class="en-trans">Refleksi Diri: Bagaimana perasaanmu tentang menjumlahkan angka besar sekarang?</p>
+                        <div style="font-size: 3em; margin: 20px 0;">
+                            😎 😃 😐 😟
+                        </div>
+                        <p>You are ready for your homework! See you next time! 🚀</p>
+                        <p class="en-trans">Kamu siap untuk PR mu! Sampai jumpa lagi! 🚀</p>
+                        <br>
+                        <!-- BUTTON LINK TO LEARN.ALGONOVA.ID -->
+                        <a href="https://learn.algonova.id" target="_blank" class="btn-nav btn-next" style="text-decoration: none; display: inline-flex; margin-top: 15px; padding: 15px 30px; font-size: 1.1em;">
+                            🚀 Go to Homework / Lanjut Misi
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF SECTION 7 -->
+
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="btn-nav btn-prev" id="btnPrev" onclick="changeSlide(-1)">⬅️ Previous</button>
+        <button class="btn-nav btn-next" id="btnNext" onclick="changeSlide(1)">Next ➡️</button>
+    </div>
+</div>
+
+<script>
+    let currentModule = 'homepage';
+    let currentSlideIndex = 0;
+
+    // Initialize the app
+    goToModule('homepage');
+
+    function goToModule(moduleId) {
+        currentModule = moduleId;
+        currentSlideIndex = 0;
+        
+        // Update sidebar active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+            if(item.getAttribute('onclick') === "goToModule('" + moduleId + "')") {
+                item.classList.add('active');
+            }
+        });
+        
+        // Hide all modules
+        document.querySelectorAll('.module-container').forEach(mod => {
+            mod.style.display = 'none';
+        });
+        
+        // Show selected module
+        const moduleEl = document.getElementById(moduleId);
+        moduleEl.style.display = 'block';
+        
+        // Update title
+        document.getElementById('moduleTitle').innerText = moduleEl.getAttribute('data-title');
+        
+        // Show first slide
+        showSlide(0);
+    }
+
+    function showSlide(index) {
+        const moduleEl = document.getElementById(currentModule);
+        const slides = moduleEl.querySelectorAll('.slide');
+        
+        if (index >= 0 && index < slides.length) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlideIndex = index;
+            updateProgress();
+            updateNavButtons();
+            
+            // Re-render Math for dynamically shown slides
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(slides[index], {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ]
+                });
+            }
+        }
+    }
+
+    function changeSlide(direction) {
+        const moduleEl = document.getElementById(currentModule);
+        const slides = moduleEl.querySelectorAll('.slide');
+        let newIndex = currentSlideIndex + direction;
+        
+        if (newIndex >= 0 && newIndex < slides.length) {
+            showSlide(newIndex);
+        }
+    }
+
+    function updateProgress() {
+        const moduleEl = document.getElementById(currentModule);
+        const slides = moduleEl.querySelectorAll('.slide');
+        const progress = ((currentSlideIndex + 1) / slides.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+        document.getElementById('progressText').innerText = Math.round(progress) + '%';
+    }
+
+    function updateNavButtons() {
+        const moduleEl = document.getElementById(currentModule);
+        const slides = moduleEl.querySelectorAll('.slide');
+        document.getElementById('btnPrev').style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
+        document.getElementById('btnNext').style.visibility = (currentSlideIndex === slides.length - 1) ? 'hidden' : 'visible';
+    }
+
+    function checkAnswer(qId) {
+        const card = document.getElementById(qId);
+        let isCorrect = false;
+        let studentAnswer = '';
+        let correctAnswer = '';
+        
+        const inputEl = card.querySelector('input[type="text"]');
+        const radios = card.querySelectorAll('input[type="radio"]');
+        const selects = card.querySelectorAll('select');
+        
+        if (inputEl) {
+            correctAnswer = inputEl.getAttribute('data-correct');
+            const val = inputEl.value.toLowerCase().trim();
+            if (val === correctAnswer.toLowerCase().trim()) {
+                isCorrect = true;
+            }
+            studentAnswer = inputEl.value;
+        } else if (radios.length > 0) {
+            let selected = card.querySelector('input[type="radio"]:checked');
+            radios.forEach(r => {
+                if (r.getAttribute('data-correct') === 'true') correctAnswer = r.value;
+            });
+            if (selected) {
+                studentAnswer = selected.value;
+                if (selected.getAttribute('data-correct') === 'true') {
+                    isCorrect = true;
+                }
+            } else {
+                studentAnswer = 'No Answer';
+            }
+        } else if (selects.length > 0) {
+            isCorrect = true;
+            let answers = [];
+            let correctAns = [];
+            selects.forEach(sel => {
+                answers.push(sel.value || 'No Answer');
+                correctAns.push(sel.getAttribute('data-correct'));
+                if (sel.value !== sel.getAttribute('data-correct')) {
+                    isCorrect = false;
+                }
+            });
+            studentAnswer = answers.join(', ');
+            correctAnswer = correctAns.join(', ');
+        }
+        
+        const feedback = document.getElementById(qId + '_fb');
+        const solution = document.getElementById(qId + '_sol');
+        const btnCheck = card.querySelector('.btn-check');
+        const btnReset = card.querySelector('.btn-reset');
+        
+        if (isCorrect) {
+            feedback.innerHTML = '✅ Correct! / Benar!';
+            feedback.className = 'q-feedback correct';
+        } else {
+            feedback.innerHTML = '❌ Incorrect. Try again or see the solution! / Salah. Coba lagi atau lihat solusi!';
+            feedback.className = 'q-feedback incorrect';
+        }
+        
+        feedback.style.display = 'block';
+        solution.style.display = 'block';
+        btnCheck.style.display = 'none';
+        btnReset.style.display = 'inline-block';
+        
+        // Update score if in assessment
+        if (currentModule.startsWith('assign')) {
+            updateScore(currentModule);
+        }
+    }
+
+    function resetQuestion(qId) {
+        const card = document.getElementById(qId);
+        
+        const inputEl = card.querySelector('input[type="text"]');
+        const radios = card.querySelectorAll('input[type="radio"]');
+        const selects = card.querySelectorAll('select');
+        
+        if (inputEl) {
+            inputEl.value = '';
+        } else if (radios.length > 0) {
+            radios.forEach(r => r.checked = false);
+        } else if (selects.length > 0) {
+            selects.forEach(s => s.value = '');
+        }
+        
+        const feedback = document.getElementById(qId + '_fb');
+        const solution = document.getElementById(qId + '_sol');
+        const btnCheck = card.querySelector('.btn-check');
+        const btnReset = card.querySelector('.btn-reset');
+        
+        feedback.style.display = 'none';
+        solution.style.display = 'none';
+        solution.open = false; // close details if open
+        btnCheck.style.display = 'inline-block';
+        btnReset.style.display = 'none';
+        
+        if (currentModule.startsWith('assign')) {
+            updateScore(currentModule);
+        }
+    }
+
+    function updateScore(moduleId) {
+        const moduleEl = document.getElementById(moduleId);
+        const cards = moduleEl.querySelectorAll('.q-card');
+        let score = 0;
+        cards.forEach(card => {
+            const feedback = card.querySelector('.q-feedback');
+            if (feedback && feedback.classList.contains('correct')) {
+                score++;
+            }
+        });
+        const scoreId = moduleId.replace('assign', 'a') + '_score';
+        const scoreEl = document.getElementById(scoreId);
+        if (scoreEl) {
+            scoreEl.innerText = score + ' / ' + cards.length;
+        }
+    }
+
+    function generateReport(groupId) {
+        const moduleId = 'assign' + groupId;
+        const moduleEl = document.getElementById(moduleId);
+        const name = document.getElementById('a' + groupId + '_name').value || 'Anonymous';
+        const dateVal = document.getElementById('a' + groupId + '_date').value;
+        const date = dateVal ? new Date(dateVal).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A';
+        const scoreText = document.getElementById('a' + groupId + '_score').innerText;
+        
+        let tableRows = '';
+        const cards = moduleEl.querySelectorAll('.q-card');
+        let qNum = 1;
+        
+        cards.forEach(card => {
+            const qText = card.querySelector('.q-text').innerText.replace(/\$/g, '').trim();
+            let studentAnswer = 'No Answer';
+            let correctAnswer = '';
+            let isCorrect = false;
+            
+            const inputEl = card.querySelector('input[type="text"]');
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const selects = card.querySelectorAll('select');
+            
+            if (inputEl) {
+                studentAnswer = inputEl.value || 'No Answer';
+                correctAnswer = inputEl.getAttribute('data-correct');
+                if (studentAnswer.toLowerCase().trim() === correctAnswer.toLowerCase().trim()) isCorrect = true;
+            } else if (radios.length > 0) {
+                let selected = card.querySelector('input[type="radio"]:checked');
+                if (selected) studentAnswer = selected.value;
+                radios.forEach(r => {
+                    if (r.getAttribute('data-correct') === 'true') correctAnswer = r.value;
+                });
+                if (selected && selected.getAttribute('data-correct') === 'true') isCorrect = true;
+            } else if (selects.length > 0) {
+                let answers = [];
+                let correctAns = [];
+                isCorrect = true;
+                selects.forEach(s => {
+                    answers.push(s.value || 'No Answer');
+                    correctAns.push(s.getAttribute('data-correct'));
+                    if (s.value !== s.getAttribute('data-correct')) isCorrect = false;
+                });
+                studentAnswer = answers.join(', ');
+                correctAnswer = correctAns.join(', ');
+            }
+            
+            const note = isCorrect ? '✅' : '❌';
+            tableRows += `
+                <tr>
+                    <td style="text-align: center;">${qNum}</td>
+                    <td>${qText}</td>
+                    <td style="text-align: center;">${studentAnswer}</td>
+                    <td style="text-align: center;">${correctAnswer}</td>
+                    <td style="text-align: center;">${note}</td>
+                </tr>
+            `;
+            qNum++;
+        });
+        
+        const reportHTML = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Assessment Report - Group ${groupId}</title>
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; color: #334155; background: #f8fafc; }
+                    .report-container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 8px solid #6366F1; }
+                    h1 { color: #6366F1; text-align: center; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
+                    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; background: #EEF2FF; padding: 20px; border-radius: 12px; }
+                    .info-item { display: flex; flex-direction: column; }
+                    .info-label { font-size: 0.8em; color: #64748B; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
+                    .info-value { font-size: 1.1em; color: #1E293B; font-weight: 600; }
+                    .score-box { text-align: center; margin: 30px 0; padding: 20px; background: #ECFDF5; border: 2px solid #10B981; border-radius: 12px; }
+                    .score-label { color: #047857; font-weight: bold; font-size: 1.2em; }
+                    .score-value { color: #10B981; font-size: 2.5em; font-weight: 900; margin-top: 10px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.95em; }
+                    th, td { border: 1px solid #CBD5E1; padding: 12px; text-align: left; vertical-align: top; }
+                    th { background: #F1F5F9; color: #334155; text-align: center; }
+                    tr:nth-child(even) { background: #F8FAFC; }
+                    .signature { margin-top: 60px; text-align: right; }
+                    .signature-line { display: inline-block; width: 200px; border-top: 2px dashed #94A3B8; padding-top: 10px; margin-top: 40px; font-weight: bold; color: #334155; }
+                </style>
+            </head>
+            <body>
+                <div class="report-container">
+                    <h1>Assessment Result</h1>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Name</span>
+                            <span class="info-value">${name}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Date</span>
+                            <span class="info-value">${date}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Topic</span>
+                            <span class="info-value">3-Digit Addition with Regrouping</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Assessment Group</span>
+                            <span class="info-value">Group ${groupId}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="score-box">
+                        <div class="score-label">Final Score</div>
+                        <div class="score-value">${scoreText}</div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">No</th>
+                                <th style="width: 45%;">Question</th>
+                                <th style="width: 17%;">Student Answer</th>
+                                <th style="width: 17%;">Correct Answer</th>
+                                <th style="width: 10%;">Note</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    
+                    <div class="signature">
+                        <div class="signature-line">
+                            Checked by,<br>Deni
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+        
+        const newTab = window.open('', '_blank');
+        newTab.document.write(reportHTML);
+        newTab.document.close();
+    }
+</script>
+</body>
+</html>
