@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH TUTORING by Deni - 3-Digit Subtraction</title>
+	
+    <!-- KaTeX CSS & JS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Google Font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #58cc02; --primary-dark: #46a302; --primary-shadow: #387d02;
+            --secondary: #1cb0f6; --wrong: #ff4b4b; --wrong-dark: #ea2a2a;
+            --bg: #131f24; --card-bg: #1b2b34; --text-light: #ffffff; --text-muted: #a0a0a0;
+            --indo-size: 0.8em; --indo-color: #78c8ff;
+        }
+        * { box-sizing: border-box; font-family: 'Nunito', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg); color: var(--text-light); overflow-x: hidden; }
+        
+        /* Bilingual System */
+        .bilingual { margin-bottom: 12px; line-height: 1.6; }
+        .indo { font-size: var(--indo-size); color: var(--indo-color); display: block; margin-top: 2px; }
+        
+        /* Screens & Navigation */
+        .screen { display: none; padding: 20px; max-width: 800px; margin: 0 auto; animation: fadeIn 0.5s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Top Bar */
+        #top-bar { position: sticky; top: 0; background: var(--bg); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 2px solid var(--card-bg); }
+        #reset-all-btn { background: var(--wrong); color: white; border: none; border-bottom: 4px solid var(--wrong-dark); padding: 8px 15px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: all 0.1s; }
+        #reset-all-btn:active { transform: translateY(4px); border-bottom-width: 0; }
+        
+        /* Duolingo Path Map */
+        #path-container { display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
+        .path-node { width: 60px; height: 60px; border-radius: 50%; background: var(--card-bg); border: 4px solid #3a3a3a; margin: 15px 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 2; }
+        .path-node svg { width: 30px; height: 30px; fill: #3a3a3a; }
+        .path-node.completed { background: var(--primary); border-color: var(--primary-dark); box-shadow: 0 4px 0 var(--primary-shadow); }
+        .path-node.completed svg { fill: white; }
+        .path-node.current { background: var(--secondary); border-color: #1899d6; box-shadow: 0 4px 0 #0c7fad; animation: pulse 2s infinite; }
+        .path-node.current svg { fill: white; }
+        .path-node.locked { opacity: 0.5; cursor: not-allowed; }
+        .path-line { width: 4px; height: 30px; background: #3a3a3a; }
+        .path-line.completed { background: var(--primary); }
+        .path-node-label { position: absolute; right: 80px; top: 50%; transform: translateY(-50%); font-weight: bold; font-size: 14px; text-align: right; white-space: nowrap; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Theory & Exercise UI */
+        .theory-box { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 2px solid #2a3a44; }
+        .theory-svg { width: 100%; max-width: 200px; margin: 10px auto; display: block; }
+        .exercise-container { background: var(--card-bg); border-radius: 16px; padding: 20px; border: 2px solid var(--secondary); margin-bottom: 20px; }
+        .exercise-question { font-size: 1.2em; text-align: center; margin-bottom: 15px; }
+        .input-group { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .math-input { background: #235355; border: 2px solid var(--secondary); border-radius: 12px; padding: 10px; color: white; font-size: 1.2em; width: 120px; text-align: center; outline: none; }
+        .math-input:focus { border-color: white; box-shadow: 0 0 10px var(--secondary); }
+        .math-input::-webkit-outer-spin-button,
+        .math-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .math-input { -moz-appearance: textfield; } /* Firefox */
+        .btn-group { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .btn { padding: 12px 24px; border-radius: 12px; font-weight: bold; cursor: pointer; border: none; border-bottom: 4px solid rgba(0,0,0,0.2); transition: all 0.1s; }
+        .btn:active { transform: translateY(4px); border-bottom-width: 0; }
+        .btn-check { background: var(--primary); color: white; border-bottom-color: var(--primary-dark); }
+        .btn-next { background: var(--secondary); color: white; border-bottom-color: #1899d6; }
+        .btn-prev { background: #6c6c6c; color: white; border-bottom-color: #4a4a4a; }
+        .btn-reset-ex { background: var(--wrong); color: white; border-bottom-color: var(--wrong-dark); }
+        
+        /* Collapsible Explanation */
+        .collapsible { background: #2a3a44; padding: 0 15px; border-radius: 12px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; margin-bottom: 10px; }
+        .collapsible.open { max-height: 300px; padding: 15px; border: 1px solid var(--secondary); }
+        .collapsible-toggle { text-align: center; cursor: pointer; color: var(--secondary); font-weight: bold; margin-bottom: 10px; font-size: 0.9em; }
+		.nav-hidden { display: none !important; }
+
+        /* Progress bar inside section */
+        .section-progress { width: 100%; height: 8px; background: #3a3a3a; border-radius: 4px; margin-bottom: 20px; }
+        .section-progress-bar { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.3s; }
+
+        /* Print Styles (Strict A4) */
+        #print-area { display: none; font-family: Arial, sans-serif; color: #000; }
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { display: block; position: absolute; left: 0; top: 0; width: 210mm; height: 297mm; padding: 10mm; font-size: 10pt; box-sizing: border-box; }
+            .print-table { width: 100%; border-collapse: collapse; margin-top: 10mm; }
+            .print-table th, .print-table td { border: 1px solid #000; padding: 4px; text-align: left; font-size: 9pt; }
+            .print-header { text-align: center; margin-bottom: 10mm; }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div id="top-bar">
+        <button id="reset-all-btn" onclick="resetAllProgress()">Reset All Progress <span class="indo">(Hapus Semua Progres)</span></button>
+        <div id="current-score" style="font-weight:bold; color:var(--primary)">Score: 0 <span class="indo">(Skor: 0)</span></div>
+        <button class="btn btn-prev" onclick="goToPath()" style="padding:8px 15px; display:none;" id="back-to-path-btn">Path Map <span class="indo">(Peta Jalur)</span></button>
+    </div>
+
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <svg viewBox="0 0 100 100" width="120" style="margin:auto;">
+                <circle cx="50" cy="50" r="45" fill="#58cc02" stroke="#46a302" stroke-width="5"/>
+                <text x="50" y="60" font-size="40" fill="white" text-anchor="middle" font-weight="bold">D</text>
+            </svg>
+            <h1 style="color:var(--primary); margin-top:10px;">MATH TUTORING by Deni</h1>
+        </div>
+
+        <div class="theory-box">
+            <h3>Topic: 3-Digit Subtraction without Borrowing <span class="indo">(Topik: Pengurangan 3-digit tanpa Meminjam)</span></h3>
+            <p class="bilingual">Class Rules: <span class="indo">Aturan Kelas:</span></p>
+            <ol style="padding-left: 20px;">
+                <li class="bilingual">Take turns speaking. <span class="indo">Berbicara secara bergantian.</span></li>
+                <li class="bilingual">Ask permission if you need to leave the class. <span class="indo">Meminta izin jika ingin meninggalkan kelas.</span></li>
+                <li class="bilingual">Turn on camera and microphone when needed. <span class="indo">Menyalakan kamera dan microphone jika diperlukan.</span></li>
+            </ol>
+            <button class="btn btn-next" style="margin-top:20px; width:100%;" onclick="goToPath()">Start Lesson! <span class="indo">Mulai Pelajaran!</span></button>
+        </div>
+    </div>
+
+    <!-- PATH MAP SCREEN -->
+    <div id="screen-path" class="screen">
+        <h2 style="text-align:center; margin-bottom:20px;">Lesson Path <span class="indo">(Jalur Pelajaran)</span></h2>
+        <div id="path-container">
+            <!-- Nodes will be injected by JS -->
+        </div>
+    </div>
+
+    <!-- SECTION SCREENS TEMPLATE (Injected by JS dynamically) -->
+    <div id="screen-section" class="screen">
+        <div class="section-progress"><div class="section-progress-bar" id="sec-prog-bar" style="width:0%"></div></div>
+        <div id="section-content-wrapper">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
+
+    <!-- PRINT AREA (Hidden, used only for printing) -->
+    <div id="print-area">
+        <div class="print-header">
+            <h2>MATH TUTORING by Deni</h2>
+            <p>Name: ......................... &nbsp;&nbsp; Date: .........................</p>
+            <p>Topic: 3-Digit Subtraction without Borrowing</p>
+            <p>Assignment Group: <span id="print-group-name">-</span></p>
+            <p style="font-weight:bold; font-size:12pt;">Score: <span id="print-score">0</span> / 10</p>
+        </div>
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Question</th>
+                    <th>Student Answer</th>
+                    <th>Correct Answer</th>
+                    <th>Note (✓/✗)</th>
+                </tr>
+            </thead>
+            <tbody id="print-table-body">
+                <!-- Rows injected by JS -->
+            </tbody>
+        </table>
+        <div style="margin-top: 20mm; text-align: right;">
+            <p>Checked by,</p>
+            <br><br>
+            <p><strong>Deni</strong></p>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STRUCTURE & STATE ENGINE ---
+        const lessonData = [
+            { id: "sec1", name: "Spiral Review", time: "00:00-00:10", type: "section", steps: [] },
+            { id: "sec2", name: "Introduction", time: "00:10-00:15", type: "section", steps: [] },
+            { id: "sec3", name: "Prior Knowledge", time: "00:15-00:20", type: "section", steps: [] },
+            { id: "sec4", name: "Problem Intro", time: "00:20-00:30", type: "section", steps: [] },
+            { id: "sec5", name: "Guided Practice", time: "00:30-00:45", type: "section", steps: [] },
+            { id: "sec6", name: "Independent", time: "00:50-01:00", type: "section", steps: [] },
+            { id: "ass1", name: "Assignment 1", type: "assignment", steps: [] },
+            { id: "ass2", name: "Assignment 2", type: "assignment", steps: [] },
+            { id: "ass3", name: "Assignment 3", type: "assignment", steps: [] },
+            { id: "ass4", name: "Assignment 4", type: "assignment", steps: [] },
+            { id: "ass5", name: "Assignment 5", type: "assignment", steps: [] },
+            { id: "ref", name: "Reflection", time: "01:00-01:05", type: "reflection", steps: [] }
+        ];
+
+        let globalState = {
+            currentScreen: 'home',
+            currentSectionId: null,
+            currentStepIndex: 0,
+            progress: {}, // { sec1: 2, sec2: 0, ... } stores highest completed step index
+            score: 0
+        };
+
+        // Load from local storage (with fallback for file:// protocol)
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('mathTutorState');
+                if(saved) globalState = JSON.parse(saved);
+            } catch (e) {
+                console.warn("LocalStorage is blocked (running via file://). Progress will not be saved between sessions.");
+                // Reset to default state if storage is blocked
+                globalState = { currentScreen: 'home', currentSectionId: null, currentStepIndex: 0, progress: {}, score: 0, userAnswers: {} };
+            }
+            updateScoreDisplay();
+        }
+        
+        function saveState() {
+            try {
+                localStorage.setItem('mathTutorState', JSON.stringify(globalState));
+            } catch (e) {
+                // Silently fail if localStorage is blocked by browser security
+            }
+        }
+        
+        function resetAllProgress() {
+            if(confirm("Are you sure you want to reset all progress and scores? \n(Yakin ingin menghapus semua progres dan skor?)")) {
+                try {
+                    localStorage.removeItem('mathTutorState');
+                } catch (e) {}
+                globalState = { currentScreen: 'home', currentSectionId: null, currentStepIndex: 0, progress: {}, score: 0, userAnswers: {} };
+                saveState();
+                location.reload();
+            }
+        }
+        function updateScoreDisplay() {
+            document.getElementById('current-score').innerHTML = `Score: ${globalState.score} <span class="indo">(Skor: ${globalState.score})</span>`;
+        }
+
+        // --- NAVIGATION ENGINE ---
+        function showScreen(screenId, sectionId=null) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            globalState.currentScreen = screenId;
+            
+            if(screenId === 'home') {
+                document.getElementById('screen-home').classList.add('active');
+                document.getElementById('back-to-path-btn').style.display = 'none';
+            } else if(screenId === 'path') {
+                document.getElementById('screen-path').classList.add('active');
+                document.getElementById('back-to-path-btn').style.display = 'none';
+                renderPathMap();
+            } else if(screenId === 'section') {
+                globalState.currentSectionId = sectionId;
+                globalState.currentStepIndex = globalState.progress[sectionId] || 0;
+                document.getElementById('screen-section').classList.add('active');
+                document.getElementById('back-to-path-btn').style.display = 'inline-block';
+                renderSectionContent();
+            }
+            saveState();
+            renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ] });
+        }
+
+        function goToPath() { showScreen('path'); }
+
+        function goToSection(sectionId) {
+            showScreen('section', sectionId);
+        }
+
+        // --- RENDER PATH MAP ---
+        // --- RENDER PATH MAP ---
+        function renderPathMap() {
+            const container = document.getElementById('path-container');
+            container.innerHTML = '';
+            lessonData.forEach((sec, index) => {
+                if(index > 0) {
+                    const line = document.createElement('div');
+                    line.className = 'path-line';
+                    const prevProg = globalState.progress[lessonData[index-1].id] || 0;
+                    if(prevProg >= lessonData[index-1].steps.length) line.classList.add('completed');
+                    container.appendChild(line);
+                }
+
+                const node = document.createElement('div');
+                node.className = 'path-node';
+                const prog = globalState.progress[sec.id] || 0;
+                if(prog >= sec.steps.length) node.classList.add('completed');
+                else node.classList.add('current'); // Semua node yang belum selesai langsung jadi 'current' (unlock/terang)
+
+                // Icons for SVG
+                let svgIcon = '';
+                if(sec.type === 'section') svgIcon = '<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>'; // Book
+                if(sec.type === 'assignment') svgIcon = '<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>'; // File/Assignment
+                if(sec.type === 'reflection') svgIcon = '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.28-3.4 6.36-8.55 11.54L12 21.35z"/></svg>'; // Star/Heart
+                
+                node.innerHTML = svgIcon;
+                
+                const label = document.createElement('div');
+                label.className = 'path-node-label';
+                label.innerHTML = `${sec.name} <span class="indo" style="font-size:0.7em; display:inline;">(${sec.time || sec.type})</span>`;
+                node.appendChild(label);
+
+                // Karena tidak ada lagi class 'locked', semua node bisa diklik
+                node.onclick = () => goToSection(sec.id);
+                
+                container.appendChild(node);
+            });
+        }
+
+        // --- RENDER SECTION/EXERCISE CONTENT ---
+        function renderSectionContent() {
+            const secId = globalState.currentSectionId;
+            const secData = lessonData.find(s => s.id === secId);
+            const stepIndex = globalState.currentStepIndex;
+            const wrapper = document.getElementById('section-content-wrapper');
+            
+            // Update progress bar
+            const progPercent = (stepIndex / secData.steps.length) * 100;
+            document.getElementById('sec-prog-bar').style.width = `${progPercent}%`;
+
+            if(stepIndex >= secData.steps.length) {
+                // SECTION OR ASSIGNMENT COMPLETED
+                
+                // Tombol standar yang ada di semua halaman akhir: Previous & Back to Path
+                let bottomButtons = `
+                    <div class="btn-group" style="margin-top:20px;">
+                        <button class="btn btn-prev" onclick="prevStep()">Previous <span class="indo">(Sebelumnya)</span></button>
+                        <button class="btn btn-next" onclick="goToPath()">Back to Path Map <span class="indo">(Kembali ke Peta)</span></button>
+                    </div>
+                `;
+
+                if(secData.type === 'assignment') {
+                    // Show Assignment Completion with Print Button
+                    wrapper.innerHTML = `
+                        <div class="theory-box" style="text-align:center;">
+                            <h3 class="bilingual">Assignment Completed! <span class="indo">(Tugas Selesai!)</span></h3>
+                            <svg viewBox="0 0 100 100" width="100" style="margin:auto;">
+                                <circle cx="50" cy="50" r="45" fill="var(--primary)"/>
+                                <path d="M30 50 L45 65 L70 35" stroke="white" stroke-width="8" fill="none"/>
+                            </svg>
+                            <p class="bilingual" style="margin-top:15px; font-size:1.2em;">Great job! You have finished all 10 questions. <span class="indo">Kerja bagus! Kamu sudah menyelesaikan 10 soal.</span></p>
+                            <button class="btn btn-check" style="margin-top:15px; font-size:1.1em;" onclick="generatePrintView('${secId}')">🖨️ Print Result <span class="indo">(Cetak Hasil)</span></button>
+                            ${bottomButtons}
+                        </div>
+                    `;
+                } else if(secId === 'ref') {
+                    // Special Completion Screen for Reflection (With Algonova Link)
+                    wrapper.innerHTML = `
+                        <div class="theory-box" style="text-align:center;">
+                            <h3 class="bilingual">Lesson Complete! <span class="indo">(Pelajaran Selesai!)</span></h3>
+                            <svg viewBox="0 0 100 100" width="100" style="margin:auto;">
+                                <circle cx="50" cy="50" r="45" fill="var(--primary)"/>
+                                <path d="M30 50 L45 65 L70 35" stroke="white" stroke-width="8" fill="none"/>
+                            </svg>
+                            <p class="bilingual" style="margin-top:15px; font-size:1.2em;">You are a true Math Wizard! Don't forget to do your homework. <span class="indo">Kamu penyihir Matematika sejati! Jangan lupa lakukan PR kamu.</span></p>
+                            <a href="https://learn.algonova.id/login" target="_blank" class="btn btn-check" style="margin-top:15px; font-size:1.1em; text-decoration:none; display:inline-block;">🚀 Go to Homework Portal <span class="indo">(Buka Portal PR)</span></a>
+                            ${bottomButtons}
+                        </div>
+                    `;
+                } else {
+                    // Show Standard Section Completion
+                    wrapper.innerHTML = `
+                        <div class="theory-box" style="text-align:center;">
+                            <h3 class="bilingual">Node Completed! <span class="indo">(Node Selesai!)</span></h3>
+                            <svg viewBox="0 0 100 100" width="100" style="margin:auto;">
+                                <circle cx="50" cy="50" r="45" fill="var(--primary)"/>
+                                <path d="M30 50 L45 65 L70 35" stroke="white" stroke-width="8" fill="none"/>
+                            </svg>
+                            ${bottomButtons}
+                        </div>
+                    `;
+                }
+                document.getElementById('sec-prog-bar').style.width = '100%';
+                return;
+            }
+
+            const step = secData.steps[stepIndex];
+            
+            if(step.type === 'theory') {
+                wrapper.innerHTML = `
+                    <div class="theory-box">
+                        ${step.content}
+                        ${step.svg ? `<div class="theory-svg">${step.svg}</div>` : ''}
+                        <div class="btn-group" style="margin-top:20px;">
+                            ${stepIndex > 0 ? `<button class="btn btn-prev" onclick="prevStep()">Previous <span class="indo">(Sebelumnya)</span></button>` : ''}
+                            <button class="btn btn-next" onclick="nextStep()">Next <span class="indo">(Lanjut)</span></button>
+                        </div>
+                    </div>
+                `;
+            } else if(step.type === 'exercise' || step.type === 'assignment_ex') {
+                wrapper.innerHTML = `
+                    <div class="exercise-container">
+                        <div class="exercise-question bilingual">${step.question} <span class="indo">${step.question_indo}</span></div>
+                        <div class="input-group">
+                            <input type="number" class="math-input" id="ex-answer" placeholder="Answer..." autofocus onkeypress="if(event.key === 'Enter') checkAnswer()">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-check" onclick="checkAnswer()">Check <span class="indo">(Cek)</span></button>
+                            <button class="btn btn-reset-ex" onclick="resetExercise()">Reset <span class="indo">(Reset)</span></button>
+                        </div>
+                        <div class="collapsible-toggle" onclick="toggleCollapse('ex-explain')">Show Explanation <span class="indo">(Lihat Penjelasan)</span></div>
+                        <div class="collapsible" id="ex-explain">${step.explanation}</div>
+                        
+                        <!-- NAV BUTTONS SELALU TAMPIL (TANPA CLASS HIDDEN) -->
+                        <div class="btn-group" style="margin-top:15px;" id="nav-btns">
+                            ${stepIndex > 0 ? `<button class="btn btn-prev" onclick="prevStep()">Previous <span class="indo">(Sebelumnya)</span></button>` : ''}
+                            <button class="btn btn-next" onclick="nextStep()">Next <span class="indo">(Lanjut)</span></button>
+                        </div>
+                    </div>
+                `;
+            }
+            renderMathInElement(wrapper, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ] });
+        }
+
+        function nextStep() {
+            const secId = globalState.currentSectionId;
+            globalState.currentStepIndex++;
+            if(!globalState.progress[secId]) globalState.progress[secId] = 0;
+            if(globalState.progress[secId] < globalState.currentStepIndex) globalState.progress[secId] = globalState.currentStepIndex;
+            saveState();
+            renderSectionContent();
+        }
+        function prevStep() {
+            if(globalState.currentStepIndex > 0) globalState.currentStepIndex--;
+            renderSectionContent();
+        }
+        function resetExercise() {
+            const inp = document.getElementById('ex-answer');
+            if(inp) inp.value = '';
+        }
+
+		if(!globalState.userAnswers) globalState.userAnswers = {};
+
+        function checkAnswer() {
+            const inp = document.getElementById('ex-answer');
+            if(!inp) return;
+            const userVal = inp.value.trim();
+            if(userVal === '') return;
+
+            const secId = globalState.currentSectionId;
+            const secData = lessonData.find(s => s.id === secId);
+            const step = secData.steps[globalState.currentStepIndex];
+            const stepKey = secId + '-' + globalState.currentStepIndex;
+            
+            // Save user answer for print view
+            globalState.userAnswers[stepKey] = userVal;
+
+            if(parseInt(userVal) === step.answer) {
+                inp.style.borderColor = "var(--primary)";
+                inp.style.backgroundColor = "#235355";
+                globalState.score += 10; // 10 points per correct exercise
+                updateScoreDisplay();
+                if(!globalState.progress[secId]) globalState.progress[secId] = 0;
+                if(globalState.progress[secId] <= globalState.currentStepIndex) {
+                    globalState.progress[secId] = globalState.currentStepIndex + 1; // mark completed
+                }
+            } else {
+                inp.style.borderColor = "var(--wrong)";
+                inp.style.backgroundColor = "#552525";
+            }
+            
+            toggleCollapse('ex-explain', true); // Auto open explanation on check
+            saveState();
+        }
+
+        function toggleCollapse(id, forceOpen=false) {
+            const el = document.getElementById(id);
+            if(forceOpen) el.classList.add('open');
+            else el.classList.toggle('open');
+        }
+
+        // --- POPULATING DATA (Part 1: Section 1) ---
+        // Section 1: Spiral Review Warm-up
+        lessonData[0].steps = [
+            { type: 'theory', content: `<h3 class="bilingual">Spiral Review Warm-up <span class="indo">(Review Pengulangan Pemanasan)</span></h3><p class="bilingual">Before we start our adventure, let's unlock some gates from our previous travels! <span class="indo">Sebelum memulai petualangan, mari kita buka beberapa gerbang dari perjalanan kita sebelumnya!</span></p>` },
+            { type: 'exercise', question: 'What is the place value of the digit $5$ in the number $528$?', question_indo: 'Apa nilai tempat dari digit $5$ pada angka $528$?', answer: 500, explanation: `<p class="bilingual">The digit $5$ is in the Hundreds place. So, its value is $5 \\times 100 = 500$. <span class="indo">Digit $5$ berada di tempat Ratusan. Jadi, nilainya adalah $5 \\times 100 = 500$.</span></p>` },
+            { type: 'exercise', question: 'Calculate: $15 - 7 = \\dots$', question_indo: 'Hitung: $15 - 7 = \\dots$', answer: 8, explanation: `<p class="bilingual">$15 - 7$ equals $8$. You can count up from $7$ to $15$. <span class="indo">$15 - 7$ sama dengan $8$. Kamu bisa menghitung maju dari $7$ sampai $15$.</span></p>` },
+            { type: 'exercise', question: 'What number is made of 3 hundreds, 0 tens, and 4 ones?', question_indo: 'Angka apa yang terdiri dari 3 ratusan, 0 puluhan, dan 4 satuan?', answer: 304, explanation: `<p class="bilingual">3 hundreds $= 300$, 0 tens $= 0$, 4 ones $= 4$. Combine them to get $304$. <span class="indo">3 ratusan $= 300$, 0 puluhan $= 0$, 4 satuan $= 4$. Gabungkan mereka untuk mendapatkan $304$.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Place Value Columns <span class="indo">(Kolom Nilai Tempat)</span></h3><p class="bilingual">Numbers are like blocks stacked in columns: Hundreds (H), Tens (T), and Ones (O). <span class="indo">Angka seperti balok yang ditumpuk di kolom: Ratusan (H), Puluhan (T), dan Satuan (O).</span></p>`, svg: `<svg viewBox="0 0 200 100"><rect x="10" y="10" width="50" height="80" fill="#58cc02" rx="5"/><text x="35" y="50" text-anchor="middle" fill="white" font-size="20" font-weight="bold">H</text><rect x="70" y="10" width="50" height="80" fill="#1cb0f6" rx="5"/><text x="95" y="50" text-anchor="middle" fill="white" font-size="20" font-weight="bold">T</text><rect x="130" y="10" width="50" height="80" fill="#ffc800" rx="5"/><text x="155" y="50" text-anchor="middle" fill="white" font-size="20" font-weight="bold">O</text></svg>` },
+            { type: 'exercise', question: 'If you have 20 cookies and eat 5, how many are left? $20 - 5 = \\dots$', question_indo: 'Jika kamu punya 20 kue dan memakan 5, berapa yang tersisa? $20 - 5 = \\dots$', answer: 15, explanation: `<p class="bilingual">$20 - 5 = 15$. You subtract the eaten cookies from the total! <span class="indo">$20 - 5 = 15$. Kamu mengurangi kue yang dimakan dari total!</span></p>` },
+            { type: 'exercise', question: 'In the number $945$, what is the value of the digit in the Tens place?', question_indo: 'Dalam angka $945$, apa nilai dari digit di tempat Puluhan?', answer: 40, explanation: `<p class="bilingual">The Tens digit is $4$. Its value is $4 \\times 10 = 40$. <span class="indo">Digit Puluhan adalah $4$. Nilainya adalah $4 \\times 10 = 40$.</span></p>` },
+            { type: 'exercise', question: 'Calculate: $18 - 9 = \\dots$', question_indo: 'Hitung: $18 - 9 = \\dots$', answer: 9, explanation: `<p class="bilingual">$18 - 9 = 9$. It's half of 18! <span class="indo">$18 - 9 = 9$. Itu adalah setengah dari 18!</span></p>` },
+
+            { type: 'theory', content: `<h3 class="bilingual">Mental Math with Hundreds <span class="indo">(Hitung Cepat dengan Ratusan)</span></h3><p class="bilingual">When subtracting hundreds, just subtract the front numbers and keep the zeros! Example: $400 - 100 = 300$. <span class="indo">Saat mengurangi ratusan, kurangi saja angka depannya dan tetapkan nolnya! Contoh: $400 - 100 = 300$.</span></p>`, svg: `<svg viewBox="0 0 280 80"><text x="20" y="40" font-size="20" fill="white">4</text><text x="40" y="40" font-size="20" fill="#a0a0a0">00</text><text x="80" y="40" font-size="20" fill="white">-</text><text x="110" y="40" font-size="20" fill="white">1</text><text x="130" y="40" font-size="20" fill="#a0a0a0">00</text><text x="170" y="40" font-size="20" fill="white">= 300</text></svg>` },
+            { type: 'exercise', question: 'Mental Math: $900 - 400 = \\dots$', question_indo: 'Hitung Cepat: $900 - 400 = \\dots$', answer: 500, explanation: `<p class="bilingual">$9 - 4 = 5$, then add the two zeros back: $500$. <span class="indo">$9 - 4 = 5$, lalu tambahkan kembali dua nol: $500$.</span></p>` },
+            { type: 'exercise', question: 'Mental Math: $700 - 200 = \\dots$', question_indo: 'Hitung Cepat: $700 - 200 = \\dots$', answer: 500, explanation: `<p class="bilingual">$7 - 2 = 5$, then add two zeros: $500$. <span class="indo">$7 - 2 = 5$, lalu tambahkan dua nol: $500$.</span></p>` },
+            { type: 'exercise', question: 'What is $600 - 300$?', question_indo: 'Berapa $600 - 300$?', answer: 300, explanation: `<p class="bilingual">$6 - 3 = 3$, add two zeros: $300$. <span class="indo">$6 - 3 = 3$, tambahkan dua nol: $300$.</span></p>` },
+            { type: 'exercise', question: 'If you write $5$ in Hundreds, $2$ in Tens, and $8$ in Ones, what number is this?', question_indo: 'Jika kamu menulis $5$ di Ratusan, $2$ di Puluhan, dan $8$ di Satuan, angka apa ini?', answer: 528, explanation: `<p class="bilingual">Hundreds $= 500$, Tens $= 20$, Ones $= 8$. Total $= 500 + 20 + 8 = 528$. <span class="indo">Ratusan $= 500$, Puluhan $= 20$, Satuan $= 8$. Total $= 500 + 20 + 8 = 528$.</span></p>` }
+        ];
+
+        // --- POPULATING DATA (Part 2: Section 2, 3, 4) ---
+        // Section 2: Introduction & Real-World Connection
+        lessonData[1].steps = [
+            { type: 'theory', content: `<h3 class="bilingual">Introduction & Real-World Connection <span class="indo">(Pengantar & Koneksi Dunia Nyata)</span></h3><p class="bilingual">Imagine you are a treasure hunter! You found a chest with $856$ gold coins. You want to give $324$ coins to your friends. How many will you have left? <span class="indo">Bayangkan kamu penjelajah harta! Kamu menemukan kotak dengan 856 koin emas. Kamu ingin memberikan 324 koin kepada teman. Berapa yang tersisa?</span></p>`, svg: `<svg viewBox="0 0 200 150"><rect x="30" y="50" width="140" height="80" fill="#ffc800" rx="10" stroke="#e5a600" stroke-width="3"/><path d="M30 50 L100 10 L170 50" fill="#ffdd57" stroke="#e5a600" stroke-width="3"/><rect x="80" y="70" width="40" height="30" fill="#58cc02" rx="3"/><circle cx="100" cy="85" r="10" fill="#46a302"/><line x1="100" y1="90" x2="100" y2="100" stroke="white" stroke-width="2"/></svg>` },
+            { type: 'exercise', question: 'In the number $856$ (total coins), what is the value of the Hundreds digit ($8$)?', question_indo: 'Dalam angka $856$ (total koin), apa nilai dari digit Ratusan ($8$)?', answer: 800, explanation: `<p class="bilingual">The digit $8$ is in the Hundreds place, so its value is $8 \\times 100 = 800$. <span class="indo">Digit $8$ berada di tempat Ratusan, jadi nilainya adalah $8 \\times 100 = 800$.</span></p>` },
+            { type: 'exercise', question: 'In the number $324$ (coins given), what is the value of the Tens digit ($2$)?', question_indo: 'Dalam angka $324$ (koin diberikan), apa nilai dari digit Puluhan ($2$)?', answer: 20, explanation: `<p class="bilingual">The digit $2$ is in the Tens place, so its value is $2 \\times 10 = 20$. <span class="indo">Digit $2$ berada di tempat Puluhan, jadi nilainya adalah $2 \\times 10 = 20$.</span></p>` },
+            { type: 'exercise', question: 'To find the remaining coins, do we Add ($+$) or Subtract ($-$)? Type 1 for Add, 2 for Subtract.', question_indo: 'Untuk mencari koin tersisa, kita Tambah ($+$) atau Kurangi ($-$)? Ketik 1 untuk Tambah, 2 untuk Kurangi.', answer: 2, explanation: `<p class="bilingual">When we want to find how many are left, we subtract! <span class="indo">Saat kita ingin mencari berapa yang tersisa, kita kurangi!</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Subtraction Without Borrowing <span class="indo">(Pengurangan Tanpa Meminjam)</span></h3><p class="bilingual">Today, we are going to learn how to subtract big 3-digit numbers so easily! We call it subtraction without 'stealing' (borrowing) from neighbors. This works when the top digit in every column is bigger than or equal to the bottom digit. <span class="indo">Hari ini, kita akan belajar mengurangi angka 3-digit besar dengan mudah! Ini disebut pengurangan tanpa 'menyontek' (meminjam) dari tetangga. Ini berlaku saat digit atas di setiap kolom lebih besar atau sama dengan digit bawah.</span></p>`, svg: `<svg viewBox="0 0 200 100"><text x="20" y="30" font-size="20" fill="white">856</text><text x="80" y="30" font-size="20" fill="white">-</text><text x="120" y="30" font-size="20" fill="white">324</text><line x1="20" y2="35" x2="160" y2="35" stroke="white" stroke-width="2"/><text x="20" y="55" font-size="15" fill="#58cc02">8 > 3</text><text x="20" y="75" font-size="15" fill="#1cb0f6">5 > 2</text><text x="20" y="95" font-size="15" fill="#ffc800">6 > 4</text></svg>` },
+            { type: 'exercise', question: 'Look at $528 - 215$. In the Ones column ($8 - 5$), is $8$ bigger than $5$? Type 1 for Yes, 0 for No.', question_indo: 'Lihat $528 - 215$. Di kolom Satuan ($8 - 5$), apakah $8$ lebih besar dari $5$? Ketik 1 untuk Ya, 0 untuk Tidak.', answer: 1, explanation: `<p class="bilingual">Yes! $8$ is bigger than $5$, so we don't need to borrow. <span class="indo">Ya! $8$ lebih besar dari $5$, jadi kita tidak perlu meminjam.</span></p>` },
+            { type: 'exercise', question: 'Look at $749 - 323$. In the Tens column ($4 - 2$), is $4$ bigger than $2$? Type 1 for Yes, 0 for No.', question_indo: 'Lihat $749 - 323$. Di kolom Puluhan ($4 - 2$), apakah $4$ lebih besar dari $2$? Ketik 1 untuk Ya, 0 untuk Tidak.', answer: 1, explanation: `<p class="bilingual">Yes! $4$ is bigger than $2$, no borrowing needed here. <span class="indo">Ya! $4$ lebih besar dari $2$, tidak ada peminjaman di sini.</span></p>` },
+            { type: 'exercise', question: 'Look at $677 - 444$. In the Hundreds column ($6 - 4$), is $6$ bigger than $4$? Type 1 for Yes, 0 for No.', question_indo: 'Lihat $677 - 444$. Di kolom Ratusan ($6 - 4$), apakah $6$ lebih besar dari $4$? Ketik 1 untuk Ya, 0 untuk Tidak.', answer: 1, explanation: `<p class="bilingual">Yes! $6$ is bigger than $4$. No borrowing needed! <span class="indo">Ya! $6$ lebih besar dari $4$. Tidak perlu meminjam!</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Breaking Down the Treasure <span class="indo">(Menguraikan Harta Karun)</span></h3><p class="bilingual">To find out how many coins are left ($856 - 324$), we just subtract the Hundreds, Tens, and Ones separately! It's like three mini-subtractions! <span class="indo">Untuk mencari berapa koin tersisa ($856 - 324$), kita kurangi Ratusan, Puluhan, dan Satuan secara terpisah! Seperti tiga mini-pengurangan!</span></p>`, svg: `<svg viewBox="0 0 200 120"><rect x="10" y="10" width="50" height="30" fill="#58cc02" rx="5"/><text x="35" y="30" text-anchor="middle" fill="white" font-size="15">800</text><rect x="70" y="10" width="50" height="30" fill="#1cb0f6" rx="5"/><text x="95" y="30" text-anchor="middle" fill="white" font-size="15">50</text><rect x="130" y="10" width="50" height="30" fill="#ffc800" rx="5"/><text x="155" y="30" text-anchor="middle" fill="white" font-size="15">6</text><text x="100" y="60" font-size="20" fill="white">MINUS</text><rect x="10" y="70" width="50" height="30" fill="#58cc02" rx="5"/><text x="35" y="90" text-anchor="middle" fill="white" font-size="15">300</text><rect x="70" y="70" width="50" height="30" fill="#1cb0f6" rx="5"/><text x="95" y="90" text-anchor="middle" fill="white" font-size="15">20</text><rect x="130" y="70" width="50" height="30" fill="#ffc800" rx="5"/><text x="155" y="90" text-anchor="middle" fill="white" font-size="15">4</text></svg>` },
+            { type: 'exercise', question: 'Subtract the Hundreds: $800 - 300 = \\dots$', question_indo: 'Kurangi Ratusan: $800 - 300 = \\dots$', answer: 500, explanation: `<p class="bilingual">$8 - 3 = 5$, then add the two zeros: $500$. <span class="indo">$8 - 3 = 5$, lalu tambahkan dua nol: $500$.</span></p>` },
+            { type: 'exercise', question: 'Subtract the Tens: $50 - 20 = \\dots$', question_indo: 'Kurangi Puluhan: $50 - 20 = \\dots$', answer: 30, explanation: `<p class="bilingual">$5 - 2 = 3$, then add one zero: $30$. <span class="indo">$5 - 2 = 3$, lalu tambahkan satu nol: $30$.</span></p>` },
+            { type: 'exercise', question: 'Subtract the Ones: $6 - 4 = \\dots$', question_indo: 'Kurangi Satuan: $6 - 4 = \\dots$', answer: 2, explanation: `<p class="bilingual">Just simple subtraction! $6 - 4 = 2$. <span class="indo">Pengurangan sederhana! $6 - 4 = 2$.</span></p>` },
+            { type: 'exercise', question: 'Combine them! $500 + 30 + 2 = \\dots$', question_indo: 'Gabungkan mereka! $500 + 30 + 2 = \\dots$', answer: 532, explanation: `<p class="bilingual">Combine the results: $500$ (Hundreds) $+ 30$ (Tens) $+ 2$ (Ones) $= 532$. You have 532 coins left! <span class="indo">Gabungkan hasilnya: $500$ (Ratusan) $+ 30$ (Puluhan) $+ 2$ (Satuan) $= 532$. Kamu punya 532 koin tersisa!</span></p>` }
+        ];
+
+        // Section 3: Review of Prior Knowledge
+        lessonData[2].steps = [
+            { type: 'theory', content: `<h3 class="bilingual">Review of Prior Knowledge <span class="indo">(Review Pengetahuan Sebelumnya)</span></h3><p class="bilingual">Remember our friendly Place Value columns? H for Hundreds, T for Tens, O for Ones. If I write $400 - 100$, we only look at the 'H' column. What is $4 - 1$? Yes, $3$! So $400 - 100 = 300$. <span class="indo">Ingat kolom Nilai Tempat kita? H untuk Ratusan, T untuk Puluhan, O untuk Satuan. Jika saya menulis 400 - 100, kita hanya lihat kolom 'H'. Berapa 4 - 1? Ya, 3! Jadi 400 - 100 = 300.</span></p>`, svg: `<svg viewBox="0 0 200 100"><rect x="20" y="10" width="40" height="80" fill="#58cc02" rx="5"/><text x="40" y="50" text-anchor="middle" fill="white" font-size="25" font-weight="bold">4</text><rect x="70" y="10" width="40" height="80" fill="#1cb0f6" rx="5"/><text x="90" y="50" text-anchor="middle" fill="white" font-size="25" font-weight="bold">0</text><rect x="120" y="10" width="40" height="80" fill="#ffc800" rx="5"/><text x="140" y="50" text-anchor="middle" fill="white" font-size="25" font-weight="bold">0</text></svg>` },
+            { type: 'exercise', question: 'Mental math: $900 - 400 = \\dots$', question_indo: 'Hitung cepat: $900 - 400 = \\dots$', answer: 500, explanation: `<p class="bilingual">$9 - 4 = 5$, add two zeros: $500$. <span class="indo">$9 - 4 = 5$, tambahkan dua nol: $500$.</span></p>` },
+            { type: 'exercise', question: 'Mental math: $700 - 200 = \\dots$', question_indo: 'Hitung cepat: $700 - 200 = \\dots$', answer: 500, explanation: `<p class="bilingual">$7 - 2 = 5$, add two zeros: $500$. <span class="indo">$7 - 2 = 5$, tambahkan dua nol: $500$.</span></p>` },
+            { type: 'exercise', question: 'Mental math: $800 - 500 = \\dots$', question_indo: 'Hitung cepat: $800 - 500 = \\dots$', answer: 300, explanation: `<p class="bilingual">$8 - 5 = 3$, add two zeros: $300$. <span class="indo">$8 - 5 = 3$, tambahkan dua nol: $300$.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Subtracting the Tens <span class="indo">(Mengurangi Puluhan)</span></h3><p class="bilingual">We can do the same with Tens! $40 - 10 = 30$. It's just like subtracting small numbers but with one zero tagging along! <span class="indo">Kita bisa melakukan hal sama dengan Puluhan! 40 - 10 = 30. Sama seperti mengurangi angka kecil tapi dengan satu nol yang ikut!</span></p>`, svg: `<svg viewBox="0 0 280 80"><text x="20" y="40" font-size="20" fill="white">4</text><text x="40" y="40" font-size="20" fill="#a0a0a0">0</text><text x="80" y="40" font-size="20" fill="white">-</text><text x="110" y="40" font-size="20" fill="white">1</text><text x="130" y="40" font-size="20" fill="#a0a0a0">0</text><text x="170" y="40" font-size="20" fill="white">= 30</text></svg>` },
+            { type: 'exercise', question: 'Mental math: $60 - 20 = \\dots$', question_indo: 'Hitung cepat: $60 - 20 = \\dots$', answer: 40, explanation: `<p class="bilingual">$6 - 2 = 4$, add one zero: $40$. <span class="indo">$6 - 2 = 4$, tambahkan satu nol: $40$.</span></p>` },
+            { type: 'exercise', question: 'Mental math: $90 - 30 = \\dots$', question_indo: 'Hitung cepat: $90 - 30 = \\dots$', answer: 60, explanation: `<p class="bilingual">$9 - 3 = 6$, add one zero: $60$. <span class="indo">$9 - 3 = 6$, tambahkan satu nol: $60$.</span></p>` },
+            { type: 'exercise', question: 'Mental math: $50 - 40 = \\dots$', question_indo: 'Hitung cepat: $50 - 40 = \\dots$', answer: 10, explanation: `<p class="bilingual">$5 - 4 = 1$, add one zero: $10$. <span class="indo">$5 - 4 = 1$, tambahkan satu nol: $10$.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Combining Hundreds and Tens <span class="indo">(Menggabungkan Ratusan dan Puluhan)</span></h3><p class="bilingual">Now let's combine them! For $480 - 250$, we do $400 - 200 = 200$, and $80 - 50 = 30$. Combine them: $200 + 30 = 230$! <span class="indo">Sekarang gabungkan mereka! Untuk 480 - 250, kita lakukan 400 - 200 = 200, dan 80 - 50 = 30. Gabungkan: 200 + 30 = 230!</span></p>`, svg: `<svg viewBox="0 0 200 120"><rect x="10" y="10" width="50" height="30" fill="#58cc02" rx="5"/><text x="35" y="30" text-anchor="middle" fill="white" font-size="15">400</text><rect x="70" y="10" width="50" height="30" fill="#1cb0f6" rx="5"/><text x="95" y="30" text-anchor="middle" fill="white" font-size="15">80</text><text x="100" y="60" font-size="20" fill="white">MINUS</text><rect x="10" y="70" width="50" height="30" fill="#58cc02" rx="5"/><text x="35" y="90" text-anchor="middle" fill="white" font-size="15">200</text><rect x="70" y="70" width="50" height="30" fill="#1cb0f6" rx="5"/><text x="95" y="90" text-anchor="middle" fill="white" font-size="15">50</text><text x="155" y="90" text-anchor="middle" fill="white" font-size="15">= 230</text></svg>` },
+            { type: 'exercise', question: 'Mental math: $780 - 340 = \\dots$', question_indo: 'Hitung cepat: $780 - 340 = \\dots$', answer: 440, explanation: `<p class="bilingual">$700 - 300 = 400$, $80 - 40 = 40$. Combine: $400 + 40 = 440$. <span class="indo">$700 - 300 = 400$, $80 - 40 = 40$. Gabungkan: $400 + 40 = 440$.</span></p>` },
+            { type: 'exercise', question: 'Mental math: $960 - 510 = \\dots$', question_indo: 'Hitung cepat: $960 - 510 = \\dots$', answer: 450, explanation: `<p class="bilingual">$900 - 500 = 400$, $60 - 10 = 50$. Combine: $400 + 50 = 450$. <span class="indo">$900 - 500 = 400$, $60 - 10 = 50$. Gabungkan: $400 + 50 = 450$.</span></p>` },
+            { type: 'exercise', question: 'Mental math: $690 - 230 = \\dots$', question_indo: 'Hitung cepat: $690 - 230 = \\dots$', answer: 460, explanation: `<p class="bilingual">$600 - 200 = 400$, $90 - 30 = 60$. Combine: $400 + 60 = 460$. <span class="indo">$600 - 200 = 400$, $90 - 30 = 60$. Gabungkan: $400 + 60 = 460$.</span></p>` },
+            { type: 'exercise', question: 'Mental math: $550 - 320 = \\dots$', question_indo: 'Hitung cepat: $550 - 320 = \\dots$', answer: 230, explanation: `<p class="bilingual">$500 - 300 = 200$, $50 - 20 = 30$. Combine: $200 + 30 = 230$. <span class="indo">$500 - 300 = 200$, $50 - 20 = 30$. Gabungkan: $200 + 30 = 230$.</span></p>` }
+        ];
+
+        // Section 4: Problem Introduction
+        lessonData[3].steps = [
+            { type: 'theory', content: `<h3 class="bilingual">Problem Introduction: Vertical Method <span class="indo">(Pengantar Masalah: Metode Vertikal)</span></h3><p class="bilingual">Now, let's look at a bigger challenge: $567 - 234$. We stack them like blocks! Always start from the right side—the Ones. <span class="indo">Sekarang, mari lihat tantangan lebih besar: 567 - 234. kita tumpuk mereka seperti balok! Selalu mulai dari sisi kanan—yaitu Satuan.</span></p>`, svg: `<svg viewBox="0 0 240 120"><rect x="20" y="10" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="28" text-anchor="middle" fill="white" font-size="15">5</text><rect x="70" y="10" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="28" text-anchor="middle" fill="white" font-size="15">6</text><rect x="120" y="10" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="28" text-anchor="middle" fill="white" font-size="15">7</text><rect x="20" y="45" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="63" text-anchor="middle" fill="white" font-size="15">2</text><rect x="70" y="45" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="63" text-anchor="middle" fill="white" font-size="15">3</text><rect x="120" y="45" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="63" text-anchor="middle" fill="white" font-size="15">4</text><line x1="20" y1="75" x2="160" y2="75" stroke="white" stroke-width="3"/><path d="M155 35 L175 35 L175 80 L155 80" fill="none" stroke="#1cb0f6" stroke-width="2"/><text x="185" y="60" font-size="14" fill="#1cb0f6">Start</text></svg>` },
+            { type: 'exercise', question: 'In $567 - 234$, which column do we subtract first? (Type 1 for Ones, 2 for Tens, 3 for Hundreds)', question_indo: 'Dalam $567 - 234$, kolom mana yang kita kurangi pertama? (Ketik 1 untuk Satuan, 2 untuk Puluhan, 3 untuk Ratusan)', answer: 1, explanation: `<p class="bilingual">We always start from the right, which is the Ones column! <span class="indo">Kita selalu mulai dari kanan, yaitu kolom Satuan!</span></p>` },
+            { type: 'exercise', question: 'Subtract the Ones: $7 - 4 = \\dots$', question_indo: 'Kurangi Satuan: $7 - 4 = \\dots$', answer: 3, explanation: `<p class="bilingual">$7$ minus $4$ equals $3$. Write $3$ under the Ones column. <span class="indo">$7$ dikurangi $4$ sama dengan $3$. Tulis $3$ di bawah kolom Satuan.</span></p>` },
+            { type: 'exercise', question: 'In $869 - 527$, subtract the Ones: $9 - 7 = \\dots$', question_indo: 'Dalam $869 - 527$, kurangi Satuan: $9 - 7 = \\dots$', answer: 2, explanation: `<p class="bilingual">$9$ minus $7$ equals $2$. <span class="indo">$9$ dikurangi $7$ sama dengan $2$.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Moving to the Tens <span class="indo">(Bergerak ke Puluhan)</span></h3><p class="bilingual">Next, we move to the middle column—the Tens! We subtract the middle numbers. <span class="indo">Selanjutnya, kita pindah ke kolom tengah—yaitu Puluhan! Kita kurangi angka di tengah.</span></p>`, svg: `<svg viewBox="0 0 200 120"><rect x="20" y="10" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="28" text-anchor="middle" fill="white" font-size="15">5</text><rect x="70" y="10" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="28" text-anchor="middle" fill="white" font-size="15">6</text><rect x="120" y="10" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="28" text-anchor="middle" fill="white" font-size="15">7</text><rect x="20" y="45" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="63" text-anchor="middle" fill="white" font-size="15">2</text><rect x="70" y="45" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="63" text-anchor="middle" fill="white" font-size="15">3</text><rect x="120" y="45" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="63" text-anchor="middle" fill="white" font-size="15">4</text><line x1="20" y2="75" x2="160" y2="75" stroke="white" stroke-width="3"/><rect x="120" y="80" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="98" text-anchor="middle" fill="white" font-size="15">3</text></svg>` },
+            { type: 'exercise', question: 'In $567 - 234$, subtract the Tens: $6 - 3 = \\dots$', question_indo: 'Dalam $567 - 234$, kurangi Puluhan: $6 - 3 = \\dots$', answer: 3, explanation: `<p class="bilingual">$6$ minus $3$ equals $3$. Write $3$ under the Tens column. <span class="indo">$6$ dikurangi $3$ sama dengan $3$. Tulis $3$ di bawah kolom Puluhan.</span></p>` },
+            { type: 'exercise', question: 'In $869 - 527$, subtract the Tens: $6 - 2 = \\dots$', question_indo: 'Dalam $869 - 527$, kurangi Puluhan: $6 - 2 = \\dots$', answer: 4, explanation: `<p class="bilingual">$6$ minus $2$ equals $4$. Write $4$ under the Tens column. <span class="indo">$6$ dikurangi $2$ sama dengan $4$. Tulis $4$ di bawah kolom Puluhan.</span></p>` },
+            { type: 'exercise', question: 'In $478 - 153$, subtract the Tens: $7 - 5 = \\dots$', question_indo: 'Dalam $478 - 153$, kurangi Puluhan: $7 - 5 = \\dots$', answer: 2, explanation: `<p class="bilingual">$7$ minus $5$ equals $2$. Write $2$ under the Tens column. <span class="indo">$7$ dikurangi $5$ sama dengan $2$. Tulis $2$ di bawah kolom Puluhan.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">The Final Step: Hundreds <span class="indo">(Langkah Terakhir: Ratusan)</span></h3><p class="bilingual">Finally, we subtract the Hundreds column—the leftmost numbers! Then we put all the answers together to get our final result. <span class="indo">Terakhir, kita kurangi kolom Ratusan—angka paling kiri! Lalu kita gabungkan semua jawaban untuk mendapatkan hasil akhir.</span></p>`, svg: `<svg viewBox="0 0 200 120"><rect x="20" y="10" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="28" text-anchor="middle" fill="white" font-size="15">5</text><rect x="70" y="10" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="28" text-anchor="middle" fill="white" font-size="15">6</text><rect x="120" y="10" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="28" text-anchor="middle" fill="white" font-size="15">7</text><rect x="20" y="45" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="63" text-anchor="middle" fill="white" font-size="15">2</text><rect x="70" y="45" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="63" text-anchor="middle" fill="white" font-size="15">3</text><rect x="120" y="45" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="63" text-anchor="middle" fill="white" font-size="15">4</text><line x1="20" y2="75" x2="160" y2="75" stroke="white" stroke-width="3"/><rect x="20" y="80" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="98" text-anchor="middle" fill="white" font-size="15">3</text><rect x="70" y="80" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="98" text-anchor="middle" fill="white" font-size="15">3</text><rect x="120" y="80" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="98" text-anchor="middle" fill="white" font-size="15">3</text></svg>` },
+            { type: 'exercise', question: 'In $567 - 234$, subtract the Hundreds: $5 - 2 = \\dots$', question_indo: 'Dalam $567 - 234$, kurangi Ratusan: $5 - 2 = \\dots$', answer: 3, explanation: `<p class="bilingual">$5$ minus $2$ equals $3$. Write $3$ under the Hundreds column. <span class="indo">$5$ dikurangi $2$ sama dengan $3$. Tulis $3$ di bawah kolom Ratusan.</span></p>` },
+            { type: 'exercise', question: 'Put it all together! $3$ Hundreds $+ 3$ Tens $+ 3$ Ones $= \\dots$', question_indo: 'Gabungkan semuanya! $3$ Ratusan $+ 3$ Puluhan $+ 3$ Satuan $= \\dots$', answer: 333, explanation: `<p class="bilingual">$300 + 30 + 3 = 333$. Our final answer for $567 - 234$ is $333$! <span class="indo">$300 + 30 + 3 = 333$. Jawaban akhir kita untuk $567 - 234$ adalah $333$!</span></p>` },
+            { type: 'exercise', question: 'Solve $478 - 153$ using the vertical method. What is the final answer?', question_indo: 'Selesaikan $478 - 153$ menggunakan metode vertikal. Berapa jawaban akhirnya?', answer: 325, explanation: `<p class="bilingual">Hundreds: $4-1=3$. Tens: $7-5=2$. Ones: $8-3=5$. Answer: $325$. <span class="indo">Ratusan: $4-1=3$. Puluhan: $7-5=2$. Satuan: $8-3=5$. Jawaban: $325$.</span></p>` },
+            { type: 'exercise', question: 'Solve $869 - 527$ using the vertical method. What is the final answer?', question_indo: 'Selesaikan $869 - 527$ menggunakan metode vertikal. Berapa jawaban akhirnya?', answer: 342, explanation: `<p class="bilingual">Hundreds: $8-5=3$. Tens: $6-2=4$. Ones: $9-7=2$. Answer: $342$. <span class="indo">Ratusan: $8-5=3$. Puluhan: $6-2=4$. Satuan: $9-7=2$. Jawaban: $342$.</span></p>` }
+        ];
+
+        // --- POPULATING DATA (Part 3: Section 5 & 6) ---
+        // Section 5: Guided Practice
+        lessonData[4].steps = [
+            { type: 'theory', content: `<h3 class="bilingual">Guided Practice: Step-by-Step <span class="indo">(Latihan Terbimbing: Langkah demi Langkah)</span></h3><p class="bilingual">Now it's your turn to guide the pen! Let's look at $895 - 451$. We stack them vertically and always start from the Ones. <span class="indo">Sekarang giliran kamu memegang pena! Mari lihat $895 - 451$. Kita tumpuk mereka vertikal dan selalu mulai dari Satuan.</span></p>`, svg: `<svg viewBox="0 0 200 120"><rect x="20" y="10" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="28" text-anchor="middle" fill="white" font-size="15">8</text><rect x="70" y="10" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="28" text-anchor="middle" fill="white" font-size="15">9</text><rect x="120" y="10" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="28" text-anchor="middle" fill="white" font-size="15">5</text><rect x="20" y="45" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="63" text-anchor="middle" fill="white" font-size="15">4</text><rect x="70" y="45" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="63" text-anchor="middle" fill="white" font-size="15">5</text><rect x="120" y="45" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="63" text-anchor="middle" fill="white" font-size="15">1</text><line x1="20" y2="75" x2="160" y2="75" stroke="white" stroke-width="3"/></svg>` },
+            { type: 'exercise', question: 'Let\'s subtract the Ones column first! What is $5 - 1$?', question_indo: 'Mari kurangi kolom Satuan pertama! Berapa $5 - 1$?', answer: 4, explanation: `<p class="bilingual">$5$ minus $1$ equals $4$. Write $4$ under the Ones column. <span class="indo">$5$ dikurangi $1$ sama dengan $4$. Tulis $4$ di bawah kolom Satuan.</span></p>` },
+            { type: 'exercise', question: 'Next, move to the Tens column! What is $9 - 5$?', question_indo: 'Selanjutnya, pindah ke kolom Puluhan! Berapa $9 - 5$?', answer: 4, explanation: `<p class="bilingual">$9$ minus $5$ equals $4$. Write $4$ under the Tens column. <span class="indo">$9$ dikurangi $5$ sama dengan $4$. Tulis $4$ di bawah kolom Puluhan.</span></p>` },
+            { type: 'exercise', question: 'Finally, subtract the Hundreds column! What is $8 - 4$?', question_indo: 'Terakhir, kurangi kolom Ratusan! Berapa $8 - 4$?', answer: 4, explanation: `<p class="bilingual">$8$ minus $4$ equals $4$. Write $4$ under the Hundreds column. <span class="indo">$8$ dikurangi $4$ sama dengan $4$. Tulis $4$ di bawah kolom Ratusan.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Putting It Together <span class="indo">(Menggabungkan Semuanya)</span></h3><p class="bilingual">Great job! $4$ Hundreds, $4$ Tens, and $4$ Ones make $444$. Now let's try $672 - 260$. <span class="indo">Kerja bagus! 4 Ratusan, 4 Puluhan, dan 4 Satuan menjadi 444. Sekarang mari coba 672 - 260.</span></p>`, svg: `<svg viewBox="0 0 200 100"><text x="30" y="30" font-size="20" fill="white">895</text><text x="100" y="30" font-size="20" fill="white">-</text><text x="130" y="30" font-size="20" fill="white">451</text><line x1="30" y2="35" x2="170" y2="35" stroke="white" stroke-width="2"/><text x="30" y="60" font-size="20" fill="#58cc02">444</text><path d="M50 70 L90 70 L90 95 L50 95 Z" fill="#1cb0f6" stroke="white"/><text x="70" y="85" text-anchor="middle" fill="white" font-size="12">Next</text></svg>` },
+            { type: 'exercise', question: 'In $672 - 260$, subtract the Ones: $2 - 0 = \\dots$', question_indo: 'Dalam $672 - 260$, kurangi Satuan: $2 - 0 = \\dots$', answer: 2, explanation: `<p class="bilingual">Any number minus $0$ is the same number! $2 - 0 = 2$. <span class="indo">Angka apapun dikurangi $0$ adalah angka itu sendiri! $2 - 0 = 2$.</span></p>` },
+            { type: 'exercise', question: 'In $672 - 260$, subtract the Tens: $7 - 6 = \\dots$', question_indo: 'Dalam $672 - 260$, kurangi Puluhan: $7 - 6 = \\dots$', answer: 1, explanation: `<p class="bilingual">$7$ minus $6$ equals $1$. Write $1$ under the Tens column. <span class="indo">$7$ dikurangi $6$ sama dengan $1$. Tulis $1$ di bawah kolom Puluhan.</span></p>` },
+            { type: 'exercise', question: 'In $672 - 260$, subtract the Hundreds: $6 - 2 = \\dots$', question_indo: 'Dalam $672 - 260$, kurangi Ratusan: $6 - 2 = \\dots$', answer: 4, explanation: `<p class="bilingual">$6$ minus $2$ equals $4$. Write $4$ under the Hundreds column. <span class="indo">$6$ dikurangi $2$ sama dengan $4$. Tulis $4$ di bawah kolom Ratusan.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">One More Together <span class="indo">(Satu Lagi Bersama)</span></h3><p class="bilingual">You are becoming a pro! Let's try one more together: $444 - 123$. Remember the rule: Ones, Tens, Hundreds! <span class="indo">Kamu menjadi pro! Mari coba satu lagi bersama: $444 - 123$. Ingat aturannya: Satuan, Puluhan, Ratusan!</span></p>`, svg: `<svg viewBox="0 0 200 120"><rect x="20" y="10" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="28" text-anchor="middle" fill="white" font-size="15">4</text><rect x="70" y="10" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="28" text-anchor="middle" fill="white" font-size="15">4</text><rect x="120" y="10" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="28" text-anchor="middle" fill="white" font-size="15">4</text><rect x="20" y="45" width="40" height="25" fill="#58cc02" rx="3"/><text x="40" y="63" text-anchor="middle" fill="white" font-size="15">1</text><rect x="70" y="45" width="40" height="25" fill="#1cb0f6" rx="3"/><text x="90" y="63" text-anchor="middle" fill="white" font-size="15">2</text><rect x="120" y="45" width="40" height="25" fill="#ffc800" rx="3"/><text x="140" y="63" text-anchor="middle" fill="white" font-size="15">3</text><line x1="20" y2="75" x2="160" y2="75" stroke="white" stroke-width="3"/></svg>` },
+            { type: 'exercise', question: 'In $444 - 123$, subtract the Ones: $4 - 3 = \\dots$', question_indo: 'Dalam $444 - 123$, kurangi Satuan: $4 - 3 = \\dots$', answer: 1, explanation: `<p class="bilingual">$4$ minus $3$ equals $1$. <span class="indo">$4$ dikurangi $3$ sama dengan $1$.</span></p>` },
+            { type: 'exercise', question: 'In $444 - 123$, subtract the Tens: $4 - 2 = \\dots$', question_indo: 'Dalam $444 - 123$, kurangi Puluhan: $4 - 2 = \\dots$', answer: 2, explanation: `<p class="bilingual">$4$ minus $2$ equals $2$. <span class="indo">$4$ dikurangi $2$ sama dengan $2$.</span></p>` },
+            { type: 'exercise', question: 'In $444 - 123$, subtract the Hundreds: $4 - 1 = \\dots$', question_indo: 'Dalam $444 - 123$, kurangi Ratusan: $4 - 1 = \\dots$', answer: 3, explanation: `<p class="bilingual">$4$ minus $1$ equals $3$. <span class="indo">$4$ dikurangi $1$ sama dengan $3$.</span></p>` },
+            { type: 'exercise', question: 'What is the total difference of $444 - 123$?', question_indo: 'Berapa selisih total dari $444 - 123$?', answer: 321, explanation: `<p class="bilingual">Combine the answers: $3$ Hundreds $+ 2$ Tens $+ 1$ Ones $= 321$. <span class="indo">Gabungkan jawabannya: $3$ Ratusan $+ 2$ Puluhan $+ 1$ Satuan $= 321$.</span></p>` }
+        ];
+
+        // Section 6: Independent Practice
+        lessonData[5].steps = [
+            { type: 'theory', content: `<h3 class="bilingual">Independent Practice: Boss Level! <span class="indo">(Latihan Mandiri: Level Boss!)</span></h3><p class="bilingual">You are a pro! I'm going to give you 4 'Boss Level' challenges. Try to solve them on your own. If you get stuck, remember: Ones, then Tens, then Hundreds. <span class="indo">Kamu sudah pro! Aku akan memberikan 4 tantangan 'Level Boss'. Cobalah selesaikan sendiri. Jika kesulitan, ingat: Satuan, lalu Puluhan, lalu Ratusan.</span></p>`, svg: `<svg viewBox="0 0 200 150"><path d="M100 20 L130 80 L190 90 L140 130 L150 190 L100 160 L50 190 L60 130 L10 90 L70 80 Z" fill="#ffc800" stroke="#e5a600" stroke-width="3"/><text x="100" y="95" text-anchor="middle" fill="white" font-size="30" font-weight="bold">BOSS</text></svg>` },
+            { type: 'exercise', question: 'Boss Level 1: Solve $987 - 123 = \\dots$', question_indo: 'Level Boss 1: Selesaikan $987 - 123 = \\dots$', answer: 864, explanation: `<p class="bilingual">Hundreds: $9-1=8$. Tens: $8-2=6$. Ones: $7-3=4$. Answer: $864$. <span class="indo">Ratusan: $9-1=8$. Puluhan: $8-2=6$. Satuan: $7-3=4$. Jawaban: $864$.</span></p>` },
+            { type: 'exercise', question: 'Boss Level 2: Solve $555 - 555 = \\dots$', question_indo: 'Level Boss 2: Selesaikan $555 - 555 = \\dots$', answer: 0, explanation: `<p class="bilingual">If you subtract a number by itself, the result is always $0$! <span class="indo">Jika kamu mengurangi angka dengan dirinya sendiri, hasilnya selalu $0$!</span></p>` },
+            { type: 'exercise', question: 'Boss Level 3: Solve $789 - 604 = \\dots$', question_indo: 'Level Boss 3: Selesaikan $789 - 604 = \\dots$', answer: 185, explanation: `<p class="bilingual">Hundreds: $7-6=1$. Tens: $8-0=8$. Ones: $9-4=5$. Answer: $185$. <span class="indo">Raturan: $7-6=1$. Puluhan: $8-0=8$. Satuan: $9-4=5$. Jawaban: $185$.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Real-World Challenge: The Baker <span class="indo">(Tantangan Dunia Nyata: Tukang Roti)</span></h3><p class="bilingual">Awesome! Now let's use our skills for a real-world problem. A baker has $458$ cupcakes and sells $236$. How many are left? <span class="indo">Hebat! Sekarang mari gunakan kemampuan kita untuk masalah dunia nyata. Seorang tukang roti punya 458 cupcake dan menjual 236. Berapa yang tersisa?</span></p>`, svg: `<svg viewBox="0 0 200 150"><path d="M60 80 Q100 40 140 80 L140 120 L60 120 Z" fill="#ffc800" stroke="#e5a600" stroke-width="3"/><circle cx="100" cy="110" r="25" fill="#ff4b4b"/><circle cx="85" cy="105" r="4" fill="#ffc800"/><circle cx="115" cy="105" r="4" fill="#ffc800"/><rect x="80" y="70" width="40" height="10" fill="#1cb0f6" rx="3"/></svg>` },
+            { type: 'exercise', question: 'For $458 - 236$, subtract the Ones: $8 - 6 = \\dots$', question_indo: 'Untuk $458 - 236$, kurangi Satuan: $8 - 6 = \\dots$', answer: 2, explanation: `<p class="bilingual">$8$ cupcakes minus $6$ cupcakes equals $2$ cupcakes. <span class="indo">$8$ cupcake dikurangi $6$ cupcake sama dengan $2$ cupcake.</span></p>` },
+            { type: 'exercise', question: 'For $458 - 236$, subtract the Tens: $5 - 3 = \\dots$', question_indo: 'Untuk $458 - 236$, kurangi Puluhan: $5 - 3 = \\dots$', answer: 2, explanation: `<p class="bilingual">$50$ minus $30$ equals $20$. <span class="indo">$50$ dikurangi $30$ sama dengan $20$.</span></p>` },
+            { type: 'exercise', question: 'For $458 - 236$, subtract the Hundreds: $4 - 2 = \\dots$', question_indo: 'Untuk $458 - 236$, kurangi Ratusan: $4 - 2 = \\dots$', answer: 2, explanation: `<p class="bilingual">$400$ minus $200$ equals $200$. <span class="indo">$400$ dikurangi $200$ sama dengan $200$.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Combine the Results <span class="indo">(Gabungkan Hasilnya)</span></h3><p class="bilingual">Combine those results to find the remaining cupcakes! $200 + 20 + 2 = 222$. Let's finish with one last challenge: $321 - 210$. <span class="indo">Gabungkan hasil itu untuk mencari cupcake tersisa! 200 + 20 + 2 = 222. Mari selesaikan dengan satu tantangan terakhir: 321 - 210.</span></p>`, svg: `<svg viewBox="0 0 200 80"><rect x="10" y="10" width="50" height="60" fill="#58cc02" rx="5"/><text x="35" y="40" text-anchor="middle" fill="white" font-size="20" font-weight="bold">2</text><rect x="70" y="10" width="50" height="60" fill="#1cb0f6" rx="5"/><text x="95" y="40" text-anchor="middle" fill="white" font-size="20" font-weight="bold">2</text><rect x="130" y="10" width="50" height="60" fill="#ffc800" rx="5"/><text x="155" y="40" text-anchor="middle" fill="white" font-size="20" font-weight="bold">2</text></svg>` },
+            { type: 'exercise', question: 'How many cupcakes are left? Total $458 - 236 = \\dots$', question_indo: 'Berapa cupcake yang tersisa? Total $458 - 236 = \\dots$', answer: 222, explanation: `<p class="bilingual">Hundreds $2$, Tens $2$, Ones $2$ makes $222$ cupcakes left! <span class="indo">Ratusan $2$, Puluhan $2$, Satuan $2$ menjadi $222$ cupcake tersisa!</span></p>` },
+            { type: 'exercise', question: 'Final Boss: Solve $321 - 210 = \\dots$', question_indo: 'Boss Terakhir: Selesaikan $321 - 210 = \\dots$', answer: 111, explanation: `<p class="bilingual">Hundreds: $3-2=1$. Tens: $2-1=1$. Ones: $1-0=1$. Answer: $111$. <span class="indo">Ratusan: $3-2=1$. Puluhan: $2-1=1$. Satuan: $1-0=1$. Jawaban: $111$.</span></p>` },
+            { type: 'exercise', question: 'Quick mental math: $999 - 111 = \\dots$', question_indo: 'Hitung cepat: $999 - 111 = \\dots$', answer: 888, explanation: `<p class="bilingual">Just subtract $9-1=8$ in each column! Answer is $888$. <span class="indo">Kurangi saja $9-1=8$ di tiap kolom! Jawabannya $888$.</span></p>` },
+            { type: 'exercise', question: 'If you have $888$ apples and give away $444$, how many left? $888 - 444 = \\dots$', question_indo: 'Jika kamu punya 888 apel dan memberikan 444, berapa yang tersisa? $888 - 444 = \\dots$', answer: 444, explanation: `<p class="bilingual">$8-4=4$ in every column! The answer is $444$. <span class="indo">$8-4=4$ di setiap kolom! Jawabannya $444$.</span></p>` }
+        ];
+
+        // --- POPULATING DATA (Part 4: Assignment 1, 2, 3) ---
+        // Assignment 1: Basic 3-Digit Subtraction
+        lessonData[6].steps = [
+            { type: 'assignment_ex', question: 'Solve: $456 - 123 = \\dots$', question_indo: 'Selesaikan: $456 - 123 = \\dots$', answer: 333, explanation: `<p class="bilingual">Hundreds: $4-1=3$. Tens: $5-2=3$. Ones: $6-3=3$. Answer: $333$. <span class="indo">Ratusan: $4-1=3$. Puluhan: $5-2=3$. Satuan: $6-3=3$. Jawaban: $333$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $897 - 654 = \\dots$', question_indo: 'Selesaikan: $897 - 654 = \\dots$', answer: 243, explanation: `<p class="bilingual">Hundreds: $8-6=2$. Tens: $9-5=4$. Ones: $7-4=3$. Answer: $243$. <span class="indo">Ratusan: $8-6=2$. Puluhan: $9-5=4$. Satuan: $7-4=3$. Jawaban: $243$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $528 - 215 = \\dots$', question_indo: 'Selesaikan: $528 - 215 = \\dots$', answer: 313, explanation: `<p class="bilingual">Hundreds: $5-2=3$. Tens: $2-1=1$. Ones: $8-5=3$. Answer: $313$. <span class="indo">Ratusan: $5-2=3$. Puluhan: $2-1=1$. Satuan: $8-5=3$. Jawaban: $313$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $672 - 260 = \\dots$', question_indo: 'Selesaikan: $672 - 260 = \\dots$', answer: 412, explanation: `<p class="bilingual">Hundreds: $6-2=4$. Tens: $7-6=1$. Ones: $2-0=2$. Answer: $412$. <span class="indo">Ratusan: $6-2=4$. Puluhan: $7-6=1$. Satuan: $2-0=2$. Jawaban: $412$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $945 - 621 = \\dots$', question_indo: 'Selesaikan: $945 - 621 = \\dots$', answer: 324, explanation: `<p class="bilingual">Hundreds: $9-6=3$. Tens: $4-2=2$. Ones: $5-1=4$. Answer: $324$. <span class="indo">Raturan: $9-6=3$. Puluhan: $4-2=2$. Satuan: $5-1=4$. Jawaban: $324$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $349 - 128 = \\dots$', question_indo: 'Selesaikan: $349 - 128 = \\dots$', answer: 221, explanation: `<p class="bilingual">Hundreds: $3-1=2$. Tens: $4-2=2$. Ones: $9-8=1$. Answer: $221$. <span class="indo">Ratusan: $3-1=2$. Puluhan: $4-2=2$. Satuan: $9-8=1$. Jawaban: $221$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $808 - 505 = \\dots$', question_indo: 'Selesaikan: $808 - 505 = \\dots$', answer: 303, explanation: `<p class="bilingual">Hundreds: $8-5=3$. Tens: $0-0=0$. Ones: $8-5=3$. Answer: $303$. <span class="indo">Ratusan: $8-5=3$. Puluhan: $0-0=0$. Satuan: $8-5=3$. Jawaban: $303$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $999 - 777 = \\dots$', question_indo: 'Selesaikan: $999 - 777 = \\dots$', answer: 222, explanation: `<p class="bilingual">Hundreds: $9-7=2$. Tens: $9-7=2$. Ones: $9-7=2$. Answer: $222$. <span class="indo">Ratusan: $9-7=2$. Puluhan: $9-7=2$. Satuan: $9-7=2$. Jawaban: $222$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $476 - 134 = \\dots$', question_indo: 'Selesaikan: $476 - 134 = \\dots$', answer: 342, explanation: `<p class="bilingual">Hundreds: $4-1=3$. Tens: $7-3=4$. Ones: $6-4=2$. Answer: $342$. <span class="indo">Ratusan: $4-1=3$. Puluhan: $7-3=4$. Satuan: $6-4=2$. Jawaban: $342$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $892 - 581 = \\dots$', question_indo: 'Selesaikan: $892 - 581 = \\dots$', answer: 311, explanation: `<p class="bilingual">Hundreds: $8-5=3$. Tens: $9-8=1$. Ones: $2-1=1$. Answer: $311$. <span class="indo">Ratusan: $8-5=3$. Puluhan: $9-8=1$. Satuan: $2-1=1$. Jawaban: $311$.</span></p>` }
+        ];
+
+        // Assignment 2: Place Value & Mental Math Focus
+        lessonData[7].steps = [
+            { type: 'assignment_ex', question: 'Mental Math (Hundreds): $800 - 300 = \\dots$', question_indo: 'Hitung Cepat (Ratusan): $800 - 300 = \\dots$', answer: 500, explanation: `<p class="bilingual">Just subtract the front numbers: $8 - 3 = 5$, add zeros: $500$. <span class="indo">Kurangi angka depannya: $8 - 3 = 5$, tambahkan nol: $500$.</span></p>` },
+            { type: 'assignment_ex', question: 'Mental Math (Tens): $670 - 340 = \\dots$', question_indo: 'Hitung Cepat (Puluhan): $670 - 340 = \\dots$', answer: 330, explanation: `<p class="bilingual">$600 - 300 = 300$, $70 - 40 = 30$. Combine: $330$. <span class="indo">$600 - 300 = 300$, $70 - 40 = 30$. Gabungkan: $330$.</span></p>` },
+            { type: 'assignment_ex', question: 'In $945 - 621$, what is the difference of the Hundreds digits ($9 - 6$)?', question_indo: 'Dalam $945 - 621$, berapa selisih digit Ratusan ($9 - 6$)?', answer: 3, explanation: `<p class="bilingual">$9$ minus $6$ equals $3$. <span class="indo">$9$ dikurangi $6$ sama dengan $3$.</span></p>` },
+            { type: 'assignment_ex', question: 'In $945 - 621$, what is the difference of the Tens digits ($4 - 2$)?', question_indo: 'Dalam $945 - 621$, berapa selisih digit Puluhan ($4 - 2$)?', answer: 2, explanation: `<p class="bilingual">$4$ minus $2$ equals $2$. <span class="indo">$4$ dikurangi $2$ sama dengan $2$.</span></p>` },
+            { type: 'assignment_ex', question: 'In $945 - 621$, what is the difference of the Ones digits ($5 - 1$)?', question_indo: 'Dalam $945 - 621$, berapa selisih digit Satuan ($5 - 1$)?', answer: 4, explanation: `<p class="bilingual">$5$ minus $1$ equals $4$. <span class="indo">$5$ dikurangi $1$ sama dengan $4$.</span></p>` },
+            { type: 'assignment_ex', question: 'Combine them! $300 + 20 + 4 = \\dots$', question_indo: 'Gabungkan mereka! $300 + 20 + 4 = \\dots$', answer: 324, explanation: `<p class="bilingual">This makes the final answer for $945 - 621$. <span class="indo">Ini membentuk jawaban akhir untuk $945 - 621$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $708 - 203 = \\dots$', question_indo: 'Selesaikan: $708 - 203 = \\dots$', answer: 505, explanation: `<p class="bilingual">Hundreds: $7-2=5$. Tens: $0-0=0$. Ones: $8-3=5$. Answer: $505$. <span class="indo">Ratusan: $7-2=5$. Puluhan: $0-0=0$. Satuan: $8-3=5$. Jawaban: $505$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $542 - 541 = \\dots$', question_indo: 'Selesaikan: $542 - 541 = \\dots$', answer: 1, explanation: `<p class="bilingual">Hundreds and Tens cancel out ($5-5=0, 4-4=0$). Ones: $2-1=1$. Answer: $1$. <span class="indo">Ratusan dan Puluhan hilang ($5-5=0, 4-4=0$). Satuan: $2-1=1$. Jawaban: $1$.</span></p>` },
+            { type: 'assignment_ex', question: 'Mental Math: $879 - 300 = \\dots$', question_indo: 'Hitung Cepat: $879 - 300 = \\dots$', answer: 579, explanation: `<p class="bilingual">Just subtract the Hundreds! $8 - 3 = 5$, keep the rest same: $579$. <span class="indo">Kurangi Ratusannya saja! $8 - 3 = 5$, sisanya tetap: $579$.</span></p>` },
+            { type: 'assignment_ex', question: 'Mental Math: $400 - 200 + 50 = \\dots$', question_indo: 'Hitung Cepat: $400 - 200 + 50 = \\dots$', answer: 250, explanation: `<p class="bilingual">$400 - 200 = 200$. Then $200 + 50 = 250$. <span class="indo">$400 - 200 = 200$. Lalu $200 + 50 = 250$.</span></p>` }
+        ];
+
+        // Assignment 3: Real-World Word Problems
+        lessonData[8].steps = [
+            { type: 'assignment_ex', question: 'A baker has $458$ cupcakes and sells $236$. How many are left?', question_indo: 'Seorang tukang roti punya $458$ cupcake dan menjual $236$. Berapa yang tersisa?', answer: 222, explanation: `<p class="bilingual">$458 - 236 = 222$. <span class="indo">$458 - 236 = 222$.</span></p>` },
+            { type: 'assignment_ex', question: 'A forest has $895$ trees. If $462$ are pine trees and the rest are oak, how many oak trees are there?', question_indo: 'Sebuah hutan punya $895$ pohon. Jika $462$ adalah pohon pinus dan sisanya pohon oak, berapa pohon oak yang ada?', answer: 433, explanation: `<p class="bilingual">$895 - 462 = 433$. <span class="indo">$895 - 462 = 433$.</span></p>` },
+            { type: 'assignment_ex', question: 'A book has $368$ pages. You have read $145$ pages. How many pages are left?', question_indo: 'Sebuah buku punya $368$ halaman. Kamu sudah baca $145$ halaman. Berapa halaman yang tersisa?', answer: 223, explanation: `<p class="bilingual">$368 - 145 = 223$. <span class="indo">$368 - 145 = 223$.</span></p>` },
+            { type: 'assignment_ex', question: 'You found a chest with $856$ gold coins and gave $324$ to your friends. How many coins do you have left?', question_indo: 'Kamu menemukan kotak dengan $856$ koin emas dan memberikan $324$ kepada teman. Berapa koin yang tersisa?', answer: 532, explanation: `<p class="bilingual">$856 - 324 = 532$. <span class="indo">$856 - 324 = 532$.</span></p>` },
+            { type: 'assignment_ex', question: 'A school has $987$ students. If $123$ students are absent today, how many are present?', question_indo: 'Sebuah sekolah punya $987$ siswa. Jika $123$ siswa absen hari ini, berapa yang hadir?', answer: 864, explanation: `<p class="bilingual">$987 - 123 = 864$. <span class="indo">$987 - 123 = 864$.</span></p>` },
+            { type: 'assignment_ex', question: 'You collected $765$ stickers and gave $543$ to your sibling. How many stickers do you keep?', question_indo: 'Kamu mengoleksi $765$ stiker dan memberikan $543$ kepada saudara. Berapa stiker yang kamu simpan?', answer: 222, explanation: `<p class="bilingual">$765 - 543 = 222$. <span class="indo">$765 - 543 = 222$.</span></p>` },
+            { type: 'assignment_ex', question: 'A zoo has $456$ birds. If $123$ fly away, how many remain?', question_indo: 'Kebun binatang punya $456$ burung. Jika $123$ terbang, berapa yang tetap?', answer: 333, explanation: `<p class="bilingual">$456 - 123 = 333$. <span class="indo">$456 - 123 = 333$.</span></p>` },
+            { type: 'assignment_ex', question: 'A shop had $899$ toys. They sold $666$ toys. How many toys are unsold?', question_indo: 'Toko punya $899$ mainan. Mereka menjual $666$ mainan. Berapa mainan yang tidak terjual?', answer: 233, explanation: `<p class="bilingual">$899 - 666 = 233$. <span class="indo">$899 - 666 = 233$.</span></p>` },
+            { type: 'assignment_ex', question: 'A farmer grows $684$ apples. $362$ are red and the rest are green. How many green apples are there?', question_indo: 'Petani menumbuhkan $684$ apel. $362$ berwarna merah dan sisanya hijau. Berapa apel hijau yang ada?', answer: 322, explanation: `<p class="bilingual">$684 - 362 = 322$. <span class="indo">$684 - 362 = 322$.</span></p>` },
+            { type: 'assignment_ex', question: 'A train has $540$ seats. If $320$ seats are occupied, how many are empty?', question_indo: 'Kereta punya $540$ kursi. Jika $320$ kursi terisi, berapa yang kosong?', answer: 220, explanation: `<p class="bilingual">$540 - 320 = 220$. <span class="indo">$540 - 320 = 220$.</span></p>` }
+        ];
+
+        // --- POPULATING DATA (Part 5: Assignment 4, 5 & Reflection) ---
+        // Assignment 4: Medium / Mixed Challenge
+        lessonData[9].steps = [
+            { type: 'assignment_ex', question: 'Solve: $908 - 505 = \\dots$', question_indo: 'Selesaikan: $908 - 505 = \\dots$', answer: 403, explanation: `<p class="bilingual">Hundreds: $9-5=4$. Tens: $0-0=0$. Ones: $8-5=3$. Answer: $403$. <span class="indo">Ratusan: $9-5=4$. Puluhan: $0-0=0$. Satuan: $8-5=3$. Jawaban: $403$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $760 - 450 = \\dots$', question_indo: 'Selesaikan: $760 - 450 = \\dots$', answer: 310, explanation: `<p class="bilingual">Hundreds: $7-4=3$. Tens: $6-5=1$. Ones: $0-0=0$. Answer: $310$. <span class="indo">Raturan: $7-4=3$. Puluhan: $6-5=1$. Satuan: $0-0=0$. Jawaban: $310$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $569 - 234 = \\dots$', question_indo: 'Selesaikan: $569 - 234 = \\dots$', answer: 335, explanation: `<p class="bilingual">Hundreds: $5-2=3$. Tens: $6-3=3$. Ones: $9-4=5$. Answer: $335$. <span class="indo">Ratusan: $5-2=3$. Puluhan: $6-3=3$. Satuan: $9-4=5$. Jawaban: $335$.</span></p>` },
+            { type: 'assignment_ex', question: 'A library has $482$ books and lends out $161$. How many are left?', question_indo: 'Perpustakaan punya $482$ buku dan meminjamkan $161$. Berapa yang tersisa?', answer: 321, explanation: `<p class="bilingual">$482 - 161 = 321$. <span class="indo">$482 - 161 = 321$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $804 - 302 = \\dots$', question_indo: 'Selesaikan: $804 - 302 = \\dots$', answer: 502, explanation: `<p class="bilingual">Hundreds: $8-3=5$. Tens: $0-0=0$. Ones: $4-2=2$. Answer: $502$. <span class="indo">Ratusan: $8-3=5$. Puluhan: $0-0=0$. Satuan: $4-2=2$. Jawaban: $502$.</span></p>` },
+            { type: 'assignment_ex', question: 'Mental Math: $500 - 200 + 30 = \\dots$', question_indo: 'Hitung Cepat: $500 - 200 + 30 = \\dots$', answer: 330, explanation: `<p class="bilingual">$500 - 200 = 300$. $300 + 30 = 330$. <span class="indo">$500 - 200 = 300$. $300 + 30 = 330$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $678 - 456 = \\dots$', question_indo: 'Selesaikan: $678 - 456 = \\dots$', answer: 222, explanation: `<p class="bilingual">Hundreds: $6-4=2$. Tens: $7-5=2$. Ones: $8-6=2$. Answer: $222$. <span class="indo">Ratusan: $6-4=2$. Puluhan: $7-5=2$. Satuan: $8-6=2$. Jawaban: $222$.</span></p>` },
+            { type: 'assignment_ex', question: 'A park has $985$ visitors. If $462$ leave early, how many remain?', question_indo: 'Taman punya $985$ pengunjung. Jika $462$ pulang awal, berapa yang tersisa?', answer: 523, explanation: `<p class="bilingual">$985 - 462 = 523$. <span class="indo">$985 - 462 = 523$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $999 - 888 = \\dots$', question_indo: 'Selesaikan: $999 - 888 = \\dots$', answer: 111, explanation: `<p class="bilingual">$9-8=1$ in every column. Answer: $111$. <span class="indo">$9-8=1$ di setiap kolom. Jawaban: $111$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $345 - 123 = \\dots$', question_indo: 'Selesaikan: $345 - 123 = \\dots$', answer: 222, explanation: `<p class="bilingual">Hundreds: $3-1=2$. Tens: $4-2=2$. Ones: $5-3=2$. Answer: $222$. <span class="indo">Raturan: $3-1=2$. Puluhan: $4-2=2$. Satuan: $5-3=2$. Jawaban: $222$.</span></p>` }
+        ];
+
+        // Assignment 5: Hard / Final Challenge
+        lessonData[10].steps = [
+            { type: 'assignment_ex', question: 'A forest has $895$ trees. $462$ are pine and the rest are oak. How many oak trees?', question_indo: 'Hutan punya $895$ pohon. $462$ adalah pinus, sisanya oak. Berapa pohon oak?', answer: 433, explanation: `<p class="bilingual">$895 - 462 = 433$. <span class="indo">$895 - 462 = 433$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $708 - 203 = \\dots$', question_indo: 'Selesaikan: $708 - 203 = \\dots$', answer: 505, explanation: `<p class="bilingual">Hundreds: $7-2=5$. Tens: $0-0=0$. Ones: $8-3=5$. Answer: $505$. <span class="indo">Raturan: $7-2=5$. Puluhan: $0-0=0$. Satuan: $8-3=5$. Jawaban: $505$.</span></p>` },
+            { type: 'assignment_ex', question: 'Find the difference between $945$ and $621$.', question_indo: 'Temukan selisih antara $945$ dan $621$.', answer: 324, explanation: `<p class="bilingual">$945 - 621 = 324$. <span class="indo">$945 - 621 = 324$.</span></p>` },
+            { type: 'assignment_ex', question: 'A book has $368$ pages. You have read $145$. How many pages are left?', question_indo: 'Buku punya $368$ halaman. Kamu baca $145$. Berapa halaman tersisa?', answer: 223, explanation: `<p class="bilingual">$368 - 145 = 223$. <span class="indo">$368 - 145 = 223$.</span></p>` },
+            { type: 'assignment_ex', question: 'Mental Math for Hundreds: $879 - 300 = \\dots$', question_indo: 'Hitung Cepat Ratusan: $879 - 300 = \\dots$', answer: 579, explanation: `<p class="bilingual">Just subtract $8 - 3 = 5$ for hundreds. Tens and Ones stay same: $579$. <span class="indo">Kurangi $8 - 3 = 5$ untuk ratusan. Puluhan dan Satuan tetap: $579$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $542 - 541 = \\dots$', question_indo: 'Selesaikan: $542 - 541 = \\dots$', answer: 1, explanation: `<p class="bilingual">Hundreds and Tens cancel out. $2 - 1 = 1$. Answer: $1$. <span class="indo">Ratusan dan Puluhan hilang. $2 - 1 = 1$. Jawaban: $1$.</span></p>` },
+            { type: 'assignment_ex', question: 'You found a chest with $856$ gold coins and gave $324$ away. How many left?', question_indo: 'Kamu menemukan kotak $856$ koin emas dan memberikan $324$. Berapa tersisa?', answer: 532, explanation: `<p class="bilingual">$856 - 324 = 532$. <span class="indo">$856 - 324 = 532$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $657 - 243 = \\dots$', question_indo: 'Selesaikan: $657 - 243 = \\dots$', answer: 414, explanation: `<p class="bilingual">Hundreds: $6-2=4$. Tens: $5-4=1$. Ones: $7-3=4$. Answer: $414$. <span class="indo">Raturan: $6-2=4$. Puluhan: $5-4=1$. Satuan: $7-3=4$. Jawaban: $414$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $476 - 134 = \\dots$', question_indo: 'Selesaikan: $476 - 134 = \\dots$', answer: 342, explanation: `<p class="bilingual">Hundreds: $4-1=3$. Tens: $7-3=4$. Ones: $6-4=2$. Answer: $342$. <span class="indo">Raturan: $4-1=3$. Puluhan: $7-3=4$. Satuan: $6-4=2$. Jawaban: $342$.</span></p>` },
+            { type: 'assignment_ex', question: 'Solve: $892 - 581 = \\dots$', question_indo: 'Selesaikan: $892 - 581 = \\dots$', answer: 311, explanation: `<p class="bilingual">Hundreds: $8-5=3$. Tens: $9-8=1$. Ones: $2-1=1$. Answer: $311$. <span class="indo">Raturan: $8-5=3$. Puluhan: $9-8=1$. Satuan: $2-1=1$. Jawaban: $311$.</span></p>` }
+        ];
+
+        // Section: Consolidation & Reflection
+        lessonData[11].steps = [
+            { type: 'theory', content: `<h3 class="bilingual">Consolidation & Reflection <span class="indo">(Konsolidasi & Refleksi)</span></h3><p class="bilingual">You did amazing! Today you learned how to subtract massive numbers just by looking at their place value. Always remember our golden rule: Start from the Ones (right side), then Tens, then Hundreds! <span class="indo">Kamu hebat! Hari ini kamu belajar mengurangi angka besar hanya dengan melihat nilai tempatnya. Selalu ingat aturan emas kita: Mulai dari Satuan (sisi kanan), lalu Puluhan, lalu Ratusan!</span></p>`, svg: `<svg viewBox="0 0 200 100"><path d="M180 50 L160 50 L160 90 L40 90 L40 50 L20 50" fill="none" stroke="#1cb0f6" stroke-width="4"/><circle cx="180" cy="50" r="8" fill="#ffc800"/><circle cx="100" cy="50" r="8" fill="#1cb0f6"/><circle cx="20" cy="50" r="8" fill="#58cc02"/><text x="180" y="40" font-size="12" fill="#ffc800" text-anchor="middle">O</text><text x="100" y="40" font-size="12" fill="#1cb0f6" text-anchor="middle">T</text><text x="20" y="40" font-size="12" fill="#58cc02" text-anchor="middle">H</text><path d="M20 60 L100 60 L180 60" fill="none" stroke="white" stroke-width="2" stroke-dasharray="5,5"/></svg>` },
+            { type: 'exercise', question: 'In vertical subtraction, which column do we ALWAYS start with? (1=Ones, 2=Tens, 3=Hundreds)', question_indo: 'Dalam pengurangan vertikal, kolom mana yang SELALU kita mulai? (1=Satuan, 2=Puluhan, 3=Ratusan)', answer: 1, explanation: `<p class="bilingual">We always start from the right side, which is the Ones! <span class="indo">Kita selalu mulai dari sisi kanan, yaitu Satuan!</span></p>` },
+            { type: 'exercise', question: 'Quick recap: $456 - 123$. Subtract the Ones ($6 - 3$) = \\dots', question_indo: `Review cepat: $456 - 123$. Kurangi Satuan ($6 - 3$) = \\dots`, answer: 3, explanation: `<p class="bilingual">$6 - 3 = 3$. <span class="indo">$6 - 3 = 3$.</span></p>` },
+            { type: 'exercise', question: 'Quick recap: $456 - 123$. Subtract the Tens ($5 - 2$) = \\dots', question_indo: `Review cepat: $456 - 123$. Kurangi Puluhan ($5 - 2$) = \\dots`, answer: 3, explanation: `<p class="bilingual">$5 - 2 = 3$. <span class="indo">$5 - 2 = 3$.</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Self-Reflection <span class="indo">(Refleksi Diri)</span></h3><p class="bilingual">Was borrowing (stealing from neighbors) needed today? No! Because the top digit was always bigger than or equal to the bottom digit. Give yourself a thumbs up if this was easy! <span class="indo">Apakah meminjam (menyontek dari tetangga) dibutuhkan hari ini? Tidak! Karena digit atas selalu lebih besar atau sama dengan digit bawah. Beri dirimu jempol jika ini terasa mudah!</span></p>`, svg: `<svg viewBox="0 0 100 150"><path d="M30 30 L30 100 L50 100 L50 70 L80 70 L80 50 L50 50 L50 30 Z" fill="#58cc02" stroke="#46a302" stroke-width="3"/><circle cx="40" cy="120" r="20" fill="#1cb0f6" stroke="#1899d6" stroke-width="3"/><path d="M35 115 L45 125 M35 125 L45 115" stroke="white" stroke-width="3"/></svg>` },
+            { type: 'exercise', question: 'Did we need to borrow from the Tens today when subtracting $856 - 324$? (1=Yes, 0=No)', question_indo: 'Apakah kita perlu meminjam dari Puluhan hari ini saat mengurangi $856 - 324$? (1=Ya, 0=Tidak)', answer: 0, explanation: `<p class="bilingual">No! $6$ is bigger than $4$, so no borrowing needed. <span class="indo">Tidak! $6$ lebih besar dari $4$, jadi tidak perlu meminjam.</span></p>` },
+            { type: 'exercise', question: 'Did we need to borrow from the Hundreds today when subtracting $945 - 621$? (1=Yes, 0=No)', question_indo: 'Apakah kita perlu meminjam dari Ratusan hari ini saat mengurangi $945 - 621$? (1=Ya, 0=Tidak)', answer: 0, explanation: `<p class="bilingual">No! $9$ is bigger than $6$, no borrowing needed. <span class="indo">Tidak! $9$ lebih besar dari $6$, tidak perlu meminjam.</span></p>` },
+            { type: 'exercise', question: 'What rule makes subtraction easy without borrowing? Subtract column by column from the (1=Right, 2=Left)', question_indo: 'Aturan apa yang membuat pengurangan mudah tanpa meminjam? Kurangi kolom demi kolom dari (1=Kanan, 2=Kiri)', answer: 1, explanation: `<p class="bilingual">Always start from the Right (Ones)! <span class="indo">Selalu mulai dari Kanan (Satuan)!</span></p>` },
+            
+            { type: 'theory', content: `<h3 class="bilingual">Final Wrap-Up & Homework <span class="indo">(Penutup & PR)</span></h3><p class="bilingual">You are now a 3-digit subtraction wizard! Don't forget to show your parents your amazing work. Your homework is waiting for you on the learning portal. Click the link at the end to go there! <span class="indo">Kamu sekarang penyihir pengurangan 3-digit! Jangan lupa tunjukkan kerja bagusmu kepada orang tua. PR kamu menunggu di portal belajar. Klik link di akhir untuk pergi ke sana!</span></p>`, svg: `<svg viewBox="0 0 200 150"><path d="M100 20 L130 80 L190 90 L140 130 L150 190 L100 160 L50 190 L60 130 L10 90 L70 80 Z" fill="#ffc800" stroke="#e5a600" stroke-width="3"/><text x="100" y="100" text-anchor="middle" fill="white" font-size="20" font-weight="bold">WIZARD</text></svg>` },
+            { type: 'exercise', question: 'Final Boss Recap: $888 - 444 = \\dots$', question_indo: 'Review Boss Terakhir: $888 - 444 = \\dots$', answer: 444, explanation: `<p class="bilingual">$8-4=4$ in every column. Answer: $444$. <span class="indo">$8-4=4$ di setiap kolom. Jawaban: $444$.</span></p>` },
+            { type: 'exercise', question: 'Final Boss Recap: $987 - 123 = \\dots$', question_indo: 'Review Boss Terakhir: $987 - 123 = \\dots$', answer: 864, explanation: `<p class="bilingual">Hundreds: $9-1=8$. Tens: $8-2=6$. Ones: $7-3=4$. Answer: $864$. <span class="indo">Raturan: $9-1=8$. Puluhan: $8-2=6$. Satuan: $7-3=4$. Jawaban: $864$.</span></p>` },
+            { type: 'exercise', question: 'Final Boss Recap: $657 - 243 = \\dots$', question_indo: 'Review Boss Terakhir: $657 - 243 = \\dots$', answer: 414, explanation: `<p class="bilingual">Hundreds: $6-2=4$. Tens: $5-4=1$. Ones: $7-3=4$. Answer: $414$. <span class="indo">Raturan: $6-2=4$. Puluhan: $5-4=1$. Satuan: $7-3=4$. Jawaban: $414$.</span></p>` },
+            { type: 'exercise', question: 'Final Boss Recap: $999 - 777 = \\dots$', question_indo: 'Review Boss Terakhir: $999 - 777 = \\dots$', answer: 222, explanation: `<p class="bilingual">$9-7=2$ in every column. Answer: $222$. <span class="indo">$9-7=2$ di setiap kolom. Jawaban: $222$.</span></p>` }
+        ];
+
+        // PRINT VIEW GENERATOR (Strictly 1 Page A4)
+        // PRINT VIEW GENERATOR (Strictly 1 Page A4)
+        function generatePrintView(secId) {
+            const secData = lessonData.find(s => s.id === secId);
+            let scoreCount = 0;
+            let tableRows = '';
+
+            secData.steps.forEach((step, index) => {
+                const stepKey = secId + '-' + index;
+                const userAns = globalState.userAnswers[stepKey] || '-';
+                const correctAns = step.answer;
+                const isCorrect = parseInt(userAns) === correctAns;
+                if(isCorrect) scoreCount++;
+                
+                // Strip HTML/KaTeX for plain text print question
+                let plainQ = step.question
+                    .replace(/<span class="indo">(.*?)<\/span>/g, '') // Hapus teks indo
+                    .replace(/\$\$(.*?)\$\$/g, '$1') // Hapus delimiter $$ 
+                    .replace(/\$(.*?)\$/g, '$1') // Hapus delimiter $ 
+                    .replace(/\\dots/g, '...') // Ubah \dots menjadi titik 3 biasa
+                    .replace(/\\times/g, '×') // Ubah \times menjadi x (jika ada)
+                    .replace(/<\/?p[^>]*>/g, ' ') // Hapus tag <p>
+                    .replace(/\s+/g, ' ') // Rapikan spasi ganda
+                    .trim();
+                
+                tableRows += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${plainQ}</td>
+                    <td style="text-align:center;">${userAns}</td>
+                    <td style="text-align:center;">${correctAns}</td>
+                    <td style="text-align:center; font-size:1.5em;">${isCorrect ? '✓' : '✗'}</td>
+                </tr>`;
+            });
+
+            document.getElementById('print-group-name').innerText = secData.name;
+            document.getElementById('print-score').innerText = scoreCount;
+            document.getElementById('print-table-body').innerHTML = tableRows;
+            
+            window.print();
+        }
+
+        // --- INIT ---
+        loadState();
+        if(globalState.currentScreen === 'path' || globalState.currentScreen === 'section') {
+            showScreen(globalState.currentScreen, globalState.currentSectionId);
+        } else {
+            showScreen('home');
+        }
+    </script>
+</body>
+</html>
