@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Olympiad Sprint - Number Sense</title>
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #58cc02; --primary-dark: #46a302; --bg: #131f24; --sidebar-bg: #1a2e35;
+            --card-bg: #203c43; --text-main: #f0f0f0; --text-muted: #8b9ea5; --danger: #ff4b4b; --warning: #ffc800;
+        }
+        body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text-main); display:flex; height:100vh; overflow:hidden; }
+        /* Sidebar */
+        #sidebar { width:280px; background:var(--sidebar-bg); padding:20px; overflow-y:auto; border-right:2px solid var(--primary); transition: transform 0.3s; z-index:100; }
+        #sidebar h2 { font-size:1.2rem; color:var(--primary); margin-bottom:15px; text-align:center; }
+        .nav-item { padding:10px; margin:5px 0; border-radius:10px; cursor:pointer; background:var(--card-bg); transition:0.3s; border:2px solid transparent; font-size:0.9rem; display:flex; align-items:center; gap:10px; }
+        .nav-item:hover { border-color:var(--primary); transform:translateX(5px); }
+        .nav-item.active { border-color:var(--primary); background:#2a4a52; box-shadow:0 0 10px rgba(88,204,2,0.2); }
+        .nav-item i { color:var(--primary); }
+        /* Main Content */
+        #main { flex:1; overflow-y:auto; padding:30px; position:relative; }
+        .content-box { background:var(--card-bg); border-radius:15px; padding:25px; margin-bottom:20px; box-shadow:0 4px 15px rgba(0,0,0,0.2); animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from {opacity:0; transform:translateY(20px)} to {opacity:1; transform:translateY(0)} }
+        @keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+        /* Translation */
+        .trans-id { display:block; font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-style:italic; }
+        /* Math */
+        .math-block { margin:10px 0; font-size:1.2rem; }
+        /* Buttons */
+        .btn { padding:12px 24px; border:none; border-radius:12px; font-weight:bold; cursor:pointer; transition:0.2s; text-transform:uppercase; letter-spacing:1px; }
+        .btn-primary { background:var(--primary); color:#fff; border-bottom:4px solid var(--primary-dark); }
+        .btn-primary:hover { background:var(--primary-dark); transform:translateY(2px); border-bottom-width:2px; }
+        .btn-danger { background:var(--danger); color:#fff; border-bottom:4px solid #cc0000; }
+        .btn-warning { background:var(--warning); color:#000; border-bottom:4px solid #cc9900; }
+        .btn-reset { background:transparent; color:var(--danger); border:2px solid var(--danger); }
+        .nav-buttons { display:flex; justify-content:space-between; margin-top:30px; }
+        /* Options */
+        .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:20px; }
+        .option-btn { background:#2a4a52; border:2px solid #3a6a72; padding:15px; border-radius:12px; cursor:pointer; text-align:center; font-size:1.1rem; transition:0.3s; }
+        .option-btn:hover { border-color:var(--primary); background:#334d55; }
+        .option-btn.correct { background:var(--primary); border-color:var(--primary-dark); color:#fff; animation: bounce 0.5s; }
+        .option-btn.wrong { background:var(--danger); border-color:#cc0000; color:#fff; }
+        /* Collapse */
+        .collapse-explain { background:#1a2e35; margin-top:15px; border-radius:10px; overflow:hidden; max-height:0; transition: max-height 0.5s ease; padding:0 15px; }
+        .collapse-explain.show { max-height:200px; padding:15px; border-left:4px solid var(--primary); }
+        /* SVG */
+        .svg-icon { width:80px; height:80px; margin:10px auto; display:block; }
+        /* Print */
+        @media print {
+            body { background:#fff; color:#000; }
+            #sidebar, .nav-buttons, .btn, .option-btn, .collapse-explain, .trans-id { display:none !important; }
+            #main { padding:10px; overflow:visible; }
+            .content-box { box-shadow:none; border:1px solid #ccc; background:#fff; break-inside:avoid; }
+            .print-result { display:block !important; }
+        }
+        .print-result { display:none; }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <button class="btn btn-reset" onclick="App.resetAll()" style="width:100%;margin-bottom:15px;"><i class="fa fa-refresh"></i> Reset All</button>
+        <h2><i class="fa fa-rocket"></i> Mission Control</h2>
+        <div id="nav-container"></div>
+    </div>
+
+    <div id="main">
+        <div id="content-render"></div>
+    </div>
+
+    <!-- KaTeX JS -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        // --- CORE LOGIC ---
+        const App = {
+            currentSection: 0,
+            currentStep: 0, // 0 = intro/theory, 1..n = exercise index
+            answers: JSON.parse(localStorage.getItem('mathSprintAnswers') || '{}'),
+            
+            sections: [
+                { id: "home", title: "Home", icon: "fa-house" },
+                { id: "sec1", title: "Spiral Review Warm-up (00:00-00:10)", icon: "fa-fire" },
+                { id: "sec2", title: "Introduction & Real-World (00:10-00:15)", icon: "fa-globe" },
+                { id: "sec3", title: "Review of Prior Knowledge (00:15-00:20)", icon: "fa-brain" },
+                { id: "sec4", title: "Problem Introduction (00:20-00:30)", icon: "fa-lightbulb" },
+                { id: "sec5", title: "Guided Practice (00:30-00:45)", icon: "fa-hand-holding-heart" },
+                { id: "sec6", title: "Independent Practice (00:50-01:00)", icon: "fa-walking" },
+                { id: "as1", title: "Assignment 1", icon: "fa-file-alt" },
+                { id: "as2", title: "Assignment 2", icon: "fa-file-alt" },
+                { id: "as3", title: "Assignment 3", icon: "fa-file-alt" },
+                { id: "as4", title: "Assignment 4", icon: "fa-file-alt" },
+                { id: "as5", title: "Assignment 5", icon: "fa-file-alt" },
+                { id: "cons", title: "Consolidation & Reflection (01:00-01:05)", icon: "fa-flag-checkered" }
+            ],
+
+            init() {
+                this.renderNav();
+                this.navigate(this.currentSection, this.currentStep);
+            },
+
+            renderNav() {
+                const cont = document.getElementById('nav-container');
+                cont.innerHTML = '';
+                this.sections.forEach((sec, idx) => {
+                    const div = document.createElement('div');
+                    div.className = `nav-item ${idx === this.currentSection ? 'active' : ''}`;
+                    div.innerHTML = `<i class="fa ${sec.icon}"></i> ${sec.title}`;
+                    div.onclick = () => this.navigate(idx, 0);
+                    cont.appendChild(div);
+                });
+            },
+
+            navigate(secIdx, stepIdx) {
+                this.currentSection = secIdx;
+                this.currentStep = stepIdx;
+                this.renderNav();
+                this.renderContent();
+                window.scrollTo(0,0);
+            },
+
+            renderContent() {
+                const renderDiv = document.getElementById('content-render');
+                renderDiv.innerHTML = '';
+                
+                const secId = this.sections[this.currentSection].id;
+                
+                if(secId === 'home') renderDiv.innerHTML = this.getHomeHTML();
+                else if(secId === 'cons') renderDiv.innerHTML = this.getConsolidationHTML();
+                else if(secId.startsWith('as')) renderDiv.innerHTML = this.getAssignmentHTML(secId);
+                else renderDiv.innerHTML = this.getSectionHTML(secId);
+
+                // Render KaTeX
+                renderMathInElement(renderDiv, {
+                    delimiters: [
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ]
+                });
+            },
+
+            saveAnswer(qId, answer, isCorrect) {
+                this.answers[qId] = { answer, isCorrect };
+                localStorage.setItem('mathSprintAnswers', JSON.stringify(this.answers));
+            },
+
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            },
+
+            checkAnswer(qId, selectedOpt, correctOpt, explanation) {
+                if(this.answers[qId]) return; // already answered
+                const isCorrect = selectedOpt === correctOpt;
+                this.saveAnswer(qId, selectedOpt, isCorrect);
+                
+                // Update UI
+                const btns = document.querySelectorAll(`[data-qid="${qId}"]`);
+                btns.forEach(b => {
+                    b.style.pointerEvents = 'none';
+                    if(b.dataset.val === correctOpt) b.classList.add('correct');
+                    else if(b.dataset.val === selectedOpt && !isCorrect) b.classList.add('wrong');
+                });
+
+                // Show collapse
+                const collapse = document.getElementById(`exp-${qId}`);
+                if(collapse) collapse.classList.add('show');
+                
+                this.renderNav(); // update progress visually if needed
+            },
+
+            resetAll() {
+                if(confirm("Are you sure? This will reset all progress.")) {
+                    localStorage.removeItem('mathSprintAnswers');
+                    this.answers = {};
+                    this.navigate(0, 0);
+                }
+            }
+        };
+
+        // --- TRANSLATION HELPER ---
+        function t(en, id) {
+            return `${en} <span class="trans-id">${id}</span>`;
+        }
+
+        // --- SVG ICONS ---
+        const SVG = {
+            rocket: `<svg class="svg-icon" viewBox="0 0 100 100"><path d="M50 10 C50 10 70 40 70 70 L30 70 C30 40 50 10 50 10 Z" fill="#58cc02" stroke="#46a302" stroke-width="2"/><rect x="40" y="70" width="20" height="10" fill="#ff4b4b"/><path d="M30 70 L20 80 L30 80 Z" fill="#ffc800"/><path d="M70 70 L80 80 L70 80 Z" fill="#ffc800"/></svg>`,
+            scale: `<svg class="svg-icon" viewBox="0 0 100 100"><line x1="50" y1="20" x2="50" y2="80" stroke="#8b9ea5" stroke-width="4"/><line x1="20" y1="40" x2="80" y2="40" stroke="#58cc02" stroke-width="4"/><path d="M20 40 L10 60 L30 60 Z" fill="#ffc800"/><path d="M80 40 L70 60 L90 60 Z" fill="#ffc800"/><rect x="40" y="80" width="20" height="10" fill="#8b9ea5"/></svg>`
+        };
+
+
+        // --- CONTENT DATA (PART 1: HOME & SEC 1) ---
+        // Will be expanded in next parts
+        App.getHomeHTML = function() {
+            return `
+            <div class="content-box">
+                <h1><i class="fa fa-graduation-cap"></i> MATH TUTORING by Deni</h1>
+                <p>${t("Topic: Math Olympiad Sprint (Number Sense)", "Topik: Sprint Olimpiade Matematika (Number Sense)")}</p>
+                <hr style="border-color:var(--primary)">
+                <h3>${t("Class Rules:", "Aturan Kelas:")}</h3>
+                <ul>
+                    <li>${t("1. Take turns speaking.", "1. Berbicara secara bergantian.")}</li>
+                    <li>${t("2. Ask permission if you need to leave the class.", "2. Meminta izin jika ingin meninggalkan kelas.")}</li>
+                    <li>${t("3. Turn on camera and microphone if required.", "3. Menyalakan kamera dan microphone jika diperlukan.")}</li>
+                </ul>
+                ${SVG.rocket}
+                <div class="nav-buttons">
+                    <button class="btn btn-primary" onclick="App.navigate(1,0)">Start Mission <i class="fa fa-arrow-right"></i></button>
+                </div>
+            </div>`;
+        };
+
+        App.getSectionHTML = function(secId) {
+            // This is a dynamic generator. In next parts, I will add sec2-6 logic
+            if(secId === 'sec1') return this.getSec1HTML();
+            return `<div class="content-box"><h2>Content for ${secId} loading in next parts...</h2></div>`;
+        };
+
+        // --- SECTION 1: SPIRAL REVIEW ---
+        App.getSec1HTML = function() {
+            const q1 = "sec1_q1", q2 = "sec1_q2", q3 = "sec1_q3", q4 = "sec1_q4", q5 = "sec1_q5", q6 = "sec1_q6", q7 = "sec1_q7", q8 = "sec1_q8", q9 = "sec1_q9", q10 = "sec1_q10";
+            
+            const step = this.currentStep;
+            let html = `<div class="content-box"><h2><i class="fa fa-fire"></i> Spiral Review Warm-up</h2>`;
+
+            if(step === 0) {
+                html += `<p>${t("Let's fire up the engines! Place value tells us the value of a digit based on its position.", "Ayo nyalakan mesin! Nilai tempat memberi tahu kita nilai sebuah digit berdasarkan posisinya.")}</p>
+                <div class="math-block">\\(528 = 500 + 20 + 8\\)</div>
+                <p>${t("In 528, the 5 is in the hundreds place.", "Pada 528, angka 5 berada di tempat ratusan.")}</p>`;
+            } else if(step === 1) {
+                html += this.generateMC(q1, t("What is the value of 5 in the number 528?", "Berapa nilai 5 pada angka 528?"), ["5", "50", "500", "5000"], "500", t("The 5 is in the hundreds place, so its value is 500.", "Angka 5 berada di tempat ratusan, jadi nilainya 500."));
+            } else if(step === 2) {
+                html += this.generateMC(q2, t("If I have 3 hundreds, 0 tens, and 7 ones, what number am I?", "Jika aku punya 3 ratusan, 0 puluhan, dan 7 satuan, angka berapakah aku?"), ["307", "370", "3007", "37"], "307", t("3 hundreds = 300, 0 tens = 0, 7 ones = 7. 300 + 0 + 7 = 307.", "3 ratusan = 300, 0 puluhan = 0, 7 satuan = 7. 300 + 0 + 7 = 307."));
+            } else if(step === 3) {
+                html += this.generateMC(q3, t("In the number 942, which digit is in the tens place?", "Pada angka 942, digit mana yang berada di tempat puluhan?"), ["9", "4", "2", "94"], "4", t("The tens place is the middle digit in a 3-digit number.", "Tempat puluhan adalah digit tengah pada angka 3 digit."));
+            } else if(step === 4) {
+                html += `<p>${t("Number sequences follow a rule. If we count up by 1: 15, 16, 17...", "Barisan angka mengikuti aturan. Jika kita menghitung naik 1: 15, 16, 17...")}</p>
+                <div class="math-block">\\(15, 16, 17 \\rightarrow 18, 19\\)</div>`;
+            } else if(step === 5) {
+                html += this.generateMC(q4, t("Look at these stars: 15, 16, 17... what are the next two numbers?", "Lihat bintang-bintang ini: 15, 16, 17... apa dua angka berikutnya?"), ["18, 19", "17, 18", "20, 21", "18, 20"], "18, 19", t("The rule is +1. 17 + 1 = 18, 18 + 1 = 19.", "Aturannya +1. 17 + 1 = 18, 18 + 1 = 19."));
+            } else if(step === 6) {
+                html += this.generateMC(q5, t("What number comes before 30?", "Angka apa yang sebelum 30?"), ["28", "29", "31", "27"], "29", t("Counting down by 1 from 30 gives 29.", "Menghitung mundur 1 dari 30 menghasilkan 29."));
+            } else if(step === 7) {
+                html += this.generateMC(q6, t("Complete the sequence: 10, 20, 30, __, 50", "Lengkapi barisan: 10, 20, 30, __, 50"), ["40", "31", "35", "60"], "40", t("The rule is +10. 30 + 10 = 40.", "Aturannya +10. 30 + 10 = 40."));
+            } else if(step === 8) {
+                html += `<p>${t("Now let's compare numbers! A number with more digits is larger. If they have the same digits, compare the highest place value first.", "Sekarang mari kita bandingkan angka! Angka dengan lebih banyak digit lebih besar. Jika digitnya sama, bandingkan nilai tempat tertinggi terlebih dahulu.")}</p>
+                ${SVG.scale}`;
+            } else if(step === 9) {
+                html += this.generateMC(q7, t("Which is smaller, 9 or 19?", "Mana yang lebih kecil, 9 atau 19?"), ["9", "19", "They are the same", "None of the above"], "9", t("9 is a single digit, 19 has two digits (1 ten and 9 ones), so 9 is smaller.", "9 adalah satu digit, 19 memiliki dua digit (1 puluhan dan 9 satuan), jadi 9 lebih kecil."));
+            } else if(step === 10) {
+                html += this.generateMC(q8, t("Which is greater, 45 or 54?", "Mana yang lebih besar, 45 atau 54?"), ["45", "54", "They are the same", "None"], "54", t("Both have 5 and 4, but 54 has 5 in the tens place, making it larger.", "Keduanya memiliki 5 dan 4, tapi 54 memiliki 5 di tempat puluhan, membuatnya lebih besar."));
+            } else if(step === 11) {
+                html += this.generateMC(q9, t("Compare: 8 tens ___ 79 ones", "Bandingkan: 8 puluhan ___ 79 satuan"), [">", "<", "=", "Cannot determine"], ">", t("8 tens = 80. 80 is greater than 79.", "8 puluhan = 80. 80 lebih besar dari 79."));
+            } else if(step === 12) {
+                html += this.generateMC(q10, t("What is the value of 9 in the number 908?", "Berapa nilai 9 pada angka 908?"), ["9", "90", "900", "800"], "900", t("The 9 is in the hundreds place (900).", "Angka 9 berada di tempat ratusan (900)."));
+            }
+
+            html += `</div>`;
+            html += this.getStepNav(12); // max steps for section 1
+            return html;
+        };
+
+        // --- CONTENT DATA (PART 2: SEC 2, 3, 4) ---
+
+        App.getSectionHTML = function(secId) {
+            if(secId === 'sec1') return this.getSec1HTML();
+            if(secId === 'sec2') return this.getSec2HTML();
+            if(secId === 'sec3') return this.getSec3HTML();
+            if(secId === 'sec4') return this.getSec4HTML();
+            return `<div class="content-box"><h2>Content for ${secId} loading in next parts...</h2></div>`;
+        };
+
+        // --- SECTION 2: INTRODUCTION & REAL-WORLD CONNECTION ---
+        App.getSec2HTML = function() {
+            const step = this.currentStep;
+            let html = `<div class="content-box"><h2><i class="fa fa-globe"></i> Introduction & Real-World Connection</h2>`;
+
+            if(step === 0) {
+                html += `<p>${t("Today, you are a Space Commander. In space, we use patterns to find hidden planets.", "Hari ini, kamu adalah Komandan Luar Angkasa. Di luar angkasa, kita menggunakan pola untuk menemukan planet tersembunyi.")}</p>
+                <p>${t("Math Olympiad questions are like secret codes. If we learn to crack them, we can solve any mystery!", "Pertanyaan Olimpiade Matematika seperti kode rahasia. Jika kita belajar memecahnya, kita bisa memecahkan misteri apa pun!")}</p>`;
+            } else if(step === 1) {
+                html += this.generateMC("sec2_q1", t("A satellite sends a signal every 10 minutes: 10, 20, 30... What is the next signal time?", "Satelit mengirim sinyal setiap 10 menit: 10, 20, 30... Kapan sinyal berikutnya?"), ["31", "40", "35", "100"], "40", t("The rule is +10. So, 30 + 10 = 40.", "Aturannya +10. Jadi, 30 + 10 = 40."));
+            } else if(step === 2) {
+                html += this.generateMC("sec2_q2", t("Stars appear in a pattern: 2, 4, 6, 8... How many stars appear next?", "Bintang muncul dalam pola: 2, 4, 6, 8... Berapa bintang yang muncul berikutnya?"), ["9", "10", "12", "8"], "10", t("The rule is +2. 8 + 2 = 10.", "Aturannya +2. 8 + 2 = 10."));
+            } else if(step === 3) {
+                html += this.generateMC("sec2_q3", t("A robot moves 5 steps forward each second: 5, 10, 15... Where will it be after 4 seconds?", "Robot bergerak maju 5 langkah setiap detik: 5, 10, 15... Di mana posisinya setelah 4 detik?"), ["16", "25", "20", "15"], "20", t("The sequence is 5, 10, 15, 20. The 4th term is 20.", "Barisannya adalah 5, 10, 15, 20. Suku ke-4 adalah 20."));
+            } else if(step === 4) {
+                html += `<p>${t("Pilots and coders use patterns to navigate. If a planet is at coordinate 100, and the next is at 150, the jump is +50.", "Pilot dan programmer menggunakan pola untuk navigasi. Jika planet di koordinat 100, dan berikutnya di 150, lompatannya adalah +50.")}</p>
+                <div class="math-block">\\(100 \\xrightarrow{+50} 150\\)</div>`;
+            } else if(step === 5) {
+                html += this.generateMC("sec2_q4", t("A ship jumps from coordinate 100 to 150. What is the next coordinate?", "Kapal melompat dari koordinat 100 ke 150. Apa koordinat berikutnya?"), ["155", "200", "250", "160"], "200", t("The jump is +50. 150 + 50 = 200.", "Lompatannya +50. 150 + 50 = 200."));
+            } else if(step === 6) {
+                html += this.generateMC("sec2_q5", t("Fuel decreases by 10L per hour: 50, 40, 30... How much fuel is left after the next hour?", "Bahan bakar berkurang 10L per jam: 50, 40, 30... Berapa bahan bakar yang tersisa setelah jam berikutnya?"), ["20", "10", "25", "0"], "20", t("The rule is -10. 30 - 10 = 20.", "Aturannya -10. 30 - 10 = 20."));
+            } else if(step === 7) {
+                html += this.generateMC("sec2_q6", t("An alien sends 3 signals, then rests. 3, 0, 3, 0... What comes next?", "Alien mengirim 3 sinyal, lalu istirahat. 3, 0, 3, 0... Apa yang datang berikutnya?"), ["1", "3", "0", "2"], "3", t("The pattern alternates between 3 and 0. The next is 3.", "Pola bergantian antara 3 dan 0. Berikutnya adalah 3."));
+            } else if(step === 8) {
+                html += `<p>${t("Today, we will master the 'Elimination Trick' to find the right path through the stars. We cross out the silly answers!", "Hari ini, kita akan menguasai 'Trik Eliminasi' untuk menemukan jalan yang benar di antara bintang-bintang. Kita coret jawaban yang konyol!")}</p>`;
+            } else if(step === 9) {
+                html += this.generateMC("sec2_q7", t("Which answer is definitely wrong for the sequence 10, 20, 30, __?", "Jawaban mana yang pasti salah untuk barisan 10, 20, 30, __?"), ["40", "31", "50", "30"], "31", t("We are jumping by tens. 31 is only +1, so it's a silly answer!", "Kita melompat sepuluh-puluh. 31 hanya +1, jadi itu jawaban yang konyol!"));
+            } else if(step === 10) {
+                html += this.generateMC("sec2_q8", t("Look at 5, 10, 15, __. Which answer can we eliminate immediately?", "Lihat 5, 10, 15, __. Jawaban mana yang bisa kita eliminasi segera?"), ["20", "14", "25", "10"], "14", t("The rule is +5. 14 is not a multiple of 5, so it's wrong.", "Aturannya +5. 14 bukan kelipatan 5, jadi itu salah."));
+            } else if(step === 11) {
+                html += this.generateMC("sec2_q9", t("Sequence: 2, 4, 6, 8, __. Which is the distractor (silly answer)?", "Barisan: 2, 4, 6, 8, __. Mana yang adalah distraktor (jawaban konyol)?"), ["10", "9", "12", "14"], "9", t("The pattern is even numbers (+2). 9 is odd, so it's the distractor.", "Pola ini bilangan genap (+2). 9 adalah ganjil, jadi itu distraktor."));
+            } else if(step === 12) {
+                html += this.generateMC("sec2_q10", t("Which number completes the space jump? 100, 200, 300, __", "Angka mana yang melengkapi lompatan ruang angkasa? 100, 200, 300, __"), ["400", "310", "350", "301"], "400", t("The jump is +100. 300 + 100 = 400. 310 and 301 are distractors.", "Lompatannya +100. 300 + 100 = 400. 310 dan 301 adalah distraktor."));
+            }
+
+            html += `</div>`;
+            html += this.getStepNav(12);
+            return html;
+        };
+
+        // --- SECTION 3: REVIEW OF PRIOR KNOWLEDGE ---
+        App.getSec3HTML = function() {
+            const step = this.currentStep;
+            let html = `<div class="content-box"><h2><i class="fa fa-brain"></i> Review of Prior Knowledge</h2>`;
+
+            if(step === 0) {
+                html += `<p>${t("Before we sprint, remember our tools. A number like 123 has 1 hundred, 2 tens, and 3 ones.", "Sebelum kita berlari, ingat alat kita. Angka seperti 123 memiliki 1 ratusan, 2 puluhan, dan 3 satuan.")}</p>
+                <div class="math-block">\\(123 = 100 + 20 + 3\\)</div>`;
+            } else if(step === 1) {
+                html += this.generateMC("sec3_q1", t("Break down the number 456. How many hundreds are there?", "Uraikan angka 456. Berapa banyak ratusannya?"), ["4", "5", "6", "45"], "4", t("In 456, the digit 4 is in the hundreds place.", "Pada 456, digit 4 berada di tempat ratusan."));
+            } else if(step === 2) {
+                html += this.generateMC("sec3_q2", t("What is the expanded form of 809?", "Apa bentuk uraian dari 809?"), ["\\(800 + 9\\)", "\\(80 + 9\\)", "\\(800 + 90\\)", "\\(8 + 0 + 9\\)"], "\\(800 + 9\\)", t("809 means 8 hundreds (800), 0 tens (0), and 9 ones (9).", "809 berarti 8 ratusan (800), 0 puluhan (0), dan 9 satuan (9)."));
+            } else if(step === 3) {
+                html += this.generateMC("sec3_q3", t("If I have 12 tens, what number is that?", "Jika saya punya 12 puluhan, angka berapa itu?"), ["12", "102", "120", "21"], "120", t("12 tens means \\(12 \\times 10 = 120\\).", "12 puluhan berarti \\(12 \\times 10 = 120\\)."));
+            } else if(step === 4) {
+                html += `<p>${t("Patterns always follow a rule, like +2 or -1. Tell me, if I count 2, 4, 6... what is the rule?", "Pola selalu mengikuti aturan, seperti +2 atau -1. Katakan padaku, jika saya menghitung 2, 4, 6... apa aturannya?")}</p>
+                <div class="math-block">\\(2 \\xrightarrow{+2} 4 \\xrightarrow{+2} 6\\)</div>`;
+            } else if(step === 5) {
+                html += this.generateMC("sec3_q4", t("What is the rule for this pattern? 90, 80, 70, 60...", "Apa aturan untuk pola ini? 90, 80, 70, 60..."), ["+10", "-10", "+9", "-9"], "-10", t("The numbers are getting smaller by 10 each time.", "Angka-angka semakin kecil 10 setiap kali."));
+            } else if(step === 6) {
+                html += this.generateMC("sec3_q5", t("What is the rule for this pattern? 5, 10, 15, 20...", "Apa aturan untuk pola ini? 5, 10, 15, 20..."), ["+5", "+10", "-5", "\\(\\times 2\\)"], "+5", t("The numbers are getting larger by 5 each time.", "Angka-angka semakin besar 5 setiap kali."));
+            } else if(step === 7) {
+                html += this.generateMC("sec3_q6", t("What is the rule for this pattern? 3, 6, 9, 12...", "Apa aturan untuk pola ini? 3, 6, 9, 12..."), ["+2", "+3", "+4", "+6"], "+3", t("The numbers are getting larger by 3 each time.", "Angka-angka semakin besar 3 setiap kali."));
+            } else if(step === 8) {
+                html += `<p>${t("Combining place value and patterns makes you a Math Olympiad Pro! Let's see how they mix.", "Menggabungkan nilai tempat dan pola membuatmu Pro Olimpiade Matematika! Mari kita lihat bagaimana mereka bercampur.")}</p>`;
+            } else if(step === 9) {
+                html += this.generateMC("sec3_q7", t("Pattern: 22, 24, 26, __. What is the value of the tens digit in the next number?", "Pola: 22, 24, 26, __. Berapa nilai digit puluhan pada angka berikutnya?"), ["2", "20", "8", "28"], "20", t("The next number is 28. The tens digit is 2, and its value is 20.", "Angka berikutnya adalah 28. Digit puluhan adalah 2, dan nilainya 20."));
+            } else if(step === 10) {
+                html += this.generateMC("sec3_q8", t("Pattern: 100, 200, 300, __. How many tens are in the next number?", "Pola: 100, 200, 300, __. Berapa banyak puluhan dalam angka berikutnya?"), ["4", "40", "400", "10"], "40", t("The next number is 400. 400 has 40 tens (because \\(40 \\times 10 = 400\\)).", "Angka berikutnya adalah 400. 400 memiliki 40 puluhan (karena \\(40 \\times 10 = 400\\))."));
+            } else if(step === 11) {
+                html += this.generateMC("sec3_q9", t("I am a 3-digit number. My hundreds digit is 3, my tens digit is 0, my ones digit is 5. What number am I?", "Saya angka 3-digit. Digit ratusan saya 3, digit puluhan saya 0, digit satuan saya 5. Angka berapakah saya?"), ["35", "350", "305", "3005"], "305", t("3 hundreds = 300, 0 tens = 0, 5 ones = 5. 300 + 0 + 5 = 305.", "3 ratusan = 300, 0 puluhan = 0, 5 satuan = 5. 300 + 0 + 5 = 305."));
+            } else if(step === 12) {
+                html += this.generateMC("sec3_q10", t("If you add 1 ten to 23, what is the new number?", "Jika kamu menambahkan 1 puluhan ke 23, apa angka barunya?"), ["24", "33", "13", "32"], "33", t("1 ten is 10. 23 + 10 = 33.", "1 puluhan adalah 10. 23 + 10 = 33."));
+            }
+
+            html += `</div>`;
+            html += this.getStepNav(12);
+            return html;
+        };
+
+        // --- SECTION 4: PROBLEM INTRODUCTION ---
+        App.getSec4HTML = function() {
+            const step = this.currentStep;
+            let html = `<div class="content-box"><h2><i class="fa fa-lightbulb"></i> Problem Introduction</h2>`;
+
+            if(step === 0) {
+                html += `<p>${t("Now, let's look at an Olympiad Sprint question. Instead of just guessing, let's use our Elimination Shield!", "Sekarang, mari kita lihat pertanyaan Sprint Olimpiade. Alih-alih hanya menebak, mari kita gunakan Perisai Eliminasi!")}</p>`;
+            } else if(step === 1) {
+                html += this.generateMC("sec4_q1", t("Question: Which number comes next: 10, 20, 30, __? Which answer can we cross out first?", "Pertanyaan: Angka mana yang datang berikutnya: 10, 20, 30, __? Jawaban mana yang bisa kita coret pertama?"), ["40", "31", "50", "30"], "31", t("We are jumping by tens (+10). 31 is jumping by 1, so we cross it out!", "Kita melompat sepuluh-puluh (+10). 31 melompat 1, jadi kita coret!"));
+            } else if(step === 2) {
+                html += this.generateMC("sec4_q2", t("Question: 5, 10, 15, __? Options: 16, 20, 25. Which one is a 'distractor'?", "Pertanyaan: 5, 10, 15, __? Pilihan: 16, 20, 25. Mana yang merupakan 'distraktor'?"), ["20", "25", "16", "All are correct"], "16", t("The pattern is +5. 16 is only +1 from 15, making it a distractor.", "Pola ini +5. 16 hanya +1 dari 15, menjadikannya distraktor."));
+            } else if(step === 3) {
+                html += this.generateMC("sec4_q3", t("If we eliminated 31 and 50, what is the correct answer for 10, 20, 30, __?", "Jika kita eliminasi 31 dan 50, apa jawaban yang benar untuk 10, 20, 30, __?"), ["31", "40", "50", "21"], "40", t("By eliminating the distractors, 40 is the only logical choice left!", "Dengan eliminasi distraktor, 40 adalah satu-satunya pilihan logis yang tersisa!"));
+            } else if(step === 4) {
+                html += `<p>${t("A 'distractor' is a wrong answer that looks right if you make a common mistake, like adding 1 instead of 10.", "Distraktor adalah jawaban salah yang terlihat benar jika kamu membuat kesalahan umum, seperti menambah 1 bukan 10.")}</p>`;
+            } else if(step === 5) {
+                html += this.generateMC("sec4_q4", t("Pattern: 100, 200, 300, __. If you misread it as counting by 1s, you might pick:", "Pola: 100, 200, 300, __. Jika kamu salah membacanya sebagai menghitung 1-per-1, kamu mungkin memilih:"), ["400", "301", "310", "40"], "301", t("301 is the distractor for people who add 1 instead of 100.", "301 adalah distraktor bagi orang yang menambah 1 bukan 100."));
+            } else if(step === 6) {
+                html += this.generateMC("sec4_q5", t("Pattern: 2, 4, 6, 8, __. What is the correct next number?", "Pola: 2, 4, 6, 8, __. Apa angka berikutnya yang benar?"), ["9", "10", "12", "16"], "10", t("The rule is +2. 8 + 2 = 10.", "Aturannya +2. 8 + 2 = 10."));
+            } else if(step === 7) {
+                html += this.generateMC("sec4_q6", t("Pattern: 50, 45, 40, __. Which is the distractor?", "Pola: 50, 45, 40, __. Mana yang merupakan distraktor?"), ["35", "41", "30", "25"], "41", t("The pattern goes down by 5. 41 goes down by 1, so it's a distractor.", "Pola ini turun 5. 41 turun 1, jadi itu distraktor."));
+            } else if(step === 8) {
+                html += `<p>${t("Let's solve an Olympiad problem step-by-step using Elimination.", "Mari kita selesaikan soal Olimpiade langkah demi langkah menggunakan Eliminasi.")}</p>
+                <div class="math-block">\\(7, 14, 21, \\_\\_\\_\\)</div>
+                <p>${t("Rule: +7. Next is 28. Let's eliminate distractors!", "Aturan: +7. Berikutnya 28. Mari eliminasi distraktor!")}</p>`;
+            } else if(step === 9) {
+                html += this.generateMC("sec4_q7", t("Sequence: 7, 14, 21, __. Which answer is definitely wrong?", "Barisan: 7, 14, 21, __. Jawaban mana yang pasti salah?"), ["28", "22", "35", "27"], "22", t("22 is not a multiple of 7, so it can't be in this sequence.", "22 bukan kelipatan 7, jadi tidak bisa ada di barisan ini."));
+            } else if(step === 10) {
+                html += this.generateMC("sec4_q8", t("Sequence: 7, 14, 21, __. What is the correct next number?", "Barisan: 7, 14, 21, __. Apa angka berikutnya yang benar?"), ["22", "28", "27", "29"], "28", t("14 + 7 = 21, so 21 + 7 = 28.", "14 + 7 = 21, jadi 21 + 7 = 28."));
+            } else if(step === 11) {
+                html += this.generateMC("sec4_q9", t("A sequence adds 5 every time: 20, 25, 30, __. A student answers 31. What mistake did they make?", "Sebuah barisan menambah 5 setiap kali: 20, 25, 30, __. Seorang siswa menjawab 31. Kesalahan apa yang mereka buat?"), ["Subtracted 1", "Added 1 instead of 5", "Added 10", "Multiplied by 2"], "Added 1 instead of 5", t("They added 1 instead of following the +5 rule. 30 + 5 = 35.", "Mereka menambah 1 bukan mengikuti aturan +5. 30 + 5 = 35."));
+            } else if(step === 12) {
+                html += this.generateMC("sec4_q10", t("Final Sprint: 99, 88, 77, __. Use elimination. What is next?", "Sprint Terakhir: 99, 88, 77, __. Gunakan eliminasi. Apa berikutnya?"), ["66", "76", "67", "78"], "66", t("The rule is -11. 77 - 11 = 66. 76 and 67 are distractors.", "Aturannya -11. 77 - 11 = 66. 76 dan 67 adalah distraktor."));
+            }
+
+            html += `</div>`;
+            html += this.getStepNav(12);
+            return html;
+        };
+
+        // --- CONTENT DATA (PART 3: SEC 5, 6) ---
+
+        // Update the getSectionHTML router
+        App.getSectionHTML = function(secId) {
+            if(secId === 'sec1') return this.getSec1HTML();
+            if(secId === 'sec2') return this.getSec2HTML();
+            if(secId === 'sec3') return this.getSec3HTML();
+            if(secId === 'sec4') return this.getSec4HTML();
+            if(secId === 'sec5') return this.getSec5HTML();
+            if(secId === 'sec6') return this.getSec6HTML();
+            return `<div class="content-box"><h2>Content for ${secId} loading in next parts...</h2></div>`;
+        };
+
+        // --- SECTION 5: GUIDED PRACTICE ---
+        App.getSec5HTML = function() {
+            const step = this.currentStep;
+            let html = `<div class="content-box"><h2><i class="fa fa-hand-holding-heart"></i> Guided Practice</h2>`;
+
+            if(step === 0) {
+                html += `<p>${t("Let's solve problems together! Use the 'Think-Aloud' method: say your reasoning out loud before clicking.", "Mari kita selesaikan soal bersama! Gunakan metode 'Think-Aloud': ucapkan alasanmu dengan lantang sebelum mengklik.")}</p>
+                <p>${t("First, find the 'jump' (the rule). Then, apply it!", "Pertama, temukan 'lompatan' (aturannya). Lalu, terapkan!")}</p>`;
+            } else if(step === 1) {
+                html += this.generateMC("sec5_q1", t("Look at the pattern: 5, 8, 11, 14. What is the 'jump' (rule)?", "Lihat polanya: 5, 8, 11, 14. Berapa 'lompatan' (aturannya)?"), ["+2", "+3", "+4", "+5"], "+3", t("From 5 to 8 is +3. From 8 to 11 is +3. The rule is +3.", "Dari 5 ke 8 adalah +3. Dari 8 ke 11 adalah +3. Aturannya +3."));
+            } else if(step === 2) {
+                html += this.generateMC("sec5_q2", t("Pattern: 20, 30, 40, 50. What is the 'jump'?", "Pola: 20, 30, 40, 50. Berapa 'lompatannya'?"), ["+2", "+10", "+20", "+5"], "+10", t("Each number increases by 10.", "Setiap angka bertambah 10."));
+            } else if(step === 3) {
+                html += this.generateMC("sec5_q3", t("Pattern: 90, 80, 70, 60. What is the 'jump'?", "Pola: 90, 80, 70, 60. Berapa 'lompatannya'?"), ["+10", "-10", "-20", "+20"], "-10", t("The numbers are decreasing by 10 each time.", "Angka-angka berkurang 10 setiap kali."));
+            } else if(step === 4) {
+                html += `<p>${t("Now that we know the rule, we can find the next number! Always check the rule first.", "Sekarang kita tahu aturannya, kita bisa menemukan angka berikutnya! Selalu periksa aturannya terlebih dahulu.")}</p>
+                <div class="math-block">\\(14 \\xrightarrow{+3} \\_\\_\\_\\)</div>`;
+            } else if(step === 5) {
+                html += this.generateMC("sec5_q4", t("Using the rule +3, what comes after 14 in the pattern 5, 8, 11, 14, __?", "Menggunakan aturan +3, apa yang datang setelah 14 pada pola 5, 8, 11, 14, __?"), ["15", "16", "17", "18"], "17", t("14 + 3 = 17. The next number is 17.", "14 + 3 = 17. Angka berikutnya adalah 17."));
+            } else if(step === 6) {
+                html += this.generateMC("sec5_q5", t("Pattern: 2, 6, 10, 14, __. What is the next number?", "Pola: 2, 6, 10, 14, __. Apa angka berikutnya?"), ["16", "18", "15", "20"], "18", t("The rule is +4. 14 + 4 = 18.", "Aturannya +4. 14 + 4 = 18."));
+            } else if(step === 7) {
+                html += this.generateMC("sec5_q6", t("Pattern: 100, 95, 90, 85, __. What is the next number?", "Pola: 100, 95, 90, 85, __. Apa angka berikutnya?"), ["80", "75", "86", "70"], "80", t("The rule is -5. 85 - 5 = 80.", "Aturannya -5. 85 - 5 = 80."));
+            } else if(step === 8) {
+                html += `<p>${t("Olympiad challenge: Sometimes they ask about the place value of the next number!", "Tantangan Olimpiade: Terkadang mereka bertanya tentang nilai tempat dari angka berikutnya!")}</p>
+                <p>${t("Example: Pattern 12, 14, 16... Next is 18. The tens digit of 18 is 1.", "Contoh: Pola 12, 14, 16... Berikutnya 18. Digit puluhan dari 18 adalah 1.")}</p>`;
+            } else if(step === 9) {
+                html += this.generateMC("sec5_q7", t("Pattern: 21, 22, 23, 24, __. What is the value of the tens digit in the next number?", "Pola: 21, 22, 23, 24, __. Berapa nilai digit puluhan pada angka berikutnya?"), ["2", "20", "5", "25"], "20", t("The next number is 25. The tens digit is 2, its value is 20.", "Angka berikutnya adalah 25. Digit puluhan adalah 2, nilainya 20."));
+            } else if(step === 10) {
+                html += this.generateMC("sec5_q8", t("Pattern: 30, 40, 50, 60, __. How many ones are in the next number?", "Pola: 30, 40, 50, 60, __. Berapa banyak satuan dalam angka berikutnya?"), ["7", "70", "0", "10"], "0", t("The next number is 70. 70 has 7 tens and 0 ones.", "Angka berikutnya adalah 70. 70 memiliki 7 puluhan dan 0 satuan."));
+            } else if(step === 11) {
+                html += this.generateMC("sec5_q9", t("Pattern: 9, 18, 27, 36, __. What is the next number?", "Pola: 9, 18, 27, 36, __. Apa angka berikutnya?"), ["37", "45", "44", "40"], "45", t("The rule is +9. 36 + 9 = 45.", "Aturannya +9. 36 + 9 = 45."));
+            } else if(step === 12) {
+                html += this.generateMC("sec5_q10", t("Olympiad Level: 1, 2, 4, 7, 11, __. The jump gets bigger by 1 each time. What is next?", "Level Olimpiade: 1, 2, 4, 7, 11, __. Lompatannya bertambah 1 setiap kali. Apa berikutnya?"), ["12", "15", "13", "16"], "16", t("Jumps: +1, +2, +3, +4. The next jump is +5. 11 + 5 = 16.", "Lompatan: +1, +2, +3, +4. Lompatan berikutnya +5. 11 + 5 = 16."));
+            }
+
+            html += `</div>`;
+            html += this.getStepNav(12);
+            return html;
+        };
+
+        // --- SECTION 6: INDEPENDENT PRACTICE ---
+        App.getSec6HTML = function() {
+            const step = this.currentStep;
+            let html = `<div class="content-box"><h2><i class="fa fa-walking"></i> Independent Practice</h2>`;
+
+            if(step === 0) {
+                html += `<p>${t("Commander, it's your turn to fly the ship! Solve these questions on your own. Use your Elimination Shield!", "Komandan, giliranmu untuk menerbangkan kapal! Selesaikan soal-soal ini sendiri. Gunakan Perisai Eliminasimu!")}</p>
+                ${SVG.rocket}`;
+            } else if(step === 1) {
+                html += this.generateMC("sec6_q1", t("What is the missing number? 15, 18, 21, __, 27", "Apa angka yang hilang? 15, 18, 21, __, 27"), ["22", "23", "24", "25"], "24", t("The rule is +3. 21 + 3 = 24.", "Aturannya +3. 21 + 3 = 24."));
+            } else if(step === 2) {
+                html += this.generateMC("sec6_q2", t("Find the next number: 400, 300, 200, __", "Temukan angka berikutnya: 400, 300, 200, __"), ["100", "0", "150", "50"], "100", t("The rule is -100. 200 - 100 = 100.", "Aturannya -100. 200 - 100 = 100."));
+            } else if(step === 3) {
+                html += this.generateMC("sec6_q3", t("Which number does NOT belong? 10, 20, 35, 40, 50", "Angka mana yang TIDAK termasuk? 10, 20, 35, 40, 50"), ["10", "35", "40", "50"], "35", t("The pattern is +10. 35 breaks the pattern.", "Pola ini +10. 35 merusak pola."));
+            } else if(step === 4) {
+                html += `<p>${t("Boss Level Prep: Let's compare place values! Remember: 1 ten = 10 ones.", "Persiapan Boss Level: Mari bandingkan nilai tempat! Ingat: 1 puluhan = 10 satuan.")}</p>
+                <div class="math-block">\\(3 \\text{ tens} = 30 \\text{ ones}\\)</div>`;
+            } else if(step === 5) {
+                html += this.generateMC("sec6_q4", t("Which is larger: 4 tens or 35 ones?", "Mana yang lebih besar: 4 puluhan atau 35 satuan?"), ["4 tens", "35 ones", "They are equal", "Cannot determine"], "4 tens", t("4 tens = 40. 40 is greater than 35.", "4 puluhan = 40. 40 lebih besar dari 35."));
+            } else if(step === 6) {
+                html += this.generateMC("sec6_q5", t("Which is smaller: 6 hundreds or 599 ones?", "Mana yang lebih kecil: 6 ratusan atau 599 satuan?"), ["6 hundreds", "599 ones", "They are equal", "Cannot determine"], "599 ones", t("6 hundreds = 600. 599 is smaller than 600.", "6 ratusan = 600. 599 lebih kecil dari 600."));
+            } else if(step === 7) {
+                html += this.generateMC("sec6_q6", t("I have 2 hundreds, 3 tens, and 5 ones. What is my number?", "Saya punya 2 ratusan, 3 puluhan, dan 5 satuan. Berapa angka saya?"), ["235", "253", "325", "532"], "235", t("\\(200 + 30 + 5 = 235\\).", "\\(200 + 30 + 5 = 235\\)."));
+            } else if(step === 8) {
+                html += `<p>${t("Reverse patterns! Sometimes the missing number is in the middle.", "Pola terbalik! Terkadang angka yang hilang ada di tengah.")}</p>
+                <p>${t("Example: 8, __, 12, 14. The rule is +2. So 8 + 2 = 10.", "Contoh: 8, __, 12, 14. Aturannya +2. Jadi 8 + 2 = 10.")}</p>`;
+            } else if(step === 9) {
+                html += this.generateMC("sec6_q7", t("Find the missing number: 50, __, 40, 35", "Temukan angka yang hilang: 50, __, 40, 35"), ["45", "42", "48", "30"], "45", t("The rule is -5. 50 - 5 = 45.", "Aturannya -5. 50 - 5 = 45."));
+            } else if(step === 10) {
+                html += this.generateMC("sec6_q8", t("Find the missing number: 7, 14, __, 28", "Temukan angka yang hilang: 7, 14, __, 28"), ["18", "20", "21", "24"], "21", t("The rule is +7. 14 + 7 = 21.", "Aturannya +7. 14 + 7 = 21."));
+            } else if(step === 11) {
+                html += this.generateMC("sec6_q9", t("Boss Level: I am a number between 20 and 30. If you add my digits, the sum is 5. What number am I?", "Boss Level: Saya adalah angka antara 20 dan 30. Jika kamu menjumlahkan digit saya, hasilnya 5. Angka berapakah saya?"), ["22", "23", "24", "25"], "23", t("Only 23 is between 20 and 30, and 2 + 3 = 5.", "Hanya 23 yang ada di antara 20 dan 30, dan 2 + 3 = 5."));
+            } else if(step === 12) {
+                html += this.generateMC("sec6_q10", t("Boss Level: If you have two numbers, 34 and 43, which one has a 4 in the tens place?", "Boss Level: Jika kamu punya dua angka, 34 dan 43, mana yang memiliki 4 di tempat puluhan?"), ["34", "43", "Both", "Neither"], "43", t("In 43, the first digit (4) is in the tens place. In 34, the 4 is in the ones place.", "Pada 43, digit pertama (4) ada di tempat puluhan. Pada 34, 4 ada di tempat satuan."));
+            }
+
+            html += `</div>`;
+            html += this.getStepNav(12);
+            return html;
+        };
+
+        // --- CONTENT DATA (PART 4: ASSIGNMENTS 1-5 & CONSOLIDATION) ---
+
+        // Assignment Question Banks
+        App.getAssignmentQuestions = function(asgId) {
+            const banks = {
+                as1: [ // Place Value Focus
+                    { q: t("What is the value of 7 in the number 742?", "Berapa nilai 7 pada angka 742?"), opts: ["7", "70", "700", "7000"], ans: "700", exp: t("7 is in the hundreds place.", "7 ada di tempat ratusan.") },
+                    { q: t("Identify the number: 4 hundreds, 2 tens, and 9 ones.", "Identifikasi angka: 4 ratusan, 2 puluhan, dan 9 satuan."), opts: ["429", "492", "924", "249"], ans: "429", exp: t("400 + 20 + 9 = 429.", "400 + 20 + 9 = 429.") },
+                    { q: t("Which is greater: 8 tens or 79 ones?", "Mana yang lebih besar: 8 puluhan atau 79 satuan?"), opts: ["8 tens", "79 ones", "Equal", "Cannot tell"], ans: "8 tens", exp: t("8 tens = 80. 80 > 79.", "8 puluhan = 80. 80 > 79.") },
+                    { q: t("How many tens are there in the number 350?", "Berapa banyak puluhan dalam angka 350?"), opts: ["5", "35", "50", "350"], ans: "35", exp: t("350 ÷ 10 = 35 tens.", "350 ÷ 10 = 35 puluhan.") },
+                    { q: t("What is the value of the digit 5 in 95?", "Berapa nilai digit 5 pada 95?"), opts: ["5", "50", "9", "90"], ans: "5", exp: t("5 is in the ones place.", "5 ada di tempat satuan.") },
+                    { q: t("I have 6 hundreds and 3 ones. What number am I?", "Saya punya 6 ratusan dan 3 satuan. Angka berapakah saya?"), opts: ["63", "603", "630", "360"], ans: "603", exp: t("600 + 0 + 3 = 603.", "600 + 0 + 3 = 603.") },
+                    { q: t("Which number has a 4 in the tens place?", "Angka mana yang memiliki 4 di tempat puluhan?"), opts: ["405", "540", "45", "504"], ans: "540", exp: t("In 540, the middle digit is 4.", "Pada 540, digit tengah adalah 4.") },
+                    { q: t("Compare: 9 hundreds ___ 90 tens", "Bandingkan: 9 ratusan ___ 90 puluhan"), opts: [">", "<", "=", "None"], ans: "=", exp: t("9 hundreds = 900. 90 tens = 900. They are equal.", "9 ratusan = 900. 90 puluhan = 900. Mereka sama.") },
+                    { q: t("What is the expanded form of 208?", "Apa bentuk uraian dari 208?"), opts: ["\\(200 + 8\\)", "\\(20 + 8\\)", "\\(200 + 80\\)", "\\(2 + 0 + 8\\)"], ans: "\\(200 + 8\\)", exp: t("208 has 2 hundreds, 0 tens, and 8 ones.", "208 memiliki 2 ratusan, 0 puluhan, dan 8 satuan.") },
+                    { q: t("If you add 1 hundred to 450, what is the new number?", "Jika kamu menambahkan 1 ratusan ke 450, apa angka barunya?"), opts: ["460", "550", "451", "500"], ans: "550", exp: t("450 + 100 = 550.", "450 + 100 = 550.") }
+                ],
+                as2: [ // Patterns & Sequences
+                    { q: t("What is the missing number: 12, 15, 18, __, 24?", "Apa angka yang hilang: 12, 15, 18, __, 24?"), opts: ["19", "20", "21", "22"], ans: "21", exp: t("Rule is +3.", "Aturannya +3.") },
+                    { q: t("Find the rule: 50, 45, 40, 35, 30.", "Temukan aturannya: 50, 45, 40, 35, 30."), opts: ["+5", "-5", "+10", "-10"], ans: "-5", exp: t("Numbers decrease by 5.", "Angka berkurang 5.") },
+                    { q: t("Continue the pattern: 100, 200, 300, 400, __", "Lanjutkan pola: 100, 200, 300, 400, __"), opts: ["401", "410", "500", "450"], ans: "500", exp: t("Rule is +100.", "Aturannya +100.") },
+                    { q: t("What is the next number: 9, 18, 27, __?", "Apa angka berikutnya: 9, 18, 27, __?"), opts: ["28", "36", "35", "30"], ans: "36", exp: t("Rule is +9.", "Aturannya +9.") },
+                    { q: t("A sequence starts at 10 and adds 5 each time. What is the 4th number?", "Barisan dimulai dari 10 dan menambah 5 setiap kali. Apa angka ke-4?"), opts: ["20", "25", "30", "15"], ans: "25", exp: t("10, 15, 20, 25.", "10, 15, 20, 25.") },
+                    { q: t("Find the missing number: 80, __, 60, 50", "Temukan angka yang hilang: 80, __, 60, 50"), opts: ["70", "65", "75", "60"], ans: "70", exp: t("Rule is -10.", "Aturannya -10.") },
+                    { q: t("Which number comes next: 22, 33, 44, __?", "Angka mana yang datang berikutnya: 22, 33, 44, __?"), opts: ["45", "55", "54", "66"], ans: "55", exp: t("Rule is +11.", "Aturannya +11.") },
+                    { q: t("Pattern: 5, 10, 20, 40... What is the rule?", "Pola: 5, 10, 20, 40... Apa aturannya?"), opts: ["+5", "\\(\\times 2\\)", "+10", "\\(\\times 3\\)"], ans: "\\(\\times 2\\)", exp: t("Each number is multiplied by 2.", "Setiap angka dikali 2.") },
+                    { q: t("What is the 5th number in this sequence: 3, 6, 9, 12, __?", "Apa angka ke-5 dalam barisan ini: 3, 6, 9, 12, __?"), opts: ["13", "14", "15", "16"], ans: "15", exp: t("12 + 3 = 15.", "12 + 3 = 15.") },
+                    { q: t("Find the odd one out: 4, 8, 12, 15, 16", "Temukan yang ganjil: 4, 8, 12, 15, 16"), opts: ["4", "12", "15", "16"], ans: "15", exp: t("Others are even numbers (multiples of 2).", "Lainnya adalah bilangan genap (kelipatan 2).") }
+                ],
+                as3: [ // Elimination Focus
+                    { q: t("Sequence: 10, 20, 30, __. Which is a distractor?", "Barisan: 10, 20, 30, __. Mana yang distraktor?"), opts: ["40", "31", "50", "30"], ans: "31", exp: t("31 is +1, pattern is +10.", "31 adalah +1, polanya +10.") },
+                    { q: t("Which answer is silly for 5, 10, 15, __?", "Jawaban mana yang konyol untuk 5, 10, 15, __?"), opts: ["20", "25", "16", "10"], ans: "16", exp: t("Pattern is +5. 16 is not a multiple of 5.", "Pola +5. 16 bukan kelipatan 5.") },
+                    { q: t("To find 100, 200, 300, __, we eliminate:", "Untuk menemukan 100, 200, 300, __, kita eliminasi:"), opts: ["400", "301", "310", "500"], ans: "301", exp: t("301 assumes +1 instead of +100.", "301 mengasumsikan +1 bukan +100.") },
+                    { q: t("Which does NOT belong: 2, 4, 6, 9, 10?", "Mana yang TIDAK termasuk: 2, 4, 6, 9, 10?"), opts: ["2", "6", "9", "10"], ans: "9", exp: t("9 is the only odd number.", "9 adalah satu-satunya bilangan ganjil.") },
+                    { q: t("Pattern: 7, 14, 21, __. Eliminate the distractor.", "Pola: 7, 14, 21, __. Eliminasi distraktornya."), opts: ["28", "22", "35", "27"], ans: "22", exp: t("22 is not a multiple of 7.", "22 bukan kelipatan 7.") },
+                    { q: t("If you added 1 instead of 10 to 90, you get a distractor:", "Jika kamu menambah 1 bukan 10 ke 90, kamu dapat distraktor:"), opts: ["100", "91", "80", "99"], ans: "91", exp: t("Common mistake is +1 instead of +10.", "Kesalahan umum adalah +1 bukan +10.") },
+                    { q: t("Which number breaks the +5 rule?", "Angka mana yang merusak aturan +5?"), opts: ["15", "20", "26", "30"], ans: "26", exp: t("26 is not reachable by adding 5s.", "26 tidak bisa dicapai dengan menambah 5.") },
+                    { q: t("Sequence: 50, 45, 40, __. What is the distractor?", "Barisan: 50, 45, 40, __. Apa distraktornya?"), opts: ["35", "41", "30", "25"], ans: "41", exp: t("41 goes down by 1, not 5.", "41 turun 1, bukan 5.") },
+                    { q: t("Which is an even number distractor in 8, 10, 12, __?", "Mana yang distraktor genap di 8, 10, 12, __?"), opts: ["14", "13", "16", "11"], ans: "13", exp: t("13 is odd, pattern is even.", "13 ganjil, polanya genap.") },
+                    { q: t("Olympiad trick: If options are 31, 40, 50 for +10 pattern, cross out:", "Trik Olimpiade: Jika pilihan 31, 40, 50 untuk pola +10, coret:"), opts: ["31", "40", "50", "All"], ans: "31", exp: t("31 does not fit the +10 rule.", "31 tidak cocok dengan aturan +10.") }
+                ],
+                as4: [ // Reverse & Place Value Combo
+                    { q: t("Missing middle: 22, __, 28, 31", "Tengah yang hilang: 22, __, 28, 31"), opts: ["24", "25", "26", "23"], ans: "25", exp: t("Rule is +3. 22 + 3 = 25.", "Aturan +3. 22 + 3 = 25.") },
+                    { q: t("What is the tens digit of the next number in 11, 12, 13, __?", "Apa digit puluhan dari angka berikutnya di 11, 12, 13, __?"), opts: ["1", "2", "4", "10"], ans: "1", exp: t("Next is 14. Tens digit is 1.", "Berikutnya 14. Digit puluhan 1.") },
+                    { q: t("Value of 5 in the next number: 45, 46, 47, __?", "Nilai 5 di angka berikutnya: 45, 46, 47, __?"), opts: ["5", "50", "0", "500"], ans: "5", exp: t("Next is 48. The 5 is in tens, but wait! 48 has no 5. Ah, 48! Trick question. Wait, 50 is value of 5 in 50. Next is 48. Trick.", "Berikutnya 48. Tidak ada 5. Ini soal jebakan.") }, // Fixing this logic for actual assignment
+                    { q: t("Missing number: 80, 70, __, 50", "Angka yang hilang: 80, 70, __, 50"), opts: ["60", "65", "55", "40"], ans: "60", exp: t("Rule is -10.", "Aturan -10.") },
+                    { q: t("How many ones are in the next number: 19, 20, 21, __?", "Berapa satuan dalam angka berikutnya: 19, 20, 21, __?"), opts: ["2", "22", "0", "20"], ans: "2", exp: t("Next is 22. It has 2 ones.", "Berikutnya 22. Ini memiliki 2 satuan.") },
+                    { q: t("If pattern is 30, 40, 50, __. What is the value of the tens digit in the answer?", "Jika pola 30, 40, 50, __. Berapa nilai digit puluhan di jawabannya?"), opts: ["6", "60", "50", "0"], ans: "60", exp: t("Next is 60. Tens digit is 6, value is 60.", "Berikutnya 60. Digit puluhan 6, nilainya 60.") },
+                    { q: t("Reverse: __, 25, 30, 35", "Terbalik: __, 25, 30, 35"), opts: ["20", "15", "24", "10"], ans: "20", exp: t("Rule is +5. 25 - 5 = 20.", "Aturan +5. 25 - 5 = 20.") },
+                    { q: t("Next number is 99. How many tens does it have?", "Angka berikutnya 99. Berapa banyak+ puluhan yang dimilikinya?"), opts: ["9", "90", "99", "10"], ans: "9", exp: t("99 has 9 tens.", "99 memiliki 9 puluhan.") },
+                    { q: t("Missing: 55, 50, __, 40-5 (45)", "Hilang: 55, 50, __, 40"), opts: ["46", "45", "40", "48"], ans: "45", exp: t("Rule is -5.", "Aturan -5.") },
+                    { q: t("Sum of digits in the next number: 10, 11, 12, __?", "Jumlah digit pada angka berikutnya: 10, 11, 12, __?"), opts: ["4", "13", "3", "5"], ans: "4", exp: t("Next is 13. 1 + 3 = 4.", "Berikutnya 13. 1 + 3 = 4.") }
+                ],
+                as5: [ // Hard/Mixed Olympiad
+                    { q: t("I am a number between 20 and 30. Sum of digits is 5. What am I?", "Saya angka antara 20 dan 30. Jumlah digit 5. Apa saya?"), opts: ["22", "23", "24", "25"], ans: "23", exp: t("2 + 3 = 5.", "2 + 3 = 5.") },
+                    { q: t("Pattern: 1, 2, 4, 7, 11, __. What is next?", "Pola: 1, 2, 4, 7, 11, __. Apa berikutnya?"), opts: ["12", "13", "14", "16"], ans: "16", exp: t("Jumps are +1, +2, +3, +4. Next jump +5.", "Lompatan +1, +2, +3, +4. Lompatan berikutnya +5.") },
+                    { q: t("How many tens in 450?", "Berapa puluhan dalam 450?"), opts: ["5", "45", "50", "450"], ans: "45", exp: t("450 ÷ 10 = 45.", "450 ÷ 10 = 45.") },
+                    { q: t("Which does NOT belong: 2, 4, 6, 9, 10, 12?", "Mana yang TIDAK termasuk: 2, 4, 6, 9, 10, 12?"), opts: ["2", "9", "10", "12"], ans: "9", exp: t("9 is the only odd number.", "9 satu-satunya bilangan ganjil.") },
+                    { q: t("Sequence starts at 10, adds 5. What is the 6th number?", "Barisan mulai 10, tambah 5. Apa angka ke-6?"), opts: ["30", "35", "40", "25"], ans: "35", exp: t("10, 15, 20, 25, 30, 35.", "10, 15, 20, 25, 30, 35.") },
+                    { q: t("If you have 34 and 43, which has 4 in tens place?", "Jika kamu punya 34 dan 43, mana yang memiliki 4 di puluhan?"), opts: ["34", "43", "Both", "Neither"], ans: "43", exp: t("In 43, 4 is the tens digit.", "Pada 43, 4 adalah digit puluhan.") },
+                    { q: t("Compare: 3 tens + 4 ones ___ 35 ones", "Bandingkan: 3 puluhan + 4 satuan ___ 35 satuan"), opts: [">", "<", "=", "None"], ans: "<", exp: t("3 tens + 4 ones = 34. 34 < 35.", "3 puluhan + 4 satuan = 34. 34 < 35.") },
+                    { q: t("Next in pattern: 99, 88, 77, __", "Berikutnya dalam pola: 99, 88, 77, __"), opts: ["66", "67", "76", "55"], ans: "66", exp: t("Rule is -11.", "Aturan -11.") },
+                    { q: t("I am an even number. My digits sum to 6. I am larger than 20. What am I?", "Saya bilangan genap. Jumlah digit saya 6. Saya lebih besar dari 20. Apa saya?"), opts: ["24", "33", "42", "15"], ans: "42", exp: t("42 is even, > 20, and 4 + 2 = 6.", "42 genap, > 20, dan 4 + 2 = 6.") },
+                    { q: t("Boss Level: 1, 1, 2, 3, 5, 8, __ (Fibonacci). What is next?", "Boss Level: 1, 1, 2, 3, 5, 8, __ (Fibonacci). Apa berikutnya?"), opts: ["9", "10", "13", "11"], ans: "13", exp: t("1+2=3, 2+3=5, 3+5=8, 5+8=13.", "1+2=3, 2+3=5, 3+5=8, 5+8=13.") }
+                ]
+            };
+            
+            // Fixing as4_q3 properly in the return to avoid the weird trick text
+            if(asgId === 'as4') {
+                banks.as4[2] = { q: t("Value of 5 in the next number: 45, 46, 47, __?", "Nilai 5 di angka berikutnya: 45, 46, 47, __?"), opts: ["5", "50", "0", "None of the above"], ans: "None of the above", exp: t("Next is 48. There is no 5 in 48.", "Berikutnya 48. Tidak ada 5 di 48.") };
+            }
+            if(asgId === 'as5') {
+                 banks.as5[8] = { q: t("I am an even number. My digits sum to 6. I am larger than 20. What am I?", "Saya bilangan genap. Jumlah digit saya 6. Saya lebih besar dari 20. Apa saya?"), opts: ["24", "33", "42", "15"], ans: "42", exp: t("42 is even, > 20, and 4 + 2 = 6.", "42 genap, > 20, dan 4 + 2 = 6.") };
+            }
+
+            return banks[asgId] || [];
+        };
+
+        App.getAssignmentHTML = function(asgId) {
+            const step = this.currentStep;
+            const asgNum = asgId.replace('as', '');
+            const questions = this.getAssignmentQuestions(asgId);
+            
+            let html = `<div class="content-box"><h2><i class="fa fa-file-alt"></i> Assignment ${asgNum}</h2>`;
+
+            if(step === 0) {
+                html += `<p>${t("Complete all 10 exercises. Use your Elimination Shield and double-check your math!", "Selesaikan 10 latihan. Gunakan Perisai Eliminasi dan periksa ulang matematikamu!")}</p>
+                <p>${t("Click 'Next' to begin.", "Klik 'Next' untuk memulai.")}</p>`;
+            } else {
+                const qIndex = step - 1;
+                if(qIndex < questions.length) {
+                    const qData = questions[qIndex];
+                    const qId = `${asgId}_q${qIndex+1}`;
+                    html += `<h3>${t("Question", "Soal")} ${qIndex+1} / 10</h3>`;
+                    html += this.generateMC(qId, qData.q, qData.opts, qData.ans, qData.exp);
+                } else {
+                    // Summary Screen
+                    let score = 0;
+                    questions.forEach((q, i) => {
+                        const qId = `${asgId}_q${i+1}`;
+                        if(this.answers[qId] && this.answers[qId].isCorrect) score++;
+                    });
+                    
+                    html += `<h3>${t("Assignment ${asgNum} Completed!", "Tugas ${asgNum} Selesai!")}</h3>
+                    <div class="math-block">\\(\\text{Score: } ${score} \\text{ / } 10\\)</div>
+                    <p>${t("Great job! You can print your result or move on.", "Kerja bagus! Kamu bisa cetak hasilmu atau lanjut.")}</p>
+                    <button class="btn btn-primary" onclick="App.printAssignment('${asgId}')"><i class="fa fa-print"></i> Print Result</button>`;
+                }
+            }
+
+            html += `</div>`;
+            html += this.getStepNav(11); // 0 is intro, 1-10 are questions, 11 is summary
+            return html;
+        };
+
+        App.printAssignment = function(asgId) {
+            const asgNum = asgId.replace('as', '');
+            const questions = this.getAssignmentQuestions(asgId);
+            const today = new Date().toLocaleDateString('en-GB');
+            
+            let score = 0;
+            let tableRows = '';
+
+            questions.forEach((q, i) => {
+                const qId = `${asgId}_q${i+1}`;
+                const userAns = this.answers[qId] ? this.answers[qId].answer : "-";
+                const isCorrect = this.answers[qId] && this.answers[qId].isCorrect;
+                if(isCorrect) score++;
+                const note = userAns === "-" ? "" : (isCorrect ? "✔" : "✘");
+                
+                // Strip HTML/Translation for print text
+                const stripHtml = (html) => {
+                    let tmp = document.createElement("div");
+                    tmp.innerHTML = html;
+                    return tmp.textContent || tmp.innerText || "";
+                };
+
+                tableRows += `<tr>
+                    <td>${i+1}</td>
+                    <td>${stripHtml(q.q)}</td>
+                    <td>${stripHtml(userAns)}</td>
+                    <td>${stripHtml(q.ans)}</td>
+                    <td>${note}</td>
+                </tr>`;
+            });
+
+            const printHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Print Assignment ${asgNum}</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+                <style>
+                    body { font-family: sans-serif; font-size: 12px; color: #000; }
+                    h2 { margin-bottom: 5px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                    th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+                    th { background: #eee; }
+                    .meta { margin-bottom: 10px; }
+                </style>
+            </head>
+            <body>
+                <h2>MATH TUTORING by Deni</h2>
+                <div class="meta">
+                    <strong>Name:</strong> _____________________ <br>
+                    <strong>Date:</strong> ${today} <br>
+                    <strong>Topic:</strong> Math Olympiad Sprint (Number Sense) <br>
+                    <strong>Assignment Group:</strong> ${asgNum} <br>
+                    <strong>Score:</strong> ${score} / 10
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr><th>No.</th><th>Question</th><th>Student Answer</th><th>Correct Answer</th><th>Note</th></tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 40px; text-align: right;">
+                    <strong>Checked by,</strong><br><br>
+                    Deni
+                </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"><\/script>
+                <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"><\/script>
+                <script>
+                    renderMathInElement(document.body, {delimiters: [{left: '\\\\(', right: '\\\\)', display: false}]});
+                    setTimeout(()=> window.print(), 500);
+                <\/script>
+            </body>
+            </html>`;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printHtml);
+            printWindow.document.close();
+        };
+
+        App.getConsolidationHTML = function() {
+            return `
+            <div class="content-box">
+                <h2><i class="fa fa-flag-checkered"></i> Consolidation & Reflection</h2>
+                <p>${t("Mission Accomplished! You were amazing at spotting patterns today.", "Misi Selesai! Kamu luar biasa dalam menemukan pola hari ini.")}</p>
+                <p>${t("Remember: Always look for the 'rule' and cross out the 'silly' answers (distractors) using your Elimination Shield.", "Ingat: Selalu cari 'aturan' dan coret jawaban 'konyol' (distraktor) menggunakan Perisai Eliminasimu.")}</p>
+                <hr style="border-color:var(--primary); margin: 20px 0;">
+                <p>${t("Don't forget to log in to your learning platform to see your rewards and practice more!", "Jangan lupa masuk ke platform belajarmu untuk melihat hadiahmu dan berlatih lagi!")}</p>
+                <a href="https://learn.algonova.id/login" target="_blank" class="btn btn-primary" style="display:inline-block; text-decoration:none; margin-top:15px;">
+                    <i class="fa fa-external-link-alt"></i> Go to learn.algonova.id
+                </a>
+                ${SVG.rocket}
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-warning" onclick="App.navigate(11, 0)"><i class="fa fa-arrow-left"></i> Previous</button>
+                <button class="btn btn-primary" onclick="App.navigate(0, 0)">Back to Home <i class="fa fa-home"></i></button>
+            </div>`;
+        };
+
+        // --- UI GENERATORS ---
+        App.generateMC = function(qId, question, options, correct, explanation) {
+            const shuffledOptions = this.shuffleArray([...options]);
+            let html = `<h3><i class="fa fa-question-circle"></i> Exercise</h3><p>${question}</p><div class="options-grid">`;
+            
+            shuffledOptions.forEach(opt => {
+                const isAnswered = this.answers[qId];
+                let cls = "option-btn";
+                if(isAnswered) {
+                    if(opt === correct) cls += " correct";
+                    else if(opt === isAnswered.answer && !isAnswered.isCorrect) cls += " wrong";
+                }
+                html += `<div class="${cls}" data-qid="${qId}" data-val="${opt}" onclick="App.checkAnswer('${qId}', '${opt}', '${correct}', '')">${opt}</div>`;
+            });
+            
+            html += `</div><div id="exp-${qId}" class="collapse-explain"><i class="fa fa-lightbulb"></i> <strong>Explanation:</strong> ${explanation}</div>`;
+            return html;
+        };
+
+        App.getStepNav = function(maxSteps) {
+            const secIdx = this.currentSection;
+            const step = this.currentStep;
+            
+            let prevLogic = `App.navigate(${secIdx}, ${step-1})`;
+            let nextLogic = `App.navigate(${secIdx}, ${step+1})`;
+            
+            if(step === 0) prevLogic = `App.navigate(${secIdx-1}, 0)`; // Go to prev section
+            if(step === maxSteps) nextLogic = `App.navigate(${secIdx+1}, 0)`; // Go to next section
+
+            return `
+            <div class="nav-buttons">
+                <button class="btn btn-warning" onclick="${prevLogic}"><i class="fa fa-arrow-left"></i> Previous</button>
+                ${step > 0 && step < maxSteps ? `<button class="btn btn-reset" onclick="App.resetStep(${secIdx}, ${step})"><i class="fa fa-redo"></i> Reset Step</button>` : ''}
+                <button class="btn btn-primary" onclick="${nextLogic}">Next <i class="fa fa-arrow-right"></i></button>
+            </div>`;
+        };
+
+        // --- FUNGSI BARU UNTUK RESET JAWABAN ---
+        App.resetStep = function(secIdx, stepIdx) {
+            // Cari tombol opsi yang sedang ditampilkan di layar untuk mendapatkan ID soalnya
+            const activeOption = document.querySelector('.option-btn[data-qid]');
+            if(activeOption) {
+                const qId = activeOption.getAttribute('data-qid');
+                // Jika soal ini sudah pernah dijawab, hapus dari memori dan Local Storage
+                if(this.answers[qId]) {
+                    delete this.answers[qId];
+                    localStorage.setItem('mathSprintAnswers', JSON.stringify(this.answers));
+                }
+            }
+            // Render ulang halaman setelah data dihapus
+            this.navigate(secIdx, stepIdx);
+        };
+
+        // Init
+        window.onload = () => App.init();
+    </script>
+</body>
+</html>
