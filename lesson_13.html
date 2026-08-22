@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Adventure: Multiplication (My Pals Are Here 2A)</title>
+    <!-- KaTeX Integration -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #58cc02;
+            --primary-dark: #46a302;
+            --secondary-color: #189ab4;
+            --bg-color: #fff;
+            --card-bg: #ffffff;
+            --text-color: #3c3c3c;
+            --border-color: #e5e5e5;
+            --wrong-color: #ff4b4b;
+            --wrong-bg: #ffdede;
+            --correct-bg: #d4edda;
+        }
+        body {
+            font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            overflow: hidden; /* Prevent body scroll */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header / Progress Bar Area */
+        .header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid var(--border-color);
+            background: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .menu-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-right: 10px;
+        }
+        .header-duration {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            white-space: nowrap;
+        }
+        .progress-container {
+            flex-grow: 1;
+            background: #e5e5e5;
+            height: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            width: 250px;
+            background: #fff;
+            border-right: 2px solid var(--border-color);
+            overflow-y: auto;
+            padding: 20px 10px;
+            z-index: 90;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-item {
+            display: block;
+            padding: 12px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .sidebar-item:hover { background: #f1faff; }
+        .sidebar-item.active { background: #e8f7ff; border-color: #b3e0ff; color: var(--secondary-color); }
+
+        /* Main Content Area (The Slides) */
+        .main-content {
+            margin-top: 60px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .slide-container {
+            background: #fff;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+        .translation {
+            font-style: italic;
+            color: #777;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Illustration Boxes */
+        .illustration-box {
+            background: #f7f9fc;
+            border: 2px dashed #c7cdd9;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 2.5em;
+            line-height: 1.5;
+        }
+
+        /* Theory & Question Styles */
+        .theory-box {
+            background: #e8f7ff;
+            border: 2px solid #b3e0ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .theory-box h3 { margin-top: 0; color: var(--secondary-color); }
+        
+        .question-text {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Options (Buttons) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        @media(min-width: 480px) {
+            .options-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .option-btn {
+            background: #fff;
+            border: 2px solid #e5e5e5;
+            border-bottom-width: 4px;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-color);
+            transition: all 0.1s;
+            text-align: center;
+        }
+        .option-btn:hover { background: #f1faff; border-color: #84d8ff; }
+        .option-btn.selected { border-color: #84d8ff; background: #e8f7ff; color: #189ab4; }
+        .option-btn.correct { background: var(--correct-bg); border-color: #28a745; color: #155724; transform: translateY(2px); }
+        .option-btn.wrong { background: var(--wrong-bg); border-color: var(--wrong-color); color: #721c24; transform: translateY(2px); }
+
+        /* Footer Navigation */
+        .footer-bar {
+            border-top: 2px solid var(--border-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .feedback-msg {
+            font-weight: bold;
+            color: var(--wrong-color);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .feedback-msg.show { opacity: 1; }
+        .btn-next {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--primary-dark);
+            transition: transform 0.1s;
+        }
+        .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--primary-dark); }
+        .btn-next:disabled { background: #e5e5e5; color: #afafaf; box-shadow: 0 4px 0 #c7c7c7; cursor: not-allowed; }
+
+        /* Map Header & Rules Button */
+        .map-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 0 #e5e5e5;
+            max-width: 600px;
+            width: 100%;
+        }
+        .map-header h1 { margin: 0; color: var(--secondary-color); font-size: 1.8em; }
+        .map-header p { margin: 5px 0 0; font-weight: bold; color: var(--text-color); }
+        .rules-btn {
+            background: #fff;
+            border: 2px solid #e5e5e5;
+            border-bottom-width: 4px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-top: 15px;
+            transition: all 0.1s;
+        }
+        .rules-btn:hover { background: #f1faff; border-color: #84d8ff; }
+
+        /* Class Rules Modal */
+        .rules-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .rules-modal.show { display: flex; }
+        .rules-modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .rules-modal-content h3 { color: var(--secondary-color); margin-top: 0; }
+        .rules-list { text-align: left; margin: 20px 0; padding-left: 0; list-style: none; }
+        .rules-list li { 
+            margin-bottom: 15px; 
+            padding: 15px; 
+            background: #f7f9fc; 
+            border-radius: 10px; 
+            border-left: 5px solid var(--secondary-color); 
+        }
+        .rules-list li strong { display: block; color: var(--text-color); }
+        .rules-list li em { color: #777; font-size: 0.9em; margin-top: 5px; display: block; }
+        .close-rules-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--primary-dark);
+            margin-top: 10px;
+        }
+        .close-rules-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--primary-dark); }
+
+        /* Map Style (Initially visible) */
+        .map-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .node-btn {
+            background: #fff;
+            border: 2px solid #e5e5e5;
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #c7c7c7;
+            position: relative;
+            width: 280px;
+            text-align: center;
+        }
+        .node-btn::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 30px;
+            background: #c7c7c7;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .node-btn:last-child::after { display: none; }
+        .node-btn:hover { border-color: #84d8ff; }
+        .node-icon { font-size: 2em; display: block; margin-bottom: 5px; }
+        .node-duration { display: block; font-size: 0.85em; color: #888; margin-top: 5px; font-weight: normal; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Map Screen -->
+    <div id="mapScreen" class="map-screen">
+        <div class="map-header">
+            <h1>Math Tutoring by Deni</h1>
+            <p>Topic: Multiplication</p>
+            <button class="rules-btn" onclick="openRulesModal()">📋 Class Rules / Aturan Kelas</button>
+        </div>
+        
+        <div class="node-btn" onclick="startNode(1)">
+            <span class="node-icon">🔥</span>
+            Spiral Review Warm-up
+            <span class="node-duration">00:00 - 00:10</span>
+        </div>
+        <div class="node-btn" onclick="startNode(2)">
+            <span class="node-icon">🌍</span>
+            Intro & Real-World
+            <span class="node-duration">00:10 - 00:15</span>
+        </div>
+        <div class="node-btn" onclick="startNode(3)">
+            <span class="node-icon">🧠</span>
+            Review of Prior Knowledge
+            <span class="node-duration">00:15 - 00:20</span>
+        </div>
+        <div class="node-btn" onclick="startNode(4)">
+            <span class="node-icon">🚀</span>
+            Problem Introduction
+            <span class="node-duration">00:20 - 00:30</span>
+        </div>
+        <div class="node-btn" onclick="startNode(5)">
+            <span class="node-icon">📝</span>
+            Guided Practice
+            <span class="node-duration">00:30 - 00:45</span>
+        </div>
+        <div class="node-btn" onclick="startNode(6)">
+            <span class="node-icon">🏃‍♂️</span>
+            Independent Practice
+            <span class="node-duration">00:45 - 00:55</span>
+        </div>
+        <div class="node-btn" onclick="startNode(7)">
+            <span class="node-icon">🧠</span>
+            Consolidation & Reflection
+            <span class="node-duration">00:55 - 01:00</span>
+        </div>
+        <div class="node-btn" onclick="startNode(8)">
+            <span class="node-icon">📝</span>
+            Assignment 1
+            <span class="node-duration">Take-home Task</span>
+        </div>
+        <div class="node-btn" onclick="startNode(9)">
+            <span class="node-icon">📝</span>
+            Assignment 2
+            <span class="node-duration">Take-home Task</span>
+        </div>
+        <div class="node-btn" onclick="startNode(10)">
+            <span class="node-icon">📝</span>
+            Assignment 3
+            <span class="node-duration">Take-home Task</span>
+        </div>
+        <div class="node-btn" onclick="startNode(11)">
+            <span class="node-icon">📝</span>
+            Assignment 4
+            <span class="node-duration">Take-home Task</span>
+        </div>
+        <div class="node-btn" onclick="startNode(12)">
+            <span class="node-icon">🏆</span>
+            Assignment 5
+            <span class="node-duration">Take-home Task</span>
+        </div>
+    </div>
+
+    <!-- Game UI (Initially Hidden) -->
+    <div id="gameUI" class="hidden">
+        <!-- Sidebar for Jumping Parts -->
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-item" onclick="startNode(1)">🔥 Spiral Review (00:00)</div>
+            <div class="sidebar-item" onclick="startNode(2)">🌍 Intro (00:10)</div>
+            <div class="sidebar-item" onclick="startNode(3)">🧠 Prior Knowledge (00:15)</div>
+            <div class="sidebar-item" onclick="startNode(4)">🚀 Problem Intro (00:20)</div>
+            <div class="sidebar-item" onclick="startNode(5)">📝 Guided Practice (00:30)</div>
+            <div class="sidebar-item" onclick="startNode(6)">🏃 Independent (00:45)</div>
+            <div class="sidebar-item" onclick="startNode(7)">🧠 Consolidation (00:55)</div>
+            <div class="sidebar-item" onclick="startNode(8)">📝 Assignment 1</div>
+            <div class="sidebar-item" onclick="startNode(9)">📝 Assignment 2</div>
+            <div class="sidebar-item" onclick="startNode(10)">📝 Assignment 3</div>
+            <div class="sidebar-item" onclick="startNode(11)">📝 Assignment 4</div>
+            <div class="sidebar-item" onclick="startNode(12)">🏆 Assignment 5</div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <span class="close-btn" onclick="exitNode()">&times;</span>
+            <span id="headerDuration" class="header-duration">00:00 - 00:00</span>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <!-- Tombol Print hanya muncul untuk Assignment -->
+            <button id="btnPrint" class="menu-btn hidden" onclick="printAssignment()" style="font-size: 20px;">🖨️</button>
+        </div>
+
+        <!-- Slide Content -->
+        <div class="main-content">
+            <div id="slideContainer" class="slide-container">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-bar">
+            <div id="feedbackMsg" class="feedback-msg"></div>
+            <button id="btnNext" class="btn-next" onclick="nextSlide()" disabled>CONTINUE</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure: Each node has an array of slides.
+        // Type 'theory': Just text and illustration. Next button always enabled.
+        // Type 'mcq': Multiple choice. Next button disabled until answered.
+        
+        const nodesData = {
+            1: [ // Node 1: Spiral Review
+                {
+                    type: 'theory',
+                    title: 'Theory 1: Counting Groups',
+                    title_trans: 'Teori 1: Menghitung Kelompok',
+                    content: `
+                        <p>When we have equal groups of objects, we can count them easily. Equal groups mean every group has the same number of items.</p>
+                        <span class="translation">Ketika kita memiliki kelompok benda yang sama, kita bisa menghitungnya dengan mudah. Kelompok yang sama berarti setiap kelompok memiliki jumlah benda yang sama.</span>
+                        <div class="illustration-box">
+                            🍎🍎🍎 <br> 🍎🍎🍎 <br> 🍎🍎🍎
+                        </div>
+                        <p>We have 3 groups with 3 apples in each group. We can write this as \\(3 + 3 + 3 = 9\\).</p>
+                        <span class="translation">Kita memiliki 3 kelompok dengan 3 apel di setiap kelompok. Kita bisa menulis ini sebagai \\(3 + 3 + 3 = 9\\).</span>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Look at the groups: ⚽⚽ ⚽⚽ ⚽⚽ ⚽⚽. How many groups are there?',
+                    question_trans: 'Lihatlah kelompok: ⚽⚽ ⚽⚽ ⚽⚽ ⚽⚽. Ada berapa kelompok?',
+                    illustration: '⚽⚽<br>⚽⚽<br>⚽⚽<br>⚽⚽',
+                    options: [
+                        { text: '2', correct: false },
+                        { text: '4', correct: true },
+                        { text: '5', correct: false }, 
+                        { text: '8', correct: false },
+                        { text: '6', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'How many balls are in each group?',
+                    question_trans: 'Ada berapa bola di setiap kelompok?',
+                    illustration: '⚽⚽<br>⚽⚽<br>⚽⚽<br>⚽⚽',
+                    options: [
+                        { text: '2', correct: true },
+                        { text: '4', correct: false },
+                        { text: '6', correct: false },
+                        { text: '8', correct: false },
+                        { text: '10', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is the total number of balls?',
+                    question_trans: 'Berapa jumlah total bola?',
+                    illustration: '⚽⚽<br>⚽⚽<br>⚽⚽<br>⚽⚽',
+                    options: [
+                        { text: '2', correct: false },
+                        { text: '4', correct: false },
+                        { text: '6', correct: false },
+                        { text: '8', correct: true },
+                        { text: '10', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 2: Repeated Addition',
+                    title_trans: 'Teori 2: Penjumlahan Berulang',
+                    content: `
+                        <p>Repeated addition is adding the same number again and again. If we have 4 groups of 2 stars, we write \\(2 + 2 + 2 + 2 = 8\\).</p>
+                        <span class="translation">Penjumlahan berulang adalah menambahkan angka yang sama berulang kali. Jika kita memiliki 4 kelompok dengan 2 bintang, kita menulis \\(2 + 2 + 2 + 2 = 8\\).</span>
+                        <div class="illustration-box">
+                            ⭐⭐<br>⭐⭐<br>⭐⭐<br>⭐⭐
+                        </div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Which expression matches the picture: 🍕🍕🍕 🍕🍕🍕 🍕🍕🍕?',
+                    question_trans: 'Ekspresi mana yang cocok dengan gambar: 🍕🍕🍕 🍕🍕🍕 🍕🍕🍕?',
+                    illustration: '🍕🍕🍕 🍕🍕🍕 🍕🍕🍕',
+                    options: [
+                        { text: '\\(3 + 3 + 3 + 3\\)', correct: false },
+                        { text: '\\(3 + 3 + 3\\)', correct: true },
+                        { text: '\\(9 + 9 + 9\\)', correct: false },
+                        { text: '\\(3 + 3\\)', correct: false },
+                        { text: '\\(2 + 3 + 4\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(5 + 5 + 5\\)?',
+                    question_trans: 'Berapakah \\(5 + 5 + 5\\)?',
+                    illustration: '✋<br>✋<br>✋',
+                    options: [
+                        { text: '10', correct: false },
+                        { text: '20', correct: false },
+                        { text: '15', correct: true },
+                        { text: '25', correct: false },
+                        { text: '5', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Sarah has 3 bags. Each bag has 4 marbles. How many marbles in total?',
+                    question_trans: 'Sarah punya 3 kantong. Setiap kantong berisi 4 kelereng. Berapa total kelerengnya?',
+                    illustration: '👜 (4 marbles)<br>👜 (4 marbles)<br>👜 (4 marbles)',
+                    options: [
+                        { text: '\\(4 + 4 + 4 = 12\\)', correct: true },
+                        { text: '\\(3 + 3 + 3 + 3 = 12\\)', correct: false },
+                        { text: '\\(3 + 4 = 7\\)', correct: false },
+                        { text: '14', correct: false },
+                        { text: '10', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 3: Skip Counting',
+                    title_trans: 'Teori 3: Melompat Berhitung',
+                    content: `
+                        <p>We can find totals by skip counting. If we have groups of 5, we can skip count by 5s: 5, 10, 15, 20...</p>
+                        <span class="translation">Kita bisa mencari total dengan melompat berhitung. Jika kita memiliki kelompok 5, kita bisa melompat berhitung kelipatan 5: 5, 10, 15, 20...</span>
+                        <div class="illustration-box">✋ ✋ ✋ ✋</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Skip count by 2s: 2, 4, 6, ___. What comes next?',
+                    question_trans: 'Melompat berhitung kelipatan 2: 2, 4, 6, ___. Apa selanjutnya?',
+                    illustration: '2️⃣ 4️⃣ 6️⃣ ❓',
+                    options: [
+                        { text: '7', correct: false },
+                        { text: '10', correct: false },
+                        { text: '8', correct: true },
+                        { text: '9', correct: false },
+                        { text: '12', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Skip count by 10s: 10, 20, ___, 40. What is the missing number?',
+                    question_trans: 'Melompat berhitung kelipatan 10: 10, 20, ___, 40. Berapa angka yang hilang?',
+                    illustration: '🔟 2️⃣0️⃣ ❓ 4️⃣0️⃣',
+                    options: [
+                        { text: '25', correct: false },
+                        { text: '40', correct: false },
+                        { text: '30', correct: true },
+                        { text: '35', correct: false },
+                        { text: '50', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'If you skip count by 5s three times (5, 10, 15), what does 15 represent?',
+                    question_trans: 'Jika kamu melompat berhitung kelipatan 5 sebanyak tiga kali (5, 10, 15), apa yang diwakili oleh 15?',
+                    illustration: '✋ ✋ ✋',
+                    options: [
+                        { text: '3 groups', correct: false },
+                        { text: 'The total of 3 groups of 5', correct: true },
+                        { text: '5 groups of 3', correct: false },
+                        { text: '15 groups', correct: false },
+                        { text: '50', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Tim has 4 boxes of donuts. Each box has 5 donuts. Skip count to find the total.',
+                    question_trans: 'Tim punya 4 kotak donat. Setiap kotak berisi 5 donat. Lompat berhitung untuk menemukan totalnya.',
+                    illustration: '🍩🍩🍩🍩🍩<br>🍩🍩🍩🍩🍩<br>🍩🍩🍩🍩🍩<br>🍩🍩🍩🍩🍩',
+                    options: [
+                        { text: '10', correct: false },
+                        { text: '15', correct: false },
+                        { text: '20', correct: true },
+                        { text: '25', correct: false },
+                        { text: '30', correct: false }
+                    ]
+                }
+            ],
+            2: [ // Node 2: Introduction & Real-World
+                {
+                    type: 'theory',
+                    title: 'Theory 1: Multiplication in Real Life',
+                    title_trans: 'Teori 1: Perkalian di Kehidupan Nyata',
+                    content: `
+                        <p>Imagine you are buying toys. Each toy costs $2. If you buy 4 toys, you don't need to add \\(2+2+2+2\\). You can use multiplication! Multiplication is a fast way to add equal groups.</p>
+                        <span class="translation">Bayangkan kamu sedang membeli mainan. Setiap mainan harganya $2. Jika kamu membeli 4 mainan, kamu tidak perlu menjumlahkan \\(2+2+2+2\\). Kamu bisa menggunakan perkalian! Perkalian adalah cara cepat untuk menjumlahkan kelompok yang sama.</span>
+                        <div class="illustration-box">🧸($2) 🧸($2) 🧸($2) 🧸($2)</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Why do we use multiplication instead of addition?',
+                    question_trans: 'Mengapa kita menggunakan perkalian, bukan penjumlahan?',
+                    illustration: '➕ vs ✖️',
+                    options: [
+                        { text: 'To make numbers bigger', correct: false },
+                        { text: 'To subtract faster', correct: false },
+                        { text: 'To add equal groups faster', correct: true },
+                        { text: 'To divide numbers', correct: false },
+                        { text: 'Because teachers say so', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: '1 pencil costs $1. If you buy 5 pencils, which math sentence is fastest?',
+                    question_trans: '1 pensil harganya $1. Jika kamu membeli 5 pensil, kalimat matematika mana yang paling cepat?',
+                    illustration: '✏️✏️✏️✏️✏️',
+                    options: [
+                        { text: '\\(1 + 1 + 1 + 1 + 1 = 5\\)', correct: false },
+                        { text: '\\(1 \\times 5 = 5\\)', correct: true },
+                        { text: '\\(5 - 1 = 4\\)', correct: false },
+                        { text: '\\(5 \\div 1 = 5\\)', correct: false },
+                        { text: 'Counting one by one', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Mom bakes 3 trays of cookies. Each tray has 6 cookies. What is the fast way to find the total?',
+                    question_trans: 'Ibu memanggang 3 loyang kue kering. Setiap loyang berisi 6 kue. Apa cara cepat untuk menemukan totalnya?',
+                    illustration: '🍪🍪🍪🍪🍪🍪<br>🍪🍪🍪🍪🍪🍪<br>🍪🍪🍪🍪🍪🍪',
+                    options: [
+                        { text: '\\(3 + 6 = 9\\)', correct: false },
+                        { text: '\\(6 - 3 = 3\\)', correct: false },
+                        { text: '\\(3 \\times 6 = 18\\)', correct: true },
+                        { text: '\\(6 + 6 + 6 = 18\\)', correct: false }, // Wait, this is also true mathematically but multiplication is faster. Let's make the other one 3x6=18. To avoid ambiguity, I will make the "fast way" explicitly multiplication.
+                        { text: 'Ask a friend', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 2: The Multiplication Symbol (x)',
+                    title_trans: 'Teori 2: Simbol Perkalian (x)',
+                    content: `
+                        <p>The symbol \\(\\times\\) means "groups of". So, \\(4 \\times 3\\) means "4 groups of 3".</p>
+                        <span class="translation">Simbol \\(\\times\\) berarti "kelompok dari". Jadi, \\(4 \\times 3\\) berarti "4 kelompok dari 3".</span>
+                        <div class="illustration-box">
+                            🍪🍪🍪<br>🍪🍪🍪<br>🍪🍪🍪<br>🍪🍪🍪
+                        </div>
+                        <p>Here we have 4 groups of 3 cookies. We write it as \\(4 \\times 3 = 12\\).</p>
+                        <span class="translation">Di sini kita memiliki 4 kelompok dari 3 kue. Kita menulisnya sebagai \\(4 \\times 3 = 12\\).</span>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'What does \\(5 \\times 2\\) mean?',
+                    question_trans: 'Apa arti dari \\(5 \\times 2\\)?',
+                    illustration: '❓ ✖️ ❓',
+                    options: [
+                        { text: '2 groups of 5', correct: false },
+                        { text: '5 groups of 2', correct: true },
+                        { text: '5 plus 2', correct: false },
+                        { text: '5 minus 2', correct: false },
+                        { text: '5 divided by 2', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Which of these means "3 groups of 4"?',
+                    question_trans: 'Mana dari berikut ini yang berarti "3 kelompok dari 4"?',
+                    illustration: '❓❓❓❓<br>❓❓❓❓<br>❓❓❓❓',
+                    options: [
+                        { text: '\\(4 + 3\\)', correct: false },
+                        { text: '\\(3 \\times 4\\)', correct: true },
+                        { text: '\\(4 \\times 4\\)', correct: false },
+                        { text: '\\(3 - 4\\)', correct: false },
+                        { text: '\\(3 + 3 + 3\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'There are 6 birds. Each bird has 2 wings. How do you write this as a multiplication sentence?',
+                    question_trans: 'Ada 6 burung. Setiap burung memiliki 2 sayap. Bagaimana kamu menulis ini sebagai kalimat perkalian?',
+                    illustration: '🐦🐦🐦🐦🐦🐦 (2 wings each)',
+                    options: [
+                        { text: '\\(2 + 6\\)', correct: false },
+                        { text: '\\(6 \\times 6\\)', correct: false },
+                        { text: '\\(6 \\times 2\\)', correct: true },
+                        { text: '\\(2 \\times 2\\)', correct: false },
+                        { text: '\\(6 - 2\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 3: Factors and Product',
+                    title_trans: 'Teori 3: Faktor dan Hasil Kali',
+                    content: `
+                        <p>In a multiplication sentence, the numbers being multiplied are called <strong>Factors</strong>. The answer is called the <strong>Product</strong>.</p>
+                        <span class="translation">Dalam kalimat perkalian, angka yang dikalikan disebut <strong>Faktor</strong>. Jawabannya disebut <strong>Hasil Kali</strong>.</span>
+                        <p style="text-align:center; font-size:1.5em; font-weight:bold; margin-top:20px;">\\(7 \\times 3 = 21\\)<br>Factor \\(\\times\\) Factor = Product</p>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'In \\(4 \\times 5 = 20\\), what is 20?',
+                    question_trans: 'Pada \\(4 \\times 5 = 20\\), apakah 20?',
+                    illustration: '4️⃣ ✖️ 5️⃣ = 2️⃣0️⃣',
+                    options: [
+                        { text: 'Factor', correct: false },
+                        { text: 'Group', correct: false },
+                        { text: 'Product', correct: true },
+                        { text: 'Sum', correct: false },
+                        { text: 'Difference', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'In \\(6 \\times 2 = 12\\), what are the factors?',
+                    question_trans: 'Pada \\(6 \\times 2 = 12\\), apa faktornya?',
+                    illustration: '6️⃣ ✖️ 2️⃣ = 1️⃣2️⃣',
+                    options: [
+                        { text: '6 and 12', correct: false },
+                        { text: '2 and 12', correct: false },
+                        { text: '6 and 2', correct: true },
+                        { text: '12 only', correct: false },
+                        { text: '6, 2, and 12', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Which multiplication sentence has a product of 15?',
+                    question_trans: 'Kalimat perkalian mana yang hasil kalinya 15?',
+                    illustration: '🎯 1️⃣5️⃣',
+                    options: [
+                        { text: '\\(3 \\times 4\\)', correct: false },
+                        { text: '\\(2 \\times 7\\)', correct: false },
+                        { text: '\\(3 \\times 5\\)', correct: true },
+                        { text: '\\(4 \\times 4\\)', correct: false },
+                        { text: '\\(5 \\times 4\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'A farmer has 5 baskets. Each basket holds 4 apples. Identify the factors and product.',
+                    question_trans: 'Seorang petani memiliki 5 keranjang. Setiap keranjang berisi 4 apel. Identifikasi faktor dan hasil kali.',
+                    illustration: '🍎🍎🍎🍎<br>🍎🍎🍎🍎<br>🍎🍎🍎🍎<br>🍎🍎🍎🍎<br>🍎🍎🍎🍎',
+                    options: [
+                        { text: 'Factors: 5 and 20; Product: 4', correct: false },
+                        { text: 'Factors: 4 and 20; Product: 5', correct: false },
+                        { text: 'Factors: 5 and 4; Product: 20', correct: true },
+                        { text: 'Factors: 5 and 4; Product: 9', correct: false },
+                        { text: 'Factors: 20 and 4; Product: 5', correct: false }
+                    ]
+                }
+            ],
+            3: [ // Node 3: Review of Prior Knowledge
+                {
+                    type: 'theory',
+                    title: 'Theory 1: From Addition to Multiplication',
+                    title_trans: 'Teori 1: Dari Penjumlahan ke Perkalian',
+                    content: `
+                        <p>Remember that multiplication is just a fast way to add equal groups! If we have 5 groups of 2 pencils, we can add them: \\(2 + 2 + 2 + 2 + 2 = 10\\). Or, we can multiply: \\(5 \\times 2 = 10\\).</p>
+                        <span class="translation">Ingat bahwa perkalian hanyalah cara cepat untuk menjumlahkan kelompok yang sama! Jika kita memiliki 5 kelompok dari 2 pensil, kita bisa menjumlahkannya: \\(2 + 2 + 2 + 2 + 2 = 10\\). Atau, kita bisa mengalikan: \\(5 \\times 2 = 10\\).</span>
+                        <div class="illustration-box">✏️✏️<br>✏️✏️<br>✏️✏️<br>✏️✏️<br>✏️✏️</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Which multiplication sentence matches \\(4 + 4 + 4\\)?',
+                    question_trans: 'Kalimat perkalian mana yang cocok dengan \\(4 + 4 + 4\\)?',
+                    illustration: '🍎🍎🍎🍎<br>🍎🍎🍎🍎<br>🍎🍎🍎🍎',
+                    options: [
+                        { text: '\\(3 \\times 4\\)', correct: true },
+                        { text: '\\(4 \\times 4\\)', correct: false },
+                        { text: '\\(3 + 4\\)', correct: false },
+                        { text: '\\(4 \\times 3\\)', correct: false }, // Mathematically same, but conceptually 3 groups of 4 is 3x4
+                        { text: '\\(12 \\times 1\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Which addition sentence matches \\(6 \\times 2\\)?',
+                    question_trans: 'Kalimat penjumlahan mana yang cocok dengan \\(6 \\times 2\\)?',
+                    illustration: '🥚🥚<br>🥚🥚<br>🥚🥚<br>🥚🥚<br>🥚🥚<br>🥚🥚',
+                    options: [
+                        { text: '\\(6 + 6 + 6 + 6\\)', correct: false },
+                        { text: '\\(2 + 2 + 2 + 2 + 2 + 2\\)', correct: true },
+                        { text: '\\(6 + 2\\)', correct: false },
+                        { text: '\\(6 + 6 + 2\\)', correct: false },
+                        { text: '\\(2 + 2 + 2 + 2\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'There are 3 trees. Each tree has 5 birds. How many birds in total?',
+                    question_trans: 'Ada 3 pohon. Setiap pohon ada 5 burung. Berapa total burung?',
+                    illustration: '🌳(🐦🐦🐦🐦🐦)<br>🌳(🐦🐦🐦🐦🐦)<br>🌳(🐦🐦🐦🐦🐦)',
+                    options: [
+                        { text: '\\(3 + 5 = 8\\)', correct: false },
+                        { text: '\\(3 \\times 5 = 15\\)', correct: true },
+                        { text: '\\(5 \\times 5 = 25\\)', correct: false },
+                        { text: '\\(3 + 3 + 3 = 9\\)', correct: false },
+                        { text: '\\(15 \\times 3 = 45\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 2: Arrays (Rows and Columns)',
+                    title_trans: 'Teori 2: Array (Baris dan Kolom)',
+                    content: `
+                        <p>We can also show multiplication using an <strong>array</strong>. An array has rows and columns. <br>Rows go across (↔️). Columns go up and down (↕️).<br>If we have 3 rows and 4 columns, we write \\(3 \\times 4 = 12\\).</p>
+                        <span class="translation">Kita juga bisa menunjukkan perkalian menggunakan <strong>array</strong>. Array memiliki baris dan kolom. <br>Baris menyamping (↔️). Kolom ke atas dan ke bawah (↕️).<br>Jika kita memiliki 3 baris dan 4 kolom, kita menulis \\(3 \\times 4 = 12\\).</span>
+                        <div class="illustration-box" style="font-size: 2em;">⭐⭐⭐⭐<br>⭐⭐⭐⭐<br>⭐⭐⭐⭐</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Look at the array. How many rows are there?',
+                    question_trans: 'Lihat array. Ada berapa baris?',
+                    illustration: '🍪🍪🍪<br>🍪🍪🍪<br>🍪🍪🍪<br>🍪🍪🍪',
+                    options: [
+                        { text: '3', correct: false },
+                        { text: '4', correct: true },
+                        { text: '12', correct: false },
+                        { text: '2', correct: false },
+                        { text: '6', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Look at the array. What is the multiplication sentence?',
+                    question_trans: 'Lihat array. Apa kalimat perkaliannya?',
+                    illustration: '🍪🍪🍪<br>🍪🍪🍪<br>🍪🍪🍪<br>🍪🍪🍪',
+                    options: [
+                        { text: '\\(3 \\times 4 = 12\\)', correct: true },
+                        { text: '\\(4 \\times 4 = 16\\)', correct: false },
+                        { text: '\\(3 \\times 3 = 9\\)', correct: false },
+                        { text: '\\(12 \\times 1 = 12\\)', correct: false },
+                        { text: '\\(4 + 3 = 7\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Mr. Lim plants 5 rows of flowers. Each row has 6 flowers. Which array matches this?',
+                    question_trans: 'Pak Lim menanam 5 baris bunga. Setiap baris ada 6 bunga. Array mana yang cocok?',
+                    illustration: '🪴🪴🪴🪴🪴🪴<br>🪴🪴🪴🪴🪴🪴<br>🪴🪴🪴🪴🪴🪴<br>🪴🪴🪴🪴🪴🪴<br>🪴🪴🪴🪴🪴🪴',
+                    options: [
+                        { text: '6 rows, 5 columns', correct: false },
+                        { text: '5 rows, 5 columns', correct: false },
+                        { text: '5 rows, 6 columns', correct: true },
+                        { text: '6 rows, 6 columns', correct: false },
+                        { text: '1 row, 30 columns', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 3: Turnaround Facts (Commutative Property)',
+                    title_trans: 'Teori 3: Fakta Bolak-balik (Sifat Komutatif)',
+                    content: `
+                        <p>Guess what? You can turn around the numbers in multiplication, and the answer stays the same! <br>\\(3 \\times 4 = 12\\) is the same as \\(4 \\times 3 = 12\\).<br>This is called the Commutative Property of Multiplication.</p>
+                        <span class="translation">Tebak apa? Kamu bisa membalik angka dalam perkalian, dan jawabannya tetap sama! <br>\\(3 \\times 4 = 12\\) sama dengan \\(4 \\times 3 = 12\\).<br>Ini disebut Sifat Komutatif Perkalian.</span>
+                        <div class="illustration-box">⭐⭐⭐⭐ &nbsp; = &nbsp; ⭐⭐⭐<br>⭐⭐⭐⭐ &nbsp; = &nbsp; ⭐⭐⭐<br>⭐⭐⭐⭐ &nbsp; = &nbsp; ⭐⭐⭐<br>&nbsp; &nbsp; = &nbsp; ⭐⭐⭐</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'If \\(2 \\times 5 = 10\\), what is \\(5 \\times 2\\)?',
+                    question_trans: 'Jika \\(2 \\times 5 = 10\\), berapakah \\(5 \\times 2\\)?',
+                    illustration: '✌️ ✖️ 5️⃣ = 🔟',
+                    options: [
+                        { text: '7', correct: false },
+                        { text: '10', correct: true },
+                        { text: '20', correct: false },
+                        { text: '25', correct: false },
+                        { text: '52', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Which of these is the same as \\(6 \\times 4\\)?',
+                    question_trans: 'Mana yang sama dengan \\(6 \\times 4\\)?',
+                    illustration: '6️⃣ ✖️ 4️⃣',
+                    options: [
+                        { text: '\\(6 + 4\\)', correct: false },
+                        { text: '\\(4 \\times 4\\)', correct: false },
+                        { text: '\\(4 \\times 6\\)', correct: true },
+                        { text: '\\(6 \\times 6\\)', correct: false },
+                        { text: '\\(10 \\times 2\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Emma draws 4 rows of 2 stars. Tom draws 2 rows of 4 stars. Who has more stars?',
+                    question_trans: 'Emma menggambar 4 baris berisi 2 bintang. Tom menggambar 2 baris berisi 4 bintang. Siapa yang punya bintang lebih banyak?',
+                    illustration: '👧(⭐⭐<br>⭐⭐<br>⭐⭐<br>⭐⭐) vs 👦(⭐⭐⭐⭐<br>⭐⭐⭐⭐)',
+                    options: [
+                        { text: 'Emma', correct: false },
+                        { text: 'Tom', correct: false },
+                        { text: 'They have the same amount', correct: true },
+                        { text: 'Cannot be determined', correct: false },
+                        { text: 'Tom, because 4 is bigger', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'A garden has 5 rows of 3 sunflowers. Which math sentence is TRUE?',
+                    question_trans: 'Sebuah taman memiliki 5 baris bunga matahari berisi 3 bunga. Kalimat matematika mana yang BENAR?',
+                    illustration: '🌻🌻🌻<br>🌻🌻🌻<br>🌻🌻🌻<br>🌻🌻🌻<br>🌻🌻🌻',
+                    options: [
+                        { text: '\\(5 \\times 3 = 15\\)', correct: true },
+                        { text: '\\(5 + 3 = 15\\)', correct: false },
+                        { text: '\\(3 \\times 5 = 8\\)', correct: false },
+                        { text: '\\(5 \\times 5 = 15\\)', correct: false },
+                        { text: '\\(15 \\times 3 = 5\\)', correct: false }
+                    ]
+                }
+            ],
+            4: [ // Node 4: Problem Introduction
+                {
+                    type: 'theory',
+                    title: 'Theory 1: Multiplying by 2',
+                    title_trans: 'Teori 1: Perkalian dengan 2',
+                    content: `
+                        <p>Multiplying by 2 is the same as doubling! If you have 4 groups of 2, just think "double 4". <br>\\(4 \\times 2 = 8\\) or \\(4 + 4 = 8\\).</p>
+                        <span class="translation">Perkalian dengan 2 sama dengan melipatgandakan (menggandakan)! Jika kamu punya 4 kelompok berisi 2, pikirkan saja "gandakan 4". <br>\\(4 \\times 2 = 8\\) atau \\(4 + 4 = 8\\).</span>
+                        <div class="illustration-box">👟👟 (2)<br>👟👟 (4)<br>👟👟 (6)<br>👟👟 (8)</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(3 \\times 2\\)?',
+                    question_trans: 'Berapakah \\(3 \\times 2\\)?',
+                    illustration: '✌️ ✖️ 3️⃣',
+                    options: [
+                        { text: '5', correct: false },
+                        { text: '6', correct: true },
+                        { text: '8', correct: false },
+                        { text: '4', correct: false },
+                        { text: '9', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(7 \\times 2\\)?',
+                    question_trans: 'Berapakah \\(7 \\times 2\\)?',
+                    illustration: '✌️ ✖️ 7️⃣',
+                    options: [
+                        { text: '12', correct: false },
+                        { text: '16', correct: false },
+                        { text: '14', correct: true },
+                        { text: '18', correct: false },
+                        { text: '9', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: There are 6 bicycles in the park. How many wheels are there in total?',
+                    question_trans: 'Soal Cerita: Ada 6 sepeda di taman. Berapa total roda yang ada?',
+                    illustration: '🚲🚲🚲🚲🚲🚲',
+                    options: [
+                        { text: '8 wheels', correct: false },
+                        { text: '12 wheels', correct: true },
+                        { text: '6 wheels', correct: false },
+                        { text: '14 wheels', correct: false },
+                        { text: '10 wheels', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 2: Multiplying by 5',
+                    title_trans: 'Teori 2: Perkalian dengan 5',
+                    content: `
+                        <p>Multiplying by 5 is easy if you skip count by 5s! Just count: 5, 10, 15, 20...<br>For example, \\(4 \\times 5\\) means 4 groups of 5. Skip count 4 times: 5, 10, 15, 20!</p>
+                        <span class="translation">Perkalian dengan 5 itu mudah jika kamu melompat berhitung kelipatan 5! Hitung saja: 5, 10, 15, 20...<br>Misalnya, \\(4 \\times 5\\) berarti 4 kelompok dari 5. Lompat berhitung 4 kali: 5, 10, 15, 20!</span>
+                        <div class="illustration-box">✋ (5)<br>✋ (10)<br>✋ (15)<br>✋ (20)</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(2 \\times 5\\)?',
+                    question_trans: 'Berapakah \\(2 \\times 5\\)?',
+                    illustration: '✋ ✋',
+                    options: [
+                        { text: '7', correct: false },
+                        { text: '10', correct: true },
+                        { text: '15', correct: false },
+                        { text: '12', correct: false },
+                        { text: '25', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(5 \\times 5\\)?',
+                    question_trans: 'Berapakah \\(5 \\times 5\\)?',
+                    illustration: '✋✋✋✋✋',
+                    options: [
+                        { text: '10', correct: false },
+                        { text: '20', correct: false },
+                        { text: '30', correct: false },
+                        { text: '25', correct: true },
+                        { text: '35', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: A starfish has 5 arms. If there are 4 starfish, how many arms are there altogether?',
+                    question_trans: 'Soal Cerita: Bintang laut punya 5 lengan. Jika ada 4 bintang laut, berapa banyak lengan secara keseluruhan?',
+                    illustration: '⭐⭐⭐⭐',
+                    options: [
+                        { text: '9 arms', correct: false },
+                        { text: '24 arms', correct: false },
+                        { text: '25 arms', correct: false },
+                        { text: '20 arms', correct: true },
+                        { text: '15 arms', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 3: Multiplying by 10',
+                    title_trans: 'Teori 3: Perkalian dengan 10',
+                    content: `
+                        <p>Multiplying by 10 is the easiest! Just add a zero (0) to the end of the other number. <br>\\(3 \\times 10 = 30\\). \\(6 \\times 10 = 60\\).</p>
+                        <span class="translation">Perkalian dengan 10 itu yang paling mudah! Tinggal tambahkan nol (0) di akhir angka lainnya. <br>\\(3 \\times 10 = 30\\). \\(6 \\times 10 = 60\\).</span>
+                        <div class="illustration-box">🔟<br>🔟🔟<br>🔟🔟🔟</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(3 \\times 10\\)?',
+                    question_trans: 'Berapakah \\(3 \\times 10\\)?',
+                    illustration: '3️⃣ ✖️ 🔟',
+                    options: [
+                        { text: '13', correct: false },
+                        { text: '30', correct: true },
+                        { text: '300', correct: false },
+                        { text: '20', correct: false },
+                        { text: '33', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(8 \\times 10\\)?',
+                    question_trans: 'Berapakah \\(8 \\times 10\\)?',
+                    illustration: '8️⃣ ✖️ 🔟',
+                    options: [
+                        { text: '18', correct: false },
+                        { text: '80', correct: true },
+                        { text: '800', correct: false },
+                        { text: '90', correct: false },
+                        { text: '88', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: A box holds 10 pencils. The teacher buys 7 boxes. How many pencils does she have?',
+                    question_trans: 'Soal Cerita: Satu kotak berisi 10 pensil. Ibu guru membeli 7 kotak. Berapa banyak pensil yang ia punya?',
+                    illustration: '📦x7 (10 pencils each)',
+                    options: [
+                        { text: '17 pencils', correct: false },
+                        { text: '70 pencils', correct: true },
+                        { text: '700 pencils', correct: false },
+                        { text: '60 pencils', correct: false },
+                        { text: '107 pencils', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: There are 10 bags of apples. Each bag has 4 apples. How many apples are there?',
+                    question_trans: 'Soal Cerita: Ada 10 kantong apel. Setiap kantong berisi 4 apel. Berapa banyak apel yang ada?',
+                    illustration: '🍎🍎🍎🍎<br>(x10 bags)',
+                    options: [
+                        { text: '40 apples', correct: true },
+                        { text: '14 apples', correct: false },
+                        { text: '400 apples', correct: false },
+                        { text: '50 apples', correct: false },
+                        { text: '104 apples', correct: false }
+                    ]
+                }
+            ],
+            5: [ // Node 5: Guided Practice
+                {
+                    type: 'theory',
+                    title: 'Theory 1: Writing Multiplication Sentences',
+                    title_trans: 'Teori 1: Menulis Kalimat Perkalian',
+                    content: `
+                        <p>When you see a picture or a story, ask yourself: <br>1. How many groups are there? (Rows) <br>2. How many are in each group? (Columns) <br>Then write: Groups \\(\\times\\) Items in each group = Total.</p>
+                        <span class="translation">Saat kamu melihat gambar atau cerita, tanyakan pada dirimu sendiri: <br>1. Ada berapa kelompok? (Baris) <br>2. Ada berapa benda di setiap kelompok? (Kolom) <br>Lalu tulis: Kelompok \\(\\times\\) Benda di tiap kelompok = Total.</span>
+                        <div class="illustration-box">🥤🥤🥤🥤🥤<br>🥤🥤🥤🥤🥤<br>🥤🥤🥤🥤🥤</div>
+                        <p>3 groups of 5 cups. \\(3 \\times 5 = 15\\) cups.</p>
+                        <span class="translation">3 kelompok berisi 5 cup. \\(3 \\times 5 = 15\\) cup.</span>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Look at the trays of muffins. There are 4 trays with 3 muffins each. Which sentence is correct?',
+                    question_trans: 'Lihat loyang muffin. Ada 4 loyang berisi 3 muffin. Kalimat mana yang benar?',
+                    illustration: '🧁🧁🧁<br>🧁🧁🧁<br>🧁🧁🧁<br>🧁🧁🧁',
+                    options: [
+                        { text: '\\(4 + 3 = 7\\)', correct: false },
+                        { text: '\\(3 \\times 4 = 7\\)', correct: false },
+                        { text: '\\(4 \\times 3 = 12\\)', correct: true },
+                        { text: '\\(4 \\times 4 = 16\\)', correct: false },
+                        { text: '\\(3 + 3 + 3 = 9\\)', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: A fruit seller has 5 baskets. Each basket holds 6 oranges. How many oranges does he have?',
+                    question_trans: 'Soal Cerita: Penjual buah punya 5 keranjang. Setiap keranjang berisi 6 jeruk. Berapa banyak jeruk yang ia punya?',
+                    illustration: '🍊🍊🍊🍊🍊🍊<br>🍊🍊🍊🍊🍊🍊<br>🍊🍊🍊🍊🍊🍊<br>🍊🍊🍊🍊🍊🍊<br>🍊🍊🍊🍊🍊🍊',
+                    options: [
+                        { text: '11 oranges', correct: false },
+                        { text: '25 oranges', correct: false },
+                        { text: '35 oranges', correct: false },
+                        { text: '30 oranges', correct: true },
+                        { text: '56 oranges', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: A school building has 3 floors. Each floor has 10 windows. How many windows are there in total?',
+                    question_trans: 'Soal Cerita: Gedung sekolah punya 3 lantai. Setiap lantai ada 10 jendela. Berapa total jendela di gedung itu?',
+                    illustration: '🏢 (10 windows per floor)',
+                    options: [
+                        { text: '13 windows', correct: false },
+                        { text: '30 windows', correct: true },
+                        { text: '300 windows', correct: false },
+                        { text: '20 windows', correct: false },
+                        { text: '103 windows', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 2: The 5s and 10s Trick',
+                    title_trans: 'Teori 2: Trik Kelipatan 5 dan 10',
+                    content: `
+                        <p>If you know your 10s, you can figure out your 5s! <br>\\(6 \\times 10 = 60\\). <br>Since 5 is half of 10, \\(6 \\times 5\\) is half of 60. <br>\\(6 \\times 5 = 30\\).</p>
+                        <span class="translation">Jika kamu tahu perkalian 10, kamu bisa mencari perkalian 5! <br>\\(6 \\times 10 = 60\\). <br>Karena 5 adalah setengah dari 10, maka \\(6 \\times 5\\) adalah setengah dari 60. <br>\\(6 \\times 5 = 30\\).</span>
+                        <div class="illustration-box">🔟🔟🔟🔟🔟🔟 = 60<br>✋✋✋✋✋✋ = 30</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'If \\(8 \\times 10 = 80\\), what is \\(8 \\times 5\\)?',
+                    question_trans: 'Jika \\(8 \\times 10 = 80\\), berapakah \\(8 \\times 5\\)?',
+                    illustration: '8️⃣ ✖️ 5️⃣',
+                    options: [
+                        { text: '40', correct: true },
+                        { text: '45', correct: false },
+                        { text: '85', correct: false },
+                        { text: '80', correct: false },
+                        { text: '20', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: Maya has 7 dimes (10 cents each). How much money does she have?',
+                    question_trans: 'Soal Cerita: Maya punya 7 koin 10 sen. Berapa uang yang ia miliki?',
+                    illustration: '🪙🪙🪙🪙🪙🪙🪙 (10¢)',
+                    options: [
+                        { text: '17 cents', correct: false },
+                        { text: '35 cents', correct: false },
+                        { text: '70 cents', correct: true },
+                        { text: '700 cents', correct: false },
+                        { text: '107 cents', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: Tom buys 4 packs of Pokémon cards. Each pack has 5 cards. How many cards does he have?',
+                    question_trans: 'Soal Cerita: Tom membeli 4 pak kartu Pokémon. Setiap pak berisi 5 kartu. Berapa banyak kartu yang ia punya?',
+                    illustration: '🎴 (5 cards)<br>🎴 (5 cards)<br>🎴 (5 cards)<br>🎴 (5 cards)',
+                    options: [
+                        { text: '9 cards', correct: false },
+                        { text: '45 cards', correct: false },
+                        { text: '25 cards', correct: false },
+                        { text: '20 cards', correct: true },
+                        { text: '40 cards', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 3: Multiplying by 3',
+                    title_trans: 'Teori 3: Perkalian dengan 3',
+                    content: `
+                        <p>To multiply by 3, you can use the "Double Plus One" strategy! <br>For \\(3 \\times 6\\), first double 6: \\(6 + 6 = 12\\). Then add one more 6: \\(12 + 6 = 18\\).<br>So, \\(3 \\times 6 = 18\\).</p>
+                        <span class="translation">Untuk perkalian dengan 3, kamu bisa pakai strategi "Lipat Dua Tambah Satu"! <br>Untuk \\(3 \\times 6\\), pertama lipat dua 6: \\(6 + 6 = 12\\). Lalu tambahkan satu 6 lagi: \\(12 + 6 = 18\\).<br>Jadi, \\(3 \\times 6 = 18\\).</span>
+                        <div class="illustration-box">🍎🍎🍎🍎🍎🍎 (6)<br>🍎🍎🍎🍎🍎🍎 (12)<br>🍎🍎🍎🍎🍎🍎 (18)</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(3 \\times 7\\)?',
+                    question_trans: 'Berapakah \\(3 \\times 7\\)?',
+                    illustration: '3️⃣ ✖️ 7️⃣',
+                    options: [
+                        { text: '14', correct: false },
+                        { text: '21', correct: true },
+                        { text: '28', correct: false },
+                        { text: '24', correct: false },
+                        { text: '10', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: A tricycle has 3 wheels. If there are 5 tricycles, how many wheels are there?',
+                    question_trans: 'Soal Cerita: Sepeda roda tiga punya 3 roda. Jika ada 5 sepeda, berapa banyak rodanya?',
+                    illustration: '🛴🛴🛴🛴🛴 (3 wheels each)',
+                    options: [
+                        { text: '8 wheels', correct: false },
+                        { text: '10 wheels', correct: false },
+                        { text: '15 wheels', correct: true },
+                        { text: '20 wheels', correct: false },
+                        { text: '12 wheels', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: There are 3 tables in a room. Each table has 4 legs. How many table legs are there in total?',
+                    question_trans: 'Soal Cerita: Ada 3 meja di dalam ruangan. Setiap meja punya 4 kaki. Berapa total kaki meja yang ada?',
+                    illustration: '🪑🪑🪑 (4 legs each)',
+                    options: [
+                        { text: '7 legs', correct: false },
+                        { text: '12 legs', correct: true },
+                        { text: '14 legs', correct: false },
+                        { text: '16 legs', correct: false },
+                        { text: '4 legs', correct: false }
+                    ]
+                }
+            ],
+            6: [ // Node 6: Independent Practice
+                {
+                    type: 'theory',
+                    title: 'Theory 1: Multiplying by 4 (Double-Double)',
+                    title_trans: 'Teori 1: Perkalian dengan 4 (Lipat Dua Kali)',
+                    content: `
+                        <p>To multiply by 4, just "Double, then Double again"! <br>For \\(4 \\times 5\\):<br>Double 5 is 10. \\(5 + 5 = 10\\).<br>Double 10 is 20. \\(10 + 10 = 20\\).<br>So, \\(4 \\times 5 = 20\\).</p>
+                        <span class="translation">Untuk perkalian dengan 4, cukup "Lipat Dua, lalu Lipat Dua lagi"! <br>Untuk \\(4 \\times 5\\):<br>Lipat dua 5 adalah 10. \\(5 + 5 = 10\\).<br>Lipat dua 10 adalah 20. \\(10 + 10 = 20\\).<br>Jadi, \\(4 \\times 5 = 20\\).</span>
+                        <div class="illustration-box">⭐⭐⭐⭐⭐ (5)<br>⭐⭐⭐⭐⭐ (10)<br>⭐⭐⭐⭐⭐ (15)<br>⭐⭐⭐⭐⭐ (20)</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'What is \\(4 \\times 4\\)?',
+                    question_trans: 'Berapakah \\(4 \\times 4\\)?',
+                    illustration: '4️⃣ ✖️ 4️⃣',
+                    options: [
+                        { text: '8', correct: false },
+                        { text: '12', correct: false },
+                        { text: '16', correct: true },
+                        { text: '20', correct: false },
+                        { text: '24', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Using the Double-Double strategy, what is double 8, then double it again?',
+                    question_trans: 'Menggunakan strategi Lipat Dua Kali, berapakah lipat dua 8, lalu lipat dua lagi?',
+                    illustration: '8️⃣ ➡️ 1️⃣6️⃣ ➡️ ?',
+                    options: [
+                        { text: '16', correct: false },
+                        { text: '24', correct: false },
+                        { text: '32', correct: true },
+                        { text: '40', correct: false },
+                        { text: '12', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: A dog has 4 legs. How many legs do 6 dogs have?',
+                    question_trans: 'Soal Cerita: Seekor anjing punya 4 kaki. Berapa kaki yang dimiliki 6 anjing?',
+                    illustration: '🐶🐶🐶🐶🐶🐶',
+                    options: [
+                        { text: '10 legs', correct: false },
+                        { text: '24 legs', correct: true },
+                        { text: '20 legs', correct: false },
+                        { text: '30 legs', correct: false },
+                        { text: '46 legs', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 2: Two-Step Word Problems',
+                    title_trans: 'Teori 2: Soal Cerita Dua Langkah',
+                    content: `
+                        <p>Sometimes, math problems need two steps! <br>Example: "4 boxes of 5 crayons. I lose 2 crayons. How many are left?" <br>Step 1: Find the total. \\(4 \\times 5 = 20\\). <br>Step 2: Subtract the lost ones. \\(20 - 2 = 18\\).</p>
+                        <span class="translation">Terkadang, soal matematika butuh dua langkah! <br>Contoh: "4 kotak berisi 5 krayon. Saya kehilangan 2 krayon. Berapa sisanya?" <br>Langkah 1: Cari total. \\(4 \\times 5 = 20\\). <br>Langkah 2: Kurangi yang hilang. \\(20 - 2 = 18\\).</span>
+                        <div class="illustration-box">🖍️🖍️🖍️🖍️🖍️ (x4) ➡️ 20<br>➖ 2 crayons<br>❓</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: 3 bags of 10 marbles. Tom gives 5 marbles to his friend. How many marbles does Tom have left?',
+                    question_trans: 'Soal Cerita: 3 kantong berisi 10 kelereng. Tom memberikan 5 kelereng ke temannya. Berapa sisa kelereng Tom?',
+                    illustration: '🧮(10) 🧮(10) 🧮(10) ➡️ Minus 5',
+                    options: [
+                        { text: '35 marbles', correct: false },
+                        { text: '30 marbles', correct: false },
+                        { text: '15 marbles', correct: false },
+                        { text: '25 marbles', correct: true },
+                        { text: '5 marbles', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: Mom bakes 2 trays of 8 cupcakes. The family eats 4. How many cupcakes are left?',
+                    question_trans: 'Soal Cerita: Ibu memanggang 2 loyang berisi 8 cupcake. Keluarga memakan 4. Berapa sisa cupcake?',
+                    illustration: '🧁🧁🧁🧁🧁🧁🧁🧁<br>🧁🧁🧁🧁🧁🧁🧁🧁 ➖ 4',
+                    options: [
+                        { text: '20 cupcakes', correct: false },
+                        { text: '12 cupcakes', correct: true },
+                        { text: '16 cupcakes', correct: false },
+                        { text: '10 cupcakes', correct: false },
+                        { text: '4 cupcakes', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: 4 children buy 5 stickers each. They put 6 stickers on their notebooks. How many stickers are left over?',
+                    question_trans: 'Soal Cerita: 4 anak membeli 5 stiker masing-masing. Mereka menempelkan 6 stiker di buku catatan. Berapa sisa stiker?',
+                    illustration: '4️⃣ kids x 5️⃣ stickers ➡️ Minus 6️⃣',
+                    options: [
+                        { text: '26 stickers', correct: false },
+                        { text: '14 stickers', correct: true },
+                        { text: '20 stickers', correct: false },
+                        { text: '29 stickers', correct: false },
+                        { text: '15 stickers', correct: false }
+                    ]
+                },
+                {
+                    type: 'theory',
+                    title: 'Theory 3: "Times As Many" (Comparison)',
+                    title_trans: 'Teori 3: "Berapa Kali Lipat" (Perbandingan)',
+                    content: `
+                        <p>We use multiplication to compare amounts. If Alex has 2 cars, and Ben has "3 times as many", Ben has \\(3 \\times 2 = 6\\) cars.</p>
+                        <span class="translation">Kita menggunakan perkalian untuk membandingkan jumlah. Jika Alex punya 2 mobil, dan Ben punya "3 kali lipatnya", Ben punya \\(3 \\times 2 = 6\\) mobil.</span>
+                        <div class="illustration-box">Alex: 🚗🚗 (2)<br>Ben: 🚗🚗 🚗🚗 🚗🚗 (3 x 2 = 6)</div>
+                    `
+                },
+                {
+                    type: 'mcq',
+                    question: 'Mia has 4 stickers. Sam has 5 times as many stickers as Mia. How many stickers does Sam have?',
+                    question_trans: 'Mia punya 4 stiker. Sam punya 5 kali lipat stiker Mia. Berapa stiker yang dimiliki Sam?',
+                    illustration: '👧(4) vs 👦(5 x 4)',
+                    options: [
+                        { text: '9 stickers', correct: false },
+                        { text: '20 stickers', correct: true },
+                        { text: '25 stickers', correct: false },
+                        { text: '15 stickers', correct: false },
+                        { text: '45 stickers', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: A giraffe is 4 times as tall as a monkey. The monkey is 2 meters tall. How tall is the giraffe?',
+                    question_trans: 'Soal Cerita: Jerapah itu 4 kali lebih tinggi dari monyet. Monyet tersebut tingginya 2 meter. Berapa tinggi jerapah itu?',
+                    illustration: '🐒 (2m) vs 🦒 (4 x 2m)',
+                    options: [
+                        { text: '6 meters', correct: false },
+                        { text: '8 meters', correct: true },
+                        { text: '10 meters', correct: false },
+                        { text: '12 meters', correct: false },
+                        { text: '16 meters', correct: false }
+                    ]
+                },
+                {
+                    type: 'mcq',
+                    question: 'Word Problem: There are 6 red apples and 4 times as many green apples. How many green apples are there?',
+                    question_trans: 'Soal Cerita: Ada 6 apel merah dan apel hijau jumlahnya 4 kali lipatnya. Berapa banyak apel hijau?',
+                    illustration: '🍎(6) vs 🍏(4 x 6)',
+                    options: [
+                        { text: '10 green apples', correct: false },
+                        { text: '24 green apples', correct: true },
+                        { text: '28 green apples', correct: false },
+                        { text: '20 green apples', correct: false },
+                        { text: '30 green apples', correct: false }
+                    ]
+                }
+            ],
+            7: [ // Node 7: Consolidation & Reflection
+                {
+                    type: 'theory',
+                    title: 'Consolidation & Reflection',
+                    title_trans: 'Konsolidasi & Refleksi',
+                    content: `
+                        <p>Wow! You did a fantastic job today! Let's summarize what we learned:<br>
+                        1. Multiplication is a fast way to add equal groups.<br>
+                        2. We can use arrays (rows and columns) to multiply.<br>
+                        3. We can use strategies like skip counting, Double (x2), and Double-Double (x4)!</p>
+                        <span class="translation">Wow! Kamu melakukan pekerjaan yang luar biasa hari ini! Mari kita rangkum apa yang telah kita pelajari:<br>
+                        1. Perkalian adalah cara cepat untuk menjumlahkan kelompok yang sama.<br>
+                        2. Kita bisa menggunakan array (baris dan kolom) untuk perkalian.<br>
+                        3. Kita bisa menggunakan strategi seperti lompat berhitung, Lipat Dua (x2), dan Lipat Dua Kali (x4)!</span>
+                        <div class="illustration-box">🎉🏆🎉</div>
+                    `
+                },
+                {
+                    type: 'theory',
+                    title: 'Ready for more?',
+                    title_trans: 'Siap untuk lebih?',
+                    content: `
+                        <p>If you want to practice more and unlock higher levels, click the button below to go to your online learning portal!</p>
+                        <span class="translation">Jika kamu ingin berlatih lebih banyak dan membuka level yang lebih tinggi, klik tombol di bawah ini untuk pergi ke portal belajar onlinemu!</span>
+                        <div style="text-align:center; margin-top:30px;">
+                            <a href="https://learn.algonova.id" target="_blank" class="btn-next" style="text-decoration:none; display:inline-block; box-shadow: 0 4px 0 var(--primary-dark);">Go to learn.algonova.id 🚀</a>
+                        </div>
+                    `
+                }
+            ],
+            8: [ // Assignment 1
+                { type: 'mcq', question: 'What is 3 x 4?', question_trans: 'Berapakah 3 x 4?', illustration: '3️⃣ ✖️ 4️⃣', options: [{ text: '7', correct: false }, { text: '12', correct: true }, { text: '14', correct: false }, { text: '16', correct: false }, { text: '9', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 5 boxes of donuts. Each has 2 donuts. How many donuts?', question_trans: 'Soal Cerita: 5 kotak donat. Tiap kotak ada 2 donat. Berapa donat?', illustration: '🍩🍩 (x5)', options: [{ text: '7 donuts', correct: false }, { text: '10 donuts', correct: true }, { text: '15 donuts', correct: false }, { text: '52 donuts', correct: false }, { text: '25 donuts', correct: false }] },
+                { type: 'mcq', question: 'What is 6 x 5?', question_trans: 'Berapakah 6 x 5?', illustration: '6️⃣ ✖️ 5️⃣', options: [{ text: '11', correct: false }, { text: '25', correct: false }, { text: '35', correct: false }, { text: '30', correct: true }, { text: '40', correct: false }] },
+                { type: 'mcq', question: 'Look at the array: 4 rows, 5 columns. What is the total?', question_trans: 'Lihat array: 4 baris, 5 kolom. Berapa totalnya?', illustration: '⭐⭐⭐⭐⭐<br>⭐⭐⭐⭐⭐<br>⭐⭐⭐⭐⭐<br>⭐⭐⭐⭐⭐', options: [{ text: '20', correct: true }, { text: '9', correct: false }, { text: '25', correct: false }, { text: '45', correct: false }, { text: '15', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 10 bags of marbles. Each has 3 marbles. How many marbles?', question_trans: 'Soal Cerita: 10 kantong kelereng. Tiap kantong 3 kelereng. Berapa kelereng?', illustration: '🧮(3) x10', options: [{ text: '13 marbles', correct: false }, { text: '30 marbles', correct: true }, { text: '300 marbles', correct: false }, { text: '103 marbles', correct: false }, { text: '10 marbles', correct: false }] },
+                { type: 'mcq', question: 'If 2 x 8 = 16, what is 8 x 2?', question_trans: 'Jika 2 x 8 = 16, berapakah 8 x 2?', illustration: '2️⃣ ✖️ 8️⃣ = 1️⃣6️⃣', options: [{ text: '10', correct: false }, { text: '16', correct: true }, { text: '18', correct: false }, { text: '24', correct: false }, { text: '14', correct: false }] },
+                { type: 'mcq', question: 'What is 4 x 7?', question_trans: 'Berapakah 4 x 7?', illustration: '4️⃣ ✖️ 7️⃣', options: [{ text: '11', correct: false }, { text: '28', correct: true }, { text: '21', correct: false }, { text: '32', correct: false }, { text: '24', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: A tricycle has 3 wheels. 7 tricycles are in the shop. How many wheels?', question_trans: 'Soal Cerita: Sepeda roda 3 punya 3 roda. 7 sepeda ada di bengkel. Berapa roda?', illustration: '🛴(3) x7', options: [{ text: '10 wheels', correct: false }, { text: '21 wheels', correct: true }, { text: '24 wheels', correct: false }, { text: '28 wheels', correct: false }, { text: '14 wheels', correct: false }] },
+                { type: 'mcq', question: 'What is 5 x 5?', question_trans: 'Berapakah 5 x 5?', illustration: '5️⃣ ✖️ 5️⃣', options: [{ text: '10', correct: false }, { text: '20', correct: false }, { text: '25', correct: true }, { text: '30', correct: false }, { text: '15', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 4 dogs. How many legs?', question_trans: 'Soal Cerita: 4 anjing. Berapa kaki?', illustration: '🐶🐶🐶🐶', options: [{ text: '8 legs', correct: false }, { text: '12 legs', correct: false }, { text: '16 legs', correct: true }, { text: '20 legs', correct: false }, { text: '4 legs', correct: false }] }
+            ],
+            9: [ // Assignment 2
+                { type: 'mcq', question: 'Look at array: 6 rows, 2 columns. Total?', question_trans: 'Lihat array: 6 baris, 2 kolom. Total?', illustration: '🍎🍎<br>🍎🍎<br>🍎🍎<br>🍎🍎<br>🍎🍎<br>🍎🍎', options: [{ text: '8', correct: false }, { text: '12', correct: true }, { text: '14', correct: false }, { text: '10', correct: false }, { text: '16', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 6 trees. Each has 5 birds. How many birds?', question_trans: 'Soal Cerita: 6 pohon. Tiap pohon 5 burung. Berapa burung?', illustration: '🌳(5) x6', options: [{ text: '11 birds', correct: false }, { text: '25 birds', correct: false }, { text: '35 birds', correct: false }, { text: '30 birds', correct: true }, { text: '45 birds', correct: false }] },
+                { type: 'mcq', question: 'What is 10 x 4?', question_trans: 'Berapakah 10 x 4?', illustration: '🔟 ✖️ 4️⃣', options: [{ text: '14', correct: false }, { text: '40', correct: true }, { text: '400', correct: false }, { text: '44', correct: false }, { text: '50', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 3 boxes of 5 crayons. I lose 4. How many left?', question_trans: 'Soal Cerita: 3 kotak berisi 5 krayon. Hilang 4. Sisa berapa?', illustration: '🖍️(5) x3 ➖ 4️⃣', options: [{ text: '15 crayons', correct: false }, { text: '19 crayons', correct: false }, { text: '11 crayons', correct: true }, { text: '8 crayons', correct: false }, { text: '12 crayons', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: Mia has 3 stickers. Sam has 4 times as many. How many does Sam have?', question_trans: 'Soal Cerita: Mia punya 3 stiker. Sam 4 kali lipatnya. Berapa stiker Sam?', illustration: '👧(3) vs 👦(4x3)', options: [{ text: '7 stickers', correct: false }, { text: '12 stickers', correct: true }, { text: '15 stickers', correct: false }, { text: '9 stickers', correct: false }, { text: '24 stickers', correct: false }] },
+                { type: 'mcq', question: 'What is 4 x 4?', question_trans: 'Berapakah 4 x 4?', illustration: '4️⃣ ✖️ 4️⃣', options: [{ text: '8', correct: false }, { text: '12', correct: false }, { text: '16', correct: true }, { text: '20', correct: false }, { text: '24', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 5 hands. How many fingers?', question_trans: 'Soal Cerita: 5 tangan. Berapa jari?', illustration: '✋✋✋✋✋', options: [{ text: '25 fingers', correct: false }, { text: '10 fingers', correct: false }, { text: '50 fingers', correct: true }, { text: '15 fingers', correct: false }, { text: '5 fingers', correct: false }] },
+                { type: 'mcq', question: 'What is the product of 7 and 2?', question_trans: 'Berapakah hasil kali 7 dan 2?', illustration: '7️⃣ ✖️ 2️⃣', options: [{ text: '9', correct: false }, { text: '12', correct: false }, { text: '16', correct: false }, { text: '14', correct: true }, { text: '21', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 7 days in a week. How many days in 2 weeks?', question_trans: 'Soal Cerita: 7 hari seminggu. Berapa hari dalam 2 minggu?', illustration: '📅(7) x2', options: [{ text: '9 days', correct: false }, { text: '14 days', correct: true }, { text: '12 days', correct: false }, { text: '21 days', correct: false }, { text: '16 days', correct: false }] },
+                { type: 'mcq', question: 'Using Double-Double: What is 4 x 8?', question_trans: 'Meng Lipat Dua Kali: Berapakah 4 x 8?', illustration: '4️⃣ ✖️ 8️⃣', options: [{ text: '24', correct: false }, { text: '28', correct: false }, { text: '32', correct: true }, { text: '36', correct: false }, { text: '40', correct: false }] }
+            ],
+            10: [ // Assignment 3
+                { type: 'mcq', question: 'Word Problem: 8 pairs of shoes. How many shoes in total?', question_trans: 'Soal Cerita: 8 pasang sepatu. Berapa total sepatu?', illustration: '👟👟 (8 pairs)', options: [{ text: '10 shoes', correct: false }, { text: '16 shoes', correct: true }, { text: '12 shoes', correct: false }, { text: '18 shoes', correct: false }, { text: '14 shoes', correct: false }] },
+                { type: 'mcq', question: 'Look at the array: 5 rows, 3 columns. What is the total?', question_trans: 'Lihat array: 5 baris, 3 kolom. Berapa totalnya?', illustration: '⭐⭐⭐<br>⭐⭐⭐<br>⭐⭐⭐<br>⭐⭐⭐<br>⭐⭐⭐', options: [{ text: '8', correct: false }, { text: '15', correct: true }, { text: '20', correct: false }, { text: '12', correct: false }, { text: '25', correct: false }] },
+                { type: 'mcq', question: 'What is 4 x 6?', question_trans: 'Berapakah 4 x 6?', illustration: '4️⃣ ✖️ 6️⃣', options: [{ text: '10', correct: false }, { text: '24', correct: true }, { text: '28', correct: false }, { text: '20', correct: false }, { text: '18', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 5 boxes, 5 pencils in each. How many pencils?', question_trans: 'Soal Cerita: 5 kotak, 5 pensil tiap kotak. Berapa pensil?', illustration: '✏️(5) x5', options: [{ text: '10 pencils', correct: false }, { text: '15 pencils', correct: false }, { text: '20 pencils', correct: false }, { text: '25 pencils', correct: true }, { text: '30 pencils', correct: false }] },
+                { type: 'mcq', question: 'If 3 x 7 = 21, what is 7 x 3?', question_trans: 'Jika 3 x 7 = 21, berapakah 7 x 3?', illustration: '7️⃣ ✖️ 3️⃣', options: [{ text: '10', correct: false }, { text: '21', correct: true }, { text: '24', correct: false }, { text: '14', correct: false }, { text: '28', correct: false }] },
+                { type: 'mcq', question: 'What is 10 x 6?', question_trans: 'Berapakah 10 x 6?', illustration: '🔟 ✖️ 6️⃣', options: [{ text: '16', correct: false }, { text: '60', correct: true }, { text: '600', correct: false }, { text: '66', correct: false }, { text: '50', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 3 spiders. Each has 8 legs. How many legs?', question_trans: 'Soal Cerita: 3 laba-laba. Tiap laba-laba 8 kaki. Berapa kaki?', illustration: '🕷️(8) x3', options: [{ text: '11 legs', correct: false }, { text: '24 legs', correct: true }, { text: '21 legs', correct: false }, { text: '28 legs', correct: false }, { text: '18 legs', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 4 boxes of 6 donuts. I eat 5. How many left?', question_trans: 'Soal Cerita: 4 kotak berisi 6 donat. Saya makan 5. Sisa berapa?', illustration: '🍩(6) x4 ➖ 5️⃣', options: [{ text: '24 donuts', correct: false }, { text: '29 donuts', correct: false }, { text: '19 donuts', correct: true }, { text: '15 donuts', correct: false }, { text: '20 donuts', correct: false }] },
+                { type: 'mcq', question: 'Using Double-Double: What is 4 x 7?', question_trans: 'Menggunakan Lipat Dua Kali: Berapakah 4 x 7?', illustration: '4️⃣ ✖️ 7️⃣', options: [{ text: '21', correct: false }, { text: '28', correct: true }, { text: '24', correct: false }, { text: '32', correct: false }, { text: '11', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 4 red balloons. Blue balloons are 3 times as many. How many blue balloons?', question_trans: 'Soal Cerita: 4 balon merah. Balon biru 3 kali lipatnya. Berapa balon biru?', illustration: '🔴🔴🔴🔴 vs 🔵(3x4)', options: [{ text: '7 balloons', correct: false }, { text: '12 balloons', correct: true }, { text: '15 balloons', correct: false }, { text: '9 balloons', correct: false }, { text: '24 balloons', correct: false }] }
+            ],
+            11: [ // Assignment 4
+                { type: 'mcq', question: 'Word Problem: 9 packs of 10 stickers. How many stickers?', question_trans: 'Soal Cerita: 9 pak berisi 10 stiker. Berapa stiker?', illustration: '🎴(10) x9', options: [{ text: '19 stickers', correct: false }, { text: '90 stickers', correct: true }, { text: '900 stickers', correct: false }, { text: '99 stickers', correct: false }, { text: '80 stickers', correct: false }] },
+                { type: 'mcq', question: 'What is 6 x 3?', question_trans: 'Berapakah 6 x 3?', illustration: '6️⃣ ✖️ 3️⃣', options: [{ text: '9', correct: false }, { text: '12', correct: false }, { text: '15', correct: false }, { text: '18', correct: true }, { text: '21', correct: false }] },
+                { type: 'mcq', question: 'Look at the array: 7 rows, 2 columns. Total?', question_trans: 'Lihat array: 7 baris, 2 kolom. Total?', illustration: '🍎🍎<br>🍎🍎<br>🍎🍎<br>🍎🍎<br>🍎🍎<br>🍎🍎<br>🍎🍎', options: [{ text: '9', correct: false }, { text: '14', correct: true }, { text: '16', correct: false }, { text: '12', correct: false }, { text: '21', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 4 cars. Each has 4 wheels. How many wheels?', question_trans: 'Soal Cerita: 4 mobil. Tiap mobil 4 roda. Berapa roda?', illustration: '🚗🚗🚗🚗', options: [{ text: '8 wheels', correct: false }, { text: '12 wheels', correct: false }, { text: '16 wheels', correct: true }, { text: '20 wheels', correct: false }, { text: '24 wheels', correct: false }] },
+                { type: 'mcq', question: 'What is the missing number: ? x 5 = 35', question_trans: 'Berapa angka yang hilang: ? x 5 = 35', illustration: '❓ ✖️ 5️⃣ = 3️⃣5️⃣', options: [{ text: '5', correct: false }, { text: '6', correct: false }, { text: '7', correct: true }, { text: '8', correct: false }, { text: '9', correct: false }] },
+                { type: 'mcq', question: 'What is 8 x 2?', question_trans: 'Berapakah 8 x 2?', illustration: '8️⃣ ✖️ 2️⃣', options: [{ text: '10', correct: false }, { text: '12', correct: false }, { text: '14', correct: false }, { text: '16', correct: true }, { text: '18', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 6 starfish, 5 arms each. How many arms?', question_trans: 'Soal Cerita: 6 bintang laut, 5 lengan tiap bintang. Berapa lengan?', illustration: '⭐(5) x6', options: [{ text: '11 arms', correct: false }, { text: '25 arms', correct: false }, { text: '30 arms', correct: true }, { text: '35 arms', correct: false }, { text: '20 arms', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 3 trays of 10 cupcakes. Give away 4. How many left?', question_trans: 'Soal Cerita: 3 loyang berisi 10 cupcake. Berikan 4. Sisa berapa?', illustration: '🧁(10) x3 ➖ 4️⃣', options: [{ text: '30 cupcakes', correct: false }, { text: '34 cupcakes', correct: false }, { text: '26 cupcakes', correct: true }, { text: '24 cupcakes', correct: false }, { text: '14 cupcakes', correct: false }] },
+                { type: 'mcq', question: 'If 6 x 4 = 24, what is 4 x 6?', question_trans: 'Jika 6 x 4 = 24, berapakah 4 x 6?', illustration: '4️⃣ ✖️ 6️⃣', options: [{ text: '10', correct: false }, { text: '24', correct: true }, { text: '28', correct: false }, { text: '20', correct: false }, { text: '30', correct: false }] },
+                { type: 'mcq', question: 'Using Double strategy: What is 2 x 9?', question_trans: 'Menggunakan strategi Lipat Dua: Berapakah 2 x 9?', illustration: '2️⃣ ✖️ 9️⃣', options: [{ text: '11', correct: false }, { text: '18', correct: true }, { text: '16', correct: false }, { text: '20', correct: false }, { text: '14', correct: false }] }
+            ],
+            12: [ // Assignment 5
+                { type: 'mcq', question: 'Word Problem: 6 bags of 3 apples. How many apples?', question_trans: 'Soal Cerita: 6 kantong berisi 3 apel. Berapa apel?', illustration: '🍎(3) x6', options: [{ text: '9 apples', correct: false }, { text: '12 apples', correct: false }, { text: '15 apples', correct: false }, { text: '18 apples', correct: true }, { text: '24 apples', correct: false }] },
+                { type: 'mcq', question: 'What is 4 x 9?', question_trans: 'Berapakah 4 x 9?', illustration: '4️⃣ ✖️ 9️⃣', options: [{ text: '13', correct: false }, { text: '32', correct: false }, { text: '36', correct: true }, { text: '40', correct: false }, { text: '28', correct: false }] },
+                { type: 'mcq', question: 'Look at the array: 4 rows, 6 columns. Total?', question_trans: 'Lihat array: 4 baris, 6 kolom. Total?', illustration: '⭐⭐⭐⭐⭐⭐<br>⭐⭐⭐⭐⭐⭐<br>⭐⭐⭐⭐⭐⭐<br>⭐⭐⭐⭐⭐⭐', options: [{ text: '10', correct: false }, { text: '20', correct: false }, { text: '24', correct: true }, { text: '28', correct: false }, { text: '12', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 9 children. Each has 2 eyes. How many eyes?', question_trans: 'Soal Cerita: 9 anak. Tiap anak punya 2 mata. Berapa mata?', illustration: '👀 x9', options: [{ text: '11 eyes', correct: false }, { text: '18 eyes', correct: true }, { text: '16 eyes', correct: false }, { text: '20 eyes', correct: false }, { text: '27 eyes', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 5 books. Pens are 4 times as many. How many pens?', question_trans: 'Soal Cerita: 5 buku. Pena jumlahnya 4 kali lipat. Berapa pena?', illustration: '📚(5) vs 🖊️(4x5)', options: [{ text: '9 pens', correct: false }, { text: '20 pens', correct: true }, { text: '25 pens', correct: false }, { text: '15 pens', correct: false }, { text: '24 pens', correct: false }] },
+                { type: 'mcq', question: 'What is 10 x 8?', question_trans: 'Berapakah 10 x 8?', illustration: '🔟 ✖️ 8️⃣', options: [{ text: '18', correct: false }, { text: '80', correct: true }, { text: '800', correct: false }, { text: '88', correct: false }, { text: '90', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 4 boxes of 7 donuts. How many donuts?', question_trans: 'Soal Cerita: 4 kotak berisi 7 donat. Berapa donat?', illustration: '🍩(7) x4', options: [{ text: '11 donuts', correct: false }, { text: '28 donuts', correct: true }, { text: '24 donuts', correct: false }, { text: '32 donuts', correct: false }, { text: '21 donuts', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 5 packs of 4 cards. I lose 2. How many left?', question_trans: 'Soal Cerita: 5 pak berisi 4 kartu. Hilang 2. Sisa berapa?', illustration: '🎴(4) x5 ➖ 2️⃣', options: [{ text: '20 cards', correct: false }, { text: '22 cards', correct: false }, { text: '18 cards', correct: true }, { text: '14 cards', correct: false }, { text: '10 cards', correct: false }] },
+                { type: 'mcq', question: 'What is the missing number: 7 x ? = 14', question_trans: 'Berapa angka yang hilang: 7 x ? = 14', illustration: '7️⃣ ✖️ ❓ = 1️⃣4️⃣', options: [{ text: '2', correct: true }, { text: '3', correct: false }, { text: '4', correct: false }, { text: '5', correct: false }, { text: '6', correct: false }] },
+                { type: 'mcq', question: 'Word Problem: 5 frogs on a log. How many eyes?', question_trans: 'Soal Cerita: 5 katak di atas kayu. Berapa mata?', illustration: '🐸🐸🐸🐸🐸', options: [{ text: '5 eyes', correct: false }, { text: '15 eyes', correct: false }, { text: '20 eyes', correct: false }, { text: '10 eyes', correct: true }, { text: '25 eyes', correct: false }] }
+            ]
+        };
+
+        const nodeDurations = {
+            1: "00:00 - 00:10",
+            2: "00:10 - 00:15",
+            3: "00:15 - 00:20",
+            4: "00:20 - 00:30",
+            5: "00:30 - 00:45",
+            6: "00:45 - 00:55",
+            7: "00:55 - 01:00",
+            8: "Assignment 1",
+            9: "Assignment 2",
+            10: "Assignment 3",
+            11: "Assignment 4",
+            12: "Assignment 5"
+        };
+
+        let currentNode = null;
+        let currentSlideIndex = 0;
+        let isAnswered = false;
+        let studentAnswers = {}; // Untuk menyimpan jawaban siswa
+        let currentNodeId = null; // Melacak ID node aktif
+
+        function openRulesModal() {
+            document.getElementById('rulesModal').classList.add('show');
+        }
+
+        function closeRulesModal() {
+            document.getElementById('rulesModal').classList.remove('show');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+        }
+
+        function startNode(nodeId) {
+            currentNode = nodesData[nodeId];
+            if(!currentNode) {
+                alert("This node is not yet available. Please wait for the next part!");
+                return;
+            }
+            currentSlideIndex = 0;
+            document.getElementById('mapScreen').classList.add('hidden');
+            document.getElementById('gameUI').classList.remove('hidden');
+            
+            currentNodeId = nodeId;
+            studentAnswers = {}; // Reset jawaban setiap pindah node
+            
+            // Update Header Duration
+            document.getElementById('headerDuration').innerText = nodeDurations[nodeId];
+            
+            // Tampilkan tombol print hanya untuk Assignment (Node 8-12)
+            if (nodeId >= 8 && nodeId <= 12) {
+                document.getElementById('btnPrint').classList.remove('hidden');
+            } else {
+                document.getElementById('btnPrint').classList.add('hidden');
+            }
+            
+            // Generate Sidebar Items
+            renderSidebar();
+            closeSidebar(); // Close sidebar when a new node starts
+            
+            renderSlide();
+        }
+
+        function exitNode() {
+            document.getElementById('gameUI').classList.add('hidden');
+            document.getElementById('mapScreen').classList.remove('hidden');
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            let html = `<div class="sidebar-title">Daftar Isi: ${nodeDurations[currentNodeId]}</div>`;
+            
+            currentNode.forEach((slide, index) => {
+                let label = "";
+                if (slide.type === 'theory') {
+                    label = `📖 ${slide.title.split(':')[0]}`;
+                } else {
+                    let qCount = 0;
+                    for(let i=0; i<=index; i++) {
+                        if(currentNode[i].type === 'mcq') qCount++;
+                    }
+                    label = `✏️ Exercise ${qCount}`;
+                }
+                html += `<div class="sidebar-item" id="sidebar-item-${index}" onclick="jumpToSlide(${index})">${label}</div>`;
+            });
+            
+            sidebar.innerHTML = html;
+        }
+
+        function jumpToSlide(index) {
+            currentSlideIndex = index;
+            renderSlide();
+            closeSidebar(); // Tutup sidebar setelah diklik (untuk tampilan mobile)
+        }
+
+        function renderSlide() {
+            isAnswered = false;
+            const slide = currentNode[currentSlideIndex];
+            const container = document.getElementById('slideContainer');
+            const btnNext = document.getElementById('btnNext');
+            const feedbackMsg = document.getElementById('feedbackMsg');
+            
+            feedbackMsg.classList.remove('show');
+            feedbackMsg.innerText = '';
+
+            // Update Progress Bar
+            const progress = ((currentSlideIndex + 1) / currentNode.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            // Update Active Item in Sidebar
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`sidebar-item-${currentSlideIndex}`);
+            if(activeItem) {
+                activeItem.classList.add('active');
+            }
+
+            if (slide.type === 'theory') {
+                container.innerHTML = `
+                    <div class="theory-box">
+                        <h3>${slide.title}</h3>
+                        <span class="translation">${slide.title_trans}</span>
+                        <div style="margin-top:15px;">${slide.content}</div>
+                    </div>
+                `;
+                btnNext.innerText = currentSlideIndex === currentNode.length - 1 ? "FINISH" : "CONTINUE";
+                btnNext.disabled = false;
+            } else if (slide.type === 'mcq') {
+                // Escape quotes di teks opsi agar tidak error di HTML
+                let optionsHtml = slide.options.map((opt, index) => {
+                    let safeText = opt.text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    return `<button class="option-btn" data-text="${safeText}" onclick="selectAnswer(this, ${opt.correct}, '${safeText}')">${opt.text}</button>`;
+                }).join('');
+
+                container.innerHTML = `
+                    <div class="illustration-box">${slide.illustration}</div>
+                    <p class="question-text">${slide.question}</p>
+                    <span class="translation">${slide.question_trans}</span>
+                    <div class="options-grid" style="margin-top:20px;">
+                        ${optionsHtml}
+                    </div>
+                `;
+                btnNext.innerText = currentSlideIndex === currentNode.length - 1 ? "FINISH" : "CONTINUE";
+                btnNext.disabled = true; // Disabled until answered
+                
+                // Jika siswa sudah pernah menjawab soal ini (karena loncat sidebar), kunci jawabannya dan tampilkan warnanya
+                if (studentAnswers[currentSlideIndex]) {
+                    isAnswered = true;
+                    const optButtons = container.querySelectorAll('.option-btn');
+                    optButtons.forEach(btn => {
+                        btn.style.pointerEvents = 'none';
+                        // Gunakan data-text agar tidak terganggu oleh render KaTeX
+                        if (btn.getAttribute('data-text') === studentAnswers[currentSlideIndex].text) {
+                            if (studentAnswers[currentSlideIndex].correct) {
+                                btn.classList.add('correct');
+                            } else {
+                                btn.classList.add('wrong');
+                            }
+                        }
+                        if (btn.getAttribute('onclick').includes('true')) {
+                            btn.classList.add('correct');
+                        }
+                    });
+                    btnNext.disabled = false;
+                }
+            }
+
+            // Render KaTeX
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(container);
+            }
+        }
+
+        function selectAnswer(button, isCorrect, optionText) {
+            if(isAnswered) return; // Prevent changing answer
+            isAnswered = true;
+
+            // Simpan jawaban siswa
+            studentAnswers[currentSlideIndex] = { text: optionText, correct: isCorrect };
+
+            const allOptions = document.querySelectorAll('.option-btn');
+            const feedbackMsg = document.getElementById('feedbackMsg');
+            const btnNext = document.getElementById('btnNext');
+
+            allOptions.forEach(opt => {
+                opt.style.pointerEvents = 'none'; // Disable further clicks
+            });
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                feedbackMsg.innerText = "Great job! / Kerja bagus!";
+                feedbackMsg.style.color = "var(--primary-color)";
+                feedbackMsg.classList.add('show');
+                btnNext.disabled = false;
+            } else {
+                button.classList.add('wrong');
+                feedbackMsg.innerText = "Oops! Try to remember this. / Ups! Coba ingat ini.";
+                feedbackMsg.style.color = "var(--wrong-color)";
+                feedbackMsg.classList.add('show');
+                
+                // Highlight the correct answer
+                allOptions.forEach(opt => {
+                    if(opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+                
+                // Force them to look at the correct answer, then allow next
+                setTimeout(() => {
+                    btnNext.disabled = false;
+                }, 1000); 
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < currentNode.length - 1) {
+                currentSlideIndex++;
+                renderSlide();
+            } else {
+                // Node finished
+                exitNode();
+            }
+        }
+
+        // Initial setup: Wait for KaTeX to load before rendering anything that might need it.
+        document.addEventListener("DOMContentLoaded", function() {
+            // If KaTeX is already loaded, good. If not, the defer script will handle it eventually.
+        });
+		
+        function printAssignment() {
+            let printWindow = window.open('', '_blank');
+            let qCount = 0;
+            let correctCount = 0;
+            let tableRows = '';
+
+            currentNode.forEach((slide, index) => {
+                if (slide.type === 'mcq') {
+                    qCount++;
+                    let studentAnsObj = studentAnswers[index];
+                    let studentAns = studentAnsObj ? studentAnsObj.text : '';
+                    let isCorrect = studentAnsObj ? studentAnsObj.correct : false;
+                    if (isCorrect) correctCount++;
+                    
+                    // Cari teks jawaban yang benar
+                    let correctAnsObj = slide.options.find(o => o.correct === true);
+                    let correctAns = correctAnsObj ? correctAnsObj.text : '';
+
+                    // Bersihkan karakter katex agar bisa tampil di print sederhana
+                    let cleanQuestion = slide.question.replace(/\\/g, '').replace(/\(/g, '').replace(/\)/g, '');
+                    let cleanStudentAns = studentAns.replace(/\\/g, '').replace(/\(/g, '').replace(/\)/g, '');
+                    let cleanCorrectAns = correctAns.replace(/\\/g, '').replace(/\(/g, '').replace(/\)/g, '');
+
+                    let vOrX = isCorrect ? 'v' : (studentAnsObj ? 'x' : '');
+                    
+                    tableRows += `
+                        <tr>
+                            <td style="text-align: center;">${qCount}</td>
+                            <td>${cleanQuestion}</td>
+                            <td>${cleanStudentAns}</td>
+                            <td>${cleanCorrectAns}</td>
+                            <td style="text-align: center;">${vOrX}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            let html = `
+                <html><head><title>Print Assignment</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 40px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+                    th, td { border: 1px solid #333; padding: 10px; text-align: left; vertical-align: top; }
+                    th { background: #f0f0f0; }
+                    h1, h2, p { margin: 5px 0; }
+                    .header-print { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
+                    .footer-print { margin-top: 60px; text-align: right; }
+                </style>
+                </head><body>
+                <div class="header-print">
+                    <h2>Math Tutoring by Deni</h2>
+                    <p><strong>Topic:</strong> Multiplication</p>
+                    <p><strong>Name:</strong> __________________________</p>
+                    <p><strong>Date:</strong> __________________________</p>
+                    <p><strong>Assignment Group:</strong> ${nodeDurations[currentNodeId]}</p>
+                    <p><strong>Score:</strong> ${correctCount} / 10</p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">No.</th>
+                            <th style="width: 45%;">Question</th>
+                            <th style="width: 20%;">Student Answer</th>
+                            <th style="width: 20%;">Correct Answer</th>
+                            <th style="width: 10%;">v/x</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+                <div class="footer-print">
+                    <p>Checked by,</p>
+                    <br><br>
+                    <p><strong>Deni</strong></p>
+                </div>
+                </body></html>
+            `;
+            
+            printWindow.document.write(html);
+            printWindow.document.close();
+            
+            // Beri jeda sebentar agar HTML ter-load sempurna sebelum dialog print muncul
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+    </script>
+	
+    <!-- Class Rules Modal -->
+    <div id="rulesModal" class="rules-modal">
+        <div class="rules-modal-content">
+            <h3>Class Rules / Aturan Kelas</h3>
+            <ul class="rules-list">
+                <li>
+                    <strong>Take turns speaking.</strong>
+                    <em>Berbicara secara bergantian.</em>
+                </li>
+                <li>
+                    <strong>Ask for permission if you want to leave the class.</strong>
+                    <em>Meminta izin jika ingin meninggalkan kelas.</em>
+                </li>
+                <li>
+                    <strong>Turn on camera and microphone if needed.</strong>
+                    <em>Menyalakan kamera dan mikrofon jika diperlukan.</em>
+                </li>
+            </ul>
+            <button class="close-rules-btn" onclick="closeRulesModal()">Understood / Mengerti</button>
+        </div>
+    </div>
+</body>
+</html>
