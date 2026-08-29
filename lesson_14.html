@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutoring by Deni - Division</title>
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <!-- KaTeX JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <!-- KaTeX Auto-render -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+    
+    <!-- Google Fonts: Baloo 2 for Bikini Bottom Vibe -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #FDE047; /* SpongeBob Yellow */
+            --secondary-color: #38BDF8; /* Ocean Water Blue */
+            --accent-color: #EC4899; /* Patrick Pink */
+            --text-color: #1E3A8A; /* Deep Navy Text */
+            --bg-color: #E0F7FA; /* Bikini Bottom Sky/Light Water */
+            --border-color: #1E40AF; /* Nautical Navy Border */
+            --correct-color: #22C55E; /* Seaweed Green */
+            --wrong-color: #EF4444; /* Plankton Red */
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Baloo 2', cursive, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#FFFFFF 20%, transparent 20%), radial-gradient(#FFFFFF 20%, transparent 20%); /* Bubbles pattern */
+            background-position: 0 0, 50px 50px;
+            background-size: 100px 100px;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            border-bottom: 4px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        /* Bubbles in Header */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.4) 2px, transparent 3px);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1;
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            color: var(--border-color);
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+        }
+
+        .header-left p {
+            font-size: 1rem;
+            color: #0C4A6E;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.1s;
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 var(--border-color);
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0EA5E9;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--border-color);
+        }
+
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 var(--border-color);
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: #A7F3D0; /* Sandy Beach Green */
+            border-right: 4px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 4px 0 0 rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--border-color);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+        }
+
+        .sidebar-item:hover {
+            background-color: white;
+            border-color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--primary-color);
+            border-color: var(--border-color);
+            color: var(--border-color);
+            box-shadow: 3px 3px 0 var(--border-color);
+        }
+
+        .sidebar-item .time {
+            font-size: 0.8rem;
+            color: #6B7280;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .sidebar-item.active .time {
+            color: #1E3A8A;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-image: linear-gradient(180deg, #E0F7FA 0%, #BAE6FD 100%);
+        }
+
+        .content-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 4px solid var(--border-color);
+            box-shadow: 8px 8px 0 rgba(30, 58, 138, 0.2);
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Translation & Typography */
+        .main-text {
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+            color: var(--text-color);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .trans-text {
+            font-size: 0.95rem;
+            font-style: italic;
+            color: #64748B;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        h2.section-title {
+            color: var(--border-color);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            border-bottom: 3px dashed var(--secondary-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Theory & Task Styling */
+        .theory-box, .task-box {
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            background-color: #F8FAFC;
+            position: relative;
+        }
+
+        .theory-box {
+            border-left: 8px solid var(--secondary-color);
+            background-color: #F0F9FF;
+        }
+
+        .task-box {
+            border-left: 8px solid var(--accent-color);
+            background-color: #FFF1F2;
+        }
+
+        .illustration {
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(255,255,255,0.5);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .illustration svg {
+            max-width: 200px;
+            height: auto;
+        }
+
+        /* Multiple Choice Options */
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .option {
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: white;
+            text-align: center;
+        }
+
+        .option:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0 var(--border-color);
+        }
+
+        .option.selected {
+            background-color: var(--primary-color);
+            box-shadow: 4px 4px 0 var(--border-color);
+            transform: translate(2px, 2px);
+        }
+
+        .option.correct {
+            background-color: var(--correct-color);
+            color: white;
+            border-color: #166534;
+        }
+
+        .option.wrong {
+            background-color: var(--wrong-color);
+            color: white;
+            border-color: #991B1B;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feedback.correct { 
+            background-color: #D1FAE5; 
+            color: #166534; 
+            border: 2px solid var(--correct-color);
+        }
+        .feedback.wrong { 
+            background-color: #FEE2E2; 
+            color: #991B1B; 
+            border: 2px solid var(--wrong-color);
+        }
+
+        /* Collapse */
+        .collapse-btn {
+            margin-top: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-size: 0.95rem;
+            border: 3px solid var(--border-color);
+            box-shadow: 0 4px 0 var(--border-color);
+        }
+        
+        .collapse-content {
+            display: none;
+            margin-top: 15px;
+            padding: 20px;
+            background-color: #FEF9C3; /* SpongeBob outline color background */
+            border-radius: 12px;
+            border: 2px dashed #CA8A04;
+            font-size: 1rem;
+        }
+
+        .collapse-content.show {
+            display: block;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-check {
+            background-color: var(--correct-color);
+            color: white;
+        }
+        .btn-check:hover { background-color: #16A34A; }
+
+        .btn-reset {
+            background-color: #F97316; /* Sandy Cheeks Orange */
+            color: white;
+        }
+        .btn-reset:hover { background-color: #EA580C; }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            border-top: 3px dotted var(--border-color);
+            padding-top: 20px;
+        }
+
+        .pagination span {
+            font-weight: 700;
+            color: var(--border-color);
+        }
+
+        .btn-nav {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-nav:hover { background-color: #DB2777; }
+        .btn-nav:disabled {
+            background-color: #CBD5E1;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(30, 58, 138, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            border: 4px solid var(--border-color);
+            box-shadow: 10px 10px 0 rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            background-image: radial-gradient(#E0F2FE 10%, transparent 10%);
+            background-size: 20px 20px;
+        }
+
+        .modal-content h2 {
+            color: var(--border-color);
+            margin-bottom: 5px;
+        }
+
+        .modal-content ul {
+            text-align: left;
+            margin: 20px 0;
+            list-style-type: none;
+        }
+
+        .modal-content ul li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: #F8FAFC;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--secondary-color);
+        }
+
+        /* Print Styles */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { 
+                display: block !important; /* PENTING: Override display: none */
+                position: absolute; 
+                left: 0; top: 0; 
+                width: 100%; 
+                padding: 20px; 
+            }
+            .sidebar, .pagination, .action-buttons, .options-container, .collapse-btn, .feedback { display: none !important; }
+            body { background: white; }
+        }
+
+        #printArea { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <!-- SpongeBob Pineapple Icon -->
+            <svg width="50" height="50" viewBox="0 0 100 100">
+                <path d="M20,50 Q20,90 50,90 Q80,90 80,50 Q80,20 50,20 Q20,20 20,50 Z" fill="#F97316" stroke="#1E40AF" stroke-width="4"/>
+                <path d="M25,35 Q30,40 25,45 M40,30 Q45,35 40,40 M55,30 Q60,35 55,40 M70,35 Q75,40 70,45 M25,55 Q30,60 25,65 M40,60 Q45,65 40,70 M55,60 Q60,65 55,70 M70,55 Q75,60 70,65" stroke="#1E40AF" stroke-width="2" fill="none"/>
+                <path d="M50,20 L35,0 L40,20 L45,0 L50,20 L55,0 L60,20 L65,0 Z" fill="#16A34A" stroke="#1E40AF" stroke-width="3"/>
+                <circle cx="35" cy="45" r="3" fill="#1E40AF"/>
+                <circle cx="65" cy="45" r="3" fill="#1E40AF"/>
+                <path d="M40,60 Q50,65 60,60" stroke="#1E40AF" stroke-width="2" fill="none"/>
+            </svg>
+            <div>
+                <h1>Math Tutoring by Deni</h1>
+                <p>Topic: Division</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-primary" onclick="toggleModal()">Class Rules</button>
+        </div>
+    </header>
+
+    <!-- Modal Class Rules -->
+    <div class="modal-overlay" id="classRulesModal">
+        <div class="modal-content">
+            <h2>Class Rules</h2>
+            <p class="trans-text">Aturan Kelas</p>
+            <ul>
+                <li>
+                    <span style="font-size:1.5rem">🗣️</span>
+                    <div>
+                        Take turns speaking
+                        <p class="trans-text" style="margin:0; font-size:0.9rem">Berbicara secara bergantian</p>
+                    </div>
+                </li>
+                <li>
+                    <span style="font-size:1.5rem">🚪</span>
+                    <div>
+                        Ask permission if you want to leave the class
+                        <p class="trans-text" style="margin:0; font-size:0.9rem">Meminta izin jika ingin meninggalkan kelas</p>
+                    </div>
+                </li>
+                <li>
+                    <span style="font-size:1.5rem">📹</span>
+                    <div>
+                        Turn on camera and microphone if needed
+                        <p class="trans-text" style="margin:0; font-size:0.9rem">Menyalakan kamera dan microphone jika diperlukan</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="btn btn-primary" onclick="toggleModal()">Aye Aye Captain!</button>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Lesson Menu</h2>
+            <div class="sidebar-item active" onclick="loadSection('spiral', this)">
+                <span>Spiral Review Warm-up</span> <span class="time">00:00-00:10</span>
+            </div>
+            <div class="sidebar-item" onclick="loadSection('intro', this)">
+                <span>Introduction & Real-World</span> <span class="time">00:10-00:15</span>
+            </div>
+            <div class="sidebar-item" onclick="loadSection('review', this)">
+                <span>Review of Prior Knowledge</span> <span class="time">00:15-00:20</span>
+            </div>
+            <div class="sidebar-item" onclick="loadSection('problem', this)">
+                <span>Problem Introduction</span> <span class="time">00:20-00:30</span>
+            </div>
+            <div class="sidebar-item" onclick="loadSection('guided', this)">
+                <span>Guided Practice</span> <span class="time">00:30-00:45</span>
+            </div>
+            <div class="sidebar-item" onclick="loadSection('independent', this)">
+                <span>Independent Practice</span> <span class="time">00:45-00:55</span>
+            </div>
+            <div class="sidebar-item" onclick="loadSection('consolidation', this)">
+                <span>Consolidation & Reflection</span> <span class="time">00:55-01:00</span>
+            </div>
+            <hr style="margin: 15px 0; border: 0; border-top: 3px dashed var(--border-color);">
+            <div class="sidebar-item" onclick="loadSection('task1', this)"><span>Task 1</span></div>
+            <div class="sidebar-item" onclick="loadSection('task2', this)"><span>Task 2</span></div>
+            <div class="sidebar-item" onclick="loadSection('task3', this)"><span>Task 3</span></div>
+            <div class="sidebar-item" onclick="loadSection('task4', this)"><span>Task 4</span></div>
+            <div class="sidebar-item" onclick="loadSection('task5', this)"><span>Task 5</span></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-card" id="contentArea">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Area (Hidden on screen) -->
+    <div id="printArea"></div>
+
+    <script>
+        // Data Structure for Content
+        const sectionsData = {
+            spiral: {
+                title: "Spiral Review Warm-up",
+                pages: [
+                    // Page 1: Theory 1
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">From Multiplication to Division</h2>
+                            <p class="main-text">Ahoy matey! In our last meeting, we learned about multiplication. Multiplication is about putting equal groups together.</p>
+                            <p class="trans-text">Kapten! Dalam pertemuan terakhir, kita belajar tentang perkalian. Perkalian adalah tentang menggabungkan kelompok-kelompok yang sama.</p>
+                            <div class="illustration">
+                                <!-- Krabby Patty SVG -->
+                                <svg viewBox="0 0 200 150" width="180">
+                                    <ellipse cx="100" cy="120" rx="70" ry="15" fill="#D97706" stroke="#92400E" stroke-width="3"/>
+                                    <rect x="30" y="90" width="140" height="30" rx="10" fill="#FCD34D" stroke="#92400E" stroke-width="3"/>
+                                    <path d="M30,90 Q100,40 170,90" fill="#FBBF24" stroke="#92400E" stroke-width="3"/>
+                                    <circle cx="60" cy="70" r="3" fill="#92400E"/>
+                                    <circle cx="100" cy="60" r="3" fill="#92400E"/>
+                                    <circle cx="140" cy="70" r="3" fill="#92400E"/>
+                                    <text x="70" y="110" font-size="12" font-family="Baloo 2" fill="#92400E">Patty</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">Today, we will do the opposite! We will take a total amount and share it equally into groups. This is called <strong>Division</strong>.</p>
+                            <p class="trans-text">Hari ini, kita akan melakukan kebalikannya! Kita akan mengambil jumlah total dan membaginya secara merata ke dalam kelompok. Ini disebut <strong>Pembagian</strong>.</p>
+                            <p class="main-text">If SpongeBob has 4 Krabby Patties and shares them equally with 2 friends, each friend gets 2 patties.</p>
+                            <p class="trans-text">Jika SpongeBob memiliki 4 Krabby Patty dan membaginya sama rata dengan 2 teman, setiap teman mendapatkan 2 patty.</p>
+                            <p class="main-text">\\( 4 \\div 2 = 2 \\)</p>
+                        `
+                    },
+                    // Page 2: Task 1
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob has 12 Krabby Patties. He wants to put them equally into 3 trays. How many patties will go into each tray?", 
+                        q_trans: "SpongeBob memiliki 12 Krabby Patty. Dia ingin meletakkannya sama rata ke dalam 3 nampan. Berapa banyak patty yang akan masuk ke setiap nampan?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="10" y="20" width="40" height="60" rx="5" fill="#A7F3D0" stroke="#10B981" stroke-width="3"/><rect x="80" y="20" width="40" height="60" rx="5" fill="#A7F3D0" stroke="#10B981" stroke-width="3"/><rect x="150" y="20" width="40" height="60" rx="5" fill="#A7F3D0" stroke="#10B981" stroke-width="3"/><circle cx="30" cy="50" r="8" fill="#FBBF24"/><circle cx="100" cy="50" r="8" fill="#FBBF24"/><circle cx="170" cy="50" r="8" fill="#FBBF24"/></svg>`, 
+                        options: ["3", "4", "6", "12", "9"], 
+                        correct: "4", 
+                        exp: "To find how many patties go into each tray, we divide the total patties by the number of trays. \\( 12 \\div 3 = 4 \\).", 
+                        exp_trans: "Untuk mencari berapa banyak patty yang masuk ke setiap nampan, kita bagi total patty dengan jumlah nampan. \\( 12 \\div 3 = 4 \\)." 
+                    },
+                    // Page 3: Task 2
+                    { 
+                        type: 'task', 
+                        q: "Patrick caught 10 jellyfish. If 5 jellyfish share the same number of nets, how many jellyfish are in each net? (Wait, Patrick is sharing jellyfish into nets!)", 
+                        q_trans: "Patrick menangkap 10 ubur-ubur. Jika 5 ubur-ubur berbagi jumlah jaring yang sama, berapa banyak ubur-ubur di setiap jaring? (Tunggu, Patrick membagi ubur-ubur ke dalam jaring!)", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M20,30 Q50,10 80,30 L70,80 Q50,90 30,80 Z" fill="#F472B6" stroke="#BE185D" stroke-width="3"/><path d="M120,30 Q150,10 180,30 L170,80 Q150,90 130,80 Z" fill="#F472B6" stroke="#BE185D" stroke-width="3"/><line x1="40" y1="80" x2="40" y2="95" stroke="#BE185D" stroke-width="2"/><line x1="60" y1="80" x2="60" y2="95" stroke="#BE185D" stroke-width="2"/><line x1="140" y1="80" x2="140" y2="95" stroke="#BE185D" stroke-width="2"/><line x1="160" y1="80" x2="160" y2="95" stroke="#BE185D" stroke-width="2"/></svg>`, 
+                        options: ["5", "2", "10", "15", "1"], 
+                        correct: "2", 
+                        exp: "We are sharing 10 jellyfish among 5 nets. \\( 10 \\div 5 = 2 \\). There are 2 jellyfish in each net.", 
+                        exp_trans: "Kita membagi 10 ubur-ubur ke 5 jaring. \\( 10 \\div 5 = 2 \\). Ada 2 ubur-ubur di setiap jaring." 
+                    },
+                    // Page 4: Task 3
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs has 15 shiny dimes. He packs them into bags of 3. How many bags does he need?", 
+                        q_trans: "Mr. Krabs memiliki 15 koin uang sepuluh yang mengkilap. Dia mengemasnya ke dalam kantong berisi 3 koin. Berapa banyak kantong yang dia butuhkan?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="100" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="160" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><text x="35" y="55" font-size="14" font-weight="bold" fill="#92400E">$</text><text x="95" y="55" font-size="14" font-weight="bold" fill="#92400E">$</text><text x="155" y="55" font-size="14" font-weight="bold" fill="#92400E">$</text></svg>`, 
+                        options: ["3", "5", "12", "18", "45"], 
+                        correct: "5", 
+                        exp: "To find the number of bags, divide the total coins by the number of coins per bag. \\( 15 \\div 3 = 5 \\).", 
+                        exp_trans: "Untuk mencari jumlah kantong, bagi total koin dengan jumlah koin per kantong. \\( 15 \\div 3 = 5 \\)." 
+                    },
+                    // Page 5: Theory 2
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Division Vocabulary</h2>
+                            <p class="main-text">In division, we have special names for the numbers, just like the characters in Bikini Bottom!</p>
+                            <p class="trans-text">Dalam pembagian, kita memiliki nama khusus untuk angka-angkanya, seperti karakter di Bikini Bottom!</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 350 120" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Chalkboard style -->
+                                    <rect x="10" y="10" width="330" height="100" rx="10" fill="#166534" stroke="#92400E" stroke-width="6"/>
+                                    <text x="40" y="60" font-size="28" font-family="Baloo 2" fill="#FDE047" font-weight="bold">15</text>
+                                    <text x="90" y="60" font-size="28" font-family="Baloo 2" fill="#FFFFFF">÷</text>
+                                    <text x="120" y="60" font-size="28" font-family="Baloo 2" fill="#A7F3D0" font-weight="bold">3</text>
+                                    <text x="150" y="60" font-size="28" font-family="Baloo 2" fill="#FFFFFF">=</text>
+                                    <text x="180" y="60" font-size="28" font-family="Baloo 2" fill="#F87171" font-weight="bold">5</text>
+                                    
+                                    <text x="15" y="90" font-size="14" font-family="Baloo 2" fill="#FDE047">Dividend</text>
+                                    <text x="105" y="90" font-size="14" font-family="Baloo 2" fill="#A7F3D0">Divisor</text>
+                                    <text x="170" y="90" font-size="14" font-family="Baloo 2" fill="#F87171">Quotient</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">The total amount being divided is the <strong>Dividend</strong> (15).</p>
+                            <p class="trans-text">Jumlah total yang dibagi adalah <strong>Dividend</strong> (15).</p>
+                            <p class="main-text">The number of groups or size of each group is the <strong>Divisor</strong> (3).</p>
+                            <p class="trans-text">Jumlah kelompok atau ukuran setiap kelompok adalah <strong>Divisor</strong> (3).</p>
+                            <p class="main-text">The answer in division is the <strong>Quotient</strong> (5).</p>
+                            <p class="trans-text">Jawaban dalam pembagian adalah <strong>Quotient</strong> (5).</p>
+                        `
+                    },
+                    // Page 6: Task 4
+                    { 
+                        type: 'task', 
+                        q: "In the equation \\( 20 \\div 4 = 5 \\), which number is the Dividend?", 
+                        q_trans: "Pada persamaan \\( 20 \\div 4 = 5 \\), angka manakah yang merupakan Dividend?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="10" y="20" width="180" height="60" rx="10" fill="#FEF3C7" stroke="#1E40AF" stroke-width="3"/><text x="30" y="60" font-size="24" font-family="Baloo 2" fill="#1E3A8A" font-weight="bold">20 ÷ 4 = 5</text></svg>`, 
+                        options: ["20", "4", "5", "÷", "="], 
+                        correct: "20", 
+                        exp: "The dividend is the total amount being divided. Here, 20 is the total amount, so it is the dividend.", 
+                        exp_trans: "Dividend adalah jumlah total yang dibagi. Di sini, 20 adalah jumlah total, jadi itu adalah dividend." 
+                    },
+                    // Page 7: Task 5
+                    { 
+                        type: 'task', 
+                        q: "Sandy Cheeks has 18 acorns. She puts them into jars with 6 acorns each. How many jars does she use? Identify the Divisor.", 
+                        q_trans: "Sandy Cheeks memiliki 18 kacang ekor. Dia meletakkannya ke dalam toples berisi 6 kacang setiap toples. Berapa banyak toples yang dia gunakan? Identifikasi Divisor-nya.", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="30" width="40" height="50" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><circle cx="40" cy="50" r="6" fill="#92400E"/><rect x="140" y="30" width="40" height="50" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><circle cx="160" cy="50" r="6" fill="#92400E"/></svg>`, 
+                        options: ["18", "6", "3", "jars", "acorns"], 
+                        correct: "6", 
+                        exp: "The divisor is the number of items in each group or the number of groups. Here, '6 acorns each' means 6 is the divisor.", 
+                        exp_trans: "Divisor adalah jumlah item di setiap kelompok atau jumlah kelompok. Di sini, '6 kacang setiap toples' berarti 6 adalah divisor." 
+                    },
+                    // Page 8: Task 6
+                    { 
+                        type: 'task', 
+                        q: "Squidward plays his clarinet 24 times in 4 days. He plays the same number of times each day. What is the Quotient?", 
+                        q_trans: "Squidward meniup klarinetnya 24 kali dalam 4 hari. Dia meniup jumlah kali yang sama setiap hari. Berapakah Quotient-nya?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="40" width="120" height="15" rx="5" fill="#1E3A8A"/><rect x="50" y="55" width="10" height="10" fill="#FDE047"/><rect x="70" y="55" width="10" height="10" fill="#FDE047"/><rect x="90" y="55" width="10" height="10" fill="#FDE047"/><rect x="110" y="55" width="10" height="10" fill="#FDE047"/></svg>`, 
+                        options: ["24", "4", "6", "20", "28"], 
+                        correct: "6", 
+                        exp: "The quotient is the answer to a division problem. \\( 24 \\div 4 = 6 \\). The quotient is 6.", 
+                        exp_trans: "Quotient adalah jawaban dari soal pembagian. \\( 24 \\div 4 = 6 \\). Quotient-nya adalah 6." 
+                    },
+                    // Page 9: Theory 3
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Fact Families</h2>
+                            <p class="main-text">Multiplication and division are best friends, just like SpongeBob and Patrick! They are in the same fact family.</p>
+                            <p class="trans-text">Perkalian dan pembagian adalah sahabat terbaik, seperti SpongeBob dan Patrick! Mereka berada dalam keluarga fakta yang sama.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- SpongeBob -->
+                                    <rect x="20" y="30" width="60" height="60" rx="10" fill="#FDE047" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="35" cy="50" r="5" fill="#1E40AF"/><circle cx="65" cy="50" r="5" fill="#1E40AF"/>
+                                    <rect x="30" y="65" width="40" height="10" fill="#1E40AF"/>
+                                    <!-- Patrick -->
+                                    <path d="M150,90 L160,40 L170,70 L180,30 L190,70 L200,40 L210,90 Z" fill="#EC4899" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="170" cy="60" r="3" fill="#1E40AF"/><circle cx="190" cy="60" r="3" fill="#1E40AF"/>
+                                    <path d="M170,70 Q180,75 190,70" stroke="#1E40AF" stroke-width="2" fill="none"/>
+                                    <!-- Math -->
+                                    <text x="60" y="130" font-size="16" font-family="Baloo 2" fill="#1E3A8A">3 × 4 = 12</text>
+                                    <text x="160" y="130" font-size="16" font-family="Baloo 2" fill="#1E3A8A">12 ÷ 3 = 4</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">If you know \\( 3 \\times 4 = 12 \\), you also know \\( 12 \\div 3 = 4 \\) and \\( 12 \\div 4 = 3 \\).</p>
+                            <p class="trans-text">Jika kamu tahu \\( 3 \\times 4 = 12 \\), kamu juga tahu \\( 12 \\div 3 = 4 \\) dan \\( 12 \\div 4 = 3 \\).</p>
+                            <p class="main-text">Use multiplication to help you solve division problems!</p>
+                            <p class="trans-text">Gunakan perkalian untuk membantumu menyelesaikan soal pembagian!</p>
+                        `
+                    },
+                    // Page 10: Task 7
+                    { 
+                        type: 'task', 
+                        q: "Which of these is part of the same fact family as \\( 5 \\times 6 = 30 \\)?", 
+                        q_trans: "Manakah dari berikut ini yang merupakan bagian dari keluarga fakta yang sama dengan \\( 5 \\times 6 = 30 \\)?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="30" width="160" height="40" rx="10" fill="#FDE047" stroke="#1E40AF" stroke-width="4"/><text x="40" y="55" font-size="20" font-family="Baloo 2" fill="#1E40AF" font-weight="bold">5 × 6 = 30</text></svg>`, 
+                        options: ["30 ÷ 2 = 15", "30 ÷ 5 = 6", "5 + 6 = 11", "6 × 5 = 11", "30 - 6 = 24"], 
+                        correct: "30 ÷ 5 = 6", 
+                        exp: "A fact family uses the same three numbers. The numbers here are 5, 6, and 30. \\( 30 \\div 5 = 6 \\) uses these exact numbers.", 
+                        exp_trans: "Keluarga fakta menggunakan tiga angka yang sama. Angka di sini adalah 5, 6, dan 30. \\( 30 \\div 5 = 6 \\) menggunakan angka-angka ini." 
+                    },
+                    // Page 11: Task 8
+                    { 
+                        type: 'task', 
+                        q: "Gary knows that \\( 7 \\times 8 = 56 \\). How can he use this to find \\( 56 \\div 7 \\)?", 
+                        q_trans: "Gary tahu bahwa \\( 7 \\times 8 = 56 \\). Bagaimana dia bisa menggunakan ini untuk mencari \\( 56 \\div 7 \\)?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M50,80 Q50,40 80,40 Q110,40 110,80 Z" fill="#F472B6" stroke="#1E40AF" stroke-width="4"/><path d="M60,60 Q75,50 90,60" stroke="#1E40AF" stroke-width="3" fill="none"/><line x1="80" y1="80" x2="80" y2="90" stroke="#1E40AF" stroke-width="3"/><line x1="100" y1="80" x2="100" y2="90" stroke="#1E40AF" stroke-width="3"/><text x="130" y="55" font-size="18" font-family="Baloo 2" fill="#1E40AF">56 ÷ 7 = ?</text></svg>`, 
+                        options: ["The answer is 7", "The answer is 8", "The answer is 56", "The answer is 15", "The answer is 48"], 
+                        correct: "The answer is 8", 
+                        exp: "Since \\( 7 \\times 8 = 56 \\), it means 56 divided by 7 is 8. They are in the same fact family.", 
+                        exp_trans: "Karena \\( 7 \\times 8 = 56 \\), itu berarti 56 dibagi 7 adalah 8. Mereka berada dalam keluarga fakta yang sama." 
+                    },
+                    // Page 12: Task 9
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob bakes 24 Krabby Patties. He packs them into boxes of 4. Which equation will help him find the number of boxes?", 
+                        q_trans: "SpongeBob memanggang 24 Krabby Patty. Dia mengemasnya ke dalam kotak berisi 4. Persamaan mana yang akan membantunya menemukan jumlah kotak?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="20" width="40" height="60" rx="5" fill="#D97706" stroke="#1E40AF" stroke-width="3"/><circle cx="40" cy="40" r="8" fill="#FBBF24" stroke="#92400E"/><rect x="140" y="20" width="40" height="60" rx="5" fill="#D97706" stroke="#1E40AF" stroke-width="3"/><circle cx="160" cy="40" r="8" fill="#FBBF24" stroke="#92400E"/></svg>`, 
+                        options: ["24 - 4 = 20", "24 + 4 = 28", "24 ÷ 4 = 6", "4 × 6 = 24", "24 ÷ 6 = 4"], 
+                        correct: "24 ÷ 4 = 6", 
+                        exp: "We need to divide the total patties (24) by the number in each box (4) to find the number of boxes. So, \\( 24 \\div 4 = 6 \\).", 
+                        exp_trans: "Kita perlu membagi total patty (24) dengan jumlah di setiap kotak (4) untuk menemukan jumlah kotak. Jadi, \\( 24 \\div 4 = 6 \\)." 
+                    },
+                    // Page 13: Task 10
+                    { 
+                        type: 'task', 
+                        q: "There are 36 students in Mrs. Puff's Boating School. She divides them into 4 equal teams. How many students are on each team? (Hint: Think about your 4 times tables)", 
+                        q_trans: "Ada 36 siswa di Sekolah Mengemudi Mrs. Puff. Dia membagi mereka menjadi 4 tim yang sama. Berapa banyak siswa di setiap tim? (Petunjuk: Pikirkan tentang tabel perkalian 4)", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="20" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/><path d="M30,50 Q40,60 50,50" stroke="#1E40AF" fill="none"/><circle cx="160" cy="50" r="20" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/><path d="M150,50 Q160,60 170,50" stroke="#1E40AF" fill="none"/></svg>`, 
+                        options: ["8", "9", "10", "4", "32"], 
+                        correct: "9", 
+                        exp: "We need to find \\( 36 \\div 4 \\). Since \\( 4 \\times 9 = 36 \\), then \\( 36 \\div 4 = 9 \\). Each team has 9 students.", 
+                        exp_trans: "Kita perlu mencari \\( 36 \\div 4 \\). Karena \\( 4 \\times 9 = 36 \\), maka \\( 36 \\div 4 = 9 \\). Setiap tim memiliki 9 siswa." 
+                    }
+                ]
+            },
+			
+            intro: {
+                title: "Introduction & Real-World Connection",
+                pages: [
+                    // Page 1: Theory 1
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Division in Bikini Bottom</h2>
+                            <p class="main-text">SpongeBob is having a party at his Pineapple House! He baked 15 Krabby Patties. He wants to share them equally among his 3 best friends.</p>
+                            <p class="trans-text">SpongeBob mengadakan pesta di Rumah Nanasnya! Dia memanggang 15 Krabby Patty. Dia ingin membaginya sama rata kepada 3 sahabatnya.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 300 150" width="250">
+                                    <!-- SpongeBob -->
+                                    <rect x="120" y="20" width="60" height="60" rx="10" fill="#FDE047" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="135" cy="40" r="5" fill="#1E40AF"/><circle cx="165" cy="40" r="5" fill="#1E40AF"/>
+                                    <rect x="130" y="55" width="40" height="10" fill="#1E40AF"/>
+                                    <!-- Friends (3 circles) -->
+                                    <circle cx="40" cy="100" r="20" fill="#EC4899" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="30" y="105" font-size="10" fill="#FFF">Patrick</text>
+                                    <circle cx="150" cy="110" r="20" fill="#7C3AED" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="140" y="115" font-size="10" fill="#FFF">Squid</text>
+                                    <circle cx="260" cy="100" r="20" fill="#F97316" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="245" y="105" font-size="10" fill="#FFF">Sandy</text>
+                                    <!-- Patties -->
+                                    <ellipse cx="150" cy="90" rx="8" ry="3" fill="#D97706" stroke="#92400E"/>
+                                </svg>
+                            </div>
+                            <p class="main-text">If he shares 15 patties equally to 3 friends, each friend gets 5 patties. This is \\( 15 \\div 3 = 5 \\).</p>
+                            <p class="trans-text">Jika dia membagi 15 patty sama rata kepada 3 teman, setiap teman mendapat 5 patty. Ini adalah \\( 15 \\div 3 = 5 \\).</p>
+                            <p class="main-text">Division is everywhere in the real world! Whether you are sharing food, grouping toys, or organizing teams, you use division.</p>
+                            <p class="trans-text">Pembagian ada di mana-mana di dunia nyata! Baik saat kamu berbagi makanan, mengelompokkan mainan, atau menyusun tim, kamu menggunakan pembagian.</p>
+                        `
+                    },
+                    // Page 2: Task 1
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob blows 20 bubbles. He wants to give them equally to 4 of his friends. How many bubbles does each friend get?", 
+                        q_trans: "SpongeBob meniup 20 gelembung. Dia ingin memberikannya sama rata kepada 4 temannya. Berapa banyak gelembung yang didapat setiap teman?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="30" cy="40" r="15" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/><circle cx="60" cy="60" r="10" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/><circle cx="100" cy="30" r="20" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/><circle cx="150" cy="50" r="12" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/><circle cx="180" cy="70" r="8" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/></svg>`, 
+                        options: ["4", "5", "6", "20", "16"], 
+                        correct: "5", 
+                        exp: "We need to divide the total bubbles (20) by the number of friends (4). \\( 20 \\div 4 = 5 \\). Each friend gets 5 bubbles.", 
+                        exp_trans: "Kita perlu membagi total gelembung (20) dengan jumlah teman (4). \\( 20 \\div 4 = 5 \\). Setiap teman mendapat 5 gelembung." 
+                    },
+                    // Page 3: Task 2
+                    { 
+                        type: 'task', 
+                        q: "Patrick finds 12 shells on the beach. He puts them equally into 2 buckets. How many shells are in each bucket?", 
+                        q_trans: "Patrick menemukan 12 kerang di pantai. Dia meletakkannya sama rata ke dalam 2 ember. Berapa banyak kerang di setiap ember?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M20,40 L80,40 L70,90 L30,90 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/><path d="M120,40 L180,40 L170,90 L130,90 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/><path d="M40,60 Q50,50 60,60" fill="#F472B6" stroke="#1E40AF"/><path d="M140,60 Q150,50 160,60" fill="#F472B6" stroke="#1E40AF"/></svg>`, 
+                        options: ["6", "2", "12", "10", "24"], 
+                        correct: "6", 
+                        exp: "Divide the total shells (12) by the number of buckets (2). \\( 12 \\div 2 = 6 \\). Each bucket has 6 shells.", 
+                        exp_trans: "Bagi total kerang (12) dengan jumlah ember (2). \\( 12 \\div 2 = 6 \\). Setiap ember berisi 6 kerang." 
+                    },
+                    // Page 4: Task 3
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs sorts 18 pennies into 3 equal piles. How many pennies are in each pile?", 
+                        q_trans: "Mr. Krabs menyortir 18 koin sen ke dalam 3 tumpukan yang sama. Berapa banyak koin di setiap tumpukan?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="100" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="160" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><text x="35" y="55" font-size="12" fill="#92400E">1¢</text><text x="95" y="55" font-size="12" fill="#92400E">1¢</text><text x="155" y="55" font-size="12" fill="#92400E">1¢</text></svg>`, 
+                        options: ["3", "6", "9", "15", "21"], 
+                        correct: "6", 
+                        exp: "Divide the total pennies (18) by the number of piles (3). \\( 18 \\div 3 = 6 \\). There are 6 pennies in each pile.", 
+                        exp_trans: "Bagi total koin (18) dengan jumlah tumpukan (3). \\( 18 \\div 3 = 6 \\). Ada 6 koin di setiap tumpukan." 
+                    },
+                    // Page 5: Theory 2
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Grouping vs Sharing</h2>
+                            <p class="main-text">There are two ways to think about division. </p>
+                            <p class="trans-text">Ada dua cara untuk memikirkan pembagian.</p>
+                            <p class="main-text"><strong>1. Sharing (Partitive):</strong> You know the total and the number of groups. You want to find the size of each group.</p>
+                            <p class="trans-text"><strong>1. Sharing (Partitif):</strong> Kamu tahu total dan jumlah kelompok. Kamu ingin mencari ukuran setiap kelompok.</p>
+                            <p class="main-text"><strong>2. Grouping (Quotative):</strong> You know the total and the size of each group. You want to find the number of groups.</p>
+                            <p class="trans-text"><strong>2. Grouping (Kuotatif):</strong> Kamu tahu total dan ukuran setiap kelompok. Kamu ingin mencari jumlah kelompok.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 300 120" width="280">
+                                    <rect x="10" y="10" width="130" height="100" rx="10" fill="#F0F9FF" stroke="#0EA5E9" stroke-width="3"/>
+                                    <text x="20" y="35" font-size="12" font-weight="bold" fill="#0EA5E9">Sharing</text>
+                                    <text x="20" y="55" font-size="24" fill="#1E3A8A">15 ÷ 3 = ?</text>
+                                    <text x="20" y="85" font-size="11" fill="#64748B">Find size of group</text>
+                                    
+                                    <rect x="160" y="10" width="130" height="100" rx="10" fill="#FFF1F2" stroke="#EC4899" stroke-width="3"/>
+                                    <text x="170" y="35" font-size="12" font-weight="bold" fill="#EC4899">Grouping</text>
+                                    <text x="170" y="55" font-size="24" fill="#1E3A8A">15 ÷ 5 = ?</text>
+                                    <text x="170" y="85" font-size="11" fill="#64748B">Find num of groups</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">Both methods use division, and both will give you the correct quotient!</p>
+                            <p class="trans-text">Kedua metode menggunakan pembagian, dan keduanya akan memberikan hasil bagi yang benar!</p>
+                        `
+                    },
+                    // Page 6: Task 4
+                    { 
+                        type: 'task', 
+                        q: "Sandy has 24 acorns. She puts them into bags, with 4 acorns in each bag. How many bags does she use? (Is this sharing or grouping?)", 
+                        q_trans: "Sandy memiliki 24 kacang. Dia memasukkannya ke dalam kantong, dengan 4 kacang di setiap kantong. Berapa banyak kantong yang dia gunakan? (Apakah ini sharing atau grouping?)", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="30" width="30" height="40" rx="5" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/><circle cx="35" cy="50" r="4" fill="#92400E"/><rect x="90" y="30" width="30" height="40" rx="5" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/><circle cx="105" cy="50" r="4" fill="#92400E"/><text x="140" y="55" font-size="20" fill="#1E40AF">...</text></svg>`, 
+                        options: ["6 bags (Grouping)", "4 bags (Sharing)", "8 bags (Grouping)", "6 bags (Sharing)", "20 bags (Grouping)"], 
+                        correct: "6 bags (Grouping)", 
+                        exp: "We know the total (24) and the size of each group (4). We want to find the number of groups (bags). So, it is grouping. \\( 24 \\div 4 = 6 \\).", 
+                        exp_trans: "Kita tahu total (24) dan ukuran setiap kelompok (4). Kita ingin mencari jumlah kelompok (kantong). Jadi, ini adalah grouping. \\( 24 \\div 4 = 6 \\)." 
+                    },
+                    // Page 7: Task 5
+                    { 
+                        type: 'task', 
+                        q: "Squidward has 16 canvases. He shares them equally among 4 art galleries. How many canvases does each gallery get?", 
+                        q_trans: "Squidward memiliki 16 kanvas. Dia membaginya sama rata kepada 4 galeri seni. Berapa banyak kanvas yang didapat setiap galeri?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="20" width="30" height="40" fill="#FFFFFF" stroke="#1E40AF" stroke-width="3"/><rect x="60" y="20" width="30" height="40" fill="#FFFFFF" stroke="#1E40AF" stroke-width="3"/><rect x="100" y="20" width="30" height="40" fill="#FFFFFF" stroke="#1E40AF" stroke-width="3"/><rect x="140" y="20" width="30" height="40" fill="#FFFFFF" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["4", "12", "8", "16", "20"], 
+                        correct: "4", 
+                        exp: "We know the total (16) and the number of groups (4). We want to find the size of each group. So, it is sharing. \\( 16 \\div 4 = 4 \\).", 
+                        exp_trans: "Kita tahu total (16) dan jumlah kelompok (4). Kita ingin mencari ukuran setiap kelompok. Jadi, ini adalah sharing. \\( 16 \\div 4 = 4 \\)." 
+                    },
+                    // Page 8: Task 6
+                    { 
+                        type: 'task', 
+                        q: "Plankton has 10 evil plans. He groups them into folders of 2. How many folders does he have?", 
+                        q_trans: "Plankton memiliki 10 rencana jahat. Dia mengelompokkannya ke dalam folder berisi 2. Berapa banyak folder yang dia miliki?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M20,40 L50,40 L60,30 L90,30 L90,70 L20,70 Z" fill="#10B981" stroke="#1E40AF" stroke-width="3"/><path d="M110,40 L140,40 L150,30 L180,30 L180,70 L110,70 Z" fill="#10B981" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["5", "8", "12", "2", "20"], 
+                        correct: "5", 
+                        exp: "We know the total (10) and the size of each group (2). We want to find the number of groups (folders). \\( 10 \\div 2 = 5 \\).", 
+                        exp_trans: "Kita tahu total (10) dan ukuran setiap kelompok (2). Kita ingin mencari jumlah kelompok (folder). \\( 10 \\div 2 = 5 \\)." 
+                    },
+                    // Page 9: Theory 3
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Division as Repeated Subtraction</h2>
+                            <p class="main-text">Division is also like subtracting the same number over and over again until you reach zero!</p>
+                            <p class="trans-text">Pembagian juga seperti mengurangkan angka yang sama berulang-ulang kali sampai mencapai nol!</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 300 120" width="280">
+                                    <rect x="10" y="10" width="280" height="100" rx="10" fill="#FEF9C3" stroke="#CA8A04" stroke-width="3"/>
+                                    <text x="25" y="40" font-size="16" font-family="Baloo 2" fill="#1E3A8A">12 - 3 = 9</text>
+                                    <text x="125" y="40" font-size="16" font-family="Baloo 2" fill="#1E3A8A">(1)</text>
+                                    <text x="25" y="65" font-size="16" font-family="Baloo 2" fill="#1E3A8A">9 - 3 = 6</text>
+                                    <text x="125" y="65" font-size="16" font-family="Baloo 2" fill="#1E3A8A">(2)</text>
+                                    <text x="25" y="90" font-size="16" font-family="Baloo 2" fill="#1E3A8A">6 - 3 = 3</text>
+                                    <text x="125" y="90" font-size="16" font-family="Baloo 2" fill="#1E3A8A">(3)</text>
+                                    <text x="180" y="65" font-size="24" font-family="Baloo 2" fill="#EC4899" font-weight="bold">3 times!</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">We subtracted 3 from 12, four times to get to 0. So, \\( 12 \\div 3 = 4 \\).</p>
+                            <p class="trans-text">Kita mengurangkan 3 dari 12 sebanyak empat kali untuk mendapatkan 0. Jadi, \\( 12 \\div 3 = 4 \\).</p>
+                            <p class="main-text">Gary leaves a trail of slime. If he leaves 12 units of slime, and subtracts 3 every minute, it takes 4 minutes!</p>
+                            <p class="trans-text">Gary meninggalkan jejak lendir. Jika dia meninggalkan 12 unit lendir, dan mengurangkan 3 setiap menit, dibutuhkan waktu 4 menit!</p>
+                        `
+                    },
+                    // Page 10: Task 7
+                    { 
+                        type: 'task', 
+                        q: "Mrs. Puff has 20 boating school certificates. She gives out 4 certificates each day. How many days will it take to give them all out?", 
+                        q_trans: "Mrs. Puff memiliki 20 sertifikat sekolah mengemudi. Dia memberikan 4 sertifikat setiap hari. Berapa hari yang dibutuhkan untuk memberikan semuanya?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="20" width="30" height="40" fill="#FFF1F2" stroke="#EC4899" stroke-width="3"/><path d="M50,30 L60,30 L55,45 Z" fill="#EC4899"/><rect x="120" y="20" width="30" height="40" fill="#FFF1F2" stroke="#EC4899" stroke-width="3"/><path d="M130,30 L140,30 L135,45 Z" fill="#EC4899"/></svg>`, 
+                        options: ["4 days", "5 days", "6 days", "20 days", "16 days"], 
+                        correct: "5 days", 
+                        exp: "Subtract 4 from 20 repeatedly. 20-4=16(1), 16-4=12(2), 12-4=8(3), 8-4=4(4), 4-4=0(5). It takes 5 days. Or simply \\( 20 \\div 4 = 5 \\).", 
+                        exp_trans: "Kurangi 4 dari 20 berulang kali. 20-4=16(1), 16-4=12(2), 12-4=8(3), 8-4=4(4), 4-4=0(5). Butuh 5 hari. Atau sederhananya \\( 20 \\div 4 = 5 \\)." 
+                    },
+                    // Page 11: Task 8
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob flips 18 Krabby Patties. He flips 6 patties every minute. How many minutes does it take?", 
+                        q_trans: "SpongeBob membalik 18 Krabby Patty. Dia membalik 6 patty setiap menit. Berapa menit yang dibutuhkan?", 
+                        svg: `<svg viewBox="0 0 200 100"><ellipse cx="50" cy="50" rx="20" ry="8" fill="#D97706" stroke="#92400E" stroke-width="3"/><ellipse cx="150" cy="50" rx="20" ry="8" fill="#D97706" stroke="#92400E" stroke-width="3"/></svg>`, 
+                        options: ["2 minutes", "3 minutes", "4 minutes", "6 minutes", "12 minutes"], 
+                        correct: "3 minutes", 
+                        exp: "We are grouping 18 patties into groups of 6. \\( 18 \\div 6 = 3 \\). It takes 3 minutes.", 
+                        exp_trans: "Kita mengelompokkan 18 patty ke dalam kelompok berisi 6. \\( 18 \\div 6 = 3 \\). Butuh 3 menit." 
+                    },
+                    // Page 12: Task 9
+                    { 
+                        type: 'task', 
+                        q: "Patrick eats 15 ice cream cones. He eats 3 cones every hour. How many hours does it take him?", 
+                        q_trans: "Patrick memakan 15 es krim. Dia memakan 3 es krim setiap jam. Berapa jam yang dia butuhkan?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M40,80 L50,40 L60,80 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/><circle cx="50" cy="35" r="12" fill="#EC4899" stroke="#1E40AF" stroke-width="3"/><path d="M140,80 L150,40 L160,80 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/><circle cx="150" cy="35" r="12" fill="#EC4899" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["3 hours", "5 hours", "12 hours", "15 hours", "45 hours"], 
+                        correct: "5 hours", 
+                        exp: "We are finding how many groups of 3 are in 15. \\( 15 \\div 3 = 5 \\). It takes 5 hours.", 
+                        exp_trans: "Kita mencari berapa banyak kelompok berisi 3 dalam 15. \\( 15 \\div 3 = 5 \\). Butuh 5 jam." 
+                    },
+                    // Page 13: Task 10
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs earns 24 dollars. He saves 4 dollars each day. How many days did it take him to save 24 dollars?", 
+                        q_trans: "Mr. Krabs mendapatkan 24 dolar. Dia menabung 4 dolar setiap hari. Berapa hari yang dibutuhkannya untuk menabung 24 dolar?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="60" y="20" width="80" height="50" rx="5" fill="#10B981" stroke="#1E40AF" stroke-width="4"/><circle cx="100" cy="45" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><text x="92" y="50" font-size="14" font-weight="bold" fill="#92400E">$</text></svg>`, 
+                        options: ["4 days", "6 days", "8 days", "20 days", "28 days"], 
+                        correct: "6 days", 
+                        exp: "Divide the total dollars (24) by the amount saved each day (4). \\( 24 \\div 4 = 6 \\). It took 6 days.", 
+                        exp_trans: "Bagi total dolar (24) dengan jumlah yang ditabung setiap hari (4). \\( 24 \\div 4 = 6 \\). Butuh 6 hari." 
+                    }
+                ]
+            },
+            review: {
+                title: "Review of Prior Knowledge",
+                pages: [
+                    // Page 1: Theory 1
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Arrays in the Krusty Krab</h2>
+                            <p class="main-text">Last week, we learned about multiplication using arrays. An array has equal rows and columns.</p>
+                            <p class="trans-text">Minggu lalu, kita belajar tentang perkalian menggunakan array. Array memiliki baris dan kolom yang sama.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 200 150" width="180">
+                                    <!-- 4x3 Krabby Patty Array -->
+                                    <g fill="#FBBF24" stroke="#92400E" stroke-width="2">
+                                        <ellipse cx="40" cy="40" rx="12" ry="6"/>
+                                        <ellipse cx="80" cy="40" rx="12" ry="6"/>
+                                        <ellipse cx="120" cy="40" rx="12" ry="6"/>
+                                        <ellipse cx="40" cy="70" rx="12" ry="6"/>
+                                        <ellipse cx="80" cy="70" rx="12" ry="6"/>
+                                        <ellipse cx="120" cy="70" rx="12" ry="6"/>
+                                        <ellipse cx="40" cy="100" rx="12" ry="6"/>
+                                        <ellipse cx="80" cy="100" rx="12" ry="6"/>
+                                        <ellipse cx="120" cy="100" rx="12" ry="6"/>
+                                        <ellipse cx="40" cy="130" rx="12" ry="6"/>
+                                        <ellipse cx="80" cy="130" rx="12" ry="6"/>
+                                        <ellipse cx="120" cy="130" rx="12" ry="6"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <p class="main-text">This array shows 4 rows of 3 Krabby Patties. In multiplication, we write \\( 4 \\times 3 = 12 \\).</p>
+                            <p class="trans-text">Array ini menunjukkan 4 baris berisi 3 Krabby Patty. Dalam perkalian, kita menulis \\( 4 \\times 3 = 12 \\).</p>
+                            <p class="main-text">In division, we can share the 12 patties into 4 rows, so each row gets 3. \\( 12 \\div 4 = 3 \\).</p>
+                            <p class="trans-text">Dalam pembagian, kita bisa membagi 12 patty ke dalam 4 baris, jadi setiap baris mendapat 3. \\( 12 \\div 4 = 3 \\).</p>
+                        `
+                    },
+                    // Page 2: Task 1
+                    { 
+                        type: 'task', 
+                        q: "Look at an array with 3 rows and 5 columns of Jellyfish. Which division equation matches this array?", 
+                        q_trans: "Lihat array dengan 3 baris dan 5 kolom ubur-ubur. Persamaan pembagian mana yang cocok dengan array ini?", 
+                        svg: `<svg viewBox="0 0 200 100"><g fill="#F472B6" stroke="#BE185D" stroke-width="2"><path d="M20,20 Q35,10 50,20 L45,40 L25,40 Z"/><path d="M60,20 Q75,10 90,20 L85,40 L65,40 Z"/><path d="M100,20 Q115,10 130,20 L125,40 L105,40 Z"/><path d="M140,20 Q155,10 170,20 L165,40 L145,40 Z"/><path d="M20,60 Q35,50 50,60 L45,80 L25,80 Z"/><path d="M60,60 Q75,50 90,60 L85,80 L65,80 Z"/><path d="M100,60 Q115,50 130,60 L125,80 L105,80 Z"/><path d="M140,60 Q155,50 170,60 L165,80 L145,80 Z"/></g></svg>`, 
+                        options: ["15 ÷ 3 = 5", "15 ÷ 5 = 3", "8 ÷ 2 = 4", "3 + 5 = 8", "5 × 3 = 15"], 
+                        correct: "15 ÷ 3 = 5", 
+                        exp: "There are 15 total jellyfish. If we divide them into 3 rows, each row has 5. So, \\( 15 \\div 3 = 5 \\).", 
+                        exp_trans: "Ada total 15 ubur-ubur. Jika kita membaginya menjadi 3 baris, setiap baris memiliki 5. Jadi, \\( 15 \\div 3 = 5 \\)." 
+                    },
+                    // Page 3: Task 2
+                    { 
+                        type: 'task', 
+                        q: "Squidward arranges 16 paintings into an array of 4 equal rows. How many paintings are in each row?", 
+                        q_trans: "Squidward menyusun 16 lukisan ke dalam array berisi 4 baris yang sama. Berapa banyak lukisan di setiap baris?", 
+                        svg: `<svg viewBox="0 0 200 100"><g fill="#FFFFFF" stroke="#1E3A8A" stroke-width="2"><rect x="20" y="10" width="15" height="20"/><rect x="45" y="10" width="15" height="20"/><rect x="70" y="10" width="15" height="20"/><rect x="95" y="10" width="15" height="20"/><rect x="20" y="40" width="15" height="20"/><rect x="45" y="40" width="15" height="20"/><rect x="70" y="40" width="15" height="20"/><rect x="95" y="40" width="15" height="20"/><rect x="20" y="70" width="15" height="20"/><rect x="45" y="70" width="15" height="20"/><rect x="70" y="70" width="15" height="20"/><rect x="95" y="70" width="15" height="20"/></g></svg>`,
+                        options: ["4", "8", "12", "16", "2"], 
+                        correct: "4", 
+                        exp: "Divide the total paintings (16) by the number of rows (4). \\( 16 \\div 4 = 4 \\). There are 4 paintings in each row.", 
+                        exp_trans: "Bagi total lukisan (16) dengan jumlah baris (4). \\( 16 \\div 4 = 4 \\). Ada 4 lukisan di setiap baris." 
+                    },
+                    // Page 4: Task 3
+                    { 
+                        type: 'task', 
+                        q: "There are 20 bubbles arranged in 5 equal columns. How many bubbles are in each column?", 
+                        q_trans: "Ada 20 gelembung disusun dalam 5 kolom yang sama. Berapa banyak gelembung di setiap kolom?", 
+                        svg: `<svg viewBox="0 0 200 100"><g fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"><circle cx="20" cy="15" r="6"/><circle cx="50" cy="15" r="6"/><circle cx="80" cy="15" r="6"/><circle cx="110" cy="15" r="6"/><circle cx="140" cy="15" r="6"/><circle cx="20" cy="40" r="6"/><circle cx="50" cy="40" r="6"/><circle cx="80" cy="40" r="6"/><circle cx="110" cy="40" r="6"/><circle cx="140" cy="40" r="6"/><circle cx="20" cy="65" r="6"/><circle cx="50" cy="65" r="6"/><circle cx="80" cy="65" r="6"/><circle cx="110" cy="65" r="6"/><circle cx="140" cy="65" r="6"/><circle cx="20" cy="90" r="6"/><circle cx="50" cy="90" r="6"/><circle cx="80" cy="90" r="6"/><circle cx="110" cy="90" r="6"/><circle cx="140" cy="90" r="6"/></g></svg>`,
+                        options: ["4", "5", "10", "15", "25"], 
+                        correct: "4", 
+                        exp: "Divide the total bubbles (20) by the number of columns (5). \\( 20 \\div 5 = 4 \\). There are 4 bubbles in each column.", 
+                        exp_trans: "Bagi total gelembung (20) dengan jumlah kolom (5). \\( 20 \\div 5 = 4 \\). Ada 4 gelembung di setiap kolom." 
+                    },
+                    // Page 5: Theory 2
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Equal Groups</h2>
+                            <p class="main-text">Another way to show multiplication and division is by using equal groups.</p>
+                            <p class="trans-text">Cara lain untuk menunjukkan perkalian dan pembagian adalah dengan menggunakan kelompok yang sama.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 300 120" width="280">
+                                    <circle cx="50" cy="60" r="40" fill="#FEF3C7" stroke="#F59E0B" stroke-width="3"/>
+                                    <circle cx="50" cy="50" r="5" fill="#D97706"/>
+                                    <circle cx="65" cy="65" r="5" fill="#D97706"/>
+                                    <circle cx="35" cy="65" r="5" fill="#D97706"/>
+                                    
+                                    <circle cx="150" cy="60" r="40" fill="#FEF3C7" stroke="#F59E0B" stroke-width="3"/>
+                                    <circle cx="150" cy="50" r="5" fill="#D97706"/>
+                                    <circle cx="165" cy="65" r="5" fill="#D97706"/>
+                                    <circle cx="135" cy="65" r="5" fill="#D97706"/>
+                                    
+                                    <circle cx="250" cy="60" r="40" fill="#FEF3C7" stroke="#F59E0B" stroke-width="3"/>
+                                    <circle cx="250" cy="50" r="5" fill="#D97706"/>
+                                    <circle cx="265" cy="65" r="5" fill="#D97706"/>
+                                    <circle cx="235" cy="65" r="5" fill="#D97706"/>
+                                    
+                                    <text x="150" y="110" font-size="16" text-anchor="middle" font-weight="bold" fill="#1E3A8A">3 groups of 4</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">Patrick has 3 bags, and each bag has 4 coral pieces. To find the total, multiply: \\( 3 \\times 4 = 12 \\).</p>
+                            <p class="trans-text">Patrick memiliki 3 kantong, dan setiap kantong berisi 4 potong karang. Untuk mencari total, kalikan: \\( 3 \\times 4 = 12 \\).</p>
+                            <p class="main-text">If we want to share 12 corals into 3 bags, we divide: \\( 12 \\div 3 = 4 \\).</p>
+                            <p class="trans-text">Jika kita ingin membagi 12 karang ke dalam 3 kantong, kita bagi: \\( 12 \\div 3 = 4 \\).</p>
+                        `
+                    },
+                    // Page 6: Task 4
+                    { 
+                        type: 'task', 
+                        q: "Sandy has 4 jars. Each jar has 5 acorns. If she pours all the acorns out and shares them equally into the 4 jars, how many acorns go into each jar? (Think: what is the total?)", 
+                        q_trans: "Sandy memiliki 4 toples. Setiap toples berisi 5 kacang. Jika dia menuangkan semua kacang dan membaginya sama rata ke dalam 4 toples, berapa banyak kacang yang masuk ke setiap toples? (Pikirkan: berapa totalnya?)", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="30" width="30" height="50" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><circle cx="35" cy="45" r="4" fill="#92400E"/><circle cx="35" cy="55" r="4" fill="#92400E"/><rect x="80" y="30" width="30" height="50" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><rect x="140" y="30" width="30" height="50" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/></svg>`, 
+                        options: ["5", "4", "9", "20", "1"], 
+                        correct: "5", 
+                        exp: "The total is \\( 4 \\times 5 = 20 \\) acorns. If we share 20 acorns into 4 jars, \\( 20 \\div 4 = 5 \\). Each jar gets 5 acorns. (It's the same amount!)", 
+                        exp_trans: "Totalnya adalah \\( 4 \\times 5 = 20 \\) kacang. Jika kita membagi 20 kacang ke dalam 4 toples, \\( 20 \\div 4 = 5 \\). Setiap toples mendapat 5 kacang. (Jumlahnya sama!)" 
+                    },
+                    // Page 7: Task 5
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs has 3 bags of money. Each bag has 7 dollars. If he shares all the money equally into 3 bags, how many dollars are in each bag?", 
+                        q_trans: "Mr. Krabs memiliki 3 kantong uang. Setiap kantong berisi 7 dolar. Jika dia membagi semua uang sama rata ke dalam 3 kantong, berapa banyak dolar di setiap kantong?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M30,30 L70,30 L65,80 L35,80 Z" fill="#10B981" stroke="#1E40AF" stroke-width="3"/><circle cx="50" cy="50" r="5" fill="#FBBF24"/><path d="M100,30 L140,30 L135,80 L105,80 Z" fill="#10B981" stroke="#1E40AF" stroke-width="3"/><circle cx="120" cy="50" r="5" fill="#FBBF24"/></svg>`, 
+                        options: ["7", "3", "10", "21", "4"], 
+                        correct: "7", 
+                        exp: "Total money is \\( 3 \\times 7 = 21 \\) dollars. Sharing 21 dollars into 3 bags means \\( 21 \\div 3 = 7 \\). Each bag has 7 dollars.", 
+                        exp_trans: "Total uang adalah \\( 3 \\times 7 = 21 \\) dolar. Membagi 21 dolar ke dalam 3 kantong berarti \\( 21 \\div 3 = 7 \\). Setiap kantong berisi 7 dolar." 
+                    },
+                    // Page 8: Task 6
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob has 5 boxes of Krabby Patties. Each box has 6 patties. If he takes all the patties out and shares them equally back into the 5 boxes, how many patties are in each box?", 
+                        q_trans: "SpongeBob memiliki 5 kotak Krabby Patty. Setiap kotak berisi 6 patty. Jika dia mengeluarkan semua patty dan membaginya sama rata kembali ke dalam 5 kotak, berapa banyak patty di setiap kotak?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="30" width="30" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/><rect x="80" y="30" width="30" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/><rect x="140" y="30" width="30" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["6", "5", "11", "30", "1"], 
+                        correct: "6", 
+                        exp: "The total is \\( 5 \\times 6 = 30 \\). Sharing 30 patties into 5 boxes gives \\( 30 \\div 5 = 6 \\). Each box has 6 patties.", 
+                        exp_trans: "Totalnya adalah \\( 5 \\times 6 = 30 \\). Membagi 30 patty ke dalam 5 kotak menghasilkan \\( 30 \\div 5 = 6 \\). Setiap kotak berisi 6 patty." 
+                    },
+                    // Page 9: Theory 3
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Number Lines</h2>
+                            <p class="main-text">We can also use a number line to divide! We make jumps of the same size backwards from the total.</p>
+                            <p class="trans-text">Kita juga bisa menggunakan garis bilangan untuk membagi! Kita membuat lompatan dengan ukuran yang sama ke belakang dari total.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 350 100" width="320">
+                                    <line x1="20" y1="50" x2="330" y2="50" stroke="#1E3A8A" stroke-width="3"/>
+                                    <!-- Ticks -->
+                                    <g stroke="#1E3A8A" stroke-width="2">
+                                        <line x1="20" y1="40" x2="20" y2="60"/>
+                                        <line x1="60" y1="40" x2="60" y2="60"/>
+                                        <line x1="100" y1="40" x2="100" y2="60"/>
+                                        <line x1="140" y1="40" x2="140" y2="60"/>
+                                        <line x1="180" y1="40" x2="180" y2="60"/>
+                                        <line x1="220" y1="40" x2="220" y2="60"/>
+                                        <line x1="260" y1="40" x2="260" y2="60"/>
+                                        <line x1="300" y1="40" x2="300" y2="60"/>
+                                    </g>
+                                    <text x="15" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">0</text>
+                                    <text x="55" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">2</text>
+                                    <text x="95" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">4</text>
+                                    <text x="135" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">6</text>
+                                    <text x="175" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">8</text>
+                                    <text x="215" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">10</text>
+                                    <text x="255" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">12</text>
+                                    <text x="295" y="80" font-size="14" font-family="Baloo 2" fill="#1E3A8A">14</text>
+                                    
+                                    <!-- Plankton jumping back from 14 -->
+                                    <path d="M300,50 Q280,10 260,50" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4"/>
+                                    <text x="270" y="20" font-size="12" fill="#10B981">-2</text>
+                                    <path d="M260,50 Q240,10 220,50" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4"/>
+                                    <path d="M220,50 Q200,10 180,50" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4"/>
+                                    <path d="M180,50 Q160,10 140,50" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4"/>
+                                    <path d="M140,50 Q120,10 100,50" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4"/>
+                                    <path d="M100,50 Q80,10 60,50" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4"/>
+                                    <path d="M60,50 Q40,10 20,50" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4"/>
+                                    
+                                    <circle cx="300" cy="50" r="8" fill="#10B981" stroke="#1E40AF" stroke-width="2"/>
+                                    <text x="295" y="55" font-size="10" fill="#FFF">P</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">Plankton starts at 14 and jumps back by 2 every time. He makes 7 jumps to reach 0. So, \\( 14 \\div 2 = 7 \\).</p>
+                            <p class="trans-text">Plankton mulai dari 14 dan melompat ke belakang sebesar 2 setiap kali. Dia melakukan 7 lompatan untuk mencapai 0. Jadi, \\( 14 \\div 2 = 7 \\).</p>
+                        `
+                    },
+                    // Page 10: Task 7
+                    { 
+                        type: 'task', 
+                        q: "Gary starts at 15 on a number line. He slides back by 5 each time. How many slides does it take him to reach 0?", 
+                        q_trans: "Gary mulai dari 15 di garis bilangan. Dia meluncur ke belakang sebesar 5 setiap kali. Berapa banyak luncuran yang dia butuhkan untuk mencapai 0?", 
+                        svg: `<svg viewBox="0 0 200 80"><line x1="10" y1="40" x2="190" y2="40" stroke="#1E3A8A" stroke-width="2"/><circle cx="10" cy="40" r="3" fill="#1E3A8A"/><circle cx="50" cy="40" r="3" fill="#1E3A8A"/><circle cx="90" cy="40" r="3" fill="#1E3A8A"/><circle cx="130" cy="40" r="3" fill="#1E3A8A"/><circle cx="170" cy="40" r="3" fill="#1E3A8A"/><text x="5" y="60" font-size="10">0</text><text x="45" y="60" font-size="10">5</text><text x="85" y="60" font-size="10">10</text><text x="125" y="60" font-size="10">15</text></svg>`, 
+                        options: ["3", "5", "10", "15", "2"], 
+                        correct: "3", 
+                        exp: "From 15 to 0 with jumps of 5: 15 to 10 (1), 10 to 5 (2), 5 to 0 (3). It takes 3 slides. Or \\( 15 \\div 5 = 3 \\).", 
+                        exp_trans: "Dari 15 ke 0 dengan lompatan 5: 15 ke 10 (1), 10 ke 5 (2), 5 ke 0 (3). Butuh 3 luncuran. Atau \\( 15 \\div 5 = 3 \\)." 
+                    },
+                    // Page 11: Task 8
+                    { 
+                        type: 'task', 
+                        q: "On a number line, Squidward starts at 24 and jumps back by 4 each time. How many jumps does he make to reach 0?", 
+                        q_trans: "Pada garis bilangan, Squidward mulai dari 24 dan melompat ke belakang sebesar 4 setiap kali. Berapa banyak lompatan yang dia buat untuk mencapai 0?", 
+                        svg: `<svg viewBox="0 0 200 80"><line x1="10" y1="40" x2="190" y2="40" stroke="#1E3A8A" stroke-width="2"/><circle cx="10" cy="40" r="3" fill="#1E3A8A"/><circle cx="40" cy="40" r="3" fill="#1E3A8A"/><circle cx="70" cy="40" r="3" fill="#1E3A8A"/><circle cx="100" cy="40" r="3" fill="#1E3A8A"/><circle cx="130" cy="40" r="3" fill="#1E3A8A"/><circle cx="160" cy="40" r="3" fill="#1E3A8A"/><circle cx="190" cy="40" r="3" fill="#1E3A8A"/></svg>`, 
+                        options: ["6", "4", "8", "24", "5"], 
+                        correct: "6", 
+                        exp: "We are dividing 24 by 4. \\( 24 \\div 4 = 6 \\). He makes 6 jumps.", 
+                        exp_trans: "Kita membagi 24 dengan 4. \\( 24 \\div 4 = 6 \\). Dia melakukan 6 lompatan." 
+                    },
+                    // Page 12: Task 9
+                    { 
+                        type: 'task', 
+                        q: "Sandy uses a number line to solve \\( 18 \\div 3 \\). She starts at 18. How many jumps of 3 does she make?", 
+                        q_trans: "Sandy menggunakan garis bilangan untuk menyelesaikan \\( 18 \\div 3 \\). Dia mulai dari 18. Berapa banyak lompatan sebesar 3 yang dia buat?", 
+                        svg: `<svg viewBox="0 0 200 80"><line x1="10" y1="40" x2="190" y2="40" stroke="#1E3A8A" stroke-width="2"/><text x="100" y="30" font-size="16" text-anchor="middle" fill="#1E3A8A">18 ÷ 3 = ?</text></svg>`, 
+                        options: ["5", "6", "3", "9", "15"], 
+                        correct: "6", 
+                        exp: "To find \\( 18 \\div 3 \\), we count how many 3s are in 18. \\( 18 \\div 3 = 6 \\). She makes 6 jumps.", 
+                        exp_trans: "Untuk mencari \\( 18 \\div 3 \\), kita hitung berapa banyak angka 3 dalam 18. \\( 18 \\div 3 = 6 \\). Dia melakukan 6 lompatan." 
+                    },
+                    // Page 13: Task 10
+                    { 
+                        type: 'task', 
+                        q: "Patrick starts at 20 on a number line. He jumps back by 4 each time. Which division problem is he solving?", 
+                        q_trans: "Patrick mulai dari 20 di garis bilangan. Dia melompat ke belakang sebesar 4 setiap kali. Soal pembagian mana yang sedang dia selesaikan?", 
+                        svg: `<svg viewBox="0 0 200 80"><line x1="10" y1="40" x2="190" y2="40" stroke="#1E3A8A" stroke-width="2"/><circle cx="10" cy="40" r="3" fill="#1E3A8A"/><circle cx="45" cy="40" r="3" fill="#1E3A8A"/><circle cx="80" cy="40" r="3" fill="#1E3A8A"/><circle cx="115" cy="40" r="3" fill="#1E3A8A"/><circle cx="150" cy="40" r="3" fill="#1E3A8A"/><circle cx="185" cy="40" r="3" fill="#1E3A8A"/><text x="5" y="60" font-size="10">0</text><text x="40" y="60" font-size="10">4</text><text x="75" y="60" font-size="10">8</text><text x="110" y="60" font-size="10">12</text><text x="145" y="60" font-size="10">16</text><text x="180" y="60" font-size="10">20</text><path d="M185,40 Q165,10 150,40" fill="none" stroke="#EC4899" stroke-width="2"/><text x="155" y="20" font-size="10" fill="#EC4899">-4</text></svg>`,
+                        options: ["20 ÷ 4 = 5", "20 ÷ 5 = 4", "4 ÷ 20 = 0", "20 - 4 = 16", "20 + 4 = 24"], 
+                        correct: "20 ÷ 4 = 5", 
+                        exp: "Starting at 20 and jumping back by 4 means dividing 20 into groups of 4. The answer is the number of jumps: 5. So, \\( 20 \\div 4 = 5 \\).", 
+                        exp_trans: "Mulai dari 20 dan melompat ke belakang sebesar 4 berarti membagi 20 menjadi kelompok berisi 4. Jawabannya adalah jumlah lompatan: 5. Jadi, \\( 20 \\div 4 = 5 \\)." 
+                    }
+                ]
+            },
+			
+            problem: {
+                title: "Problem Introduction",
+                pages: [
+                    // Page 1: Theory 1
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Understanding the Problem</h2>
+                            <p class="main-text">SpongeBob wants to share his Krabby Patties fairly. To solve division word problems, we need to follow 3 simple steps!</p>
+                            <p class="trans-text">SpongeBob ingin membagi Krabby Patty-nya secara adil. Untuk menyelesaikan soal cerita pembagian, kita perlu mengikuti 3 langkah sederhana!</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 200 150" width="150">
+                                    <!-- SpongeBob thinking -->
+                                    <rect x="60" y="20" width="80" height="60" rx="10" fill="#FDE047" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="80" cy="40" r="5" fill="#1E40AF"/><circle cx="120" cy="40" r="5" fill="#1E40AF"/>
+                                    <rect x="80" y="55" width="40" height="10" fill="#1E40AF"/>
+                                    <circle cx="160" cy="20" r="20" fill="#FFF" stroke="#1E40AF" stroke-width="2"/>
+                                    <text x="150" y="25" font-size="14" fill="#1E40AF">?</text>
+                                </svg>
+                            </div>
+                            <p class="main-text"><strong>Step 1:</strong> Find the total amount (Dividend).</p>
+                            <p class="trans-text"><strong>Langkah 1:</strong> Temukan jumlah total (Dividend).</p>
+                            <p class="main-text"><strong>Step 2:</strong> Find the number of groups or size of each group (Divisor).</p>
+                            <p class="trans-text"><strong>Langkah 2:</strong> Temukan jumlah kelompok atau ukuran setiap kelompok (Divisor).</p>
+                            <p class="main-text"><strong>Step 3:</strong> Write the division equation and solve!</p>
+                            <p class="trans-text"><strong>Langkah 3:</strong> Tulis persamaan pembagian dan selesaikan!</p>
+                        `
+                    },
+                    // Page 2: Task 1
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob has 15 Krabby Patties. He wants to put them on 3 different trays equally. How many Krabby Patties are on each tray? What is the divisor?", 
+                        q_trans: "SpongeBob memiliki 15 Krabby Patty. Dia ingin meletakkannya di 3 nampan berbeda secara sama rata. Berapa banyak Krabby Patty di setiap nampan? Apakah divisornya?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="40" width="40" height="30" rx="5" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/><rect x="80" y="40" width="40" height="30" rx="5" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/><rect x="140" y="40" width="40" height="30" rx="5" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["15", "3", "5", "Trays", "Patties"], 
+                        correct: "3", 
+                        exp: "The divisor is the number of groups we are sharing into. Since SpongeBob is using 3 trays, the divisor is 3. The equation is \\( 15 \\div 3 = 5 \\).", 
+                        exp_trans: "Divisor adalah jumlah kelompok yang kita bagi. Karena SpongeBob menggunakan 3 nampan, divisornya adalah 3. Persamaannya adalah \\( 15 \\div 3 = 5 \\)." 
+                    },
+                    // Page 3: Task 2
+                    { 
+                        type: 'task', 
+                        q: "Squidward plays his clarinet 24 times in 4 days. He plays the same amount each day. How many times does he play per day?", 
+                        q_trans: "Squidward meniup klarinetnya 24 kali dalam 4 hari. Dia meniup jumlah yang sama setiap hari. Berapa kali dia meniup per hari?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="60" y="40" width="80" height="15" rx="5" fill="#1E3A8A"/><rect x="75" y="55" width="10" height="10" fill="#FDE047"/><rect x="115" y="55" width="10" height="10" fill="#FDE047"/></svg>`, 
+                        options: ["6 times", "8 times", "4 times", "20 times", "28 times"], 
+                        correct: "6 times", 
+                        exp: "Total is 24, divided into 4 days. \\( 24 \\div 4 = 6 \\). Squidward plays 6 times per day.", 
+                        exp_trans: "Totalnya 24, dibagi menjadi 4 hari. \\( 24 \\div 4 = 6 \\). Squidward meniup 6 kali per hari." 
+                    },
+                    // Page 4: Task 3
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs sorts 30 pennies into 5 equal piles. How many pennies are in each pile?", 
+                        q_trans: "Mr. Krabs menyortir 30 koin sen ke dalam 5 tumpukan yang sama. Berapa banyak koin di setiap tumpukan?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="12" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="80" cy="50" r="12" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="120" cy="50" r="12" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="160" cy="50" r="12" fill="#FBBF24" stroke="#D97706" stroke-width="3"/></svg>`, 
+                        options: ["5", "6", "10", "25", "35"], 
+                        correct: "6", 
+                        exp: "Total is 30, shared into 5 piles. \\( 30 \\div 5 = 6 \\). There are 6 pennies in each pile.", 
+                        exp_trans: "Totalnya 30, dibagi menjadi 5 tumpukan. \\( 30 \\div 5 = 6 \\). Ada 6 koin di setiap tumpukan." 
+                    },
+                    // Page 5: Theory 2
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Drawing a Picture</h2>
+                            <p class="main-text">Sometimes, drawing a picture helps us understand the problem better! Let's see how Patrick shares his jellyfish.</p>
+                            <p class="trans-text">Terkadang, menggambar gambar membantu kita memahami masalah dengan lebih baik! Mari kita lihat bagaimana Patrick berbagi ubur-uburnya.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 200 150" width="180">
+                                    <!-- Patrick -->
+                                    <path d="M40,100 L50,50 L60,80 L70,40 L80,80 L90,50 L100,100 Z" fill="#EC4899" stroke="#1E40AF" stroke-width="4"/>
+                                    <!-- 3 Nets -->
+                                    <path d="M120,40 L140,40 L135,90 L125,90 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/>
+                                    <path d="M150,40 L170,40 L165,90 L155,90 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/>
+                                    <path d="M120,40 L170,40" stroke="#92400E" stroke-width="5"/>
+                                    <!-- 12 Jellyfish grouped by 4 -->
+                                    <g fill="#F472B6"><path d="M125,50 Q130,45 135,50 L133,60 L127,60 Z"/><path d="M140,50 Q145,45 150,50 L148,60 L142,60 Z"/><path d="M155,50 Q160,45 165,50 L163,60 L157,60 Z"/><path d="M125,65 Q130,60 135,65 L133,75 L127,75 Z"/></g>
+                                </svg>
+                            </div>
+                            <p class="main-text">Patrick caught 12 jellyfish. He wants to put them equally into 3 nets. How many jellyfish are in each net?</p>
+                            <p class="trans-text">Patrick menangkap 12 ubur-ubur. Dia ingin meletakkannya sama rata ke dalam 3 jaring. Berapa banyak ubur-ubur di setiap jaring?</p>
+                            <p class="main-text">By drawing, we can see that 12 divided by 3 gives 4 in each net. \\( 12 \\div 3 = 4 \\).</p>
+                            <p class="trans-text">Dengan menggambar, kita bisa melihat bahwa 12 dibagi 3 menghasilkan 4 di setiap jaring. \\( 12 \\div 3 = 4 \\).</p>
+                        `
+                    },
+                    // Page 6: Task 4
+                    { 
+                        type: 'task', 
+                        q: "Sandy has 20 acorns. She draws 4 circles to represent jars. If she shares the acorns equally, how many acorns go in each circle?", 
+                        q_trans: "Sandy memiliki 20 kacang. Dia menggambar 4 lingkaran untuk mewakili toples. Jika dia membagi kacang sama rata, berapa banyak kacang yang masuk ke setiap lingkaran?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="20" fill="none" stroke="#0EA5E9" stroke-width="3"/><circle cx="100" cy="50" r="20" fill="none" stroke="#0EA5E9" stroke-width="3"/><circle cx="160" cy="50" r="20" fill="none" stroke="#0EA5E9" stroke-width="3"/></svg>`, 
+                        options: ["4", "5", "6", "16", "24"], 
+                        correct: "5", 
+                        exp: "20 acorns divided into 4 circles (jars). \\( 20 \\div 4 = 5 \\). Each circle gets 5 acorns.", 
+                        exp_trans: "20 kacang dibagi menjadi 4 lingkaran (toples). \\( 20 \\div 4 = 5 \\). Setiap lingkaran mendapat 5 kacang." 
+                    },
+                    // Page 7: Task 5
+                    { 
+                        type: 'task', 
+                        q: "Plankton has 16 evil plans. He draws 2 big folders. How many plans go into each folder if shared equally?", 
+                        q_trans: "Plankton memiliki 16 rencana jahat. Dia menggambar 2 folder besar. Berapa banyak rencana yang masuk ke setiap folder jika dibagi sama rata?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M40,40 L70,40 L80,30 L110,30 L110,70 L40,70 Z" fill="#10B981" stroke="#1E40AF" stroke-width="3"/><path d="M120,40 L150,40 L160,30 L190,30 L190,70 L120,70 Z" fill="#10B981" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["6", "8", "4", "14", "18"], 
+                        correct: "8", 
+                        exp: "16 plans divided into 2 folders. \\( 16 \\div 2 = 8 \\). Each folder gets 8 plans.", 
+                        exp_trans: "16 rencana dibagi menjadi 2 folder. \\( 16 \\div 2 = 8 \\). Setiap folder mendapat 8 rencana." 
+                    },
+                    // Page 8: Task 6
+                    { 
+                        type: 'task', 
+                        q: "Gary leaves 14 slime trails. He splits them equally into 7 different paths. How many trails are on each path?", 
+                        q_trans: "Gary meninggalkan 14 jejak lendir. Dia membaginya sama rata ke dalam 7 jalur berbeda. Berapa banyak jejak di setiap jalur?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M20,50 Q40,20 60,50" stroke="#F472B6" stroke-width="4" fill="none"/><path d="M80,50 Q100,20 120,50" stroke="#F472B6" stroke-width="4" fill="none"/><path d="M140,50 Q160,20 180,50" stroke="#F472B6" stroke-width="4" fill="none"/></svg>`, 
+                        options: ["2", "7", "3", "14", "21"], 
+                        correct: "2", 
+                        exp: "14 trails divided into 7 paths. \\( 14 \\div 7 = 2 \\). Each path has 2 trails.", 
+                        exp_trans: "14 jejak dibagi menjadi 7 jalur. \\( 14 \\div 7 = 2 \\). Setiap jalur memiliki 2 jejak." 
+                    },
+                    // Page 9: Theory 3
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Writing the Math Sentence</h2>
+                            <p class="main-text">After understanding and drawing, we write the math sentence (equation) to find the answer.</p>
+                            <p class="trans-text">Setelah memahami dan menggambar, kita menulis kalimat matematika (persamaan) untuk menemukan jawabannya.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 250 100" width="230">
+                                    <rect x="10" y="20" width="230" height="60" rx="10" fill="#FEF9C3" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="30" y="60" font-size="20" font-family="Baloo 2" fill="#1E3A8A" font-weight="bold">Total ÷ Groups = Each</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">If Mrs. Puff has 24 students and puts them into 4 boats, we write: \\( 24 \\div 4 = ? \\)</p>
+                            <p class="trans-text">Jika Mrs. Puff memiliki 24 siswa dan menempatkan mereka di 4 perahu, kita menulis: \\( 24 \\div 4 = ? \\)</p>
+                            <p class="main-text">Using our fact families, since \\( 4 \\times 6 = 24 \\), then \\( 24 \\div 4 = 6 \\). Each boat has 6 students.</p>
+                            <p class="trans-text">Menggunakan keluarga fakta, karena \\( 4 \\times 6 = 24 \\), maka \\( 24 \\div 4 = 6 \\). Setiap perahu berisi 6 siswa.</p>
+                        `
+                    },
+                    // Page 10: Task 7
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob blows 10 bubbles. He divides them equally among 2 friends. Which math sentence solves this?", 
+                        q_trans: "SpongeBob meniup 10 gelembung. Dia membaginya sama rata kepada 2 teman. Kalimat matematika mana yang menyelesaikan ini?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="50" cy="50" r="15" fill="#E0F7FA" stroke="#0EA5E9"/><circle cx="100" cy="50" r="15" fill="#E0F7FA" stroke="#0EA5E9"/><circle cx="150" cy="50" r="15" fill="#E0F7FA" stroke="#0EA5E9"/></svg>`, 
+                        options: ["10 ÷ 2 = 5", "10 + 2 = 12", "10 - 2 = 8", "2 × 5 = 10", "10 ÷ 5 = 2"], 
+                        correct: "10 ÷ 2 = 5", 
+                        exp: "Total (10) divided by number of friends (2). The correct sentence is \\( 10 \\div 2 = 5 \\).", 
+                        exp_trans: "Total (10) dibagi dengan jumlah teman (2). Kalimat yang benar adalah \\( 10 \\div 2 = 5 \\)." 
+                    },
+                    // Page 11: Task 8
+                    { 
+                        type: 'task', 
+                        q: "There are 18 Krabby Patties. SpongeBob packs 3 patties in each box. How many boxes does he need? Write the correct math sentence.", 
+                        q_trans: "Ada 18 Krabby Patty. SpongeBob mengemas 3 patty di setiap kotak. Berapa banyak kotak yang dia butuhkan? Tulis kalimat matematika yang benar.", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="50" y="30" width="40" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/><rect x="110" y="30" width="40" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["18 ÷ 3 = 6", "18 ÷ 6 = 3", "18 - 3 = 15", "3 × 6 = 18", "18 + 3 = 21"], 
+                        correct: "18 ÷ 3 = 6", 
+                        exp: "Total (18) divided by size of each group (3). The sentence is \\( 18 \\div 3 = 6 \\). He needs 6 boxes.", 
+                        exp_trans: "Total (18) dibagi dengan ukuran setiap kelompok (3). Kalimatnya adalah \\( 18 \\div 3 = 6 \\). Dia butuh 6 kotak." 
+                    },
+                    // Page 12: Task 9
+                    { 
+                        type: 'task', 
+                        q: "Patrick found 25 shells. He puts them into 5 buckets. Which equation finds how many shells are in each bucket?", 
+                        q_trans: "Patrick menemukan 25 kerang. Dia meletakkannya ke dalam 5 ember. Persamaan mana yang menemukan berapa banyak kerang di setiap ember?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M20,40 L80,40 L70,90 L30,90 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/><path d="M120,40 L180,40 L170,90 L130,90 Z" fill="#FBBF24" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["25 ÷ 5 = 5", "25 ÷ 5 = 4", "5 × 5 = 25", "25 - 5 = 20", "25 + 5 = 30"], 
+                        correct: "25 ÷ 5 = 5", 
+                        exp: "Total (25) divided by number of buckets (5). The equation is \\( 25 \\div 5 = 5 \\). There are 5 shells in each bucket.", 
+                        exp_trans: "Total (25) dibagi dengan jumlah ember (5). Persamaannya adalah \\( 25 \\div 5 = 5 \\). Ada 5 kerang di setiap ember." 
+                    },
+                    // Page 13: Task 10
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs gives 4 dollars to each of his 5 crew members. Wait, if he gave out 20 dollars total, what is the missing number in this equation? \\( 20 \\div \\_ = 4 \\)", 
+                        q_trans: "Mr. Krabs memberikan 4 dolar kepada masing-masing dari 5 anak buahnya. Tunggu, jika dia mengeluarkan total 20 dolar, berapakah angka yang hilang dalam persamaan ini? \\( 20 \\div \\_ = 4 \\)", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="50" r="20" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><text x="90" y="55" font-size="16" font-weight="bold" fill="#92400E">$</text></svg>`, 
+                        options: ["5", "4", "20", "16", "24"], 
+                        correct: "5", 
+                        exp: "If he gave 4 dollars to each crew member, and the total was 20, the divisor is the number of crew members. \\( 20 \\div 5 = 4 \\). The missing number is 5.", 
+                        exp_trans: "Jika dia memberikan 4 dolar ke setiap anak buah, dan totalnya 20, divisor adalah jumlah anak buah. \\( 20 \\div 5 = 4 \\). Angka yang hilang adalah 5." 
+                    }
+                ]
+            },
+            guided: {
+                title: "Guided Practice",
+                pages: [
+                    // Page 1: Theory 1
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Using Multiplication Facts</h2>
+                            <p class="main-text">SpongeBob remembers that multiplication and division are best friends! He uses his multiplication facts to solve division fast.</p>
+                            <p class="trans-text">SpongeBob ingat bahwa perkalian dan pembagian adalah sahabat terbaik! Dia menggunakan fakta perkaliannya untuk menyelesaikan pembagian dengan cepat.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 250 120" width="230">
+                                    <!-- Pineapple House with Math -->
+                                    <path d="M50,100 Q50,40 100,40 Q150,40 150,100 Z" fill="#F97316" stroke="#1E40AF" stroke-width="4"/>
+                                    <path d="M50,40 L35,20 L40,40 M75,30 L60,10 L65,30 M100,20 L85,0 L90,20 M125,30 L110,10 L115,30 M150,40 L135,20 L140,40" fill="#16A34A" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="70" y="80" font-size="16" fill="#1E40AF">6 × 4 = 24</text>
+                                    <text x="70" y="100" font-size="16" fill="#EC4899">24 ÷ 4 = 6</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">If you know \\( 6 \\times 4 = 24 \\), you automatically know \\( 24 \\div 4 = 6 \\) and \\( 24 \\div 6 = 4 \\).</p>
+                            <p class="trans-text">Jika kamu tahu \\( 6 \\times 4 = 24 \\), kamu otomatis tahu \\( 24 \\div 4 = 6 \\) dan \\( 24 \\div 6 = 4 \\).</p>
+                            <p class="main-text">Let's practice using this trick to help our friends in Bikini Bottom!</p>
+                            <p class="trans-text">Mari kita berlatih menggunakan trik ini untuk membantu teman-teman kita di Bikini Bottom!</p>
+                        `
+                    },
+                    // Page 2: Task 1
+                    { 
+                        type: 'task', 
+                        q: "Squidward knows \\( 7 \\times 3 = 21 \\). Using this fact, what is \\( 21 \\div 3 \\)?", 
+                        q_trans: "Squidward tahu \\( 7 \\times 3 = 21 \\). Menggunakan fakta ini, berapakah \\( 21 \\div 3 \\)?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="60" rx="10" fill="#FEF9C3" stroke="#1E40AF" stroke-width="3"/><text x="60" y="60" font-size="20" fill="#1E3A8A">21 ÷ 3 = ?</text></svg>`, 
+                        options: ["7", "3", "21", "18", "24"], 
+                        correct: "7", 
+                        exp: "Since \\( 7 \\times 3 = 21 \\), dividing 21 by 3 gives 7. So, \\( 21 \\div 3 = 7 \\).", 
+                        exp_trans: "Karena \\( 7 \\times 3 = 21 \\), membagi 21 dengan 3 menghasilkan 7. Jadi, \\( 21 \\div 3 = 7 \\)." 
+                    },
+                    // Page 3: Task 2
+                    { 
+                        type: 'task', 
+                        q: "Patrick remembers \\( 5 \\times 4 = 20 \\). Help him find \\( 20 \\div 4 \\).", 
+                        q_trans: "Patrick ingat \\( 5 \\times 4 = 20 \\). Bantu dia menemukan \\( 20 \\div 4 \\).", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M60,80 L70,40 L80,70 L90,30 L100,70 L110,40 L120,80 Z" fill="#EC4899" stroke="#1E40AF" stroke-width="3"/><text x="130" y="60" font-size="20" fill="#1E3A8A">20 ÷ 4 = ?</text></svg>`, 
+                        options: ["5", "4", "20", "16", "24"], 
+                        correct: "5", 
+                        exp: "Because \\( 5 \\times 4 = 20 \\), it means 20 divided by 4 is 5. \\( 20 \\div 4 = 5 \\).", 
+                        exp_trans: "Karena \\( 5 \\times 4 = 20 \\), itu berarti 20 dibagi 4 adalah 5. \\( 20 \\div 4 = 5 \\)." 
+                    },
+                    // Page 4: Task 3
+                    { 
+                        type: 'task', 
+                        q: "Sandy wrote down \\( 6 \\times 5 = 30 \\). What is \\( 30 \\div 5 \\)?", 
+                        q_trans: "Sandy menuliskan \\( 6 \\times 5 = 30 \\). Berapakah \\( 30 \\div 5 \\)?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="60" y="30" width="40" height="50" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><circle cx="80" cy="50" r="5" fill="#92400E"/><text x="120" y="60" font-size="20" fill="#1E3A8A">30 ÷ 5 = ?</text></svg>`, 
+                        options: ["6", "5", "30", "25", "35"], 
+                        correct: "6", 
+                        exp: "From the fact \\( 6 \\times 5 = 30 \\), we know \\( 30 \\div 5 = 6 \\).", 
+                        exp_trans: "Dari fakta \\( 6 \\times 5 = 30 \\), kita tahu \\( 30 \\div 5 = 6 \\)." 
+                    },
+                    // Page 5: Theory 2
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Division with Number Bonds</h2>
+                            <p class="main-text">A number bond shows how a total number can be split into equal parts. It's a great way to see division visually!</p>
+                            <p class="trans-text">Number bond menunjukkan bagaimana jumlah total dapat dibagi menjadi bagian yang sama. Ini adalah cara yang bagus untuk melihat pembagian secara visual!</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 200 150" width="180">
+                                    <!-- Number Bond 15 split into 3 groups of 5 -->
+                                    <circle cx="100" cy="30" r="20" fill="#FDE047" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="90" y="38" font-size="20" font-weight="bold" fill="#1E40AF">15</text>
+                                    
+                                    <line x1="100" y1="50" x2="40" y2="100" stroke="#1E40AF" stroke-width="2"/>
+                                    <line x1="100" y1="50" x2="100" y2="100" stroke="#1E40AF" stroke-width="2"/>
+                                    <line x1="100" y1="50" x2="160" y2="100" stroke="#1E40AF" stroke-width="2"/>
+                                    
+                                    <circle cx="40" cy="120" r="20" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="35" y="128" font-size="16" font-weight="bold" fill="#1E40AF">5</text>
+                                    
+                                    <circle cx="100" cy="120" r="20" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="95" y="128" font-size="16" font-weight="bold" fill="#1E40AF">5</text>
+                                    
+                                    <circle cx="160" cy="120" r="20" fill="#A7F3D0" stroke="#1E40AF" stroke-width="3"/>
+                                    <text x="155" y="128" font-size="16" font-weight="bold" fill="#1E40AF">5</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">The top circle is the total (Dividend). The bottom circles are the equal groups (Quotients).</p>
+                            <p class="trans-text">Lingkaran atas adalah total (Dividend). Lingkaran bawah adalah kelompok yang sama (Quotients).</p>
+                            <p class="main-text">Here, 15 is split into 3 groups of 5. So, \\( 15 \\div 3 = 5 \\).</p>
+                            <p class="trans-text">Di sini, 15 dibagi menjadi 3 kelompok berisi 5. Jadi, \\( 15 \\div 3 = 5 \\).</p>
+                        `
+                    },
+                    // Page 6: Task 4
+                    { 
+                        type: 'task', 
+                        q: "Look at a number bond with a total of 24, split into 4 equal groups. What is the value of each group?", 
+                        q_trans: "Lihat number bond dengan total 24, dibagi menjadi 4 kelompok yang sama. Berapakah nilai setiap kelompok?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="20" r="15" fill="#FDE047" stroke="#1E40AF" stroke-width="2"/><text x="92" y="25" font-size="12" font-weight="bold" fill="#1E40AF">24</text><line x1="80" y1="35" x2="40" y2="60" stroke="#1E40AF"/><line x1="95" y1="35" x2="80" y2="60" stroke="#1E40AF"/><line x1="105" y1="35" x2="120" y2="60" stroke="#1E40AF"/><line x1="120" y1="35" x2="160" y2="60" stroke="#1E40AF"/><circle cx="40" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="35" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text><circle cx="80" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="75" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text><circle cx="120" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="115" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text><circle cx="160" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="155" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text></svg>`,
+                        options: ["6", "4", "8", "20", "28"], 
+                        correct: "6", 
+                        exp: "Total is 24, divided into 4 groups. \\( 24 \\div 4 = 6 \\). Each group has a value of 6.", 
+                        exp_trans: "Totalnya 24, dibagi menjadi 4 kelompok. \\( 24 \\div 4 = 6 \\). Setiap kelompok memiliki nilai 6." 
+                    },
+                    // Page 7: Task 5
+                    { 
+                        type: 'task', 
+                        q: "A number bond shows 18 split into equal groups of 2. How many groups are there?", 
+                        q_trans: "Sebuah number bond menunjukkan 18 dibagi menjadi kelompok yang sama berisi 2. Berapa banyak kelompok di sana?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="20" r="15" fill="#FDE047" stroke="#1E40AF" stroke-width="2"/><text x="92" y="25" font-size="12" font-weight="bold" fill="#1E40AF">18</text><line x1="80" y1="35" x2="50" y2="60" stroke="#1E40AF"/><line x1="100" y1="35" x2="100" y2="60" stroke="#1E40AF"/><line x1="120" y1="35" x2="150" y2="60" stroke="#1E40AF"/><circle cx="50" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="45" y="75" font-size="12" font-weight="bold" fill="#1E40AF">2</text><circle cx="100" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="95" y="75" font-size="12" font-weight="bold" fill="#1E40AF">2</text><circle cx="150" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="145" y="75" font-size="12" font-weight="bold" fill="#1E40AF">2</text><text x="170" y="75" font-size="16" fill="#1E40AF">...</text></svg>`,
+                        options: ["9", "2", "16", "20", "6"], 
+                        correct: "9", 
+                        exp: "Total is 18, size of each group is 2. \\( 18 \\div 2 = 9 \\). There are 9 groups.", 
+                        exp_trans: "Totalnya 18, ukuran setiap kelompok adalah 2. \\( 18 \\div 2 = 9 \\). Ada 9 kelompok." 
+                    },
+                    // Page 8: Task 6
+                    { 
+                        type: 'task', 
+                        q: "In a number bond, 28 is split into 4 equal groups. What is the missing number in each group? \\( 28 \\div 4 = ? \\)", 
+                        q_trans: "Dalam sebuah number bond, 28 dibagi menjadi 4 kelompok yang sama. Berapakah angka yang hilang di setiap kelompok? \\( 28 \\div 4 = ? \\)", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="20" r="15" fill="#FDE047" stroke="#1E40AF" stroke-width="2"/><text x="92" y="25" font-size="12" font-weight="bold" fill="#1E40AF">28</text><line x1="80" y1="35" x2="40" y2="60" stroke="#1E40AF"/><line x1="95" y1="35" x2="80" y2="60" stroke="#1E40AF"/><line x1="105" y1="35" x2="120" y2="60" stroke="#1E40AF"/><line x1="120" y1="35" x2="160" y2="60" stroke="#1E40AF"/><circle cx="40" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="35" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text><circle cx="80" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="75" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text><circle cx="120" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="115" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text><circle cx="160" cy="70" r="12" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/><text x="155" y="75" font-size="12" font-weight="bold" fill="#1E40AF">?</text></svg>`,
+                        options: ["7", "4", "8", "24", "32"], 
+                        correct: "7", 
+                        exp: "Total is 28, divided by 4 groups. \\( 28 \\div 4 = 7 \\). Each group is 7.", 
+                        exp_trans: "Totalnya 28, dibagi 4 kelompok. \\( 28 \\div 4 = 7 \\). Setiap kelompok berisi 7." 
+                    },
+                    // Page 9: Theory 3
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Dividing by 2, 5, and 10</h2>
+                            <p class="main-text">Let's review some easy division facts! Dividing by 2 is like pairing things up. Dividing by 5 is like counting nickels. Dividing by 10 is like counting dimes.</p>
+                            <p class="trans-text">Mari kita ulas beberapa fakta pembagian yang mudah! Membagi dengan 2 seperti memasangkan barang. Membagi dengan 5 seperti menghitung koin nikel. Membagi dengan 10 seperti menghitung koin uang sepuluh.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 300 100" width="280">
+                                    <!-- 10 Dimes -->
+                                    <g fill="#FBBF24" stroke="#D97706" stroke-width="2">
+                                        <circle cx="20" cy="50" r="10"/><circle cx="50" cy="50" r="10"/><circle cx="80" cy="50" r="10"/><circle cx="110" cy="50" r="10"/><circle cx="140" cy="50" r="10"/>
+                                        <circle cx="170" cy="50" r="10"/><circle cx="200" cy="50" r="10"/><circle cx="230" cy="50" r="10"/><circle cx="260" cy="50" r="10"/><circle cx="290" cy="50" r="10"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <p class="main-text">If Mr. Krabs has 50 pennies and divides them into groups of 10, he has 5 groups. \\( 50 \\div 10 = 5 \\).</p>
+                            <p class="trans-text">Jika Mr. Krabs memiliki 50 koin sen dan membaginya menjadi kelompok berisi 10, dia memiliki 5 kelompok. \\( 50 \\div 10 = 5 \\).</p>
+                            <p class="main-text">Remember: Any number divided by 10 just drops the zero at the end! (e.g., \\( 40 \\div 10 = 4 \\))</p>
+                            <p class="trans-text">Ingat: Setiap angka dibagi 10 cukup hapus nol di akhirnya! (Misalnya, \\( 40 \\div 10 = 4 \\))</p>
+                        `
+                    },
+                    // Page 10: Task 7
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob has 40 Krabby Patties. He divides them equally into 10 boxes. How many patties are in each box?", 
+                        q_trans: "SpongeBob memiliki 40 Krabby Patty. Dia membaginya sama rata ke dalam 10 kotak. Berapa banyak patty di setiap kotak?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="20" y="30" width="30" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/><rect x="80" y="30" width="30" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/><rect x="140" y="30" width="30" height="40" fill="#D97706" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["4", "10", "30", "50", "400"], 
+                        correct: "4", 
+                        exp: "40 divided by 10. Drop the zero! \\( 40 \\div 10 = 4 \\). There are 4 patties in each box.", 
+                        exp_trans: "40 dibagi 10. Hapus nolnya! \\( 40 \\div 10 = 4 \\). Ada 4 patty di setiap kotak." 
+                    },
+                    // Page 11: Task 8
+                    { 
+                        type: 'task', 
+                        q: "Patrick shares 20 jellyfish equally with his 2 hands. How many jellyfish are in each hand?", 
+                        q_trans: "Patrick berbagi 20 ubur-ubur sama rata dengan 2 tangannya. Berapa banyak ubur-ubur di setiap tangan?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M40,40 Q55,30 70,40 L65,60 L45,60 Z" fill="#F472B6" stroke="#1E40AF" stroke-width="3"/><path d="M120,40 Q135,30 150,40 L145,60 L125,60 Z" fill="#F472B6" stroke="#1E40AF" stroke-width="3"/></svg>`, 
+                        options: ["10", "2", "18", "22", "5"], 
+                        correct: "10", 
+                        exp: "Total is 20, divided by 2. \\( 20 \\div 2 = 10 \\). Each hand has 10 jellyfish.", 
+                        exp_trans: "Totalnya 20, dibagi 2. \\( 20 \\div 2 = 10 \\). Setiap tangan berisi 10 ubur-ubur." 
+                    },
+                    // Page 12: Task 9
+                    { 
+                        type: 'task', 
+                        q: "Sandy has 25 acorns. She puts them into 5 jars. How many acorns are in each jar?", 
+                        q_trans: "Sandy memiliki 25 kacang. Dia meletakkannya ke dalam 5 toples. Berapa banyak kacang di setiap toples?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><rect x="90" y="30" width="30" height="40" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><rect x="140" y="30" width="30" height="40" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/></svg>`, 
+                        options: ["5", "4", "6", "20", "30"], 
+                        correct: "5", 
+                        exp: "Total is 25, divided by 5 jars. \\( 25 \\div 5 = 5 \\). Each jar has 5 acorns.", 
+                        exp_trans: "Totalnya 25, dibagi 5 toples. \\( 25 \\div 5 = 5 \\). Setiap toples berisi 5 kacang." 
+                    },
+                    // Page 13: Task 10
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs divides 30 dollars equally among 10 crew members. How much does each crew member get?", 
+                        q_trans: "Mr. Krabs membagi 30 dolar sama rata kepada 10 anak buah. Berapa banyak yang didapat setiap anak buah?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="100" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><circle cx="160" cy="50" r="15" fill="#FBBF24" stroke="#D97706" stroke-width="3"/></svg>`, 
+                        options: ["3", "10", "20", "30", "300"], 
+                        correct: "3", 
+                        exp: "Total is 30, divided by 10. Drop the zero! \\( 30 \\div 10 = 3 \\). Each member gets 3 dollars.", 
+                        exp_trans: "Totalnya 30, dibagi 10. Hapus nolnya! \\( 30 \\div 10 = 3 \\). Setiap anggota mendapat 3 dolar." 
+                    }
+                ]
+            },
+			
+            independent: {
+                title: "Independent Practice",
+                pages: [
+                    // Page 1: Theory 1
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Finding Missing Numbers</h2>
+                            <p class="main-text">Sometimes, in Bikini Bottom, things go missing! Like when Gary eats part of SpongeBob's homework. We need to find the missing numbers in division equations.</p>
+                            <p class="trans-text">Terkadang, di Bikini Bottom, ada barang yang hilang! Seperti ketika Gary memakan sebagian pekerjaan rumah SpongeBob. Kita perlu menemukan angka yang hilang dalam persamaan pembagian.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 200 120" width="160">
+                                    <!-- Homework paper with bite marks -->
+                                    <path d="M40,20 L160,20 L160,100 L130,90 L100,100 L70,90 L40,100 Z" fill="#FFFFFF" stroke="#1E3A8A" stroke-width="3"/>
+                                    <text x="60" y="50" font-size="16" fill="#1E3A8A">24 ÷ 4 = ?</text>
+                                    <text x="60" y="75" font-size="16" fill="#1E3A8A">? ÷ 5 = 3</text>
+                                    <!-- Gary -->
+                                    <path d="M120,70 Q120,40 140,40 Q160,40 160,70 Z" fill="#F472B6" stroke="#1E40AF" stroke-width="4"/>
+                                    <path d="M140,40 L145,25 L155,25 L150,40" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/>
+                                    <circle cx="145" cy="35" r="2" fill="#1E40AF"/>
+                                    <circle cx="155" cy="35" r="2" fill="#1E40AF"/>
+                                </svg>
+                            </div>
+                            <p class="main-text">If we have \\( 24 \\div 4 = ? \\), we use multiplication facts to find the answer is 6.</p>
+                            <p class="trans-text">Jika kita punya \\( 24 \\div 4 = ? \\), kita gunakan fakta perkalian untuk menemukan jawabannya yaitu 6.</p>
+                            <p class="main-text">If we have \\( ? \\div 5 = 3 \\), we multiply 5 by 3 to find the missing total! \\( 5 \\times 3 = 15 \\). So, \\( 15 \\div 5 = 3 \\).</p>
+                            <p class="trans-text">Jika kita punya \\( ? \\div 5 = 3 \\), kita kalikan 5 dengan 3 untuk menemukan total yang hilang! \\( 5 \\times 3 = 15 \\). Jadi, \\( 15 \\div 5 = 3 \\).</p>
+                        `
+                    },
+                    // Page 2: Task 1
+                    { 
+                        type: 'task', 
+                        q: "Look at an array with 3 rows and 5 columns of Jellyfish. If we divide the jellyfish into 3 rows, which equation finds the number of jellyfish in each row?", 
+                        q_trans: "Lihat array dengan 3 baris dan 5 kolom ubur-ubur. Jika kita membagi ubur-ubur menjadi 3 baris, persamaan mana yang menemukan jumlah ubur-ubur di setiap baris?", 
+                        svg: `<svg viewBox="0 0 200 100"><g fill="#F472B6" stroke="#BE185D" stroke-width="2"><circle cx="20" cy="20" r="6"/><circle cx="50" cy="20" r="6"/><circle cx="80" cy="20" r="6"/><circle cx="110" cy="20" r="6"/><circle cx="140" cy="20" r="6"/><circle cx="20" cy="50" r="6"/><circle cx="50" cy="50" r="6"/><circle cx="80" cy="50" r="6"/><circle cx="110" cy="50" r="6"/><circle cx="140" cy="50" r="6"/><circle cx="20" cy="80" r="6"/><circle cx="50" cy="80" r="6"/><circle cx="80" cy="80" r="6"/><circle cx="110" cy="80" r="6"/><circle cx="140" cy="80" r="6"/></g></svg>`,
+                        options: ["15 ÷ 3 = 5", "15 ÷ 5 = 3", "8 ÷ 2 = 4", "3 + 5 = 8", "5 × 3 = 15"], 
+                        correct: "15 ÷ 3 = 5", 
+                        exp: "There are 15 total jellyfish. If we divide them into 3 rows, each row has 5. So, \\( 15 \\div 3 = 5 \\).", 
+                        exp_trans: "Ada total 15 ubur-ubur. Jika kita membaginya menjadi 3 baris, setiap baris memiliki 5. Jadi, \\( 15 \\div 3 = 5 \\)." 
+                    },
+                    // Page 3: Task 2
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob is trying to solve \\( ? \\div 4 = 7 \\). What is the missing dividend?", 
+                        q_trans: "SpongeBob sedang mencoba menyelesaikan \\( ? \\div 4 = 7 \\). Berapakah dividend yang hilang?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="60" rx="10" fill="#FEF9C3" stroke="#1E40AF" stroke-width="3"/><text x="60" y="60" font-size="20" fill="#1E3A8A">? ÷ 4 = 7</text></svg>`, 
+                        options: ["28", "11", "3", "24", "32"], 
+                        correct: "28", 
+                        exp: "To find the missing dividend, multiply the divisor by the quotient. \\( 4 \\times 7 = 28 \\). So, \\( 28 \\div 4 = 7 \\).", 
+                        exp_trans: "Untuk mencari dividend yang hilang, kalikan divisor dengan hasil bagi. \\( 4 \\times 7 = 28 \\). Jadi, \\( 28 \\div 4 = 7 \\)." 
+                    },
+                    // Page 4: Task 3
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs gives out 30 dollars. If he gave 5 dollars to each crew member, how many crew members are there? \\( 30 \\div 5 = ? \\)", 
+                        q_trans: "Mr. Krabs membagikan 30 dolar. Jika dia memberikan 5 dolar ke setiap anak buah, berapa banyak anak buah di sana? \\( 30 \\div 5 = ? \\)", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="50" r="20" fill="#FBBF24" stroke="#D97706" stroke-width="3"/><text x="92" y="56" font-size="16" font-weight="bold" fill="#92400E">$</text></svg>`, 
+                        options: ["6", "5", "25", "35", "10"], 
+                        correct: "6", 
+                        exp: "Think: \\( 5 \\times 6 = 30 \\). So, \\( 30 \\div 5 = 6 \\). There are 6 crew members.", 
+                        exp_trans: "Pikirkan: \\( 5 \\times 6 = 30 \\). Jadi, \\( 30 \\div 5 = 6 \\). Ada 6 anak buah." 
+                    },
+                    // Page 5: Theory 2
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Checking Your Answers</h2>
+                            <p class="main-text">Sandy Cheeks is a scientist. She always checks her work! You can check your division answer by using multiplication.</p>
+                            <p class="trans-text">Sandy Cheeks adalah seorang ilmuwan. Dia selalu memeriksa pekerjaannya! Kamu bisa memeriksa jawaban pembagianmu menggunakan perkalian.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 250 100" width="230">
+                                    <!-- Sandy's Tree Dome -->
+                                    <path d="M100,80 Q100,20 150,20 Q200,20 200,80 Z" fill="none" stroke="#0EA5E9" stroke-width="4"/>
+                                    <path d="M100,80 L200,80" stroke="#92400E" stroke-width="4"/>
+                                    <circle cx="150" cy="50" r="15" fill="#A7F3D0" stroke="#1E40AF" stroke-width="2"/>
+                                    <text x="125" y="55" font-size="14" fill="#1E3A8A" font-weight="bold">Check!</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">If you solved \\( 20 \\div 4 = 5 \\), you can check it by multiplying the quotient (5) by the divisor (4).</p>
+                            <p class="trans-text">Jika kamu menyelesaikan \\( 20 \\div 4 = 5 \\), kamu bisa memeriksanya dengan mengalikan hasil bagi (5) dengan divisor (4).</p>
+                            <p class="main-text">Since \\( 5 \\times 4 = 20 \\), and 20 is our original dividend, our answer is correct!</p>
+                            <p class="trans-text">Karena \\( 5 \\times 4 = 20 \\), dan 20 adalah dividend awal kita, jawaban kita benar!</p>
+                        `
+                    },
+                    // Page 6: Task 4
+                    { 
+                        type: 'task', 
+                        q: "Squidward solved \\( 24 \\div 6 = 4 \\). How can he check if his answer is correct?", 
+                        q_trans: "Squidward menyelesaikan \\( 24 \\div 6 = 4 \\). Bagaimana dia bisa memeriksa apakah jawabannya benar?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="60" y="40" width="80" height="15" rx="5" fill="#1E3A8A"/><rect x="75" y="55" width="10" height="10" fill="#FDE047"/></svg>`, 
+                        options: ["Multiply 4 by 6 to get 24", "Add 24 and 6 to get 30", "Subtract 4 from 24 to get 20", "Divide 24 by 4 to get 6", "Multiply 24 by 6 to get 144"], 
+                        correct: "Multiply 4 by 6 to get 24", 
+                        exp: "To check division, multiply the quotient (4) by the divisor (6). \\( 4 \\times 6 = 24 \\), which matches the dividend.", 
+                        exp_trans: "Untuk memeriksa pembagian, kalikan hasil bagi (4) dengan divisor (6). \\( 4 \\times 6 = 24 \\), yang sama dengan dividend." 
+                    },
+                    // Page 7: Task 5
+                    { 
+                        type: 'task', 
+                        q: "Plankton thinks \\( 35 \\div 5 = 6 \\). Is he correct? Let's check by multiplying 6 by 5.", 
+                        q_trans: "Plankton berpikir \\( 35 \\div 5 = 6 \\). Apakah dia benar? Mari kita periksa dengan mengalikan 6 dengan 5.", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="50" r="15" fill="#10B981" stroke="#1E40AF" stroke-width="3"/><circle cx="95" cy="45" r="3" fill="#FFF"/><circle cx="105" cy="45" r="3" fill="#FFF"/><path d="M90,55 Q100,60 110,55" stroke="#1E40AF" fill="none"/></svg>`, 
+                        options: ["No, because 6 x 5 = 30, not 35", "Yes, because 6 x 5 = 35", "No, because 6 + 5 = 11", "Yes, because 35 - 5 = 30", "No, because 6 x 5 = 40"], 
+                        correct: "No, because 6 x 5 = 30, not 35", 
+                        exp: "If we check \\( 6 \\times 5 \\), we get 30. But the dividend is 35. So Plankton is wrong. The correct answer is 7, because \\( 7 \\times 5 = 35 \\).", 
+                        exp_trans: "Jika kita periksa \\( 6 \\times 5 \\), kita dapat 30. Tapi dividendnya 35. Jadi Plankton salah. Jawaban yang benar adalah 7, karena \\( 7 \\times 5 = 35 \\)." 
+                    },
+                    // Page 8: Task 6
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob knows that \\( 27 \\div 3 = 9 \\). What multiplication equation checks this?", 
+                        q_trans: "SpongeBob tahu bahwa \\( 27 \\div 3 = 9 \\). Persamaan perkalian apa yang memeriksa ini?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="60" rx="10" fill="#FDE047" stroke="#1E40AF" stroke-width="4"/><text x="70" y="60" font-size="18" fill="#1E3A8A">27 ÷ 3 = 9</text></svg>`, 
+                        options: ["9 x 3 = 27", "27 x 3 = 81", "9 + 3 = 12", "27 - 3 = 24", "3 x 27 = 30"], 
+                        correct: "9 x 3 = 27", 
+                        exp: "Quotient (9) x Divisor (3) = Dividend (27). So, \\( 9 \\times 3 = 27 \\) is the check equation.", 
+                        exp_trans: "Hasil bagi (9) x Divisor (3) = Dividend (27). Jadi, \\( 9 \\times 3 = 27 \\) adalah persamaan untuk memeriksa." 
+                    },
+                    // Page 9: Theory 3
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Two-Step Word Problems</h2>
+                            <p class="main-text">Mrs. Puff has a tricky problem for us today. Sometimes, we need to do two steps to find the answer!</p>
+                            <p class="trans-text">Mrs. Puff memiliki masalah yang rumit untuk kita hari ini. Terkadang, kita perlu melakukan dua langkah untuk menemukan jawabannya!</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 200 120" width="180">
+                                    <!-- Mrs. Puff Boat -->
+                                    <path d="M20,80 L180,80 L160,100 L40,100 Z" fill="#EC4899" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="60" cy="100" r="15" fill="#1E3A8A"/>
+                                    <circle cx="140" cy="100" r="15" fill="#1E3A8A"/>
+                                    <rect x="80" y="40" width="40" height="40" fill="#FDE047" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="100" cy="60" r="10" fill="#FDE047" stroke="#1E40AF" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <p class="main-text">Example: SpongeBob bakes 15 Krabby Patties. He eats 3 of them. He shares the rest equally with 3 friends. How many does each friend get?</p>
+                            <p class="trans-text">Contoh: SpongeBob memanggang 15 Krabby Patty. Dia memakan 3 di antaranya. Dia membagi sisanya sama rata dengan 3 teman. Berapa banyak yang didapat setiap teman?</p>
+                            <p class="main-text"><strong>Step 1:</strong> Subtract the eaten patties. \\( 15 - 3 = 12 \\).</p>
+                            <p class="trans-text"><strong>Langkah 1:</strong> Kurangi patty yang dimakan. \\( 15 - 3 = 12 \\).</p>
+                            <p class="main-text"><strong>Step 2:</strong> Divide the rest. \\( 12 \\div 3 = 4 \\).</p>
+                            <p class="trans-text"><strong>Langkah 2:</strong> Bagi sisanya. \\( 12 \\div 3 = 4 \\).</p>
+                        `
+                    },
+                    // Page 10: Task 7
+                    { 
+                        type: 'task', 
+                        q: "Sandy has 24 acorns. She gives 4 to Patrick. She shares the rest equally into 4 jars. How many acorns are in each jar?", 
+                        q_trans: "Sandy memiliki 24 kacang. Dia memberikan 4 kepada Patrick. Dia membagi sisanya sama rata ke dalam 4 toples. Berapa banyak kacang di setiap toples?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><rect x="90" y="30" width="30" height="40" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/><rect x="140" y="30" width="30" height="40" rx="5" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="3"/></svg>`, 
+                        options: ["5", "6", "4", "20", "8"], 
+                        correct: "5", 
+                        exp: "Step 1: \\( 24 - 4 = 20 \\) acorns left. Step 2: Share 20 acorns into 4 jars. \\( 20 \\div 4 = 5 \\). Each jar has 5 acorns.", 
+                        exp_trans: "Langkah 1: tersisa \\( 24 - 4 = 20 \\) kacang. Langkah 2: Bagi 20 kacang ke 4 toples. \\( 20 \\div 4 = 5 \\). Setiap toples berisi 5 kacang." 
+                    },
+                    // Page 11: Task 8
+                    { 
+                        type: 'task', 
+                        q: "Mr. Krabs earns 30 dollars. He spends 10 dollars on a new net. He divides the remaining money equally into 2 pockets. How much money is in each pocket?", 
+                        q_trans: "Mr. Krabs mendapat 30 dolar. Dia menghabiskan 10 dolar untuk jaring baru. Dia membagi uang yang tersisa sama rata ke dalam 2 saku. Berapa banyak uang di setiap saku?", 
+                        svg: `<svg viewBox="0 0 200 100"><path d="M60,40 L100,40 L90,80 L70,80 Z" fill="#10B981" stroke="#1E40AF" stroke-width="3"/><circle cx="80" cy="60" r="6" fill="#FBBF24"/></svg>`, 
+                        options: ["10", "20", "5", "15", "2"], 
+                        correct: "10", 
+                        exp: "Step 1: \\( 30 - 10 = 20 \\) dollars left. Step 2: Divide 20 dollars into 2 pockets. \\( 20 \\div 2 = 10 \\). Each pocket has 10 dollars.", 
+                        exp_trans: "Langkah 1: tersisa \\( 30 - 10 = 20 \\) dolar. Langkah 2: Bagi 20 dolar ke 2 saku. \\( 20 \\div 2 = 10 \\). Setiap saku berisi 10 dolar." 
+                    },
+                    // Page 12: Task 9
+                    { 
+                        type: 'task', 
+                        q: "SpongeBob blows 18 bubbles. 2 bubbles pop. He divides the remaining bubbles equally among 4 friends. How many bubbles does each friend get?", 
+                        q_trans: "SpongeBob meniup 18 gelembung. 2 gelembung pecah. Dia membagi gelembung yang tersisa sama rata kepada 4 teman. Berapa banyak gelembung yang didapat setiap teman?", 
+                        svg: `<svg viewBox="0 0 200 100"><circle cx="50" cy="50" r="12" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/><circle cx="100" cy="50" r="12" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/><circle cx="150" cy="50" r="12" fill="#E0F7FA" stroke="#0EA5E9" stroke-width="2"/></svg>`, 
+                        options: ["4", "3", "16", "2", "18"], 
+                        correct: "4", 
+                        exp: "Step 1: \\( 18 - 2 = 16 \\) bubbles left. Step 2: Divide 16 bubbles among 4 friends. \\( 16 \\div 4 = 4 \\). Each friend gets 4 bubbles.", 
+                        exp_trans: "Langkah 1: tersisa \\( 18 - 2 = 16 \\) gelembung. Langkah 2: Bagi 16 gelembung ke 4 teman. \\( 16 \\div 4 = 4 \\). Setiap teman mendapat 4 gelembung." 
+                    },
+                    // Page 13: Task 10
+                    { 
+                        type: 'task', 
+                        q: "Squidward paints 20 canvases. He sells 2 to a museum. He shares the rest equally into 3 storage rooms. How many canvases are in each room?", 
+                        q_trans: "Squidward melukis 20 kanvas. Dia menjual 2 ke museum. Dia membagi sisanya sama rata ke dalam 3 ruang penyimpanan. Berapa banyak kanvas di setiap ruangan?", 
+                        svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" fill="#FFF1F2" stroke="#EC4899" stroke-width="3"/><rect x="90" y="30" width="30" height="40" fill="#FFF1F2" stroke="#EC4899" stroke-width="3"/><rect x="140" y="30" width="30" height="40" fill="#FFF1F2" stroke="#EC4899" stroke-width="3"/></svg>`, 
+                        options: ["6", "5", "4", "18", "20"], 
+                        correct: "6", 
+                        exp: "Step 1: \\( 20 - 2 = 18 \\) canvases left. Step 2: Divide 18 canvases into 3 rooms. \\( 18 \\div 3 = 6 \\). Each room has 6 canvases.", 
+                        exp_trans: "Langkah 1: tersisa \\( 20 - 2 = 18 \\) kanvas. Langkah 2: Bagi 18 kanvas ke 3 ruangan. \\( 18 \\div 3 = 6 \\). Setiap ruangan berisi 6 kanvas." 
+                    }
+                ]
+            },
+            consolidation: {
+                title: "Consolidation & Reflection",
+                pages: [
+                    // Page 1: Theory 1
+                    {
+                        type: 'theory',
+                        content: `
+                            <h2 class="section-title">Bikini Bottom Division Masters!</h2>
+                            <p class="main-text">F is for friends who do math together! Today, we learned that division is sharing or grouping numbers equally.</p>
+                            <p class="trans-text">F adalah untuk teman yang mengerjakan matematika bersama! Hari ini, kita belajar bahwa pembagian adalah membagi atau mengelompokkan angka secara sama rata.</p>
+                            <div class="illustration">
+                                <svg viewBox="0 0 300 150" width="280">
+                                    <!-- SpongeBob & Patrick High Five -->
+                                    <rect x="40" y="20" width="60" height="60" rx="10" fill="#FDE047" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="55" cy="40" r="5" fill="#1E40AF"/><circle cx="85" cy="40" r="5" fill="#1E40AF"/>
+                                    <rect x="50" y="55" width="40" height="10" fill="#1E40AF"/>
+                                    <path d="M100,50 L140,50" stroke="#FDE047" stroke-width="10" stroke-linecap="round"/>
+                                    
+                                    <path d="M140,90 L150,40 L160,70 L170,30 L180,70 L190,40 L200,90 Z" fill="#EC4899" stroke="#1E40AF" stroke-width="4"/>
+                                    <circle cx="160" cy="60" r="3" fill="#1E40AF"/><circle cx="180" cy="60" r="3" fill="#1E40AF"/>
+                                    <path d="M160,70 Q170,75 180,70" stroke="#1E40AF" stroke-width="2" fill="none"/>
+                                    
+                                    <text x="60" y="120" font-size="16" font-family="Baloo 2" fill="#1E3A8A">SpongeBob</text>
+                                    <text x="140" y="120" font-size="16" font-family="Baloo 2" fill="#1E3A8A">Patrick</text>
+                                </svg>
+                            </div>
+                            <p class="main-text">We learned about the Dividend, Divisor, and Quotient. We also used fact families and number lines to help us divide.</p>
+                            <p class="trans-text">Kita belajar tentang Dividend, Divisor, dan Quotient. Kita juga menggunakan keluarga fakta dan garis bilangan untuk membantu kita membagi.</p>
+                            <p class="main-text">Are you ready to become an official Division Master of Bikini Bottom? Take the portal to your next adventure!</p>
+                            <p class="trans-text">Apakah kamu siap menjadi Master Pembagian resmi Bikini Bottom? Ambil portal ke petualanganmu selanjutnya!</p>
+                            <div style="text-align: center; margin-top: 30px;">
+                                <a href="https://learn.algonova.id" target="_blank" class="btn btn-primary" style="text-decoration: none; display: inline-block; padding: 15px 30px; font-size: 1.2rem; background-color: var(--accent-color); color: white;">
+                                    ▶️ Go to learn.algonova.id
+                                </a>
+                            </div>
+                        `
+                    }
+                ]
+            },
+			
+            task1: {
+                title: "Task 1: Krusty Krab Basic Facts",
+                pages: [
+                    { type: 'task', q: "SpongeBob divides 15 Krabby Patties equally among 3 customers. How many patties does each customer get? \\( 15 \\div 3 = ? \\)", q_trans: "SpongeBob membagi 15 Krabby Patty sama rata kepada 3 pelanggan. Berapa banyak patty yang didapat setiap pelanggan?", svg: `<svg viewBox="0 0 200 100"><ellipse cx="50" cy="50" rx="15" ry="8" fill="#FBBF24" stroke="#92400E"/><ellipse cx="100" cy="50" rx="15" ry="8" fill="#FBBF24" stroke="#92400E"/><ellipse cx="150" cy="50" rx="15" ry="8" fill="#FBBF24" stroke="#92400E"/></svg>`, options: ["3", "5", "12", "18", "45"], correct: "5", exp: "\\( 15 \\div 3 = 5 \\). Each customer gets 5 patties.", exp_trans: "\\( 15 \\div 3 = 5 \\). Setiap pelanggan mendapat 5 patty." },
+                    { type: 'task', q: "Patrick caught 20 jellyfish. He puts them equally into 4 nets. How many jellyfish are in each net? \\( 20 \\div 4 = ? \\)", q_trans: "Patrick menangkap 20 ubur-ubur. Dia meletakkannya sama rata ke dalam 4 jaring. Berapa banyak ubur-ubur di setiap jaring?", svg: `<svg viewBox="0 0 200 100"><path d="M20,40 Q35,30 50,40 L45,60 L25,60 Z" fill="#F472B6"/><path d="M80,40 Q95,30 110,40 L105,60 L85,60 Z" fill="#F472B6"/><path d="M140,40 Q155,30 170,40 L165,60 L145,60 Z" fill="#F472B6"/></svg>`, options: ["4", "5", "6", "16", "24"], correct: "5", exp: "\\( 20 \\div 4 = 5 \\). There are 5 jellyfish in each net.", exp_trans: "\\( 20 \\div 4 = 5 \\). Ada 5 ubur-ubur di setiap jaring." },
+                    { type: 'task', q: "Sandy has 12 acorns. If she shares them equally with 2 friends, how many acorns does each friend get? \\( 12 \\div 2 = ? \\)", q_trans: "Sandy memiliki 12 kacang. Jika dia membaginya sama rata dengan 2 teman, berapa banyak kacang yang didapat setiap teman?", svg: `<svg viewBox="0 0 200 100"><circle cx="50" cy="50" r="8" fill="#92400E"/><circle cx="100" cy="50" r="8" fill="#92400E"/><circle cx="150" cy="50" r="8" fill="#92400E"/></svg>`, options: ["2", "6", "10", "14", "24"], correct: "6", exp: "\\( 12 \\div 2 = 6 \\). Each friend gets 6 acorns.", exp_trans: "\\( 12 \\div 2 = 6 \\). Setiap teman mendapat 6 kacang." },
+                    { type: 'task', q: "Mr. Krabs sorts 18 pennies into 6 equal piles. How many pennies are in each pile? \\( 18 \\div 6 = ? \\)", q_trans: "Mr. Krabs menyortir 18 koin sen ke dalam 6 tumpukan. Berapa banyak koin di setiap tumpukan?", svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="10" fill="#FBBF24" stroke="#D97706"/><circle cx="80" cy="50" r="10" fill="#FBBF24" stroke="#D97706"/><circle cx="120" cy="50" r="10" fill="#FBBF24" stroke="#D97706"/><circle cx="160" cy="50" r="10" fill="#FBBF24" stroke="#D97706"/></svg>`, options: ["2", "3", "6", "12", "24"], correct: "3", exp: "\\( 18 \\div 6 = 3 \\). There are 3 pennies in each pile.", exp_trans: "\\( 18 \\div 6 = 3 \\). Ada 3 koin di setiap tumpukan." },
+                    { type: 'task', q: "Squidward plays 24 notes on his clarinet in 8 minutes. How many notes per minute? \\( 24 \\div 8 = ? \\)", q_trans: "Squidward meniup 24 nada pada klarinetnya dalam 8 menit. Berapa banyak nada per menit?", svg: `<svg viewBox="0 0 200 100"><rect x="60" y="40" width="80" height="10" fill="#1E3A8A"/><rect x="70" y="50" width="8" height="8" fill="#FDE047"/></svg>`, options: ["2", "3", "4", "6", "16"], correct: "3", exp: "\\( 24 \\div 8 = 3 \\). He plays 3 notes per minute.", exp_trans: "\\( 24 \\div 8 = 3 \\). Dia meniup 3 nada per menit." },
+                    { type: 'task', q: "Mrs. Puff has 10 students in her boating class. She puts them into 5 boats. How many students per boat? \\( 10 \\div 5 = ? \\)", q_trans: "Mrs. Puff memiliki 10 siswa. Dia menempatkan mereka di 5 perahu. Berapa banyak siswa per perahu?", svg: `<svg viewBox="0 0 200 100"><path d="M20,60 L80,60 L70,80 L30,80 Z" fill="#EC4899"/><path d="M120,60 L180,60 L170,80 L130,80 Z" fill="#EC4899"/></svg>`, options: ["2", "5", "15", "50", "1"], correct: "2", exp: "\\( 10 \\div 5 = 2 \\). There are 2 students per boat.", exp_trans: "\\( 10 \\div 5 = 2 \\). Ada 2 siswa per perahu." },
+                    { type: 'task', q: "Plankton has 16 evil plans. He divides them into 4 folders. How many plans per folder? \\( 16 \\div 4 = ? \\)", q_trans: "Plankton memiliki 16 rencana jahat. Dia membaginya ke dalam 4 folder. Berapa banyak rencana per folder?", svg: `<svg viewBox="0 0 200 100"><path d="M30,40 L60,40 L70,30 L100,30 L100,70 L30,70 Z" fill="#10B981"/><path d="M110,40 L140,40 L150,30 L180,30 L180,70 L110,70 Z" fill="#10B981"/></svg>`, options: ["2", "4", "6", "8", "12"], correct: "4", exp: "\\( 16 \\div 4 = 4 \\). There are 4 plans per folder.", exp_trans: "\\( 16 \\div 4 = 4 \\). Ada 4 rencana per folder." },
+                    { type: 'task', q: "Gary leaves 21 slime trails over 7 days. How many trails per day? \\( 21 \\div 7 = ? \\)", q_trans: "Gary meninggalkan 21 jejak lendir selama 7 hari. Berapa banyak jejak per hari?", svg: `<svg viewBox="0 0 200 100"><path d="M20,50 Q40,20 60,50" stroke="#F472B6" stroke-width="4" fill="none"/><path d="M80,50 Q100,20 120,50" stroke="#F472B6" stroke-width="4" fill="none"/></svg>`, options: ["2", "3", "4", "7", "14"], correct: "3", exp: "\\( 21 \\div 7 = 3 \\). He leaves 3 trails per day.", exp_trans: "\\( 21 \\div 7 = 3 \\). Dia meninggalkan 3 jejak per hari." },
+                    { type: 'task', q: "SpongeBob blows 18 bubbles. He divides them into 6 groups. How many bubbles per group? \\( 18 \\div 6 = ? \\)", q_trans: "SpongeBob meniup 18 gelembung. Dia membaginya menjadi 6 kelompok. Berapa banyak gelembung per kelompok?", svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="10" fill="#E0F7FA"/><circle cx="90" cy="50" r="10" fill="#E0F7FA"/><circle cx="140" cy="50" r="10" fill="#E0F7FA"/></svg>`, options: ["2", "3", "6", "12", "24"], correct: "3", exp: "\\( 18 \\div 6 = 3 \\). There are 3 bubbles per group.", exp_trans: "\\( 18 \\div 6 = 3 \\). Ada 3 gelembung per kelompok." },
+                    { type: 'task', q: "Mr. Krabs earns 30 dollars. He divides it equally into 10 cash registers. How much in each? \\( 30 \\div 10 = ? \\)", q_trans: "Mr. Krabs mendapat 30 dolar. Dia membaginya sama rata ke dalam 10 kasir. Berapa banyak di setiap kasir?", svg: `<svg viewBox="0 0 200 100"><rect x="60" y="30" width="80" height="40" fill="#10B981"/><circle cx="100" cy="50" r="10" fill="#FBBF24"/></svg>`, options: ["3", "10", "20", "300", "1"], correct: "3", exp: "\\( 30 \\div 10 = 3 \\). There are 3 dollars in each.", exp_trans: "\\( 30 \\div 10 = 3 \\). Ada 3 dolar di setiap kasir." }
+                ]
+            },
+            task2: {
+                title: "Task 2: Sharing at Goo Lagoon",
+                pages: [
+                    { type: 'task', q: "Sandy has 24 sandwiches. She shares them equally among 4 friends. How many sandwiches per friend? \\( 24 \\div 4 = ? \\)", q_trans: "Sandy memiliki 24 sandwich. Dia membaginya sama rata kepada 4 teman. Berapa banyak sandwich per teman?", svg: `<svg viewBox="0 0 200 100"><rect x="20" y="40" width="30" height="20" fill="#FBBF24"/><rect x="80" y="40" width="30" height="20" fill="#FBBF24"/><rect x="140" y="40" width="30" height="20" fill="#FBBF24"/></svg>`, options: ["4", "5", "6", "8", "20"], correct: "6", exp: "\\( 24 \\div 4 = 6 \\). Each friend gets 6 sandwiches.", exp_trans: "\\( 24 \\div 4 = 6 \\). Setiap teman mendapat 6 sandwich." },
+                    { type: 'task', q: "Larry the Lobster lifts 30 weights. He does this over 5 days. How many weights per day? \\( 30 \\div 5 = ? \\)", q_trans: "Larry si Lobster mengangkat 30 beban. Dia melakukan ini selama 5 hari. Berapa banyak beban per hari?", svg: `<svg viewBox="0 0 200 100"><rect x="80" y="20" width="10" height="60" fill="#92400E"/><circle cx="85" cy="20" r="15" fill="#1E3A8A"/><circle cx="85" cy="80" r="15" fill="#1E3A8A"/></svg>`, options: ["5", "6", "10", "25", "35"], correct: "6", exp: "\\( 30 \\div 5 = 6 \\). He lifts 6 weights per day.", exp_trans: "\\( 30 \\div 5 = 6 \\). Dia mengangkat 6 beban per hari." },
+                    { type: 'task', q: "SpongeBob builds 40 sandcastles. He builds them in 8 hours. How many sandcastles per hour? \\( 40 \\div 8 = ? \\)", q_trans: "SpongeBob membangun 40 istana pasir. Dia membangunnya dalam 8 jam. Berapa banyak istana pasir per jam?", svg: `<svg viewBox="0 0 200 100"><path d="M20,80 L20,50 L40,50 L40,80 Z" fill="#FBBF24"/><path d="M80,80 L80,50 L100,50 L100,80 Z" fill="#FBBF24"/><path d="M140,80 L140,50 L160,50 L160,80 Z" fill="#FBBF24"/></svg>`, options: ["4", "5", "6", "8", "32"], correct: "5", exp: "\\( 40 \\div 8 = 5 \\). He builds 5 sandcastles per hour.", exp_trans: "\\( 40 \\div 8 = 5 \\). Dia membangun 5 istana pasir per jam." },
+                    { type: 'task', q: "Patrick finds 20 seashells. He puts them into 4 buckets. How many seashells per bucket? \\( 20 \\div 4 = ? \\)", q_trans: "Patrick menemukan 20 kerang. Dia meletakkannya ke dalam 4 ember. Berapa banyak kerang per ember?", svg: `<svg viewBox="0 0 200 100"><path d="M20,40 L60,40 L50,80 L30,80 Z" fill="#FBBF24"/><path d="M120,40 L160,40 L150,80 L130,80 Z" fill="#FBBF24"/></svg>`, options: ["4", "5", "6", "16", "24"], correct: "5", exp: "\\( 20 \\div 4 = 5 \\). There are 5 seashells per bucket.", exp_trans: "\\( 20 \\div 4 = 5 \\). Ada 5 kerang per ember." },
+                    { type: 'task', q: "Squidward paints 28 canvases. He paints them over 7 weeks. How many canvases per week? \\( 28 \\div 7 = ? \\)", q_trans: "Squidward melukis 28 kanvas. Dia melukisnya selama 7 minggu. Berapa banyak kanvas per minggu?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" fill="#FFF1F2"/><rect x="100" y="30" width="30" height="40" fill="#FFF1F2"/></svg>`, options: ["3", "4", "5", "7", "21"], correct: "4", exp: "\\( 28 \\div 7 = 4 \\). He paints 4 canvases per week.", exp_trans: "\\( 28 \\div 7 = 4 \\). Dia melukis 4 kanvas per minggu." },
+                    { type: 'task', q: "Mr. Krabs gives 36 dollars to 6 crew members. How much money per crew member? \\( 36 \\div 6 = ? \\)", q_trans: "Mr. Krabs memberikan 36 dolar kepada 6 anak buah. Berapa banyak uang per anak buah?", svg: `<svg viewBox="0 0 200 100"><circle cx="50" cy="50" r="12" fill="#FBBF24"/><circle cx="100" cy="50" r="12" fill="#FBBF24"/><circle cx="150" cy="50" r="12" fill="#FBBF24"/></svg>`, options: ["5", "6", "7", "30", "42"], correct: "6", exp: "\\( 36 \\div 6 = 6 \\). Each member gets 6 dollars.", exp_trans: "\\( 36 \\div 6 = 6 \\). Setiap anggota mendapat 6 dolar." },
+                    { type: 'task', q: "Mrs. Puff has 32 students. She divides them into 4 classrooms. How many students per class? \\( 32 \\div 4 = ? \\)", q_trans: "Mrs. Puff memiliki 32 siswa. Dia membaginya ke dalam 4 kelas. Berapa banyak siswa per kelas?", svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="15" fill="#A7F3D0"/><circle cx="100" cy="50" r="15" fill="#A7F3D0"/><circle cx="160" cy="50" r="15" fill="#A7F3D0"/></svg>`, options: ["6", "7", "8", "28", "36"], correct: "8", exp: "\\( 32 \\div 4 = 8 \\). There are 8 students per class.", exp_trans: "\\( 32 \\div 4 = 8 \\). Ada 8 siswa per kelas." },
+                    { type: 'task', q: "Plankton builds 18 robots. He sends them out in 2 waves. How many robots per wave? \\( 18 \\div 2 = ? \\)", q_trans: "Plankton membangun 18 robot. Dia mengirimkannya dalam 2 gelombang. Berapa banyak robot per gelombang?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="20" height="30" fill="#10B981"/><rect x="100" y="30" width="20" height="30" fill="#10B981"/><rect x="160" y="30" width="20" height="30" fill="#10B981"/></svg>`, options: ["8", "9", "10", "16", "20"], correct: "9", exp: "\\( 18 \\div 2 = 9 \\). There are 9 robots per wave.", exp_trans: "\\( 18 \\div 2 = 9 \\). Ada 9 robot per gelombang." },
+                    { type: 'task', q: "Gary eats 27 lettuces over 9 days. How many lettuces per day? \\( 27 \\div 9 = ? \\)", q_trans: "Gary memakan 27 selada selama 9 hari. Berapa banyak selada per hari?", svg: `<svg viewBox="0 0 200 100"><path d="M40,60 Q40,30 60,30 Q80,30 80,60 Z" fill="#16A34A"/><path d="M120,60 Q120,30 140,30 Q160,30 160,60 Z" fill="#16A34A"/></svg>`, options: ["2", "3", "4", "6", "18"], correct: "3", exp: "\\( 27 \\div 9 = 3 \\). He eats 3 lettuces per day.", exp_trans: "\\( 27 \\div 9 = 3 \\). Dia memakan 3 selada per hari." },
+                    { type: 'task', q: "SpongeBob pours 24 cups of water. He pours them into 8 glasses. How many cups per glass? \\( 24 \\div 8 = ? \\)", q_trans: "SpongeBob menuangkan 24 cangkir air. Dia menuangkannya ke dalam 8 gelas. Berapa banyak cangkir per gelas?", svg: `<svg viewBox="0 0 200 100"><path d="M40,30 L60,30 L55,70 L45,70 Z" fill="#E0F7FA"/><path d="M120,30 L140,30 L135,70 L125,70 Z" fill="#E0F7FA"/></svg>`, options: ["2", "3", "4", "6", "16"], correct: "3", exp: "\\( 24 \\div 8 = 3 \\). There are 3 cups per glass.", exp_trans: "\\( 24 \\div 8 = 3 \\). Ada 3 cangkir per gelas." }
+                ]
+            },
+            task3: {
+                title: "Task 3: Grouping at the Chum Bucket",
+                pages: [
+                    { type: 'task', q: "Plankton has 12 evil plans. He puts 3 plans in each folder. How many folders does he need? \\( 12 \\div 3 = ? \\)", q_trans: "Plankton memiliki 12 rencana jahat. Dia meletakkan 3 rencana di setiap folder. Berapa banyak folder yang dia butuhkan?", svg: `<svg viewBox="0 0 200 100"><path d="M40,40 L70,40 L80,30 L110,30 L110,70 L40,70 Z" fill="#10B981"/></svg>`, options: ["3", "4", "5", "9", "15"], correct: "4", exp: "\\( 12 \\div 3 = 4 \\). He needs 4 folders.", exp_trans: "\\( 12 \\div 3 = 4 \\). Dia butuh 4 folder." },
+                    { type: 'task', q: "SpongeBob packs 20 Krabby Patties. He puts 4 patties in each box. How many boxes? \\( 20 \\div 4 = ? \\)", q_trans: "SpongeBob mengemas 20 Krabby Patty. Dia meletakkan 4 patty di setiap kotak. Berapa banyak kotak?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="40" height="40" fill="#D97706"/></svg>`, options: ["4", "5", "6", "16", "24"], correct: "5", exp: "\\( 20 \\div 4 = 5 \\). He needs 5 boxes.", exp_trans: "\\( 20 \\div 4 = 5 \\). Dia butuh 5 kotak." },
+                    { type: 'task', q: "Patrick catches 18 jellyfish. He puts 6 in each net. How many nets? \\( 18 \\div 6 = ? \\)", q_trans: "Patrick menangkap 18 ubur-ubur. Dia meletakkan 6 di setiap jaring. Berapa banyak jaring?", svg: `<svg viewBox="0 0 200 100"><path d="M40,40 Q55,30 70,40 L65,60 L45,60 Z" fill="#F472B6"/></svg>`, options: ["2", "3", "4", "12", "24"], correct: "3", exp: "\\( 18 \\div 6 = 3 \\). He needs 3 nets.", exp_trans: "\\( 18 \\div 6 = 3 \\). Dia butuh 3 jaring." },
+                    { type: 'task', q: "Sandy sorts 24 acorns. She puts 8 acorns in each jar. How many jars? \\( 24 \\div 8 = ? \\)", q_trans: "Sandy menyortir 24 kacang. Dia meletakkan 8 kacang di setiap toples. Berapa banyak toples?", svg: `<svg viewBox="0 0 200 100"><rect x="60" y="30" width="30" height="50" fill="#E0F2FE"/></svg>`, options: ["2", "3", "4", "16", "32"], correct: "3", exp: "\\( 24 \\div 8 = 3 \\). She needs 3 jars.", exp_trans: "\\( 24 \\div 8 = 3 \\). Dia butuh 3 toples." },
+                    { type: 'task', q: "Mr. Krabs has 30 pennies. He puts 10 pennies in each bag. How many bags? \\( 30 \\div 10 = ? \\)", q_trans: "Mr. Krabs memiliki 30 koin sen. Dia meletakkan 10 koin di setiap kantong. Berapa banyak kantong?", svg: `<svg viewBox="0 0 200 100"><path d="M60,30 L100,30 L90,80 L70,80 Z" fill="#10B981"/></svg>`, options: ["2", "3", "4", "10", "20"], correct: "3", exp: "\\( 30 \\div 10 = 3 \\). He needs 3 bags.", exp_trans: "\\( 30 \\div 10 = 3 \\). Dia butuh 3 kantong." },
+                    { type: 'task', q: "Squidward has 16 canvases. He stores 4 in each room. How many rooms? \\( 16 \\div 4 = ? \\)", q_trans: "Squidward memiliki 16 kanvas. Dia menyimpan 4 di setiap ruangan. Berapa banyak ruangan?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" fill="#FFF1F2"/></svg>`, options: ["2", "3", "4", "8", "12"], correct: "4", exp: "\\( 16 \\div 4 = 4 \\). He needs 4 rooms.", exp_trans: "\\( 16 \\div 4 = 4 \\). Dia butuh 4 ruangan." },
+                    { type: 'task', q: "Gary leaves 14 trails. He leaves 2 trails per path. How many paths? \\( 14 \\div 2 = ? \\)", q_trans: "Gary meninggalkan 14 jejak. Dia meninggalkan 2 jejak per jalur. Berapa banyak jalur?", svg: `<svg viewBox="0 0 200 100"><path d="M20,50 Q40,20 60,50" stroke="#F472B6" stroke-width="4" fill="none"/></svg>`, options: ["6", "7", "8", "12", "16"], correct: "7", exp: "\\( 14 \\div 2 = 7 \\). There are 7 paths.", exp_trans: "\\( 14 \\div 2 = 7 \\). Ada 7 jalur." },
+                    { type: 'task', q: "Mrs. Puff has 32 students. She puts 8 students in each boat. How many boats? \\( 32 \\div 8 = ? \\)", q_trans: "Mrs. Puff memiliki 32 siswa. Dia menempatkan 8 siswa di setiap perahu. Berapa banyak perahu?", svg: `<svg viewBox="0 0 200 100"><path d="M20,60 L80,60 L70,80 L30,80 Z" fill="#EC4899"/></svg>`, options: ["3", "4", "5", "8", "24"], correct: "4", exp: "\\( 32 \\div 8 = 4 \\). She needs 4 boats.", exp_trans: "\\( 32 \\div 8 = 4 \\). Dia butuh 4 perahu." },
+                    { type: 'task', q: "Plankton builds 27 robots. He sends 3 robots per wave. How many waves? \\( 27 \\div 3 = ? \\)", q_trans: "Plankton membangun 27 robot. Dia mengirim 3 robot per gelombang. Berapa banyak gelombang?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="20" height="30" fill="#10B981"/></svg>`, options: ["7", "8", "9", "24", "30"], correct: "9", exp: "\\( 27 \\div 3 = 9 \\). He needs 9 waves.", exp_trans: "\\( 27 \\div 3 = 9 \\). Dia butuh 9 gelombang." },
+                    { type: 'task', q: "SpongeBob pours 24 cups of water. He pours 6 cups per glass. How many glasses? \\( 24 \\div 6 = ? \\)", q_trans: "SpongeBob menuangkan 24 cangkir air. Dia menuangkan 6 cangkir per gelas. Berapa banyak gelas?", svg: `<svg viewBox="0 0 200 100"><path d="M40,30 L60,30 L55,70 L45,70 Z" fill="#E0F7FA"/></svg>`, options: ["3", "4", "5", "6", "18"], correct: "4", exp: "\\( 24 \\div 6 = 4 \\). He needs 4 glasses.", exp_trans: "\\( 24 \\div 6 = 4 \\). Dia butuh 4 gelas." }
+                ]
+            },
+            task4: {
+                title: "Task 4: Missing Numbers Mystery",
+                pages: [
+                    { type: 'task', q: "SpongeBob forgot a number: \\( ? \\div 4 = 6 \\). What is the missing dividend?", q_trans: "SpongeBob lupa sebuah angka: \\( ? \\div 4 = 6 \\). Berapakah dividend yang hilang?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="60" fill="#FDE047"/><text x="60" y="60" font-size="20" fill="#1E3A8A">? ÷ 4 = 6</text></svg>`, options: ["10", "24", "2", "30", "42"], correct: "24", exp: "Multiply 4 by 6. \\( 4 \\times 6 = 24 \\).", exp_trans: "Kalikan 4 dengan 6. \\( 4 \\times 6 = 24 \\)." },
+                    { type: 'task', q: "Patrick found a shell with: \\( 20 \\div ? = 5 \\). What is the missing divisor?", q_trans: "Patrick menemukan kerang dengan: \\( 20 \\div ? = 5 \\). Berapakah divisor yang hilang?", svg: `<svg viewBox="0 0 200 100"><path d="M40,80 Q40,20 100,20 Q160,20 160,80 Z" fill="#FBBF24"/><text x="60" y="60" font-size="20" fill="#1E3A8A">20 ÷ ? = 5</text></svg>`, options: ["4", "5", "15", "25", "100"], correct: "4", exp: "Think: 20 divided by what equals 5? \\( 20 \\div 4 = 5 \\).", exp_trans: "Pikirkan: 20 dibagi berapa sama dengan 5? \\( 20 \\div 4 = 5 \\)." },
+                    { type: 'task', q: "Sandy wrote: \\( ? \\div 3 = 9 \\). What is the missing dividend?", q_trans: "Sandy menulis: \\( ? \\div 3 = 9 \\). Berapakah dividend yang hilang?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="60" fill="#FEF9C3"/><text x="60" y="60" font-size="20" fill="#1E3A8A">? ÷ 3 = 9</text></svg>`, options: ["3", "6", "12", "27", "30"], correct: "27", exp: "Multiply 3 by 9. \\( 3 \\times 9 = 27 \\).", exp_trans: "Kalikan 3 dengan 9. \\( 3 \\times 9 = 27 \\)." },
+                    { type: 'task', q: "Mr. Krabs lost a number: \\( 16 \\div ? = 4 \\). What is the missing divisor?", q_trans: "Mr. Krabs kehilangan angka: \\( 16 \\div ? = 4 \\). Berapakah divisor yang hilang?", svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="50" r="20" fill="#FBBF24"/><text x="60" y="60" font-size="20" fill="#1E3A8A">16 ÷ ? = 4</text></svg>`, options: ["2", "4", "8", "12", "20"], correct: "4", exp: "Think: 16 divided by what equals 4? \\( 16 \\div 4 = 4 \\).", exp_trans: "Pikirkan: 16 dibagi berapa sama dengan 4? \\( 16 \\div 4 = 4 \\)." },
+                    { type: 'task', q: "Squidward forgot a number: \\( ? \\div 5 = 7 \\). What is the missing dividend?", q_trans: "Squidward lupa sebuah angka: \\( ? \\div 5 = 7 \\). Berapakah dividend yang hilang?", svg: `<svg viewBox="0 0 200 100"><rect x="60" y="40" width="80" height="15" fill="#1E3A8A"/><text x="80" y="70" font-size="16" fill="#1E3A8A">? ÷ 5 = 7</text></svg>`, options: ["12", "25", "30", "35", "42"], correct: "35", exp: "Multiply 5 by 7. \\( 5 \\times 7 = 35 \\).", exp_trans: "Kalikan 5 dengan 7. \\( 5 \\times 7 = 35 \\)." },
+                    { type: 'task', q: "Plankton found: \\( 24 \\div ? = 6 \\). What is the missing divisor?", q_trans: "Plankton menemukan: \\( 24 \\div ? = 6 \\). Berapakah divisor yang hilang?", svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="50" r="15" fill="#10B981"/><text x="60" y="60" font-size="20" fill="#1E3A8A">24 ÷ ? = 6</text></svg>`, options: ["3", "4", "5", "6", "8"], correct: "4", exp: "Think: 24 divided by what equals 6? \\( 24 \\div 4 = 6 \\).", exp_trans: "Pikirkan: 24 dibagi berapa sama dengan 6? \\( 24 \\div 4 = 6 \\)." },
+                    { type: 'task', q: "Mrs. Puff wrote: \\( ? \\div 2 = 10 \\). What is the missing dividend?", q_trans: "Mrs. Puff menulis: \\( ? \\div 2 = 10 \\). Berapakah dividend yang hilang?", svg: `<svg viewBox="0 0 200 100"><path d="M20,60 L80,60 L70,80 L30,80 Z" fill="#EC4899"/><text x="60" y="40" font-size="16" fill="#1E3A8A">? ÷ 2 = 10</text></svg>`, options: ["5", "8", "12", "20", "22"], correct: "20", exp: "Multiply 2 by 10. \\( 2 \\times 10 = 20 \\).", exp_trans: "Kalikan 2 dengan 10. \\( 2 \\times 10 = 20 \\)." },
+                    { type: 'task', q: "Gary left a trail with: \\( 18 \\div ? = 6 \\). What is the missing divisor?", q_trans: "Gary meninggalkan jejak dengan: \\( 18 \\div ? = 6 \\). Berapakah divisor yang hilang?", svg: `<svg viewBox="0 0 200 100"><path d="M20,50 Q40,20 60,50" stroke="#F472B6" stroke-width="4" fill="none"/><text x="80" y="50" font-size="16" fill="#1E3A8A">18 ÷ ? = 6</text></svg>`, options: ["2", "3", "4", "6", "12"], correct: "3", exp: "Think: 18 divided by what equals 6? \\( 18 \\div 3 = 6 \\).", exp_trans: "Pikirkan: 18 dibagi berapa sama dengan 6? \\( 18 \\div 3 = 6 \\)." },
+                    { type: 'task', q: "SpongeBob forgot: \\( ? \\div 10 = 4 \\). What is the missing dividend?", q_trans: "SpongeBob lupa: \\( ? \\div 10 = 4 \\). Berapakah dividend yang hilang?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="60" fill="#FDE047"/><text x="60" y="60" font-size="20" fill="#1E3A8A">? ÷ 10 = 4</text></svg>`, options: ["6", "14", "40", "44", "400"], correct: "40", exp: "Multiply 10 by 4. \\( 10 \\times 4 = 40 \\).", exp_trans: "Kalikan 10 dengan 4. \\( 10 \\times 4 = 40 \\)." },
+                    { type: 'task', q: "Mr. Krabs lost a number: \\( 30 \\div ? = 3 \\). What is the missing divisor?", q_trans: "Mr. Krabs kehilangan angka: \\( 30 \\div ? = 3 \\). Berapakah divisor yang hilang?", svg: `<svg viewBox="0 0 200 100"><circle cx="100" cy="50" r="20" fill="#FBBF24"/><text x="60" y="60" font-size="20" fill="#1E3A8A">30 ÷ ? = 3</text></svg>`, options: ["3", "10", "15", "27", "33"], correct: "10", exp: "Think: 30 divided by what equals 3? \\( 30 \\div 10 = 3 \\).", exp_trans: "Pikirkan: 30 dibagi berapa sama dengan 3? \\( 30 \\div 10 = 3 \\)." }
+                ]
+            },
+            task5: {
+                title: "Task 5: Boating School Exam",
+                pages: [
+                    { type: 'task', q: "SpongeBob bakes 15 Krabby Patties. He eats 3. He shares the rest equally with 3 friends. How many does each friend get? \\( (15 - 3) \\div 3 = ? \\)", q_trans: "SpongeBob memanggang 15 Krabby Patty. Dia memakan 3. Dia membagi sisanya sama rata dengan 3 teman. Berapa banyak yang didapat setiap teman?", svg: `<svg viewBox="0 0 200 100"><ellipse cx="50" cy="50" rx="15" ry="8" fill="#FBBF24"/><ellipse cx="100" cy="50" rx="15" ry="8" fill="#FBBF24"/><ellipse cx="150" cy="50" rx="15" ry="8" fill="#FBBF24"/></svg>`, options: ["2", "3", "4", "5", "6"], correct: "4", exp: "Step 1: \\( 15 - 3 = 12 \\). Step 2: \\( 12 \\div 3 = 4 \\).", exp_trans: "Langkah 1: \\( 15 - 3 = 12 \\). Langkah 2: \\( 12 \\div 3 = 4 \\)." },
+                    { type: 'task', q: "Patrick finds 20 shells. He loses 4. He divides the rest equally into 2 buckets. How many per bucket? \\( (20 - 4) \\div 2 = ? \\)", q_trans: "Patrick menemukan 20 kerang. Dia kehilangan 4. Dia membagi sisanya sama rata ke dalam 2 ember. Berapa banyak per ember?", svg: `<svg viewBox="0 0 200 100"><path d="M20,40 L80,40 L70,80 L30,80 Z" fill="#FBBF24"/><path d="M120,40 L180,40 L170,80 L130,80 Z" fill="#FBBF24"/></svg>`, options: ["6", "7", "8", "10", "12"], correct: "8", exp: "Step 1: \\( 20 - 4 = 16 \\). Step 2: \\( 16 \\div 2 = 8 \\).", exp_trans: "Langkah 1: \\( 20 - 4 = 16 \\). Langkah 2: \\( 16 \\div 2 = 8 \\)." },
+                    { type: 'task', q: "Sandy has 24 acorns. She gives 6 to Patrick. She divides the rest equally into 3 jars. How many per jar? \\( (24 - 6) \\div 3 = ? \\)", q_trans: "Sandy memiliki 24 kacang. Dia memberikan 6 kepada Patrick. Dia membagi sisanya sama rata ke dalam 3 toples. Berapa banyak per toples?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" fill="#E0F2FE"/><rect x="90" y="30" width="30" height="40" fill="#E0F2FE"/><rect x="140" y="30" width="30" height="40" fill="#E0F2FE"/></svg>`, options: ["4", "5", "6", "8", "10"], correct: "6", exp: "Step 1: \\( 24 - 6 = 18 \\). Step 2: \\( 18 \\div 3 = 6 \\).", exp_trans: "Langkah 1: \\( 24 - 6 = 18 \\). Langkah 2: \\( 18 \\div 3 = 6 \\)." },
+                    { type: 'task', q: "Mr. Krabs earns 30 dollars. He spends 10. He divides the rest equally into 2 pockets. How much per pocket? \\( (30 - 10) \\div 2 = ? \\)", q_trans: "Mr. Krabs mendapat 30 dolar. Dia menghabiskan 10. Dia membagi sisanya sama rata ke dalam 2 saku. Berapa banyak per saku?", svg: `<svg viewBox="0 0 200 100"><circle cx="50" cy="50" r="12" fill="#FBBF24"/><circle cx="100" cy="50" r="12" fill="#FBBF24"/><circle cx="150" cy="50" r="12" fill="#FBBF24"/></svg>`, options: ["5", "10", "15", "20", "25"], correct: "10", exp: "Step 1: \\( 30 - 10 = 20 \\). Step 2: \\( 20 \\div 2 = 10 \\).", exp_trans: "Langkah 1: \\( 30 - 10 = 20 \\). Langkah 2: \\( 20 \\div 2 = 10 \\)." },
+                    { type: 'task', q: "Squidward paints 28 canvases. He sells 4. He divides the rest equally into 4 rooms. How many per room? \\( (28 - 4) \\div 4 = ? \\)", q_trans: "Squidward melukis 28 kanvas. Dia menjual 4. Dia membagi sisanya sama rata ke dalam 4 ruangan. Berapa banyak per ruangan?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" fill="#FFF1F2"/><rect x="100" y="30" width="30" height="40" fill="#FFF1F2"/><rect x="160" y="30" width="30" height="40" fill="#FFF1F2"/></svg>`, options: ["5", "6", "7", "8", "9"], correct: "6", exp: "Step 1: \\( 28 - 4 = 24 \\). Step 2: \\( 24 \\div 4 = 6 \\).", exp_trans: "Langkah 1: \\( 28 - 4 = 24 \\). Langkah 2: \\( 24 \\div 4 = 6 \\)." },
+                    { type: 'task', q: "Plankton builds 27 robots. 3 break. He sends the rest equally in 4 waves. How many per wave? \\( (27 - 3) \\div 4 = ? \\)", q_trans: "Plankton membangun 27 robot. 3 rusak. Dia mengirim sisanya sama rata dalam 4 gelombang. Berapa banyak per gelombang?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="20" height="30" fill="#10B981"/><rect x="100" y="30" width="20" height="30" fill="#10B981"/><rect x="160" y="30" width="20" height="30" fill="#10B981"/></svg>`, options: ["5", "6", "7", "8", "9"], correct: "6", exp: "Step 1: \\( 27 - 3 = 24 \\). Step 2: \\( 24 \\div 4 = 6 \\).", exp_trans: "Langkah 1: \\( 27 - 3 = 24 \\). Langkah 2: \\( 24 \\div 4 = 6 \\)." },
+                    { type: 'task', q: "Mrs. Puff has 32 students. 4 leave early. She puts the rest equally into 4 boats. How many per boat? \\( (32 - 4) \\div 4 = ? \\)", q_trans: "Mrs. Puff memiliki 32 siswa. 4 pulang lebih awal. Dia menempatkan sisanya sama rata ke dalam 4 perahu. Berapa banyak per perahu?", svg: `<svg viewBox="0 0 200 100"><path d="M20,60 L80,60 L70,80 L30,80 Z" fill="#EC4899"/><path d="M120,60 L180,60 L170,80 L130,80 Z" fill="#EC4899"/></svg>`, options: ["6", "7", "8", "9", "10"], correct: "7", exp: "Step 1: \\( 32 - 4 = 28 \\). Step 2: \\( 28 \\div 4 = 7 \\).", exp_trans: "Langkah 1: \\( 32 - 4 = 28 \\). Langkah 2: \\( 28 \\div 4 = 7 \\)." },
+                    { type: 'task', q: "Gary leaves 21 trails. He erases 3. He divides the rest equally over 6 days. How many per day? \\( (21 - 3) \\div 6 = ? \\)", q_trans: "Gary meninggalkan 21 jejak. Dia menghapus 3. Dia membagi sisanya sama rata selama 6 hari. Berapa banyak per hari?", svg: `<svg viewBox="0 0 200 100"><path d="M20,50 Q40,20 60,50" stroke="#F472B6" stroke-width="4" fill="none"/><path d="M80,50 Q100,20 120,50" stroke="#F472B6" stroke-width="4" fill="none"/></svg>`, options: ["2", "3", "4", "5", "6"], correct: "3", exp: "Step 1: \\( 21 - 3 = 18 \\). Step 2: \\( 18 \\div 6 = 3 \\).", exp_trans: "Langkah 1: \\( 21 - 3 = 18 \\). Langkah 2: \\( 18 \\div 6 = 3 \\)." },
+                    { type: 'task', q: "SpongeBob blows 18 bubbles. 2 pop. He divides the rest equally among 4 friends. How many per friend? \\( (18 - 2) \\div 4 = ? \\)", q_trans: "SpongeBob meniup 18 gelembung. 2 pecah. Dia membagi sisanya sama rata kepada 4 teman. Berapa banyak per teman?", svg: `<svg viewBox="0 0 200 100"><circle cx="40" cy="50" r="10" fill="#E0F7FA"/><circle cx="90" cy="50" r="10" fill="#E0F7FA"/><circle cx="140" cy="50" r="10" fill="#E0F7FA"/></svg>`, options: ["3", "4", "5", "6", "8"], correct: "4", exp: "Step 1: \\( 18 - 2 = 16 \\). Step 2: \\( 16 \\div 4 = 4 \\).", exp_trans: "Langkah 1: \\( 18 - 2 = 16 \\). Langkah 2: \\( 16 \\div 4 = 4 \\)." },
+                    { type: 'task', q: "Sandy has 25 acorns. She eats 5. She divides the rest equally into 5 jars. How many per jar? \\( (25 - 5) \\div 5 = ? \\)", q_trans: "Sandy memiliki 25 kacang. Dia memakan 5. Dia membagi sisanya sama rata ke dalam 5 toples. Berapa banyak per toples?", svg: `<svg viewBox="0 0 200 100"><rect x="40" y="30" width="30" height="40" fill="#E0F2FE"/><rect x="90" y="30" width="30" height="40" fill="#E0F2FE"/><rect x="140" y="30" width="30" height="40" fill="#E0F2FE"/></svg>`, options: ["3", "4", "5", "6", "10"], correct: "4", exp: "Step 1: \\( 25 - 5 = 20 \\). Step 2: \\( 20 \\div 5 = 4 \\).", exp_trans: "Langkah 1: \\( 25 - 5 = 20 \\). Langkah 2: \\( 20 \\div 5 = 4 \\)." }
+                ]
+            }
+        };
+
+        let currentSection = 'spiral';
+        let currentPage = 0;
+
+        function toggleModal() {
+            document.getElementById('classRulesModal').classList.toggle('show');
+        }
+
+        function loadSection(sectionId, element) {
+            currentSection = sectionId;
+            currentPage = 0;
+            
+            // Update active sidebar item
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            renderPage();
+        }
+
+        function renderPage() {
+            const section = sectionsData[currentSection];
+            if (!section) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div style='text-align:center; padding:50px;'>
+                        <h2 style='color:var(--border-color)'>F is for friends who do stuff together!</h2>
+                        <p style='margin-top:10px; font-size:1.2rem;'>Content is coming soon...</p>
+                        <p class='trans-text' style='font-size:1rem;'>Konten akan segera hadir...</p>
+                    </div>`;
+                return;
+            }
+
+            const pageData = section.pages[currentPage];
+            let html = `<h2 class="section-title">${section.title}</h2>`;
+            
+            if (pageData.type === 'theory') {
+                html += `<div class="theory-box">${pageData.content}</div>`;
+            } else if (pageData.type === 'task') {
+                html += renderTask(pageData);
+            }
+
+            // Pagination Controls
+            html += `<div class="pagination">
+                        <button class="btn btn-nav" onclick="changePage(-1)" ${currentPage === 0 ? 'disabled' : ''}>← Previous</button>
+                        <span>Page ${currentPage + 1} of ${section.pages.length}</span>
+                        <button class="btn btn-nav" onclick="changePage(1)" ${currentPage === section.pages.length - 1 ? 'disabled' : ''}>Next →</button>
+                     </div>`;
+
+            document.getElementById('contentArea').innerHTML = html;
+            renderMath();
+        }
+
+        function changePage(direction) {
+            const section = sectionsData[currentSection];
+            currentPage += direction;
+            if (currentPage < 0) currentPage = 0;
+            if (currentPage >= section.pages.length) currentPage = section.pages.length - 1;
+            renderPage();
+        }
+
+        // Tracking Student Answers
+        let studentAnswers = { task1: {}, task2: {}, task3: {}, task4: {}, task5: {} };
+
+        function renderTask(task) {
+            // Restore previous answer if exists (Dengan pengecekan keamanan)
+            let prevAnswer = null;
+            if (studentAnswers[currentSection] && studentAnswers[currentSection][currentPage]) {
+                prevAnswer = studentAnswers[currentSection][currentPage];
+            }
+
+            // Shuffle options
+            const shuffled = [...task.options].sort(() => 0.5 - Math.random());
+            let optionsHtml = '';
+            
+            shuffled.forEach(opt => {
+                // Cek apakah opsi ini adalah jawaban sebelumnya
+                let isSelected = (prevAnswer === opt) ? 'selected' : '';
+                // Set data-value langsung di HTML agar tidak perlu setAttribute manual
+                let safeDataValue = opt.replace(/'/g, "\\'");
+                
+                optionsHtml += `<div class="option ${isSelected}" data-value="${safeDataValue}" onclick="selectOption(this, '${safeDataValue}')">${opt}</div>`;
+            });
+
+            // Add Print Button only for Task 1 - 5
+            let printBtnHtml = '';
+            if (currentSection.startsWith('task')) {
+                let taskNum = currentSection.replace('task', '');
+                printBtnHtml = `<button class="btn" style="background-color:#0EA5E9; color:white; margin-left:auto;" onclick="printTask('${taskNum}')">🖨️ Print Task ${taskNum}</button>`;
+            }
+
+            return `
+                <div class="task-box">
+                    <p class="main-text">${task.q}</p>
+                    <p class="trans-text">${task.q_trans}</p>
+                    <div class="illustration">${task.svg}</div>
+                    <div class="options-container" id="optionsContainer">
+                        ${optionsHtml}
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-check" onclick="checkAnswer(this, '${task.correct.replace(/'/g, "\\'")}', '${task.exp}', '${task.exp_trans}')">Check Answer</button>
+                        <button class="btn btn-reset" onclick="resetTask(this)">Reset</button>
+                        ${printBtnHtml}
+                    </div>
+                    <div id="feedbackArea"></div>
+                    <button class="btn collapse-btn" style="display:none;" onclick="toggleCollapse(this)">Show Explanation</button>
+                    <div class="collapse-content">
+                        <p class="main-text">${task.exp}</p>
+                        <p class="trans-text">${task.exp_trans}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectOption(element, value) {
+            const container = element.parentNode;
+            container.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            element.setAttribute('data-value', value);
+            
+            // Save answer
+            if (currentSection.startsWith('task')) {
+                studentAnswers[currentSection][currentPage] = value;
+            }
+        }
+
+        function checkAnswer(button, correctAnswer, exp, exp_trans) {
+            const taskBox = button.closest('.task-box');
+            const selected = taskBox.querySelector('.option.selected');
+            const feedbackArea = taskBox.querySelector('#feedbackArea');
+            const collapseBtn = taskBox.querySelector('.collapse-btn');
+            const collapseContent = taskBox.querySelector('.collapse-content');
+
+            if (!selected) {
+                alert("Ahoy! Please select an answer first!");
+                return;
+            }
+
+            const userAnswer = selected.getAttribute('data-value');
+            
+            // Disable further selection
+            taskBox.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
+
+            if (userAnswer === correctAnswer) {
+                selected.classList.add('correct');
+                feedbackArea.innerHTML = `<p class="feedback correct">✔️ Correct! Barnacle Head, you're smart!</p>`;
+                feedbackArea.insertAdjacentHTML('beforeend', `<p class="trans-text" style="text-align:center; margin-top:5px;">Benar! Kamu pintar!</p>`);
+            } else {
+                selected.classList.add('wrong');
+                // Highlight the correct one
+                taskBox.querySelectorAll('.option').forEach(opt => {
+                    if (opt.getAttribute('data-value') === correctAnswer) {
+                        opt.classList.add('correct');
+                    }
+                });
+                feedbackArea.innerHTML = `<p class="feedback wrong">❌ Incorrect. Tartar sauce! Try to look at the explanation!</p>`;
+                feedbackArea.insertAdjacentHTML('beforeend', `<p class="trans-text" style="text-align:center; margin-top:5px;">Salah. Coba lihat penjelasannya!</p>`);
+            }
+
+            // Update explanation content
+            collapseContent.innerHTML = `<p class="main-text">${exp}</p><p class="trans-text">${exp_trans}</p>`;
+            collapseBtn.style.display = 'inline-block';
+            button.style.display = 'none';
+            renderMath();
+        }
+
+        function resetTask(button) {
+            const taskBox = button.closest('.task-box');
+            const options = taskBox.querySelectorAll('.option');
+            const feedbackArea = taskBox.querySelector('#feedbackArea');
+            const collapseBtn = taskBox.querySelector('.collapse-btn');
+            const collapseContent = taskBox.querySelector('.collapse-content');
+            const checkBtn = taskBox.querySelector('.btn-check');
+
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'wrong');
+                opt.style.pointerEvents = 'auto';
+            });
+            feedbackArea.innerHTML = '';
+            collapseBtn.style.display = 'none';
+            collapseContent.classList.remove('show');
+            collapseContent.innerHTML = '';
+            checkBtn.style.display = 'inline-block';
+            
+            // Clear saved answer
+            if (currentSection.startsWith('task')) {
+                studentAnswers[currentSection][currentPage] = null;
+            }
+        }
+
+        function toggleCollapse(button) {
+            const content = button.nextElementSibling;
+            content.classList.toggle('show');
+            button.innerText = content.classList.contains('show') ? 'Hide Explanation' : 'Show Explanation';
+        }
+
+        function renderMath() {
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(document.getElementById('contentArea'), {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false}
+                    ]
+                });
+            }
+        }
+
+        // Print A4 Function
+        function printTask(taskNum) {
+            let section = sectionsData['task' + taskNum];
+            let score = 0;
+            let tableRows = '';
+            
+            section.pages.forEach((page, index) => {
+                let studentAns = studentAnswers['task' + taskNum][index] || '-';
+                let correctAns = page.correct;
+                let isCorrect = studentAns === correctAns;
+                if (isCorrect) score++;
+                
+                // Clean question from LaTeX for print
+				let cleanQ = page.q
+					.replace(/\\\(/g, '')
+					.replace(/\\\)/g, '')
+					.replace(/\$\$/g, '')
+					.replace(/\\div/g, '÷')
+					.replace(/\\times/g, '×');
+                
+                tableRows += `
+                    <tr>
+                        <td style="text-align:center; border:1px solid #000; padding:5px;">${index+1}</td>
+                        <td style="border:1px solid #000; padding:5px;">${cleanQ}</td>
+                        <td style="text-align:center; border:1px solid #000; padding:5px;">${studentAns}</td>
+                        <td style="text-align:center; border:1px solid #000; padding:5px;">${correctAns}</td>
+                        <td style="text-align:center; border:1px solid #000; padding:5px;">${isCorrect ? '✔️' : '❌'}</td>
+                    </tr>
+                `;
+            });
+            
+            let printHtml = `
+                <div style="font-family: Arial, sans-serif; padding: 20px; width: 100%; box-sizing: border-box;">
+                    <h1 style="text-align:center; margin-bottom: 5px; color:#1E3A8A;">Math Tutoring by Deni</h1>
+                    <p style="text-align:center; margin-top:0; font-size: 14px; color:#555;">Bikini Bottom Division Adventure</p>
+                    <hr style="border: 1px solid #000; margin: 15px 0;">
+                    <div style="display:flex; justify-content:space-between; font-size: 14px; margin-bottom: 5px;">
+                        <span><strong>Topic:</strong> Division</span>
+                        <span><strong>Task:</strong> ${taskNum}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size: 14px; margin-bottom: 20px;">
+                        <span><strong>Name:</strong> ___________________________</span>
+                        <span><strong>Date:</strong> ____________________</span>
+                    </div>
+                    <div style="text-align:right; font-size: 16px; font-weight:bold; margin-bottom: 10px;">
+                        Score: ${score} / 10
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        <thead>
+                            <tr style="background-color: #FDE047;">
+                                <th style="border: 1px solid #000; padding: 8px; width: 5%;">No.</th>
+                                <th style="border: 1px solid #000; padding: 8px; width: 50%;">Question</th>
+                                <th style="border: 1px solid #000; padding: 8px; width: 15%;">Student Answer</th>
+                                <th style="border: 1px solid #000; padding: 8px; width: 15%;">Correct Answer</th>
+                                <th style="border: 1px solid #000; padding: 8px; width: 15%;">Note (❌/✔️)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 40px; text-align: right; font-size: 14px;">
+                        <p>Checked by,</p>
+                        <br><br>
+                        <p><strong>Deni</strong></p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('printArea').innerHTML = printHtml;
+            window.print();
+        }
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPage();
+        });
+    </script>
+</body>
+</html>
