@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutoring by Deni - Multiplication and Division</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; }
+        
+        .prompt-box { max-width: 650px; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: center; text-align: left; }
+        .prompt-box p { width: 100%; }
+        .prompt-box img { width: 100%; height: auto; max-width: 300px; display: block; margin-top: 0.5rem; }
+        
+        .translation { font-style: italic; font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem; display: block; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .option-btn { transition: all 0.2s; }
+        .option-btn:hover { transform: translateX(5px); }
+        .collapse-content { 
+            max-height: 0; overflow: hidden; 
+            transition: max-height 0.4s ease-in-out, padding 0.4s, border 0.4s, background 0.4s; 
+            padding: 0; border: 0; background: transparent;
+        }
+        .collapse-content.open { 
+            max-height: 2000px; padding: 1.5rem; 
+            border: 1px solid #bfdbfe; background: #eff6ff; 
+            border-radius: 0.5rem; margin-top: 1rem; 
+        }
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 10px; box-sizing: border-box; }
+            .no-print { display: none !important; }
+            #printArea table { table-layout: fixed; width: 100%; font-size: 9px; }
+            #printArea td, #printArea th { word-wrap: break-word; padding: 2px !important; }
+            @page { size: A4; margin: 5mm; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col h-screen overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white p-4 flex justify-between items-center shadow-md no-print shrink-0 z-50">
+        <div>
+            <h1 class="text-xl font-bold">Math Tutoring by Deni</h1>
+            <p class="text-sm">Topic: Multiplication and Division</p>
+            <p class="translation text-indigo-200">Topik: Perkalian dan Pembagian</p>
+        </div>
+        <div>
+            <button onclick="openModal()" class="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 font-bold py-2 px-4 rounded flex items-center gap-2">
+                <i class="fas fa-gavel"></i> Class Rules
+            </button>
+        </div>
+    </header>
+
+    <!-- Modal Class Rules -->
+    <div id="classRulesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 no-print">
+        <div class="bg-white rounded-lg p-6 w-80 max-w-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-indigo-600">Class Rules <br><span class="translation text-gray-500">Aturan Kelas</span></h2>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <ul class="space-y-3 text-gray-700">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-comments text-indigo-500 mt-1"></i>
+                    <div>Take turns speaking. <span class="translation">Berbicara secara bergantian.</span></div>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-door-open text-indigo-500 mt-1"></i>
+                    <div>Ask permission if you want to leave the class. <span class="translation">Meminta izin jika ingin meninggalkan kelas.</span></div>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-video text-indigo-500 mt-1"></i>
+                    <div>Turn on camera and microphone if needed. <span class="translation">Menyalakan kamera dan microphone jika diperlukan.</span></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg no-print border-r border-gray-200 flex flex-col">
+            <div class="p-4 bg-indigo-600 text-white">
+                <h3 class="font-bold text-lg flex items-center gap-2"><i class="fas fa-book-open"></i> Class Agenda</h3>
+                <p class="text-xs text-indigo-200 mt-1">Select topic to navigate <span class="translation text-indigo-300 block">Pilih topik untuk navigasi</span></p>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto p-2">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('warmup')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="warmup">
+                            <div class="font-semibold text-sm text-gray-800">Spiral Review Warm-up</div>
+                            <div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:00 - 00:10</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('intro')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="intro">
+                            <div class="font-semibold text-sm text-gray-800">Introduction & Real-World</div>
+                            <div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:10 - 00:15</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('review')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="review">
+                            <div class="font-semibold text-sm text-gray-800">Review of Prior Knowledge</div>
+                            <div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:15 - 00:20</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('problem')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="problem">
+                            <div class="font-semibold text-sm text-gray-800">Problem Introduction</div>
+                            <div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:20 - 00:30</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('guided')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="guided">
+                            <div class="font-semibold text-sm text-gray-800">Guided Practice</div>
+                            <div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:30 - 00:45</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('independent')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="independent">
+                            <div class="font-semibold text-sm text-gray-800">Independent Practice</div>
+                            <div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:45 - 00:55</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('consolidation')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="consolidation">
+                            <div class="font-semibold text-sm text-gray-800">Consolidation & Reflection</div>
+                            <div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:55 - 01:00</div>
+                        </a>
+                    </li>
+                    
+                    <hr class="my-3 border-gray-200">
+                    
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('task1')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task1">
+                            <div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 1</div>
+                            <div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('task2')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task2">
+                            <div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 2</div>
+                            <div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('task3')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task3">
+                            <div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 3</div>
+                            <div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('task4')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task4">
+                            <div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 4</div>
+                            <div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="showSection('task5')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task5">
+                            <div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 5</div>
+                            <div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="p-4 bg-gray-50 border-t border-gray-200 text-center">
+                <p class="text-xs text-gray-500 font-medium">Math Tutoring System</p>
+                <p class="text-xs text-gray-400">by Deni</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <div id="contentScrollArea" class="flex-1 overflow-y-auto p-6">
+            
+            <!-- ========================================== -->
+            <!-- SECTION: SPIRAL REVIEW WARM-UP             -->
+            <!-- ========================================== -->
+            <div id="warmup" class="content-section active">
+                <!-- PAGE 1: THEORY 1 -->
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">What is Multiplication?</h2>
+                        <p class="translation">Apa itu Perkalian?</p>
+                        
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <!-- 3 groups of 2 apples -->
+                                    <circle cx="40" cy="40" r="15" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+                                    <circle cx="70" cy="40" r="15" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+                                    
+                                    <circle cx="100" cy="40" r="15" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+                                    <circle cx="130" cy="40" r="15" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+                                    
+                                    <circle cx="40" cy="90" r="15" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+                                    <circle cx="70" cy="90" r="15" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+                                    
+                                    <rect x="20" y="15" width="65" height="50" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
+                                    <rect x="80" y="15" width="65" height="50" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
+                                    <rect x="20" y="65" width="65" height="50" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
+                                    
+                                    <text x="52" y="135" font-size="12" text-anchor="middle" fill="#333">Group 1</text>
+                                    <text x="112" y="135" font-size="12" text-anchor="middle" fill="#333">Group 2</text>
+                                    <text x="52" y="80" font-size="12" text-anchor="middle" fill="#333">Group 3</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Multiplication is adding the same number over and over again. <span class="translation">Perkalian adalah menambahkan bilangan yang sama berulang kali.</span></p>
+                                <p class="mt-2">If we have 3 groups of 2 apples, we can write: <span class="translation">Jika kita memiliki 3 grup dengan 2 apel di setiap grup, kita dapat menulis:</span></p>
+                                <p class="mt-2 text-lg">\( 2 + 2 + 2 = 6 \) or \( 3 \times 2 = 6 \). <span class="translation">atau \( 3 \times 2 = 6 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800">Remember!</p>
+                            <p class="mt-1">The symbol "\( \times \)" means multiply. <span class="translation">Simbol "\(\times\)" berarti dikali.</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="w-task1"></div>
+                <div class="page" data-page="3" data-task-id="w-task2"></div>
+                <div class="page" data-page="4" data-task-id="w-task3"></div>
+
+                <!-- PAGE 5: THEORY 2 -->
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">What is Division?</h2>
+                        <p class="translation">Apa itu Pembagian?</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <!-- 12 cookies shared onto 4 plates -->
+                                    <circle cx="40" cy="40" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="70" cy="40" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="100" cy="40" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    
+                                    <circle cx="40" cy="90" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="70" cy="90" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="100" cy="90" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+
+                                    <ellipse cx="55" cy="125" rx="35" ry="10" fill="none" stroke="#333" stroke-width="2"/>
+                                    <ellipse cx="135" cy="125" rx="35" ry="10" fill="none" stroke="#333" stroke-width="2"/>
+                                    
+                                    <circle cx="135" cy="40" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="160" cy="40" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="135" cy="90" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="160" cy="90" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    
+                                    <text x="55" y="135" font-size="10" text-anchor="middle" fill="#333">Plate 1</text>
+                                    <text x="135" y="135" font-size="10" text-anchor="middle" fill="#333">Plate 2</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Division is sharing or grouping things into equal parts. <span class="translation">Pembagian adalah membagi atau mengelompokkan sesuatu menjadi bagian yang sama.</span></p>
+                                <p class="mt-2">If we have 6 cookies shared equally onto 2 plates, each plate gets 3 cookies. <span class="translation">Jika kita memiliki 6 kue yang dibagi sama rata ke 2 piring, setiap piring mendapat 3 kue.</span></p>
+                                <p class="mt-2 text-lg">\( 6 \div 2 = 3 \). <span class="translation">\( 6 \div 2 = 3 \).</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="w-task4"></div>
+                <div class="page" data-page="7" data-task-id="w-task5"></div>
+                <div class="page" data-page="8" data-task-id="w-task6"></div>
+
+                <!-- PAGE 9: THEORY 3 -->
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Fact Families</h2>
+                        <p class="translation">Keluarga Fakta</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center">
+                                <svg width="150" height="120" viewBox="0 0 150 120">
+                                    <!-- Triangle for fact family -->
+                                    <polygon points="75,10 140,110 10,110" fill="none" stroke="#8b5cf6" stroke-width="3"/>
+                                    <text x="75" y="40" font-size="16" text-anchor="middle" fill="#333" font-weight="bold">12</text>
+                                    <text x="35" y="100" font-size="14" text-anchor="middle" fill="#ef4444" font-weight="bold">3</text>
+                                    <text x="115" y="100" font-size="14" text-anchor="middle" fill="#3b82f6" font-weight="bold">4</text>
+                                    
+                                    <path d="M 30 60 L 50 40" stroke="#ef4444" stroke-width="2" marker-end="url(#arr1)"/>
+                                    <path d="M 120 60 L 100 40" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr1)"/>
+                                    <path d="M 50 90 L 100 90" stroke="#ef4444" stroke-width="2" marker-end="url(#arr1)"/>
+                                    <path d="M 100 90 L 50 90" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr1)"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Multiplication and Division are best friends! They are in the same fact family. <span class="translation">Perkalian dan Pembagian adalah sahabat! Mereka berada dalam keluarga fakta yang sama.</span></p>
+                                <p class="mt-2">If \( 3 \times 4 = 12 \), then \( 4 \times 3 = 12 \). <span class="translation">Jika \( 3 \times 4 = 12 \), maka \( 4 \times 3 = 12 \).</span></p>
+                                <p class="mt-2">Also, \( 12 \div 3 = 4 \) and \( 12 \div 4 = 3 \). <span class="translation">Juga, \( 12 \div 3 = 4 \) dan \( 12 \div 4 = 3 \).</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="w-task7"></div>
+                <div class="page" data-page="11" data-task-id="w-task8"></div>
+                <div class="page" data-page="12" data-task-id="w-task9"></div>
+                <div class="page" data-page="13" data-task-id="w-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: INTRODUCTION & REAL-WORLD         -->
+            <!-- ========================================== -->
+            <div id="intro" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Buying in Packs</h2>
+                        <p class="translation">Membeli dalam Pak</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="140" viewBox="0 0 160 140">
+                                    <!-- 4 packs of 6 juice boxes -->
+                                    <g transform="translate(10, 10)">
+                                        <rect x="0" y="0" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="30" y="0" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="0" y="40" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="30" y="40" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="0" y="80" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="30" y="80" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <text x="30" y="135" font-size="10" text-anchor="middle">Pack</text>
+                                    </g>
+                                    <g transform="translate(90, 10)">
+                                        <rect x="0" y="0" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="30" y="0" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="0" y="40" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="30" y="40" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="0" y="80" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <rect x="30" y="80" width="30" height="40" fill="#f97316" stroke="#333"/>
+                                        <text x="30" y="135" font-size="10" text-anchor="middle">Pack</text>
+                                    </g>
+                                </svg>
+                            </div>
+                            <p>When you buy things in the store, they often come in packs. If 1 pack has 6 juice boxes, how many boxes are in 4 packs? You multiply! \( 4 \times 6 = 24 \) juice boxes. <span class="translation">Saat kamu membeli barang di toko, sering kali datang dalam pak. Jika 1 pak berisi 6 kotak jus, berapa banyak kotak dalam 4 pak? Kamu kalikan! \( 4 \times 6 = 24 \) kotak jus.</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="i-task1"></div>
+                <div class="page" data-page="3" data-task-id="i-task2"></div>
+                <div class="page" data-page="4" data-task-id="i-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Sharing Sweets</h2>
+                        <p class="translation">Membagikan Permen</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="120" viewBox="0 0 160 120">
+                                    <circle cx="40" cy="20" r="8" fill="#ec4899"/>
+                                    <circle cx="60" cy="20" r="8" fill="#ec4899"/>
+                                    <circle cx="80" cy="20" r="8" fill="#ec4899"/>
+                                    <circle cx="100" cy="20" r="8" fill="#ec4899"/>
+                                    <circle cx="120" cy="20" r="8" fill="#ec4899"/>
+                                    
+                                    <circle cx="40" cy="60" r="8" fill="#ec4899"/>
+                                    <circle cx="60" cy="60" r="8" fill="#ec4899"/>
+                                    <circle cx="80" cy="60" r="8" fill="#ec4899"/>
+                                    <circle cx="100" cy="60" r="8" fill="#ec4899"/>
+                                    <circle cx="120" cy="60" r="8" fill="#ec4899"/>
+                                    
+                                    <path d="M 80 80 L 30 110" stroke="#333" stroke-width="2"/>
+                                    <path d="M 80 80 L 80 110" stroke="#333" stroke-width="2"/>
+                                    <path d="M 80 80 L 130 110" stroke="#333" stroke-width="2"/>
+                                    
+                                    <circle cx="30" cy="110" r="4" fill="#8b5cf6"/>
+                                    <circle cx="80" cy="110" r="4" fill="#8b5cf6"/>
+                                    <circle cx="130" cy="110" r="4" fill="#8b5cf6"/>
+                                    
+                                    <text x="30" y="125" font-size="10" text-anchor="middle">Kid 1</text>
+                                    <text x="80" y="125" font-size="10" text-anchor="middle">Kid 2</text>
+                                    <text x="130" y="125" font-size="10" text-anchor="middle">Kid 3</text>
+                                </svg>
+                            </div>
+                            <p>If you have 15 sweets and want to share them equally with 3 friends, you divide! \( 15 \div 3 = 5 \). Each friend gets 5 sweets. <span class="translation">Jika kamu punya 15 permen dan ingin membaginya sama rata kepada 3 teman, kamu bagi! \( 15 \div 3 = 5 \). Setiap teman mendapat 5 permen.</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="i-task4"></div>
+                <div class="page" data-page="7" data-task-id="i-task5"></div>
+                <div class="page" data-page="8" data-task-id="i-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Organizing Arrays</h2>
+                        <p class="translation">Mengatur Array</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center">
+                                <svg width="120" height="120" viewBox="0 0 120 120">
+                                    <!-- 5 rows of 4 chairs -->
+                                    <g fill="#f59e0b" stroke="#333">
+                                        <rect x="10" y="10" width="15" height="15"/>
+                                        <rect x="35" y="10" width="15" height="15"/>
+                                        <rect x="60" y="10" width="15" height="15"/>
+                                        <rect x="85" y="10" width="15" height="15"/>
+                                        
+                                        <rect x="10" y="35" width="15" height="15"/>
+                                        <rect x="35" y="35" width="15" height="15"/>
+                                        <rect x="60" y="35" width="15" height="15"/>
+                                        <rect x="85" y="35" width="15" height="15"/>
+                                        
+                                        <rect x="10" y="60" width="15" height="15"/>
+                                        <rect x="35" y="60" width="15" height="15"/>
+                                        <rect x="60" y="60" width="15" height="15"/>
+                                        <rect x="85" y="60" width="15" height="15"/>
+                                        
+                                        <rect x="10" y="85" width="15" height="15"/>
+                                        <rect x="35" y="85" width="15" height="15"/>
+                                        <rect x="60" y="85" width="15" height="15"/>
+                                        <rect x="85" y="85" width="15" height="15"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <p>In real life, objects are arranged in rows and columns, called arrays. This chair arrangement has 4 rows of 4 chairs. Total chairs = \( 4 \times 4 = 16 \). <span class="translation">Di kehidupan nyata, benda disusun dalam baris dan kolom, disebut array. Susunan kursi ini punya 4 baris berisi 4 kursi. Total kursi = \( 4 \times 4 = 16 \).</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="i-task7"></div>
+                <div class="page" data-page="11" data-task-id="i-task8"></div>
+                <div class="page" data-page="12" data-task-id="i-task9"></div>
+                <div class="page" data-page="13" data-task-id="i-task10"></div>
+            </div>
+            
+            <!-- ========================================== -->
+            <!-- SECTION: REVIEW OF PRIOR KNOWLEDGE         -->
+            <!-- ========================================== -->
+            <div id="review" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Times Tables: 2, 5, 10</h2>
+                        <p class="translation">Perkalian: 2, 5, 10</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="120" viewBox="0 0 160 120">
+                                    <!-- Number line with jumps of 5 -->
+                                    <line x1="10" y1="60" x2="150" y2="60" stroke="#333" stroke-width="2"/>
+                                    <g font-size="10" text-anchor="middle">
+                                        <circle cx="10" cy="60" r="3" fill="#333"/><text x="10" y="80">0</text>
+                                        <circle cx="40" cy="60" r="3" fill="#333"/><text x="40" y="80">5</text>
+                                        <circle cx="70" cy="60" r="3" fill="#333"/><text x="70" y="80">10</text>
+                                        <circle cx="100" cy="60" r="3" fill="#333"/><text x="100" y="80">15</text>
+                                        <circle cx="130" cy="60" r="3" fill="#333"/><text x="130" y="80">20</text>
+                                    </g>
+                                    <path d="M 10 60 Q 25 30 40 60" stroke="#ef4444" stroke-width="2" fill="none"/>
+                                    <path d="M 40 60 Q 55 30 70 60" stroke="#ef4444" stroke-width="2" fill="none"/>
+                                    <path d="M 70 60 Q 85 30 100 60" stroke="#ef4444" stroke-width="2" fill="none"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Let's recall multiplying by 2, 5, and 10! <span class="translation">Mari kita ingat perkalian dengan 2, 5, dan 10!</span></p>
+                                <p class="mt-2">Jumping by 5s is easy: 5, 10, 15, 20... <span class="translation">Melompat dengan kelipatan 5 itu mudah: 5, 10, 15, 20...</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="r-task1"></div>
+                <div class="page" data-page="3" data-task-id="r-task2"></div>
+                <div class="page" data-page="4" data-task-id="r-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Division by Grouping</h2>
+                        <p class="translation">Pembagian dengan Pengelompokan</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="120" viewBox="0 0 160 120">
+                                    <!-- 18 pencils grouped into 3s -->
+                                    <g stroke="#333" stroke-width="1">
+                                        <line x1="10" y1="20" x2="10" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        <line x1="15" y1="20" x2="15" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        <line x1="20" y1="20" x2="20" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        
+                                        <line x1="60" y1="20" x2="60" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        <line x1="65" y1="20" x2="65" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        <line x1="70" y1="20" x2="70" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        
+                                        <line x1="110" y1="20" x2="110" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        <line x1="115" y1="20" x2="115" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                        <line x1="120" y1="20" x2="120" y2="40" stroke="#f59e0b" stroke-width="3"/>
+                                    </g>
+                                    <rect x="5" y="10" width="20" height="35" fill="none" stroke="#3b82f6" stroke-dasharray="3"/>
+                                    <rect x="55" y="10" width="20" height="35" fill="none" stroke="#3b82f6" stroke-dasharray="3"/>
+                                    <rect x="105" y="10" width="20" height="35" fill="none" stroke="#3b82f6" stroke-dasharray="3"/>
+                                    
+                                    <text x="15" y="60" font-size="10" text-anchor="middle">3</text>
+                                    <text x="65" y="60" font-size="10" text-anchor="middle">3</text>
+                                    <text x="115" y="60" font-size="10" text-anchor="middle">3</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>If you have 9 pencils and you want to put them into groups of 3, how many groups are there? <span class="translation">Jika kamu punya 9 pensil dan ingin memasukkannya ke dalam grup berisi 3, ada berapa grup?</span></p>
+                                <p class="mt-2">\( 9 \div 3 = 3 \) groups. <span class="translation">\( 9 \div 3 = 3 \) grup.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="r-task4"></div>
+                <div class="page" data-page="7" data-task-id="r-task5"></div>
+                <div class="page" data-page="8" data-task-id="r-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Inverse Operations</h2>
+                        <p class="translation">Operasi Invers (Kebalikan)</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="80" viewBox="0 0 160 80">
+                                    <rect x="10" y="20" width="60" height="40" fill="#fbbf24" stroke="#333"/>
+                                    <text x="40" y="45" font-size="14" text-anchor="middle" font-weight="bold">\( 3 \times 4 = 12 \)</text>
+                                    
+                                    <rect x="90" y="20" width="60" height="40" fill="#a78bfa" stroke="#333"/>
+                                    <text x="120" y="45" font-size="14" text-anchor="middle" font-weight="bold">\( 12 \div 3 = 4 \)</text>
+                                    
+                                    <path d="M 70 40 L 90 40" stroke="#333" stroke-width="2" marker-end="url(#arr2)"/>
+                                    <path d="M 90 30 L 70 30" stroke="#333" stroke-width="2" marker-end="url(#arr2)"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Multiplication and Division are opposites (inverses). <span class="translation">Perkalian dan Pembagian adalah kebalikannya.</span></p>
+                                <p class="mt-2">If \( 5 \times 6 = 30 \), then \( 30 \div 6 = 5 \). <span class="translation">Jika \( 5 \times 6 = 30 \), maka \( 30 \div 6 = 5 \).</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="r-task7"></div>
+                <div class="page" data-page="11" data-task-id="r-task8"></div>
+                <div class="page" data-page="12" data-task-id="r-task9"></div>
+                <div class="page" data-page="13" data-task-id="r-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: PROBLEM INTRODUCTION              -->
+            <!-- ========================================== -->
+            <div id="problem" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">One-Step Word Problems</h2>
+                        <p class="translation">Soal Cerita Satu Langkah</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center">
+                                <svg width="120" height="140" viewBox="0 0 120 140">
+                                    <!-- Box of 7 donuts -->
+                                    <rect x="10" y="40" width="100" height="80" rx="5" fill="#fcd34d" stroke="#333"/>
+                                    <circle cx="30" cy="60" r="10" fill="#fff" stroke="#d97706"/>
+                                    <circle cx="60" cy="60" r="10" fill="#fff" stroke="#d97706"/>
+                                    <circle cx="90" cy="60" r="10" fill="#fff" stroke="#d97706"/>
+                                    <circle cx="30" cy="90" r="10" fill="#fff" stroke="#d97706"/>
+                                    <circle cx="60" cy="90" r="10" fill="#fff" stroke="#d97706"/>
+                                    <circle cx="90" cy="90" r="10" fill="#fff" stroke="#d97706"/>
+                                    
+                                    <path d="M 60 10 L 80 10" stroke="#8b5cf6" stroke-width="4"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Solving word problems is easy if you read carefully! <span class="translation">Menyelesaikan soal cerita itu mudah jika kamu membaca dengan teliti!</span></p>
+                                <p class="mt-2">Example: 1 box holds 7 donuts. How many donuts are in 4 boxes? <span class="translation">Contoh: 1 kotak berisi 7 donat. Berapa banyak donat dalam 4 kotak?</span></p>
+                                <p class="mt-2">Since we need the total, we multiply: \( 4 \times 7 = 28 \). <span class="translation">Karena kita butuh total, kita kalikan: \( 4 \times 7 = 28 \).</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="p-task1"></div>
+                <div class="page" data-page="3" data-task-id="p-task2"></div>
+                <div class="page" data-page="4" data-task-id="p-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Division in Real Life</h2>
+                        <p class="translation">Pembagian di Kehidupan Nyata</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center">
+                                <svg width="140" height="120" viewBox="0 0 140 120">
+                                    <!-- 20 balloons tied in bunches of 5 -->
+                                    <g stroke="#333" stroke-width="1">
+                                        <circle cx="20" cy="30" r="10" fill="#ef4444"/>
+                                        <circle cx="30" cy="20" r="10" fill="#3b82f6"/>
+                                        <circle cx="40" cy="30" r="10" fill="#fbbf24"/>
+                                        <circle cx="30" cy="40" r="10" fill="#10b981"/>
+                                        <line x1="30" y1="50" x2="30" y2="80" stroke="#333"/>
+                                    </g>
+                                    <g stroke="#333" stroke-width="1" transform="translate(70, 0)">
+                                        <circle cx="20" cy="30" r="10" fill="#ef4444"/>
+                                        <circle cx="30" cy="20" r="10" fill="#3b82f6"/>
+                                        <circle cx="40" cy="30" r="10" fill="#fbbf24"/>
+                                        <circle cx="30" cy="40" r="10" fill="#10b981"/>
+                                        <line x1="30" y1="50" x2="30" y2="80" stroke="#333"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>When you see words like "share equally" or "each", it usually means division! <span class="translation">Saat kamu melihat kata seperti "bagi sama rata" atau "masing-masing", itu biasanya berarti pembagian!</span></p>
+                                <p class="mt-2">Example: 20 balloons are tied in bunches of 5. How many bunches are there? \( 20 \div 5 = 4 \) bunches. <span class="translation">Contoh: 20 balon diikat dalam ikatan berisi 5. Ada berapa ikatan? \( 20 \div 5 = 4 \) ikatan.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="p-task4"></div>
+                <div class="page" data-page="7" data-task-id="p-task5"></div>
+                <div class="page" data-page="8" data-task-id="p-task6"></div>
+                
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Drawing Bar Models</h2>
+                        <p class="translation">Menggambar Model Batang</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center">
+                                <svg width="200" height="100" viewBox="0 0 200 100">
+                                    <!-- Bar model of 5x4=20 -->
+                                    <rect x="10" y="30" width="30" height="40" fill="#a78bfa" stroke="#333"/>
+                                    <text x="25" y="55" font-size="12" text-anchor="middle">4</text>
+                                    
+                                    <rect x="40" y="30" width="30" height="40" fill="#a78bfa" stroke="#333"/>
+                                    <text x="55" y="55" font-size="12" text-anchor="middle">4</text>
+                                    
+                                    <rect x="70" y="30" width="30" height="40" fill="#a78bfa" stroke="#333"/>
+                                    <text x="85" y="55" font-size="12" text-anchor="middle">4</text>
+                                    
+                                    <rect x="100" y="30" width="30" height="40" fill="#a78bfa" stroke="#333"/>
+                                    <text x="115" y="55" font-size="12" text-anchor="middle">4</text>
+                                    
+                                    <rect x="130" y="30" width="30" height="40" fill="#a78bfa" stroke="#333"/>
+                                    <text x="145" y="55" font-size="12" text-anchor="middle">4</text>
+                                    
+                                    <path d="M 10 20 L 160 20" stroke="#333"/>
+                                    <path d="M 10 20 L 10 10" stroke="#333"/>
+                                    <path d="M 160 20 L 160 10" stroke="#333"/>
+                                    <text x="85" y="15" font-size="12" text-anchor="middle">20</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Bar models help us see math! If 1 box has 4 apples, and we have 5 boxes, we draw 5 bars of 4. The total is 20. <span class="translation">Model batang membantu kita melihat matematika! Jika 1 kotak punya 4 apel, dan kita punya 5 kotak, kita gambar 5 batang berisi 4. Totalnya 20.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="p-task7"></div>
+                <div class="page" data-page="11" data-task-id="p-task8"></div>
+                <div class="page" data-page="12" data-task-id="p-task9"></div>
+                <div class="page" data-page="13" data-task-id="p-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: GUIDED PRACTICE                   -->
+            <!-- ========================================== -->
+            <div id="guided" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Multiplying by 4</h2>
+                        <p class="translation">Perkalian dengan 4</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="120" viewBox="0 0 160 120">
+                                    <!-- 4 groups of 6 stars -->
+                                    <g fill="#fbbf24" stroke="#f59e0b">
+                                        <path d="M 20 20 L 25 35 L 40 35 L 28 45 L 33 60 L 20 50 L 7 60 L 12 45 L 0 35 L 15 35 Z"/>
+                                        <path d="M 60 20 L 65 35 L 80 35 L 68 45 L 73 60 L 60 50 L 47 60 L 52 45 L 40 35 L 55 35 Z"/>
+                                        <path d="M 100 20 L 105 35 L 120 35 L 108 45 L 113 60 L 100 50 L 87 60 L 92 45 L 80 35 L 95 35 Z"/>
+                                        <path d="M 140 20 L 145 35 L 160 35 L 148 45 L 153 60 L 140 50 L 127 60 L 132 45 L 120 35 L 135 35 Z"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Multiplying by 4 is like doubling twice! <span class="translation">Perkalian dengan 4 itu seperti menggandakan dua kali!</span></p>
+                                <p class="mt-2">Example: \( 4 \times 6 \). Double of 6 is 12. Double of 12 is 24. So, \( 4 \times 6 = 24 \). <span class="translation">Contoh: \( 4 \times 6 \). Dobel dari 6 adalah 12. Dobel dari 12 adalah 24. Jadi, \( 4 \times 6 = 24 \).</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="g-task1"></div>
+                <div class="page" data-page="3" data-task-id="g-task2"></div>
+                <div class="page" data-page="4" data-task-id="g-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Dividing by 4</h2>
+                        <p class="translation">Pembagian dengan 4</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="120" viewBox="0 0 160 120">
+                                    <!-- 16 oranges in 4 baskets -->
+                                    <g fill="#fb923c" stroke="#ea580c">
+                                        <circle cx="20" cy="20" r="8"/>
+                                        <circle cx="40" cy="20" r="8"/>
+                                        <circle cx="60" cy="20" r="8"/>
+                                        <circle cx="80" cy="20" r="8"/>
+                                        <circle cx="100" cy="20" r="8"/>
+                                        <circle cx="120" cy="20" r="8"/>
+                                        <circle cx="140" cy="20" r="8"/>
+                                        <circle cx="20" cy="40" r="8"/>
+                                        <circle cx="40" cy="40" r="8"/>
+                                        <circle cx="60" cy="40" r="8"/>
+                                        <circle cx="80" cy="40" r="8"/>
+                                        <circle cx="100" cy="40" r="8"/>
+                                        <circle cx="120" cy="40" r="8"/>
+                                        <circle cx="140" cy="40" r="8"/>
+                                        <circle cx="20" cy="60" r="8"/>
+                                        <circle cx="40" cy="60" r="8"/>
+                                    </g>
+                                    <g fill="none" stroke="#333" stroke-width="2">
+                                        <path d="M 5 80 Q 40 100 75 80 Z"/>
+                                        <path d="M 85 80 Q 120 100 155 80 Z"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Dividing by 4 means sharing into 4 equal groups. <span class="translation">Pembagian dengan 4 berarti membagi menjadi 4 grup yang sama.</span></p>
+                                <p class="mt-2">If 16 oranges are put equally into 4 baskets, each basket gets \( 16 \div 4 = 4 \) oranges. <span class="translation">Jika 16 jeruk dimasukkan sama rata ke 4 keranjang, setiap keranjang mendapat \( 16 \div 4 = 4 \) jeruk.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="g-task4"></div>
+                <div class="page" data-page="7" data-task-id="g-task5"></div>
+                <div class="page" data-page="8" data-task-id="g-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Two-Step Word Problems</h2>
+                        <p class="translation">Soal Cerita Dua Langkah</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center">
+                                <svg width="150" height="120" viewBox="0 0 150 120">
+                                    <!-- 3 bags of 5 coins + 2 extra coins -->
+                                    <g fill="#fbbf24" stroke="#d97706">
+                                        <circle cx="20" cy="20" r="6"/>
+                                        <circle cx="30" cy="20" r="6"/>
+                                        <circle cx="20" cy="30" r="6"/>
+                                        <circle cx="30" cy="30" r="6"/>
+                                        <circle cx="25" cy="40" r="6"/>
+                                        <rect x="10" y="10" width="30" height="40" fill="none" stroke="#333" stroke-dasharray="3"/>
+                                        <text x="25" y="65" font-size="10" text-anchor="middle">5</text>
+                                    </g>
+                                    <g fill="#fbbf24" stroke="#d97706" transform="translate(50, 0)">
+                                        <circle cx="20" cy="20" r="6"/>
+                                        <circle cx="30" cy="20" r="6"/>
+                                        <circle cx="20" cy="30" r="6"/>
+                                        <circle cx="30" cy="30" r="6"/>
+                                        <circle cx="25" cy="40" r="6"/>
+                                        <rect x="10" y="10" width="30" height="40" fill="none" stroke="#333" stroke-dasharray="3"/>
+                                        <text x="25" y="65" font-size="10" text-anchor="middle">5</text>
+                                    </g>
+                                    <g fill="#fbbf24" stroke="#d97706" transform="translate(100, 0)">
+                                        <circle cx="20" cy="20" r="6"/>
+                                        <circle cx="30" cy="20" r="6"/>
+                                        <circle cx="20" cy="30" r="6"/>
+                                        <circle cx="30" cy="30" r="6"/>
+                                        <circle cx="25" cy="40" r="6"/>
+                                        <rect x="10" y="10" width="30" height="40" fill="none" stroke="#333" stroke-dasharray="3"/>
+                                        <text x="25" y="65" font-size="10" text-anchor="middle">5</text>
+                                    </g>
+                                    
+                                    <g fill="#fbbf24" stroke="#d97706" transform="translate(0, 80)">
+                                        <circle cx="60" cy="20" r="6"/>
+                                        <circle cx="70" cy="20" r="6"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Sometimes we need two steps! <span class="translation">Terkadang kita butuh dua langkah!</span></p>
+                                <p class="mt-2">Example: Sam has 3 bags. Each bag has 5 coins. He finds 2 more coins. How many coins in total? <span class="translation">Contoh: Sam punya 3 kantong. Tiap kantong berisi 5 koin. Ia menemukan 2 koin lagi. Berapa total koinnya?</span></p>
+                                <p class="mt-2">Step 1: \( 3 \times 5 = 15 \). Step 2: \( 15 + 2 = 17 \). <span class="translation">Langkah 1: \( 3 \times 5 = 15 \). Langkah 2: \( 15 + 2 = 17 \).</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="g-task7"></div>
+                <div class="page" data-page="11" data-task-id="g-task8"></div>
+                <div class="page" data-page="12" data-task-id="g-task9"></div>
+                <div class="page" data-page="13" data-task-id="g-task10"></div>
+            </div>
+            
+            <!-- ========================================== -->
+            <!-- SECTION: INDEPENDENT PRACTICE               -->
+            <!-- ========================================== -->
+            <div id="independent" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Missing Numbers</h2>
+                        <p class="translation">Mencari Bilangan yang Hilang</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center">
+                                <svg width="160" height="100" viewBox="0 0 160 100">
+                                    <!-- Balance scale -->
+                                    <line x1="80" y1="10" x2="80" y2="80" stroke="#333" stroke-width="3"/>
+                                    <line x1="40" y1="30" x2="120" y2="30" stroke="#333" stroke-width="3"/>
+                                    <path d="M 30 30 L 40 15 L 50 30 Z" fill="#3b82f6"/>
+                                    <path d="M 110 30 L 120 15 L 130 30 Z" fill="#3b82f6"/>
+                                    <text x="40" y="25" font-size="12" text-anchor="middle" fill="#fff" font-weight="bold">?</text>
+                                    <text x="120" y="25" font-size="12" text-anchor="middle" fill="#fff" font-weight="bold">24</text>
+                                    <rect x="60" y="80" width="40" height="10" fill="#9ca3af"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>You can use fact families to find missing numbers! <span class="translation">Kamu bisa gunakan keluarga fakta untuk mencari angka yang hilang!</span></p>
+                                <p class="mt-2">If \( 4 \times ? = 24 \), think: \( 24 \div 4 = ? \). The answer is 6! <span class="translation">Jika \( 4 \times ? = 24 \), pikir: \( 24 \div 4 = ? \). Jawabannya 6!</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="ind-task1"></div>
+                <div class="page" data-page="3" data-task-id="ind-task2"></div>
+                <div class="page" data-page="4" data-task-id="ind-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Odd One Out</h2>
+                        <p class="translation">Mencari yang Berbeda</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center">
+                                <svg width="140" height="120" viewBox="0 0 140 120">
+                                    <!-- Magnifying glass over equations -->
+                                    <circle cx="70" cy="60" r="30" fill="none" stroke="#10b981" stroke-width="4"/>
+                                    <line x1="90" y1="80" x2="120" y2="110" stroke="#10b981" stroke-width="6"/>
+                                    <text x="70" y="55" font-size="10" text-anchor="middle">\( 2 \times 6 = 12 \)</text>
+                                    <text x="70" y="70" font-size="10" text-anchor="middle">\( 12 \div 2 = 6 \)</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Let's spot the math mistakes! Check if the multiplication or division makes sense. <span class="translation">Mari temukan kesalahan matematikanya! Periksa apakah perkalian atau pembagiannya masuk akal.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="ind-task4"></div>
+                <div class="page" data-page="7" data-task-id="ind-task5"></div>
+                <div class="page" data-page="8" data-task-id="ind-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Challenging Stories</h2>
+                        <p class="translation">Soal Cerita Menantang</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center">
+                                <svg width="140" height="120" viewBox="0 0 140 120">
+                                    <!-- Toy store shelf -->
+                                    <rect x="10" y="10" width="120" height="100" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+                                    <line x1="10" y1="50" x2="130" y2="50" stroke="#8b5cf6"/>
+                                    <line x1="10" y1="90" x2="130" y2="90" stroke="#8b5cf6"/>
+                                    
+                                    <circle cx="30" cy="30" r="10" fill="#ef4444"/>
+                                    <circle cx="70" cy="30" r="10" fill="#ef4444"/>
+                                    <circle cx="110" cy="30" r="10" fill="#ef4444"/>
+                                    
+                                    <rect x="20" y="60" width="20" height="20" fill="#3b82f6"/>
+                                    <rect x="60" y="60" width="20" height="20" fill="#3b82f6"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Combine your skills! Read carefully, decide if you need to multiply or divide, and solve. <span class="translation">Gabungkan kemampuanmu! Baca dengan teliti, putuskan apakah perlu mengalikan atau membagi, lalu selesaikan.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="ind-task7"></div>
+                <div class="page" data-page="11" data-task-id="ind-task8"></div>
+                <div class="page" data-page="12" data-task-id="ind-task9"></div>
+                <div class="page" data-page="13" data-task-id="ind-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: CONSOLIDATION & REFLECTION         -->
+            <!-- ========================================== -->
+            <div id="consolidation" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <h2 class="text-2xl font-bold text-gray-800">Consolidation & Reflection</h2>
+                    <p class="translation">Konsolidasi & Refleksi</p>
+                    <p>You have finished the learning journey about Multiplication and Division. <span class="translation">Anda telah menyelesaikan perjalanan belajar tentang Perkalian dan Pembagian.</span></p>
+                    <p class="mt-2">Remember, multiplication is repeated addition, and division is sharing equally! <span class="translation">Ingat, perkalian adalah penjumlahan berulang, dan pembagian adalah berbagi sama rata!</span></p>
+                    <a href="https://learn.algonova.id" target="_blank" class="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+                        Go to learn.algonova.id <span class="translation text-sm italic">Pergi ke learn.algonova.id</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- TASK SECTIONS -->
+            <div id="task1" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t1-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t1-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t1-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t1-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t1-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t1-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t1-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t1-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t1-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t1-task10"></div></div>
+            </div>
+            <div id="task2" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t2-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t2-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t2-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t2-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t2-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t2-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t2-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t2-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t2-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t2-task10"></div></div>
+            </div>
+            <div id="task3" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t3-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t3-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t3-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t3-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t3-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t3-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t3-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t3-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t3-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t3-task10"></div></div>
+            </div>
+            <div id="task4" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t4-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t4-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t4-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t4-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t4-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t4-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t4-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t4-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t4-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t4-task10"></div></div>
+            </div>
+            <div id="task5" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t5-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t5-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t5-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t5-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t5-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t5-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t5-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t5-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t5-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t5-task10"></div></div>
+            </div>
+
+            <!-- Pagination Bar -->
+            </div> <!-- Penutup #contentScrollArea -->
+            <div id="paginationBar" class="shrink-0 bg-white p-3 border-t border-gray-200 flex justify-center items-center gap-1 no-print z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]"></div>
+        </main>
+    </div>
+    
+    <!-- Print Area -->
+    <div id="printArea" class="hidden p-8">
+        <div class="text-center border-b-2 border-black pb-4 mb-4">
+            <h1 class="text-xl font-bold">Math Tutoring by Deni</h1>
+            <p>Topic: Multiplication and Division</p>
+            <div class="flex justify-around mt-4 text-sm">
+                <p>Name: ..............................</p>
+                <p>Date: ..............................</p>
+                <p>Task: <span id="printTaskNum">1</span></p>
+                <p>Score: <span id="printScore">0</span>/10</p>
+            </div>
+        </div>
+        <table class="w-full border-collapse border border-black text-sm">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border border-black p-1">No.</th>
+                    <th class="border border-black p-1">Question</th>
+                    <th class="border border-black p-1">Student Answer</th>
+                    <th class="border border-black p-1">Correct Answer</th>
+                    <th class="border border-black p-1">Note (❌/✔️)</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody"></tbody>
+        </table>
+        <div class="mt-8 text-right">
+            <p>Checked by,</p>
+            <br><br>
+            <p class="font-bold">Deni</p>
+        </div>
+    </div>
+    
+    <script>
+        // ====== MATH QUESTIONS DATA (DITEMPATKAN DI BAGIAN SELANJUTNYA) ======
+        const questions = {};
+        
+        // ====== MATH QUESTIONS DATA (PART 1: SESSIONS 1-6) ======
+        Object.assign(questions, {
+            // SPIRAL REVIEW WARM-UP TASKS
+            "w-task1": { type: "single", q: "There are 4 bags of marbles. Each bag has 5 marbles. How many marbles are there in total? <i class='fas fa-circle-dot text-blue-500 ml-2'></i>", q_trans: "Ada 4 kantong kelereng. Setiap kantong berisi 5 kelereng. Berapa jumlah kelereng seluruhnya?", opts: ["\\( 9 \\)", "\\( 20 \\)", "\\( 25 \\)", "\\( 45 \\)", "\\( 54 \\)"], ans: "\\( 20 \\)", exp: "Since there are 4 groups of 5, we multiply: \\( 4 \\times 5 = 20 \\).", exp_trans: "Karena ada 4 grup berisi 5, kita kalikan: \\( 4 \\times 5 = 20 \\)." },
+            "w-task2": { type: "fill", q: "12 cookies are shared equally among 3 children. How many cookies does each child get? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-cookie-bite text-blue-500 ml-2'></i>", q_trans: "12 kue dibagi sama rata kepada 3 anak. Berapa kue yang diterima setiap anak?", ans: "4", exp: "Sharing equally means division: \\( 12 \\div 3 = 4 \\) cookies per child.", exp_trans: "Berbagi sama rata berarti pembagian: \\( 12 \\div 3 = 4 \\) kue per anak." },
+            "w-task3": { type: "tf_table", q: "Decide if these math facts are True or False! <i class='fas fa-check-circle text-blue-500 ml-2'></i>", q_trans: "Putuskan apakah fakta matematika ini Benar atau Salah!", opts: ["\\( 3 \\times 4 = 12 \\)", "\\( 20 \\div 5 = 5 \\)", "\\( 6 \\times 2 = 8 \\)", "\\( 18 \\div 3 = 6 \\)"], ans: ["B", "S", "S", "B"], exp: "1. True (12). 2. False (20/5=4). 3. False (6x2=12). 4. True (18/3=6).", exp_trans: "1. Benar (12). 2. Salah (20/5=4). 3. Salah (6x2=12). 4. Benar (18/3=6)." },
+            "w-task4": { type: "single", q: "Which of these shows the multiplication fact for '5 groups of 3'? <i class='fas fa-users text-blue-500 ml-2'></i>", q_trans: "Mana yang menunjukkan fakta perkalian untuk '5 grup berisi 3'?", opts: ["\\( 5 + 3 \\)", "\\( 5 - 3 \\)", "\\( 5 \\times 3 \\)", "\\( 5 \\div 3 \\)", "\\( 5^3 \\)"], ans: "\\( 5 \\times 3 \\)", exp: "'Groups of' means multiplication. So, 5 groups of 3 is \\( 5 \\times 3 = 15 \\).", exp_trans: "'Grup berisi' berarti perkalian. Jadi, 5 grup berisi 3 adalah \\( 5 \\times 3 = 15 \\)." },
+            "w-task5": { type: "fill", q: "You have 18 pencils. You put them into boxes of 6. How many boxes do you need? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-pencil text-blue-500 ml-2'></i>", q_trans: "Kamu punya 18 pensil. Kamu memasukkannya ke dalam kotak berisi 6. Berapa kotak yang kamu butuhkan?", ans: "3", exp: "Grouping into equal sizes uses division: \\( 18 \\div 6 = 3 \\) boxes.", exp_trans: "Mengelompokkan ke ukuran yang sama menggunakan pembagian: \\( 18 \\div 6 = 3 \\) kotak." },
+            "w-task6": { type: "complex", q: "Which of these equations are correct? <i class='fas fa-equals text-blue-500 ml-2'></i>", q_trans: "Persamaan mana saja yang benar?", opts: ["\\( 7 \\times 2 = 14 \\)", "\\( 16 \\div 4 = 4 \\)", "\\( 5 \\times 5 = 20 \\)", "\\( 24 \\div 3 = 8 \\)"], ans: [0, 1, 3], exp: "1. True (14). 2. True (4). 3. False (5x5=25). 4. True (8).", exp_trans: "1. Benar (14). 2. Benar (4). 3. Salah (5x5=25). 4. Benar (8)." },
+            "w-task7": { type: "single", q: "If \\( 4 \\times 6 = 24 \\), what is \\( 24 \\div 4 \\)? <i class='fas fa-retweet text-blue-500 ml-2'></i>", q_trans: "Jika \\( 4 \\times 6 = 24 \\), berapakah \\( 24 \\div 4 \\)?", opts: ["\\( 4 \\)", "\\( 6 \\)", "\\( 8 \\)", "\\( 20 \\)", "\\( 24 \\)"], ans: "\\( 6 \\)", exp: "Multiplication and division are inverses. Since \\( 4 \\times 6 = 24 \\), then \\( 24 \\div 4 = 6 \\).", exp_trans: "Perkalian dan pembagian adalah kebalikan. Karena \\( 4 \\times 6 = 24 \\), maka \\( 24 \\div 4 = 6 \\)." },
+            "w-task8": { type: "tf_table", q: "Read the story and evaluate the statements! Story: '10 apples are divided equally into 2 baskets.' <i class='fas fa-apple-whole text-blue-500 ml-2'></i>", q_trans: "Baca cerita dan evaluasi pernyataannya! Cerita: '10 apel dibagi sama rata ke 2 keranjang.'", opts: ["Each basket has 5 apples", "The operation is \\( 10 \\times 2 \\)", "The operation is \\( 10 \\div 2 \\)", "Total apples are 12"], ans: ["B", "S", "B", "S"], exp: "1. True (10/2=5). 2. False (should be division). 3. True. 4. False (total is 10).", exp_trans: "1. Benar (10/2=5). 2. Salah (harusnya pembagian). 3. Benar. 4. Salah (total 10)." },
+            "w-task9": { type: "single", q: "Sam buys 3 packs of cards. Each pack has 8 cards. How many cards does he have? <i class='fas fa-layer-group text-blue-500 ml-2'></i>", q_trans: "Sam membeli 3 pak kartu. Setiap pak berisi 8 kartu. Berapa kartu yang dimilikinya?", opts: ["\\( 11 \\)", "\\( 16 \\)", "\\( 24 \\)", "\\( 32 \\)", "\\( 40 \\)"], ans: "\\( 24 \\)", exp: "3 packs of 8 cards means multiplication: \\( 3 \\times 8 = 24 \\) cards.", exp_trans: "3 pak berisi 8 kartu berarti perkalian: \\( 3 \\times 8 = 24 \\) kartu." },
+            "w-task10": { type: "complex", q: "Which of these belong to the same fact family? <i class='fas fa-home text-blue-500 ml-2'></i>", q_trans: "Mana yang termasuk dalam keluarga fakta yang sama?", opts: ["\\( 3 \\times 5 = 15 \\)", "\\( 15 \\div 5 = 3 \\)", "\\( 4 \\times 5 = 20 \\)", "\\( 15 \\div 3 = 5 \\)"], ans: [0, 1, 3], exp: "1, 2, and 4 use the numbers 3, 5, and 15. Statement 3 uses 4, 5, and 20.", exp_trans: "1, 2, dan 4 menggunakan angka 3, 5, dan 15. Pernyataan 3 menggunakan 4, 5, dan 20." },
+
+            // INTRODUCTION & REAL-WORLD TASKS
+            "i-task1": { type: "single", q: "A store sells pencils in packs of 6. If you buy 4 packs, how many pencils do you get? <i class='fas fa-pencil-alt text-green-500 ml-2'></i>", q_trans: "Sebuah toko menjual pensil dalam pak berisi 6. Jika kamu membeli 4 pak, berapa pensil yang kamu dapat?", opts: ["\\( 10 \\)", "\\( 18 \\)", "\\( 24 \\)", "\\( 28 \\)", "\\( 30 \\)"], ans: "\\( 24 \\)", exp: "4 packs of 6 pencils is \\( 4 \\times 6 = 24 \\) pencils.", exp_trans: "4 pak berisi 6 pensil adalah \\( 4 \\times 6 = 24 \\) pensil." },
+            "i-task2": { type: "fill", q: "You have 21 stickers. You want to give 3 stickers to each friend. How many friends can get stickers? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-star text-green-500 ml-2'></i>", q_trans: "Kamu punya 21 stiker. Kamu ingin memberi 3 stiker ke setiap teman. Berapa teman yang bisa mendapat stiker?", ans: "7", exp: "If each friend gets 3, we divide the total by 3: \\( 21 \\div 3 = 7 \\) friends.", exp_trans: "Jika setiap teman dapat 3, kita bagi totalnya dengan 3: \\( 21 \\div 3 = 7 \\) teman." },
+            "i-task3": { type: "tf_table", q: "Identify real-life arrays! Which of these are examples of arrays (equal rows and columns)? <i class='fas fa-th text-green-500 ml-2'></i>", q_trans: "Identifikasi array di dunia nyata! Mana yang merupakan contoh array (baris dan kolom yang sama)?", opts: ["Eggs in a carton (2 rows of 6)", "A handful of random marbles", "Chairs arranged in 5 rows of 4", "A jumping rabbit"], ans: ["B", "S", "B", "S"], exp: "1. True (organized grid). 2. False (random). 3. True (organized rows). 4. False (moving object).", exp_trans: "1. Benar (kisi teratur). 2. Salah (acak). 3. Benar (baris teratur). 4. Salah (benda bergerak)." },
+            "i-task4": { type: "single", q: "In a classroom, chairs are arranged in 5 rows with 5 chairs in each row. How many chairs are there? <i class='fas fa-chair text-green-500 ml-2'></i>", q_trans: "Di sebuah kelas, kursi disusun dalam 5 baris dengan 5 kursi di setiap baris. Berapa banyak kursinya?", opts: ["\\( 10 \\)", "\\( 15 \\)", "\\( 20 \\)", "\\( 25 \\)", "\\( 30 \\)"], ans: "\\( 25 \\)", exp: "5 rows of 5 is an array. Total = \\( 5 \\times 5 = 25 \\) chairs.", exp_trans: "5 baris berisi 5 adalah array. Total = \\( 5 \\times 5 = 25 \\) kursi." },
+            "i-task5": { type: "complex", q: "Which of these situations require multiplication to solve? <i class='fas fa-question-circle text-green-500 ml-2'></i>", q_trans: "Situasi mana yang membutuhkan perkalian untuk diselesaikan?", opts: ["Finding total toes on 8 feet", "Sharing 20 candies equally among 4 kids", "Finding total wheels on 5 cars", "Grouping 18 students into teams of 3"], ans: [0, 2], exp: "1. True (8 x 2). 2. False (20/4). 3. True (5 x 4). 4. False (18/3).", exp_trans: "1. Benar (8 x 2). 2. Salah (20/4). 3. Benar (5 x 4). 4. Salah (18/3)." },
+            "i-task6": { type: "fill", q: "A baker puts 8 muffins in one tray. If he has 5 trays, how many muffins does he bake in total? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-bread-slice text-green-500 ml-2'></i>", q_trans: "Seorang tukang roti memasukkan 8 muffin ke satu loyang. Jika ia punya 5 loyang, berapa muffin yang ia panggang seluruhnya?", ans: "40", exp: "5 trays of 8 muffins: \\( 5 \\times 8 = 40 \\) muffins.", exp_trans: "5 loyang berisi 8 muffin: \\( 5 \\times 8 = 40 \\) muffin." },
+            "i-task7": { type: "single", q: "35 balloons are tied into bunches of 5. How many bunches are there? <i class='fas fa-circle text-green-500 ml-2'></i>", q_trans: "35 balon diikat menjadi ikatan berisi 5. Berapa banyak ikatan tersebut?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 30 \\)", "\\( 40 \\)"], ans: "\\( 7 \\)", exp: "Grouping 35 into 5s uses division: \\( 35 \\div 5 = 7 \\) bunches.", exp_trans: "Mengelompokkan 35 ke dalam 5 menggunakan pembagian: \\( 35 \\div 5 = 7 \\) ikatan." },
+            "i-task8": { type: "tf_table", q: "True or False about math keywords! <i class='fas fa-key text-green-500 ml-2'></i>", q_trans: "Benar atau Salah tentang kata kunci matematika!", opts: ["'Each' usually means division", "'In all' usually means multiplication or addition", "'Groups of' means division", "'Shared equally' means division"], ans: ["S", "B", "S", "B"], exp: "1. False ('each' can mean mult or div). 2. True. 3. False ('groups of' means mult). 4. True.", exp_trans: "1. Salah ('each' bisa berarti kali atau bagi). 2. Benar. 3. Salah ('groups of' berarti kali). 4. Benar." },
+            "i-task9": { type: "single", q: "You buy 6 toy cars. Each car costs 4 dollars. How much do you pay in total? <i class='fas fa-car-side text-green-500 ml-2'></i>", q_trans: "Kamu membeli 6 mobil mainan. Setiap mobil harganya 4 dolar. Berapa total yang kamu bayar?", opts: ["\\(\\$10\\)", "\\(\\$18\\)", "\\(\\$24\\)", "\\(\\$28\\)", "\\(\\$30\\)"], ans: "\\(\\$24\\)", exp: "6 cars at 4 dollars each: \\( 6 \\times 4 = 24 \\) dollars.", exp_trans: "6 mobil masing-masing 4 dolar: \\( 6 \\times 4 = 24 \\) dolar." },
+            "i-task10": { type: "complex", q: "A box holds 9 apples. Which statements are true if you have 4 boxes? <i class='fas fa-box text-green-500 ml-2'></i>", q_trans: "Sebuah kotak berisi 9 apel. Pernyataan mana yang benar jika kamu punya 4 kotak?", opts: ["Total apples is \\( 9 + 4 \\)", "Total apples is \\( 9 \\times 4 \\)", "Total apples is 36", "If you share them with 9 people, each gets 4"], ans: [1, 2, 3], exp: "1. False (needs mult). 2. True. 3. True (36). 4. True (36/9=4).", exp_trans: "1. Salah (butuh kali). 2. Benar. 3. Benar (36). 4. Benar (36/9=4)." },
+            
+            // REVIEW OF PRIOR KNOWLEDGE TASKS
+            "r-task1": { type: "fill", q: "Calculate: \\( 5 \\times 6 = \\)? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-times text-purple-500 ml-2'></i>", q_trans: "Hitunglah: \\( 5 \\times 6 = \\)?", ans: "30", exp: "Count by 5s six times: 5, 10, 15, 20, 25, 30.", exp_trans: "Hitung kelipatan 5 sebanyak enam kali: 5, 10, 15, 20, 25, 30." },
+            "r-task2": { type: "single", q: "What is \\( 40 \\div 5 \\)? <i class='fas fa-divide text-purple-500 ml-2'></i>", q_trans: "Berapakah \\( 40 \\div 5 \\)?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 10 \\)"], ans: "\\( 8 \\)", exp: "Think: 5 times what number is 40? \\( 5 \\times 8 = 40 \\), so \\( 40 \\div 5 = 8 \\).", exp_trans: "Pikir: 5 dikali berapa hasilnya 40? \\( 5 \\times 8 = 40 \\), jadi \\( 40 \\div 5 = 8 \\)." },
+            "r-task3": { type: "tf_table", q: "Evaluate these times tables facts! <i class='fas fa-table text-purple-500 ml-2'></i>", q_trans: "Evaluasi fakta perkalian berikut!", opts: ["\\( 2 \\times 8 = 16 \\)", "\\( 10 \\times 6 = 60 \\)", "\\( 5 \\times 4 = 25 \\)", "\\( 2 \\times 9 = 18 \\)"], ans: ["B", "B", "S", "B"], exp: "1. True. 2. True. 3. False (5x4=20). 4. True.", exp_trans: "1. Benar. 2. Benar. 3. Salah (5x4=20). 4. Benar." },
+            "r-task4": { type: "fill", q: "You have 20 pencils. You divide them into groups of 4. How many groups are there? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-pencil-ruler text-purple-500 ml-2'></i>", q_trans: "Kamu punya 20 pensil. Kamu membaginya menjadi grup berisi 4. Ada berapa grup?", ans: "5", exp: "\\( 20 \\div 4 = 5 \\) groups.", exp_trans: "\\( 20 \\div 4 = 5 \\) grup." },
+            "r-task5": { type: "complex", q: "If \\( 7 \\times 5 = 35 \\), which of these are true? <i class='fas fa-link text-purple-500 ml-2'></i>", q_trans: "Jika \\( 7 \\times 5 = 35 \\), mana yang benar?", opts: ["\\( 35 \\div 5 = 7 \\)", "\\( 5 \\times 7 = 35 \\)", "\\( 35 \\div 7 = 5 \\)", "\\( 7 + 5 = 35 \\)"], ans: [0, 1, 2], exp: "1. True. 2. True (commutative). 3. True (inverse). 4. False (7+5=12).", exp_trans: "1. Benar. 2. Benar (komutatif). 3. Benar (invers). 4. Salah (7+5=12)." },
+            "r-task6": { type: "single", q: "A farmer has 6 baskets. He puts 10 apples in each basket. How many apples does he have? <i class='fas fa-apple-alt text-purple-500 ml-2'></i>", q_trans: "Seorang petani punya 6 keranjang. Ia menaruh 10 apel di setiap keranjang. Berapa apel yang dimilikinya?", opts: ["\\( 16 \\)", "\\( 40 \\)", "\\( 60 \\)", "\\( 70 \\)", "\\( 66 \\)"], ans: "\\( 60 \\)", exp: "6 baskets of 10 apples: \\( 6 \\times 10 = 60 \\) apples.", exp_trans: "6 keranjang berisi 10 apel: \\( 6 \\times 10 = 60 \\) apel." },
+            "r-task7": { type: "fill", q: "Solve: \\( 100 \\div 10 = \\)? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-calculator text-purple-500 ml-2'></i>", q_trans: "Selesaikan: \\( 100 \\div 10 = \\)?", ans: "10", exp: "10 tens make 100, so \\( 100 \\div 10 = 10 \\).", exp_trans: "10 puluhan membentuk 100, jadi \\( 100 \\div 10 = 10 \\)." },
+            "r-task8": { type: "tf_table", q: "Think about grouping and sharing! <i class='fas fa-brain text-purple-500 ml-2'></i>", q_trans: "Pikirkan tentang pengelompokan dan pembagian!", opts: ["\\( 15 \\div 3 \\) means 15 shared into 3 groups", "\\( 15 \\div 3 \\) means 15 grouped into 3s", "Both give the answer 5", "Both give the answer 12"], ans: ["B", "B", "B", "S"], exp: "1 and 2 are two ways to see division. Both result in 5.", exp_trans: "1 dan 2 adalah dua cara melihat pembagian. Keduanya menghasilkan 5." },
+            "r-task9": { type: "single", q: "What number is missing? \\( 8 \\times \\_ = 24 \\) <i class='fas fa-question text-purple-500 ml-2'></i>", q_trans: "Angka apa yang hilang? \\( 8 \\times \\_ = 24 \\)", opts: ["\\( 2 \\)", "\\( 3 \\)", "\\( 4 \\)", "\\( 5 \\)", "\\( 6 \\)"], ans: "\\( 3 \\)", exp: "Think: \\( 24 \\div 8 = 3 \\). So, \\( 8 \\times 3 = 24 \\).", exp_trans: "Pikir: \\( 24 \\div 8 = 3 \\). Jadi, \\( 8 \\times 3 = 24 \\)." },
+            "r-task10": { type: "complex", q: "Which of these are correct ways to find the answer to \\( 4 \\times 6 \\)? <i class='fas fa-method text-purple-500 ml-2'></i>", q_trans: "Mana cara yang benar untuk mencari hasil \\( 4 \\times 6 \\)?", opts: ["\\( 4 + 4 + 4 + 4 + 4 + 4 \\)", "\\( 6 + 6 + 6 + 6 \\)", "\\( 4 + 6 \\)", "Double 6, then double again"], ans: [0, 1, 3], exp: "1. True (six 4s). 2. True (four 6s). 3. False. 4. True (6x2=12, 12x2=24).", exp_trans: "1. Benar (enam 4). 2. Benar (empat 6). 3. Salah. 4. Benar (dobel 6, dobel lagi)." },
+
+            // PROBLEM INTRODUCTION TASKS
+            "p-task1": { type: "single", q: "1 box holds 7 donuts. How many donuts are in 5 boxes? <i class='fas fa-cookie text-orange-500 ml-2'></i>", q_trans: "1 kotak berisi 7 donat. Berapa banyak donat dalam 5 kotak?", opts: ["\\( 12 \\)", "\\( 25 \\)", "\\( 35 \\)", "\\( 40 \\)", "\\( 75 \\)"], ans: "\\( 35 \\)", exp: "5 groups of 7: \\( 5 \\times 7 = 35 \\) donuts.", exp_trans: "5 grup berisi 7: \\( 5 \\times 7 = 35 \\) donat." },
+            "p-task2": { type: "fill", q: "28 students are divided equally into 4 teams. How many students are in each team? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-users-cog text-orange-500 ml-2'></i>", q_trans: "28 siswa dibagi sama rata ke dalam 4 tim. Berapa siswa di setiap tim?", ans: "7", exp: "Sharing 28 into 4 equal groups: \\( 28 \\div 4 = 7 \\) students.", exp_trans: "Membagi 28 ke 4 grup sama: \\( 28 \\div 4 = 7 \\) siswa." },
+            "p-task3": { type: "tf_table", q: "Choose the correct operation for the word problems! <i class='fas fa-plus-minus text-orange-500 ml-2'></i>", q_trans: "Pilih operasi yang benar untuk soal cerita!", opts: ["10 pages with 3 stickers each -> Multiply", "20 apples shared by 5 kids -> Divide", "15 kids grouped into 3s -> Multiply", "5 bags of 4 marbles -> Divide"], ans: ["B", "B", "S", "S"], exp: "1. True. 2. True. 3. False (Divide). 4. False (Multiply).", exp_trans: "1. Benar. 2. Benar. 3. Salah (Bagi). 4. Salah (Kali)." },
+            "p-task4": { type: "single", q: "Mia has 3 sheets of stickers. Each sheet has 8 stickers. She uses 4 stickers. How many does she have left? <i class='fas fa-sticky-note text-orange-500 ml-2'></i>", q_trans: "Mia punya 3 lembar stiker. Setiap lembar ada 8 stiker. Ia memakai 4 stiker. Berapa sisanya?", opts: ["\\( 12 \\)", "\\( 20 \\)", "\\( 24 \\)", "\\( 28 \\)", "\\( 4 \\)"], ans: "\\( 20 \\)", exp: "Two-step! First mult: \\( 3 \\times 8 = 24 \\). Then subtract: \\( 24 - 4 = 20 \\).", exp_trans: "Dua langkah! Pertama kali: \\( 3 \\times 8 = 24 \\). Lalu kurang: \\( 24 - 4 = 20 \\)." },
+            "p-task5": { type: "complex", q: "Which bar models correctly show \\( 3 \\times 5 = 15 \\)? <i class='fas fa-chart-bar text-orange-500 ml-2'></i>", q_trans: "Model batang mana yang benar menunjukkan \\( 3 \\times 5 = 15 \\)?", opts: ["3 bars with 5 in each", "5 bars with 3 in each", "2 bars with 15 in each", "15 divided into 3 equal parts"], ans: [0, 1, 3], exp: "1 and 2 show 3 groups of 5. 4 shows 15 divided by 3.", exp_trans: "1 dan 2 menunjukkan 3 grup berisi 5. 4 menunjukkan 15 dibagi 3." },
+            "p-task6": { type: "fill", q: "A florist makes bouquets of 4 roses. She has 36 roses. How many bouquets can she make? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-spa text-orange-500 ml-2'></i>", q_trans: "Penjual bunga membuat rangkaian berisi 4 mawar. Ia punya 36 mawar. Berapa rangkaian yang bisa ia buat?", ans: "9", exp: "Group 36 roses into 4s: \\( 36 \\div 4 = 9 \\) bouquets.", exp_trans: "Kelompokkan 36 mawar ke 4: \\( 36 \\div 4 = 9 \\) rangkaian." },
+            "p-task7": { type: "single", q: "Tom has 24 candies. He puts them into bags. Each bag holds 6 candies. How many bags does he fill? <i class='fas fa-candy-cane text-orange-500 ml-2'></i>", q_trans: "Tom punya 24 permen. Ia memasukkannya ke kantong. Setiap kantong berisi 6 permen. Berapa kantong yang ia isi?", opts: ["\\( 3 \\)", "\\( 4 \\)", "\\( 5 \\)", "\\( 6 \\)", "\\( 30 \\)"], ans: "\\( 4 \\)", exp: "Find how many 6s are in 24: \\( 24 \\div 6 = 4 \\) bags.", exp_trans: "Cari ada berapa 6 dalam 24: \\( 24 \\div 6 = 4 \\) kantong." },
+            "p-task8": { type: "tf_table", q: "Read carefully: '5 boxes of 6 pencils. 2 pencils break.' Evaluate the statements! <i class='fas fa-box-open text-orange-500 ml-2'></i>", q_trans: "Baca teliti: '5 kotak berisi 6 pensil. 2 pensil patah.' Evaluasi pernyataannya!", opts: ["Total pencils initially is 30", "The math is \\( 5 \\times 6 - 2 \\)", "The math is \\( 5 + 6 + 2 \\)", "Remaining good pencils is 28"], ans: ["B", "B", "S", "B"], exp: "1. True (5x6=30). 2. True (30-2). 3. False. 4. True (30-2=28).", exp_trans: "1. Benar (5x6=30). 2. Benar (30-2). 3. Salah. 4. Benar (30-2=28)." },
+            "p-task9": { type: "single", q: "A baker bakes 7 trays of muffins. Each tray has 6 muffins. He throws away 4 burnt ones. How many good muffins are left? <i class='fas fa-cookie-bite text-orange-500 ml-2'></i>", q_trans: "Tukang roti memanggang 7 loyang muffin. Setiap loyang ada 6 muffin. Ia membuang 4 yang gosong. Berapa muffin bagus yang tersisa?", opts: ["\\( 38 \\)", "\\( 42 \\)", "\\( 46 \\)", "\\( 28 \\)", "\\( 10 \\)"], ans: "\\( 38 \\)", exp: "Step 1: \\( 7 \\times 6 = 42 \\). Step 2: \\( 42 - 4 = 38 \\) muffins left.", exp_trans: "Langkah 1: \\( 7 \\times 6 = 42 \\). Langkah 2: \\( 42 - 4 = 38 \\) muffin tersisa." },
+            "p-task10": { type: "complex", q: "A number is multiplied by 4, then divided by 2. The answer is 8. Which statements are true? <i class='fas fa-project-diagram text-orange-500 ml-2'></i>", q_trans: "Sebuah angka dikali 4, lalu dibagi 2. Jawabannya 8. Pernyataan mana yang benar?", opts: ["The starting number is 4", "The starting number is 16", "\\( 4 \\times 4 = 16 \\), then \\( 16 \\div 2 = 8 \\)", "\\( 8 \\times 2 \\div 4 = 4 \\)"], ans: [0, 2, 3], exp: "Working backwards: 8 x 2 = 16. 16 / 4 = 4. So the number is 4.", exp_trans: "Bekerja mundur: 8 x 2 = 16. 16 / 4 = 4. Jadi angkanya 4." },
+            
+            // GUIDED PRACTICE TASKS
+            "g-task1": { type: "fill", q: "Double 9 to find \\( 2 \\times 9 \\)? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-clone text-blue-500 ml-2'></i>", q_trans: "Dobelkan 9 untuk mencari \\( 2 \\times 9 \\)?", ans: "18", exp: "Double of 9 is \\( 9 + 9 = 18 \\). So \\( 2 \\times 9 = 18 \\).", exp_trans: "Dobel dari 9 adalah \\( 9 + 9 = 18 \\). Jadi \\( 2 \\times 9 = 18 \\)." },
+            "g-task2": { type: "single", q: "There are 4 boxes of crayons. Each box has 8 crayons. How many crayons are there? <i class='fas fa-palette text-blue-500 ml-2'></i>", q_trans: "Ada 4 kotak krayon. Setiap kotak berisi 8 krayon. Berapa banyak krayon itu?", opts: ["\\( 12 \\)", "\\( 24 \\)", "\\( 32 \\)", "\\( 36 \\)", "\\( 40 \\)"], ans: "\\( 32 \\)", exp: "Multiply by 4: \\( 4 \\times 8 = 32 \\) crayons.", exp_trans: "Kalikan dengan 4: \\( 4 \\times 8 = 32 \\) krayon." },
+            "g-task3": { type: "tf_table", q: "Divide by 4! <i class='fas fa-divide text-blue-500 ml-2'></i>", q_trans: "Bagilah dengan 4!", opts: ["\\( 16 \\div 4 = 4 \\)", "\\( 20 \\div 4 = 6 \\)", "\\( 28 \\div 4 = 7 \\)", "\\( 36 \\div 4 = 8 \\)"], ans: ["B", "S", "B", "S"], exp: "1. True. 2. False (20/4=5). 3. True. 4. False (36/4=9).", exp_trans: "1. Benar. 2. Salah (20/4=5). 3. Benar. 4. Salah (36/4=9)." },
+            "g-task4": { type: "fill", q: "28 oranges are packed into bags of 4. How many bags are there? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-lemon text-blue-500 ml-2'></i>", q_trans: "28 jeruk dikemas ke dalam kantong berisi 4. Ada berapa kantong?", ans: "7", exp: "Grouping into 4s: \\( 28 \\div 4 = 7 \\) bags.", exp_trans: "Mengelompokkan ke 4: \\( 28 \\div 4 = 7 \\) kantong." },
+            "g-task5": { type: "complex", q: "Which calculations give the same answer as \\( 4 \\times 6 \\)? <i class='fas fa-equals text-blue-500 ml-2'></i>", q_trans: "Hitungan mana yang memberikan hasil sama dengan \\( 4 \\times 6 \\)?", opts: ["\\( 2 \\times 12 \\)", "\\( 8 + 8 + 8 \\)", "\\( 24 \\div 4 \\)", "\\( 3 \\times 8 \\)"], ans: [0, 1, 3], exp: "4x6=24. 1. 2x12=24. 2. 8+8+8=24. 3. 24/4=6 (False). 4. 3x8=24.", exp_trans: "4x6=24. 1. 2x12=24. 2. 8+8+8=24. 3. 24/4=6 (Salah). 4. 3x8=24." },
+            "g-task6": { type: "single", q: "Sam has 3 bags of coins. Each bag has 5 coins. He finds 2 more coins. How many coins in total? <i class='fas fa-coins text-blue-500 ml-2'></i>", q_trans: "Sam punya 3 kantong koin. Tiap kantong ada 5 koin. Ia menemukan 2 koin lagi. Berapa total koinnya?", opts: ["\\( 10 \\)", "\\( 15 \\)", "\\( 17 \\)", "\\( 21 \\)", "\\( 30 \\)"], ans: "\\( 17 \\)", exp: "Step 1: \\( 3 \\times 5 = 15 \\). Step 2: \\( 15 + 2 = 17 \\).", exp_trans: "Langkah 1: \\( 3 \\times 5 = 15 \\). Langkah 2: \\( 15 + 2 = 17 \\)." },
+            "g-task7": { type: "fill", q: "20 apples are in a basket. 4 are red and the rest are green. If the green apples are put into bags of 4, how many bags? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-shopping-basket text-blue-500 ml-2'></i>", q_trans: "20 apel ada di keranjang. 4 merah sisanya hijau. Jika apel hijau dimasukkan ke kantong berisi 4, ada berapa kantong?", ans: "4", exp: "Green apples: 20 - 4 = 16. Bags: \\( 16 \\div 4 = 4 \\).", exp_trans: "Apel hijau: 20 - 4 = 16. Kantong: \\( 16 \\div 4 = 4 \\)." },
+            "g-task8": { type: "tf_table", q: "Evaluate the math steps! <i class='fas fa-list-ol text-blue-500 ml-2'></i>", q_trans: "Evaluasi langkah matematikanya!", opts: ["\\( 5 \\times 4 = 20 \\)", "\\( 20 - 5 = 15 \\)", "\\( 15 \\div 3 = 5 \\)", "\\( 5 + 20 = 25 \\)"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True. 4. False (5+15=20).", exp_trans: "1. Benar. 2. Benar. 3. Benar. 4. Salah (5+15=20)." },
+            "g-task9": { type: "single", q: "What number makes this true? \\( ? \\times 4 = 24 \\) <i class='fas fa-question-circle text-blue-500 ml-2'></i>", q_trans: "Angka apa yang membuat ini benar? \\( ? \\times 4 = 24 \\)", opts: ["\\( 4 \\)", "\\( 5 \\)", "\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)"], ans: "\\( 6 \\)", exp: "Think division: \\( 24 \\div 4 = 6 \\).", exp_trans: "Pikir pembagian: \\( 24 \\div 4 = 6 \\)." },
+            "g-task10": { type: "complex", q: "A store has 5 shelves with 6 toys each. They sell 10 toys. Which are true? <i class='fas fa-store text-blue-500 ml-2'></i>", q_trans: "Toko punya 5 rak dengan 6 mainan tiap rak. Mereka menjual 10 mainan. Mana yang benar?", opts: ["Initial toys: \\( 5 \\times 6 = 30 \\)", "Toys left: \\( 30 - 10 = 20 \\)", "Initial toys: 56", "Toys left: 40"], ans: [0, 1], exp: "1. True (30). 2. True (20). 3. False. 4. False.", exp_trans: "1. Benar (30). 2. Benar (20). 3. Salah. 4. Salah." },
+
+            // INDEPENDENT PRACTICE TASKS
+            "ind-task1": { type: "fill", q: "Find the missing number: \\( 6 \\times ? = 42 \\) <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-search text-green-500 ml-2'></i>", q_trans: "Cari angka yang hilang: \\( 6 \\times ? = 42 \\)", ans: "7", exp: "Divide 42 by 6: \\( 42 \\div 6 = 7 \\).", exp_trans: "Bagi 42 dengan 6: \\( 42 \\div 6 = 7 \\)." },
+            "ind-task2": { type: "single", q: "A party has 5 tables. Each table needs 9 cups. How many cups are needed? <i class='fas fa-mug-hot text-green-500 ml-2'></i>", q_trans: "Pesta memiliki 5 meja. Tiap meja butuh 9 cangkir. Berapa cangkir yang dibutuhkan?", opts: ["\\( 14 \\)", "\\( 40 \\)", "\\( 45 \\)", "\\( 50 \\)", "\\( 54 \\)"], ans: "\\( 45 \\)", exp: "5 tables of 9 cups: \\( 5 \\times 9 = 45 \\) cups.", exp_trans: "5 meja berisi 9 cangkir: \\( 5 \\times 9 = 45 \\) cangkir." },
+            "ind-task3": { type: "tf_table", q: "Find the math errors! <i class='fas fa-bug text-green-500 ml-2'></i>", q_trans: "Temukan kesalahan matematikanya!", opts: ["\\( 4 \\times 4 = 16 \\)", "\\( 24 \\div 6 = 6 \\)", "\\( 7 \\times 3 = 21 \\)", "\\( 30 \\div 5 = 5 \\)"], ans: ["B", "S", "B", "S"], exp: "1. True. 2. False (24/6=4). 3. True. 4. False (30/5=6).", exp_trans: "1. Benar. 2. Salah (24/6=4). 3. Benar. 4. Salah (30/5=6)." },
+            "ind-task4": { type: "fill", q: "36 eggs are put into cartons. Each carton holds 6 eggs. How many cartons are used? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-egg text-green-500 ml-2'></i>", q_trans: "36 telur dimasukkan ke karton. Tiap karton berisi 6 telur. Berapa karton yang digunakan?", ans: "6", exp: "Grouping 36 into 6s: \\( 36 \\div 6 = 6 \\) cartons.", exp_trans: "Mengelompokkan 36 ke 6: \\( 36 \\div 6 = 6 \\) karton." },
+            "ind-task5": { type: "complex", q: "Which equations have an answer of 8? <i class='fas fa-bullseye text-green-500 ml-2'></i>", q_trans: "Persamaan mana yang jawabannya 8?", opts: ["\\( 32 \\div 4 \\)", "\\( 2 \\times 4 \\)", "\\( 40 \\div 5 \\)", "\\( 4 \\times 3 \\)"], ans: [0, 1, 2], exp: "1. 8. 2. 8. 3. 8. 4. 12.", exp_trans: "1. 8. 2. 8. 3. 8. 4. 12." },
+            "ind-task6": { type: "single", q: "Lily has 4 bags of 7 candies. She eats 3 candies. How many are left? <i class='fas fa-candy-cane text-green-500 ml-2'></i>", q_trans: "Lily punya 4 kantong berisi 7 permen. Ia memakan 3 permen. Berapa sisanya?", opts: ["\\( 11 \\)", "\\( 25 \\)", "\\( 28 \\)", "\\( 31 \\)", "\\( 14 \\)"], ans: "\\( 25 \\)", exp: "Step 1: \\( 4 \\times 7 = 28 \\). Step 2: \\( 28 - 3 = 25 \\).", exp_trans: "Langkah 1: \\( 4 \\times 7 = 28 \\). Langkah 2: \\( 28 - 3 = 25 \\)." },
+            "ind-task7": { type: "fill", q: "If \\( ? \\div 5 = 8 \\), what is the missing number? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-puzzle-piece text-green-500 ml-2'></i>", q_trans: "Jika \\( ? \\div 5 = 8 \\), berapa angka yang hilang?", ans: "40", exp: "Inverse operation: \\( 5 \\times 8 = 40 \\).", exp_trans: "Operasi invers: \\( 5 \\times 8 = 40 \\)." },
+            "ind-task8": { type: "tf_table", q: "Solve the tricky problems! <i class='fas fa-magic text-green-500 ml-2'></i>", q_trans: "Selesaikan soal sulitnya!", opts: ["Double 8 is 16", "Half of 24 is 12", "\\( 3 \\) groups of \\( 7 \\) is 21", "\\( 20 \\) shared by \\( 4 \\) is \\( 6 \\)"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True (21). 4. False (20/4=5).", exp_trans: "1. Benar. 2. Benar. 3. Benar (21). 4. Salah (20/4=5)." },
+            "ind-task9": { type: "single", q: "48 students go on a camping trip. They sleep in tents that hold 6 students each. How many tents are needed? <i class='fas fa-campground text-green-500 ml-2'></i>", q_trans: "48 siswa pergi berkemah. Mereka tidur di tenda yang berisi 6 siswa per tenda. Berapa tenda yang dibutuhkan?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 42 \\)"], ans: "\\( 8 \\)", exp: "Group 48 students into 6s: \\( 48 \\div 6 = 8 \\) tents.", exp_trans: "Kelompokkan 48 siswa ke 6: \\( 48 \\div 6 = 8 \\) tenda." },
+            "ind-task10": { type: "complex", q: "Which bar models show a total of 32? <i class='fas fa-chart-bar text-green-500 ml-2'></i>", q_trans: "Model batang mana yang menunjukkan total 32?", opts: ["4 bars of 8", "8 bars of 4", "5 bars of 6", "16 divided into 2 parts"], ans: [0, 1, 3], exp: "1. 4x8=32. 2. 8x4=32. 3. 5x6=30. 4. 16x2=32.", exp_trans: "1. 4x8=32. 2. 8x4=32. 3. 5x6=30. 4. 16x2=32." }
+        });
+		
+        // ====== MATH QUESTIONS DATA (PART 2: TASKS 1-3) ======
+        Object.assign(questions, {
+            // TASK 1: BASIC MULTIPLICATION & ARRAYS
+            "t1-task1": { type: "single", q: "Look at 3 rows of stars. Each row has 5 stars. How many stars in total? <i class='fas fa-star text-orange-500 ml-2'></i>", q_trans: "Lihat 3 baris bintang. Setiap baris ada 5 bintang. Berapa total bintangnya?", opts: ["\\( 8 \\)", "\\( 12 \\)", "\\( 15 \\)", "\\( 25 \\)", "\\( 35 \\)"], ans: "\\( 15 \\)", exp: "3 rows of 5 is an array. We multiply: \\( 3 \\times 5 = 15 \\) stars.", exp_trans: "3 baris berisi 5 adalah array. Kita kalikan: \\( 3 \\times 5 = 15 \\) bintang." },
+            "t1-task2": { type: "fill", q: "Find the missing number: \\( 5 \\times ? = 35 \\) <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-question text-orange-500 ml-2'></i>", q_trans: "Cari angka yang hilang: \\( 5 \\times ? = 35 \\)", ans: "7", exp: "Think of the 5 times table. \\( 5 \\times 7 = 35 \\). You can also divide: \\( 35 \\div 5 = 7 \\).", exp_trans: "Pikirkan perkalian 5. \\( 5 \\times 7 = 35 \\). Kamu juga bisa membagi: \\( 35 \\div 5 = 7 \\)." },
+            "t1-task3": { type: "complex", q: "Which of these calculations give an answer of 18? <i class='fas fa-equals text-orange-500 ml-2'></i>", q_trans: "Hitungan mana yang hasilnya 18?", opts: ["\\( 3 \\times 6 \\)", "\\( 2 \\times 9 \\)", "\\( 4 \\times 5 \\)", "\\( 6 \\times 3 \\)"], ans: [0, 1, 3], exp: "1. \\( 3 \\times 6 = 18 \\). 2. \\( 2 \\times 9 = 18 \\). 3. \\( 4 \\times 5 = 20 \\). 4. \\( 6 \\times 3 = 18 \\).", exp_trans: "1. \\( 3 \\times 6 = 18 \\). 2. \\( 2 \\times 9 = 18 \\). 3. \\( 4 \\times 5 = 20 \\). 4. \\( 6 \\times 3 = 18 \\)." },
+            "t1-task4": { type: "tf_table", q: "Check these multiplication facts! <i class='fas fa-check-double text-orange-500 ml-2'></i>", q_trans: "Periksa fakta perkalian ini!", opts: ["\\( 4 \\times 4 = 16 \\)", "\\( 6 \\times 3 = 18 \\)", "\\( 7 \\times 2 = 16 \\)", "\\( 8 \\times 3 = 24 \\)"], ans: ["B", "B", "S", "B"], exp: "1. True. 2. True. 3. False (\\( 7 \\times 2 = 14 \\)). 4. True.", exp_trans: "1. Benar. 2. Benar. 3. Salah (\\( 7 \\times 2 = 14 \\)). 4. Benar." },
+            "t1-task5": { type: "single", q: "A toy store sells 1 car for \\$3. How much do 6 cars cost? <i class='fas fa-car text-orange-500 ml-2'></i>", q_trans: "Toko mainan menjual 1 mobil seharga $3. Berapa harga 6 mobil?", opts: ["\\(\\$9\\)", "\\(\\$12\\)", "\\(\\$18\\)", "\\(\\$21\\)", "\\(\\$24\\)"], ans: "\\(\\$18\\)", exp: "6 cars at \\$3 each means multiplication: \\( 6 \\times 3 = 18 \\).", exp_trans: "6 mobil masing-masing $3 berarti perkalian: \\( 6 \\times 3 = 18 \\)." },
+            "t1-task6": { type: "fill", q: "If \\( 7 + 7 + 7 + 7 = ? \\), what is the answer? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-plus text-orange-500 ml-2'></i>", q_trans: "Jika \\( 7 + 7 + 7 + 7 = ? \\), berapakah hasilnya?", ans: "28", exp: "Adding 7 four times is the same as \\( 4 \\times 7 = 28 \\).", exp_trans: "Menambahkan 7 sebanyak empat kali sama dengan \\( 4 \\times 7 = 28 \\)." },
+            "t1-task7": { type: "complex", q: "Which of these situations use multiplication? <i class='fas fa-cogs text-orange-500 ml-2'></i>", q_trans: "Situasi mana yang menggunakan perkalian?", opts: ["4 groups of 2 apples", "Sharing 10 marbles with 5 friends", "Doubling the number 8", "Finding how many 5s are in 20"], ans: [0, 2], exp: "1. True (4x2). 2. False (10/5). 3. True (2x8). 4. False (20/5).", exp_trans: "1. Benar (4x2). 2. Salah (10/5). 3. Benar (2x8). 4. Salah (20/5)." },
+            "t1-task8": { type: "tf_table", q: "Look at the array: 5 rows of 4 dots. Evaluate the statements! <i class='fas fa-th text-orange-500 ml-2'></i>", q_trans: "Lihat array: 5 baris berisi 4 titik. Evaluasi pernyataannya!", opts: ["Total dots is 20", "The math is \\( 5 \\times 4 = 20 \\)", "The math is \\( 5 + 4 = 9 \\)", "If grouped into 4s, there are 5 groups"], ans: ["B", "B", "S", "B"], exp: "1. True. 2. True. 3. False (needs mult). 4. True (20/4=5).", exp_trans: "1. Benar. 2. Benar. 3. Salah (butuh kali). 4. Benar (20/4=5)." },
+            "t1-task9": { type: "single", q: "Sam buys 5 books. Each book costs \\$4. How much did he spend? <i class='fas fa-book text-orange-500 ml-2'></i>", q_trans: "Sam membeli 5 buku. Setiap buku harganya $4. Berapa yang ia habiskan?", opts: ["\\(\\$9\\)", "\\(\\$16\\)", "\\(\\$20\\)", "\\(\\$25\\)", "\\(\\$45\\)"], ans: "\\(\\$20\\)", exp: "5 books at \\$4 each: \\( 5 \\times 4 = 20 \\).", exp_trans: "5 buku masing-masing $4: \\( 5 \\times 4 = 20 \\)." },
+            "t1-task10": { type: "fill", q: "Count by 4s: 4, 8, 12, 16, 20, ? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-sort-numeric-down text-orange-500 ml-2'></i>", q_trans: "Hitung kelipatan 4: 4, 8, 12, 16, 20, ?", ans: "24", exp: "You are adding 4 each time. \\( 20 + 4 = 24 \\). This is the 6th number in the 4 times table.", exp_trans: "Kamu menambah 4 setiap kali. \\( 20 + 4 = 24 \\). Ini angka ke-6 di tabel perkalian 4." },
+
+            // TASK 2: BASIC DIVISION & SHARING
+            "t2-task1": { type: "single", q: "20 candies are shared equally among 4 children. How many candies does each child get? <i class='fas fa-gift text-orange-500 ml-2'></i>", q_trans: "20 permen dibagi sama rata kepada 4 anak. Berapa permen yang didapat setiap anak?", opts: ["\\( 4 \\)", "\\( 5 \\)", "\\( 6 \\)", "\\( 16 \\)", "\\( 24 \\)"], ans: "\\( 5 \\)", exp: "Sharing equally means division: \\( 20 \\div 4 = 5 \\) candies per child.", exp_trans: "Berbagi sama rata berarti pembagian: \\( 20 \\div 4 = 5 \\) permen per anak." },
+            "t2-task2": { type: "fill", q: "18 apples are put into baskets. Each basket holds 3 apples. How many baskets are used? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-apple-alt text-orange-500 ml-2'></i>", q_trans: "18 apel dimasukkan ke keranjang. Tiap keranjang berisi 3 apel. Berapa keranjang yang digunakan?", ans: "6", exp: "Grouping 18 into 3s: \\( 18 \\div 3 = 6 \\) baskets.", exp_trans: "Mengelompokkan 18 ke 3: \\( 18 \\div 3 = 6 \\) keranjang." },
+            "t2-task3": { type: "complex", q: "Which of these give an answer of 7? <i class='fas fa-bullseye text-orange-500 ml-2'></i>", q_trans: "Mana yang hasilnya 7?", opts: ["\\( 28 \\div 4 \\)", "\\( 21 \\div 3 \\)", "\\( 14 \\div 2 \\)", "\\( 30 \\div 5 \\)"], ans: [0, 1, 2], exp: "1. \\( 28/4=7 \\). 2. \\( 21/3=7 \\). 3. \\( 14/2=7 \\). 4. \\( 30/5=6 \\).", exp_trans: "1. \\( 28/4=7 \\). 2. \\( 21/3=7 \\). 3. \\( 14/2=7 \\). 4. \\( 30/5=6 \\)." },
+            "t2-task4": { type: "tf_table", q: "Check these division facts! <i class='fas fa-check text-orange-500 ml-2'></i>", q_trans: "Periksa fakta pembagian ini!", opts: ["\\( 16 \\div 4 = 4 \\)", "\\( 24 \\div 3 = 7 \\)", "\\( 32 \\div 4 = 8 \\)", "\\( 40 \\div 5 = 8 \\)"], ans: ["B", "S", "B", "B"], exp: "1. True. 2. False (24/3=8). 3. True. 4. True.", exp_trans: "1. Benar. 2. Salah (24/3=8). 3. Benar. 4. Benar." },
+            "t2-task5": { type: "single", q: "30 students are divided into 5 equal teams. How many students are on each team? <i class='fas fa-users text-orange-500 ml-2'></i>", q_trans: "30 siswa dibagi menjadi 5 tim yang sama. Berapa siswa di setiap tim?", opts: ["\\( 5 \\)", "\\( 6 \\)", "\\( 7 \\)", "\\( 25 \\)", "\\( 35 \\)"], ans: "\\( 6 \\)", exp: "Divide 30 into 5 groups: \\( 30 \\div 5 = 6 \\) students.", exp_trans: "Bagi 30 ke 5 grup: \\( 30 \\div 5 = 6 \\) siswa." },
+            "t2-task6": { type: "fill", q: "If \\( 7 \\times 4 = 28 \\), what is \\( 28 \\div 4 \\)? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-retweet text-orange-500 ml-2'></i>", q_trans: "Jika \\( 7 \\times 4 = 28 \\), berapakah \\( 28 \\div 4 \\)?", ans: "7", exp: "They are fact families. If \\( 7 \\times 4 = 28 \\), then \\( 28 \\div 4 = 7 \\).", exp_trans: "Mereka adalah keluarga fakta. Jika \\( 7 \\times 4 = 28 \\), maka \\( 28 \\div 4 = 7 \\)." },
+            "t2-task7": { type: "complex", q: "Which of these show ways to represent \\( 15 \\div 3 \\)? <i class='fas fa-project-diagram text-orange-500 ml-2'></i>", q_trans: "Mana yang menunjukkan cara mewakili \\( 15 \\div 3 \\)?", opts: ["15 shared equally among 3", "15 grouped into 3s", "3 groups of 5", "15 minus 3"], ans: [0, 1, 2], exp: "1. True (Sharing). 2. True (Grouping). 3. True (Answer is 5). 4. False.", exp_trans: "1. Benar (Berbagi). 2. Benar (Mengelompokkan). 3. Benar (Jawabannya 5). 4. Salah." },
+            "t2-task8": { type: "tf_table", q: "Read the story: '40 cookies in 5 boxes.' Evaluate! <i class='fas fa-cookie-bite text-orange-500 ml-2'></i>", q_trans: "Baca cerita: '40 kue dalam 5 kotak.' Evaluasi!", opts: ["Each box has 8 cookies", "The math is \\( 40 \\div 5 \\)", "The math is \\( 40 \\times 5 \\)", "If 5 boxes have 40, 1 box has 8"], ans: ["B", "B", "S", "B"], exp: "1. True (40/5=8). 2. True. 3. False. 4. True.", exp_trans: "1. Benar (40/5=8). 2. Benar. 3. Salah. 4. Benar." },
+            "t2-task9": { type: "single", q: "Mia has 24 stickers. She gives an equal number to 4 friends. How many stickers does each friend get? <i class='fas fa-sticky-note text-orange-500 ml-2'></i>", q_trans: "Mia punya 24 stiker. Ia memberikan jumlah yang sama kepada 4 teman. Berapa stiker yang didapat setiap teman?", opts: ["\\( 4 \\)", "\\( 5 \\)", "\\( 6 \\)", "\\( 8 \\)", "\\( 20 \\)"], ans: "\\( 6 \\)", exp: "24 stickers shared with 4 friends: \\( 24 \\div 4 = 6 \\) stickers.", exp_trans: "24 stiker dibagi ke 4 teman: \\( 24 \\div 4 = 6 \\) stiker." },
+            "t2-task10": { type: "fill", q: "What is the missing number? \\( ? \\div 5 = 8 \\) <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-puzzle-piece text-orange-500 ml-2'></i>", q_trans: "Berapa angka yang hilang? \\( ? \\div 5 = 8 \\)", ans: "40", exp: "Use the inverse operation: \\( 8 \\times 5 = 40 \\). So \\( 40 \\div 5 = 8 \\).", exp_trans: "Gunakan operasi kebalikan: \\( 8 \\times 5 = 40 \\). Jadi \\( 40 \\div 5 = 8 \\)." },
+
+            // TASK 3: MIXED ONE-STEP WORD PROBLEMS
+            "t3-task1": { type: "single", q: "5 bags of marbles. Each bag has 6 marbles. How many marbles in total? <i class='fas fa-sack-dollar text-orange-500 ml-2'></i>", q_trans: "5 kantong kelereng. Setiap kantong berisi 6 kelereng. Berapa total kelerengnya?", opts: ["\\( 11 \\)", "\\( 25 \\)", "\\( 30 \\)", "\\( 35 \\)", "\\( 56 \\)"], ans: "\\( 30 \\)", exp: "5 groups of 6 means multiplication: \\( 5 \\times 6 = 30 \\).", exp_trans: "5 grup berisi 6 berarti perkalian: \\( 5 \\times 6 = 30 \\)." },
+            "t3-task2": { type: "fill", q: "24 cookies shared by 4 children. How many each? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-cookie text-orange-500 ml-2'></i>", q_trans: "24 kue dibagi ke 4 anak. Berapa masing-masing?", ans: "6", exp: "Sharing equally uses division: \\( 24 \\div 4 = 6 \\).", exp_trans: "Berbagi sama rata menggunakan pembagian: \\( 24 \\div 4 = 6 \\)." },
+            "t3-task3": { type: "complex", q: "Which of these problems should be solved by DIVISION? <i class='fas fa-divide text-orange-500 ml-2'></i>", q_trans: "Mana soal yang harus diselesaikan dengan PEMBAGIAN?", opts: ["45 toys put equally into 9 boxes", "5 trees with 4 apples each", "32 students put into 4 teams", "6 packs of 7 cards"], ans: [0, 2], exp: "1. True (45/9). 2. False (5x4). 3. True (32/4). 4. False (6x7).", exp_trans: "1. Benar (45/9). 2. Salah (5x4). 3. Benar (32/4). 4. Salah (6x7)." },
+            "t3-task4": { type: "tf_table", q: "Match the word problem to the operation! <i class='fas fa-list-ul text-orange-500 ml-2'></i>", q_trans: "Cocokkan soal cerita dengan operasinya!", opts: ["5 boxes of 8 pencils -> \\( 5 \\times 8 \\)", "40 apples shared by 5 kids -> \\( 40 \\div 5 \\)", "20 kids grouped into 4s -> \\( 20 \\times 4 \\)", "7 bags of 3 coins -> \\( 7 + 3 \\)"], ans: ["B", "B", "S", "S"], exp: "1. True (Multiply). 2. True (Divide). 3. False (Divide). 4. False (Multiply).", exp_trans: "1. Benar (Kali). 2. Benar (Bagi). 3. Salah (Bagi). 4. Salah (Kali)." },
+            "t3-task5": { type: "single", q: "There are 3 shelves. Each shelf has 8 books. How many books are there? <i class='fas fa-book-reader text-orange-500 ml-2'></i>", q_trans: "Ada 3 rak. Setiap rak berisi 8 buku. Berapa jumlah bukunya?", opts: ["\\( 11 \\)", "\\( 24 \\)", "\\( 30 \\)", "\\( 32 \\)", "\\( 40 \\)"], ans: "\\( 24 \\)", exp: "3 shelves of 8 books: \\( 3 \\times 8 = 24 \\) books.", exp_trans: "3 rak berisi 8 buku: \\( 3 \\times 8 = 24 \\) buku." },
+            "t3-task6": { type: "fill", q: "A farmer has 35 chickens. He puts 5 chickens in each cage. How many cages does he need? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-feather text-orange-500 ml-2'></i>", q_trans: "Petani punya 35 ayam. Ia menaruh 5 ayam di setiap kandang. Berapa kandang yang dibutuhkan?", ans: "7", exp: "Grouping 35 into 5s: \\( 35 \\div 5 = 7 \\) cages.", exp_trans: "Mengelompokkan 35 ke 5: \\( 35 \\div 5 = 7 \\) kandang." },
+            "t3-task7": { type: "complex", q: "A box has 36 crayons. Which statements are true? <i class='fas fa-paint-brush text-orange-500 ml-2'></i>", q_trans: "Satu kotak berisi 36 krayon. Pernyataan mana yang benar?", opts: ["If shared by 4 kids, each gets 9", "If shared by 6 kids, each gets 6", "If grouped into 9s, there are 4 groups", "If grouped into 5s, there are 7 groups"], ans: [0, 1, 2], exp: "1. True (36/4=9). 2. True (36/6=6). 3. True (36/9=4). 4. False (36/5=7 r 1).", exp_trans: "1. Benar (36/4=9). 2. Benar (36/6=6). 3. Benar (36/9=4). 4. Salah (36/5=7 sisa 1)." },
+            "t3-task8": { type: "tf_table", q: "Evaluate the word problem answers! '4 friends share 32 marbles equally.' <i class='fas fa-users-cog text-orange-500 ml-2'></i>", q_trans: "Evaluasi jawaban soal cerita! '4 teman berbagi 32 kelereng sama rata.'", opts: ["Each gets 8 marbles", "The math is \\( 32 \\div 4 \\)", "The math is \\( 32 - 4 \\)", "Each gets 28 marbles"], ans: ["B", "B", "S", "S"], exp: "1. True (32/4=8). 2. True (Division). 3. False (Not subtraction). 4. False.", exp_trans: "1. Benar (32/4=8). 2. Benar (Pembagian). 3. Salah (Bukan pengurangan). 4. Salah." },
+            "t3-task9": { type: "single", q: "Tickets cost \\$4 each. How much for 7 tickets? <i class='fas fa-ticket-alt text-orange-500 ml-2'></i>", q_trans: "Tiket harganya $4 masing-masing. Berapa harga 7 tiket?", opts: ["\\(\\$11\\)", "\\(\\$24\\)", "\\(\\$28\\)", "\\(\\$32\\)", "\\(\\$40\\)"], ans: "\\(\\$28\\)", exp: "7 tickets at \\$4 each: \\( 7 \\times 4 = 28 \\).", exp_trans: "7 tiket masing-masing $4: \\( 7 \\times 4 = 28 \\)." },
+            "t3-task10": { type: "fill", q: "Lily has 40 stickers. She gives 5 to each friend. How many friends got stickers? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-smile text-orange-500 ml-2'></i>", q_trans: "Lily punya 40 stiker. Ia memberi 5 ke setiap teman. Berapa teman yang mendapat stiker?", ans: "8", exp: "If each friend gets 5, we divide: \\( 40 \\div 5 = 8 \\) friends.", exp_trans: "Jika setiap teman dapat 5, kita bagi: \\( 40 \\div 5 = 8 \\) teman." }
+        });
+		
+        // ====== MATH QUESTIONS DATA (PART 3: TASKS 4-5) ======
+        Object.assign(questions, {
+            // TASK 4: TWO-STEP WORD PROBLEMS
+            "t4-task1": { type: "single", q: "Tom buys 3 packs of 4 cards. He gets 2 extra cards from his friend. How many cards does he have now? <i class='fas fa-layer-group text-orange-500 ml-2'></i>", q_trans: "Tom membeli 3 pak berisi 4 kartu. Ia mendapat 2 kartu ekstra dari temannya. Berapa kartu yang dimilikinya sekarang?", opts: ["\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 18 \\)", "\\( 24 \\)"], ans: "\\( 14 \\)", exp: "Step 1: Multiply to find total in packs: \\( 3 \\times 4 = 12 \\). Step 2: Add the extra: \\( 12 + 2 = 14 \\).", exp_trans: "Langkah 1: Kalikan untuk mencari total dalam pak: \\( 3 \\times 4 = 12 \\). Langkah 2: Tambahkan ekstra: \\( 12 + 2 = 14 \\)." },
+            "t4-task2": { type: "fill", q: "5 boxes of 6 donuts. 4 donuts are eaten. How many are left? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-cookie-bite text-orange-500 ml-2'></i>", q_trans: "5 kotak berisi 6 donat. 4 donat dimakan. Berapa sisanya?", ans: "26", exp: "Step 1: \\( 5 \\times 6 = 30 \\) donuts initially. Step 2: \\( 30 - 4 = 26 \\) donuts left.", exp_trans: "Langkah 1: \\( 5 \\times 6 = 30 \\) donat awalnya. Langkah 2: \\( 30 - 4 = 26 \\) donat tersisa." },
+            "t4-task3": { type: "complex", q: "A school has 35 students. They are put into 7 equal teams. Each team needs 2 coaches. Which statements are true? <i class='fas fa-users-cog text-orange-500 ml-2'></i>", q_trans: "Sekolah memiliki 35 siswa. Mereka dibagi menjadi 7 tim yang sama. Setiap tim butuh 2 pelatih. Pernyataan mana yang benar?", opts: ["Each team has 5 students", "Total coaches needed is 14", "Total coaches needed is 9", "Math is \\( (35 \\div 7) \\times 2 \\)"], ans: [0, 1, 3], exp: "1. True (35/7=5). 2. True (7x2=14). 3. False. 4. True (Divide first, then multiply).", exp_trans: "1. Benar (35/7=5). 2. Benar (7x2=14). 3. Salah. 4. Benar (Bagi dulu, lalu kali)." },
+            "t4-task4": { type: "tf_table", q: "Evaluate the multi-step math! <i class='fas fa-list-ol text-orange-500 ml-2'></i>", q_trans: "Evaluasi matematika dua langkah!", opts: ["\\( 4 \\times 5 = 20 \\)", "\\( 20 - 2 = 18 \\)", "\\( 18 \\div 3 = 6 \\)", "\\( 6 + 4 = 11 \\)"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True. 4. False (6+4=10).", exp_trans: "1. Benar. 2. Benar. 3. Benar. 4. Salah (6+4=10)." },
+            "t4-task5": { type: "single", q: "Pencils cost $2. Erasers cost $1. You buy 4 pencils and 1 eraser. How much do you spend? <i class='fas fa-shopping-cart text-orange-500 ml-2'></i>", q_trans: "Pensil harganya $2. Penghapus $1. Kamu membeli 4 pensil dan 1 penghapus. Berapa yang kamu habiskan?", opts: ["\\(\\$5\\)", "\\(\\$7\\)", "\\(\\$8\\)", "\\(\\$9\\)", "\\(\\$12\\)"], ans: "\\(\\$9\\)", exp: "Step 1: Cost of pencils \\( 4 \\times \\$2 = \\$8 \\). Step 2: Add eraser \\( \\$8 + \\$1 = \\$9 \\).", exp_trans: "Langkah 1: Harga pensil \\( 4 \\times \\$2 = \\$8 \\). Langkah 2: Tambah penghapus \\( \\$8 + \\$1 = \\$9 \\)." },
+            "t4-task6": { type: "fill", q: "24 apples are in 4 baskets. If 2 baskets are given away, how many apples are given away? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-apple-whole text-orange-500 ml-2'></i>", q_trans: "24 apel ada di 4 keranjang. Jika 2 keranjang diberikan, berapa apel yang diberikan?", ans: "12", exp: "Step 1: Find apples per basket: \\( 24 \\div 4 = 6 \\). Step 2: Find apples in 2 baskets: \\( 6 \\times 2 = 12 \\).", exp_trans: "Langkah 1: Cari apel per keranjang: \\( 24 \\div 4 = 6 \\). Langkah 2: Cari apel di 2 keranjang: \\( 6 \\times 2 = 12 \\)." },
+            "t4-task7": { type: "complex", q: "If \\( 6 \\times 4 = 24 \\), which of these are equal to 24? <i class='fas fa-equals text-orange-500 ml-2'></i>", q_trans: "Jika \\( 6 \\times 4 = 24 \\), mana yang sama dengan 24?", opts: ["\\( 24 + 0 \\)", "\\( 4 \\times 6 \\)", "\\( 12 + 12 \\)", "\\( 30 - 6 \\)"], ans: [0, 1, 2, 3], exp: "1. True (24). 2. True (Commutative). 3. True (24). 4. True (24). All equal 24!", exp_trans: "1. Benar (24). 2. Benar (Komutatif). 3. Benar (24). 4. Benar (24). Semuanya sama dengan 24!" },
+            "t4-task8": { type: "tf_table", q: "Story: '3 bags of 7 coins. Lose 5 coins.' Evaluate! <i class='fas fa-coins text-orange-500 ml-2'></i>", q_trans: "Cerita: '3 kantong berisi 7 koin. Kehilangan 5 koin.' Evaluasi!", opts: ["Initial total is 21", "Math is \\( 3 \\times 7 - 5 \\)", "Math is \\( 3 + 7 - 5 \\)", "Final total is 16"], ans: ["B", "B", "S", "B"], exp: "1. True (3x7=21). 2. True (Mult then Sub). 3. False. 4. True (21-5=16).", exp_trans: "1. Benar (3x7=21). 2. Benar (Kali lalu Kurang). 3. Salah. 4. Benar (21-5=16)." },
+            "t4-task9": { type: "single", q: "Mom bakes 2 trays of 9 muffins. She shares them equally among 3 kids. How many muffins does each kid get? <i class='fas fa-mug-hot text-orange-500 ml-2'></i>", q_trans: "Ibu memanggang 2 loyang berisi 9 muffin. Ia membaginya sama rata kepada 3 anak. Berapa muffin yang didapat setiap anak?", opts: ["\\( 3 \\)", "\\( 6 \\)", "\\( 9 \\)", "\\( 12 \\)", "\\( 18 \\)"], ans: "\\( 6 \\)", exp: "Step 1: Total muffins \\( 2 \\times 9 = 18 \\). Step 2: Share among 3: \\( 18 \\div 3 = 6 \\) muffins per kid.", exp_trans: "Langkah 1: Total muffin \\( 2 \\times 9 = 18 \\). Langkah 2: Bagi ke 3: \\( 18 \\div 3 = 6 \\) muffin per anak." },
+            "t4-task10": { type: "fill", q: "I think of a number. I multiply it by 4, then subtract 4. The answer is 12. What is my number? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-brain text-orange-500 ml-2'></i>", q_trans: "Saya memikirkan sebuah angka. Saya mengalikannya dengan 4, lalu mengurangi 4. Jawabannya 12. Berapa angka saya?", ans: "4", exp: "Work backwards! Step 1: Add back the 4: \\( 12 + 4 = 16 \\). Step 2: Divide by 4: \\( 16 \\div 4 = 4 \\).", exp_trans: "Kerjakan mundur! Langkah 1: Tambahkan kembali 4: \\( 12 + 4 = 16 \\). Langkah 2: Bagi 4: \\( 16 \\div 4 = 4 \\)." },
+
+            // TASK 5: ADVANCED MIXED PROBLEMS
+            "t5-task1": { type: "single", q: "If \\( 7 \\times 6 = 42 \\), what is \\( 42 \\div 6 \\)? <i class='fas fa-retweet text-orange-500 ml-2'></i>", q_trans: "Jika \\( 7 \\times 6 = 42 \\), berapakah \\( 42 \\div 6 \\)?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 36 \\)", "\\( 48 \\)"], ans: "\\( 7 \\)", exp: "Fact families! Since \\( 7 \\times 6 = 42 \\), then \\( 42 \\div 6 = 7 \\).", exp_trans: "Keluarga fakta! Karena \\( 7 \\times 6 = 42 \\), maka \\( 42 \\div 6 = 7 \\)." },
+            "t5-task2": { type: "fill", q: "1 cake needs 3 eggs. How many eggs are needed for 5 cakes? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-birthday-cake text-orange-500 ml-2'></i>", q_trans: "1 kue butuh 3 telur. Berapa telur yang dibutuhkan untuk 5 kue?", ans: "15", exp: "5 cakes of 3 eggs each: \\( 5 \\times 3 = 15 \\) eggs.", exp_trans: "5 kue berisi 3 telur: \\( 5 \\times 3 = 15 \\) telur." },
+            "t5-task3": { type: "complex", q: "Which of these have an answer of 8? <i class='fas fa-bullseye text-orange-500 ml-2'></i>", q_trans: "Mana yang jawabannya 8?", opts: ["\\( 32 \\div 4 \\)", "\\( 2 \\times 4 \\)", "\\( 16 - 8 \\)", "\\( 40 \\div 5 \\)"], ans: [0, 1, 2, 3], exp: "1. 8. 2. 8. 3. 8. 4. 8. All of them equal 8!", exp_trans: "1. 8. 2. 8. 3. 8. 4. 8. Semuanya sama dengan 8!" },
+            "t5-task4": { type: "tf_table", q: "Check these real-life math facts! <i class='fas fa-globe text-orange-500 ml-2'></i>", q_trans: "Periksa fakta matematika di dunia nyata ini!", opts: ["4 weeks is 28 days", "5 dozen is 60 items", "1 hour is 50 minutes", "A pair is 2 items"], ans: ["B", "B", "S", "B"], exp: "1. True (7x4=28). 2. True (12x5=60). 3. False (60 mins). 4. True.", exp_trans: "1. Benar (7x4=28). 2. Benar (12x5=60). 3. Salah (60 menit). 4. Benar." },
+            "t5-task5": { type: "single", q: "A string is 32 cm long. It is cut into 4 equal pieces. How long is 1 piece? <i class='fas fa-ruler text-orange-500 ml-2'></i>", q_trans: "Sebuah tali sepanjang 32 cm. Dipotong menjadi 4 bagian sama panjang. Berapa panjang 1 bagian?", opts: ["\\( 4 \\text{ cm} \\)", "\\( 6 \\text{ cm} \\)", "\\( 8 \\text{ cm} \\)", "\\( 12 \\text{ cm} \\)", "\\( 28 \\text{ cm} \\)"], ans: "\\( 8 \\text{ cm} \\)", exp: "Sharing 32 into 4 equal parts: \\( 32 \\div 4 = 8 \\) cm.", exp_trans: "Membagi 32 menjadi 4 bagian sama: \\( 32 \\div 4 = 8 \\) cm." },
+            "t5-task6": { type: "fill", q: "A box holds 5 toys. I have 40 toys. How many boxes do I need? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-box text-orange-500 ml-2'></i>", q_trans: "Satu kotak berisi 5 mainan. Saya punya 40 mainan. Berapa kotak yang saya butuhkan?", ans: "8", exp: "Grouping 40 toys into 5s: \\( 40 \\div 5 = 8 \\) boxes.", exp_trans: "Mengelompokkan 40 mainan ke 5: \\( 40 \\div 5 = 8 \\) kotak." },
+            "t5-task7": { type: "complex", q: "A store has 5 red balls and 4 blue balls. Each ball costs $2. Which are true? <i class='fas fa-circle text-orange-500 ml-2'></i>", q_trans: "Toko memiliki 5 bola merah dan 4 bola biru. Setiap bola berharga $2. Mana yang benar?", opts: ["Total balls are 9", "Total cost is \\( 9 \\times 2 \\)", "Total cost is $18", "Total cost is $20"], ans: [0, 1, 2], exp: "1. True (5+4=9). 2. True (9 balls x $2). 3. True ($18). 4. False.", exp_trans: "1. Benar (5+4=9). 2. Benar (9 bola x $2). 3. Benar ($18). 4. Salah." },
+            "t5-task8": { type: "tf_table", q: "Solve the word problems! <i class='fas fa-check-circle text-orange-500 ml-2'></i>", q_trans: "Selesaikan soal ceritanya!", opts: ["5 cars x 4 wheels = 20 wheels", "20 wheels / 4 = 5 cars", "20 wheels / 5 = 4 wheels per car", "1 car has 5 wheels"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True. 4. False (Cars have 4 wheels).", exp_trans: "1. Benar. 2. Benar. 3. Benar. 4. Salah (Mobil punya 4 roda)." },
+            "t5-task9": { type: "single", q: "Lily saves $3 a week. How much does she save in 7 weeks? <i class='fas fa-piggy-bank text-orange-500 ml-2'></i>", q_trans: "Lily menabung $3 per minggu. Berapa yang ia tabung dalam 7 minggu?", opts: ["\\(\\$10\\)", "\\(\\$14\\)", "\\(\\$21\\)", "\\(\\$24\\)", "\\(\\$28\\)"], ans: "\\(\\$21\\)", exp: "7 weeks of $3 each: \\( 7 \\times 3 = 21 \\) dollars.", exp_trans: "7 minggu masing-masing $3: \\( 7 \\times 3 = 21 \\) dolar." },
+            "t5-task10": { type: "fill", q: "36 students are put into teams of 4. 3 teams are boys, the rest are girls. How many girl teams are there? <br><span class='text-sm text-gray-500'>(Short Answer - Numbers only)</span> <i class='fas fa-venus-mars text-orange-500 ml-2'></i>", q_trans: "36 siswa dibagi ke dalam tim berisi 4. 3 tim adalah anak laki-laki, sisanya perempuan. Ada berapa tim perempuan?", ans: "6", exp: "Step 1: Find total teams: \\( 36 \\div 4 = 9 \\) teams. Step 2: Subtract boy teams: \\( 9 - 3 = 6 \\) girl teams.", exp_trans: "Langkah 1: Cari total tim: \\( 36 \\div 4 = 9 \\) tim. Langkah 2: Kurangi tim cowok: \\( 9 - 3 = 6 \\) tim cewek." }
+        });
+		
+        // ====== JAVASCRIPT LOGIC ======
+        let currentPage = 1;
+        let currentTaskSection = ""; 
+
+        function openModal() {
+            const modal = document.getElementById('classRulesModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        function closeModal() {
+            const modal = document.getElementById('classRulesModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('bg-indigo-100', 'text-indigo-800', 'font-bold', 'bg-orange-100', 'text-orange-800');
+            });
+            const activeLink = document.querySelector(`.sidebar-item[data-section="${sectionId}"]`);
+            if (activeLink) {
+                if(sectionId.startsWith('task')) {
+                    activeLink.classList.add('bg-orange-100', 'text-orange-800', 'font-bold');
+                } else {
+                    activeLink.classList.add('bg-indigo-100', 'text-indigo-800', 'font-bold');
+                }
+            }
+            
+            currentPage = 1;
+            currentTaskSection = sectionId;
+            
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const firstPage = document.querySelector(`#${sectionId} .page[data-page="1"]`);
+            if(firstPage) firstPage.classList.add('active');
+            
+            renderMath();
+            renderPagination(sectionId, currentPage);
+        }
+
+        function changePage(direction) {
+            const activeSection = document.querySelector('.content-section.active');
+            if(!activeSection) return;
+            const pages = activeSection.querySelectorAll('.page');
+            let newPage = currentPage + direction;
+            if(newPage >= 1 && newPage <= pages.length) {
+                pages[currentPage - 1].classList.remove('active');
+                pages[newPage - 1].classList.add('active');
+                currentPage = newPage;
+                renderMath();
+                renderPagination(currentTaskSection, currentPage);
+                document.getElementById('contentScrollArea').scrollTo(0, 0);
+            }
+        }
+
+        function goToPage(pageNum) {
+            const activeSection = document.querySelector('.content-section.active');
+            if(!activeSection) return;
+            const pages = activeSection.querySelectorAll('.page');
+            if(pageNum >= 1 && pageNum <= pages.length) {
+                pages[currentPage - 1].classList.remove('active');
+                pages[pageNum - 1].classList.add('active');
+                currentPage = pageNum;
+                renderMath();
+                renderPagination(currentTaskSection, currentPage);
+                document.getElementById('contentScrollArea').scrollTo(0, 0);
+            }
+        }
+
+        function renderPagination(sectionId, pageNum) {
+            const activeSection = document.getElementById(sectionId);
+            if (!activeSection) return;
+            const pages = activeSection.querySelectorAll('.page');
+            const totalPages = pages.length;
+            let html = '';
+            const isMainTask = sectionId.startsWith('t');
+            const theoryPages = [1, 5, 9]; 
+            
+            html += `<button onclick="goToPage(${pageNum - 1})" class="px-3 py-1.5 rounded-md text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 ${pageNum === 1 ? 'opacity-50 cursor-not-allowed' : ''}" ${pageNum === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i> Prev</button>`;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                let btnColor = 'bg-gray-100 hover:bg-gray-200 text-gray-700';
+                if (!isMainTask && theoryPages.includes(i)) {
+                    btnColor = 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800'; 
+                } else {
+                    btnColor = 'bg-orange-100 hover:bg-orange-200 text-orange-800'; 
+                }
+                if (i === pageNum) {
+                    if (!isMainTask && theoryPages.includes(i)) {
+                        btnColor = 'bg-indigo-600 text-white shadow-md'; 
+                    } else {
+                        btnColor = 'bg-orange-500 text-white shadow-md'; 
+                    }
+                }
+                html += `<button onclick="goToPage(${i})" class="w-9 h-9 rounded-md text-sm font-semibold transition-all ${btnColor}">${i}</button>`;
+            }
+            
+            html += `<button onclick="goToPage(${pageNum + 1})" class="px-3 py-1.5 rounded-md text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 ${pageNum === totalPages ? 'opacity-50 cursor-not-allowed' : ''}" ${pageNum === totalPages ? 'disabled' : ''}>Next <i class="fas fa-chevron-right"></i></button>`;
+            document.getElementById('paginationBar').innerHTML = html;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        let studentAnswers = {};
+
+        function renderTasks() {
+            document.querySelectorAll('[data-task-id]').forEach(div => {
+                const taskId = div.getAttribute('data-task-id');
+                renderSingleTask(taskId, div);
+            });
+            renderMath();
+        }
+        
+        function renderSingleTask(taskId, div) {
+            const data = questions[taskId];
+            if(!data) return;
+
+            const isMainTask = taskId.startsWith('t');
+            const taskNum = isMainTask ? taskId[1] : 0;
+            let taskType = data.type || 'single';
+            
+            let questionHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500">
+                    <div class="flex justify-between items-center mb-4 no-print">
+                        <h2 class="text-xl font-bold text-orange-600">
+                            ${isMainTask ? `Task ${taskNum}` : 'Exercise'} 
+                            ${taskType === 'complex' ? '<span class="text-sm bg-purple-200 text-purple-800 px-2 py-1 rounded ml-2">PG Kompleks</span>' : ''}
+                            ${taskType === 'fill' ? '<span class="text-sm bg-blue-200 text-blue-800 px-2 py-1 rounded ml-2">Isian Singkat</span>' : ''}
+                            ${taskType === 'tf_table' ? '<span class="text-sm bg-teal-200 text-teal-800 px-2 py-1 rounded ml-2">Tabel Benar/Salah</span>' : ''}
+                            <span class="translation text-gray-500 text-sm">Latihan</span>
+                        </h2>
+                        <div class="flex gap-2">
+                            <button onclick="resetTask('${taskId}')" class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                            ${isMainTask ? `<button onclick="printTask(${taskNum})" class="text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+                                <i class="fas fa-print"></i> Print
+                            </button>` : ''}
+                        </div>
+                    </div>
+                    <div class="mb-6 flex gap-4 items-start">
+                        <div class="bg-orange-100 p-3 rounded-full shrink-0">
+                            <i class="fas fa-question text-orange-500 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-lg">${data.q}</p>
+                            <p class="translation">${data.q_trans}</p>
+                        </div>
+                    </div>
+            `;
+
+            if (taskType === 'single') {
+                const shuffledOpts = shuffleArray([...data.opts]);
+                questionHTML += `
+                    <div id="options-${taskId}" class="space-y-3">
+                        ${shuffledOpts.map((opt, i) => `
+                            <button onclick="checkAnswer('${taskId}', this.getAttribute('data-opt'), 'single')" 
+                                    class="option-btn w-full text-left p-3 border-2 border-gray-200 rounded hover:border-orange-500 flex items-center gap-3" 
+                                    data-opt="${opt}">
+                                <span class="w-6 h-6 flex items-center justify-center bg-gray-100 rounded-full font-bold shrink-0">${String.fromCharCode(65 + i)}</span>
+                                <span class="katex">${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (taskType === 'complex') {
+                questionHTML += `
+                    <p class="text-sm text-gray-600 mb-3">*Check the correct statements. <span class="translation">*Centang pernyataan yang benar.</span></p>
+                    <div id="options-${taskId}" class="space-y-3">
+                        ${data.opts.map((opt, i) => `
+                            <label class="option-btn w-full text-left p-3 border-2 border-gray-200 rounded hover:border-purple-500 flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 complex-checkbox shrink-0" data-opt-index="${i}">
+                                <span class="katex">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <button onclick="checkAnswer('${taskId}', null, 'complex')" class="mt-4 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded font-bold">Submit Answer</button>
+                `;
+            } else if (taskType === 'fill') {
+                questionHTML += `
+                    <div class="flex gap-2 items-center mt-2">
+                        <input type="text" id="input-${taskId}" class="border-2 border-gray-200 rounded p-2 w-32 text-lg text-center focus:border-orange-500 outline-none" placeholder="Answer...">
+                        <button onclick="checkAnswer('${taskId}', null, 'fill')" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold">Submit</button>
+                    </div>
+                `;
+            } else if (taskType === 'tf_table') {
+                questionHTML += `
+                    <p class="text-sm text-gray-600 mb-3">*Determine True or False for each statement. <span class="translation">*Tentukan Benar atau Salah untuk setiap pernyataan.</span></p>
+                    <div id="options-${taskId}" class="overflow-x-auto">
+                        <table class="w-full border-collapse border border-gray-300 text-sm">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border border-gray-300 p-2 w-10">No.</th>
+                                    <th class="border border-gray-300 p-2 text-left">Statement <span class="translation text-xs">Pernyataan</span></th>
+                                    <th class="border border-gray-300 p-2 w-20">True <span class="translation text-xs block">Benar</span></th>
+                                    <th class="border border-gray-300 p-2 w-20">False <span class="translation text-xs block">Salah</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.opts.map((opt, i) => `
+                                    <tr>
+                                        <td class="border border-gray-300 p-2 text-center font-bold">${i + 1}</td>
+                                        <td class="border border-gray-300 p-2"><span class="katex">${opt}</span></td>
+                                        <td class="border border-gray-300 p-2 text-center">
+                                            <input type="radio" name="tf-${taskId}-${i}" value="B" class="tf-radio w-5 h-5 cursor-pointer">
+                                        </td>
+                                        <td class="border border-gray-300 p-2 text-center">
+                                            <input type="radio" name="tf-${taskId}-${i}" value="S" class="tf-radio w-5 h-5 cursor-pointer">
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <button onclick="checkAnswer('${taskId}', null, 'tf_table')" class="mt-4 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded font-bold">Submit Answer</button>
+                `;
+            }
+
+            questionHTML += `
+                    <div id="result-${taskId}" class="mt-4 hidden p-4 rounded"></div>
+
+                    <div class="mt-4 no-print">
+                        <button onclick="toggleCollapse('${taskId}')" id="collapse-btn-${taskId}" class="hidden text-blue-600 underline">
+                            Show Explanation <span class="translation text-gray-500 text-xs">Tampilkan Penjelasan</span>
+                        </button>
+                        <div id="collapse-${taskId}" class="collapse-content w-full">
+                            <h3 class="font-bold text-blue-800">Explanation: <span class="translation text-gray-500 text-sm">Penjelasan:</span></h3>
+                            <p class="mt-2">${data.exp}</p>
+                            <p class="translation">${data.exp_trans}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            div.innerHTML = questionHTML;
+        }
+
+        function checkAnswer(taskId, selectedOpt, type) {
+            const data = questions[taskId];
+            const resultDiv = document.getElementById(`result-${taskId}`);
+            const collapseBtn = document.getElementById(`collapse-btn-${taskId}`);
+            let isCorrect = false;
+            let correctAnsText = '';
+
+            if (type === 'single') {
+                const buttons = document.querySelectorAll(`#options-${taskId} button`);
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-70', 'cursor-not-allowed');
+                    if(btn.getAttribute('data-opt') === data.ans) {
+                        btn.classList.remove('border-gray-200', 'hover:border-orange-500');
+                        btn.classList.add('border-green-500', 'bg-green-50');
+                    } else if (btn.getAttribute('data-opt') === selectedOpt) {
+                        btn.classList.remove('border-gray-200', 'hover:border-orange-500');
+                        btn.classList.add('border-red-500', 'bg-red-50');
+                    }
+                });
+                isCorrect = (selectedOpt === data.ans);
+                correctAnsText = data.ans;
+                studentAnswers[taskId] = selectedOpt; 
+            } 
+            else if (type === 'complex') {
+                const checkboxes = document.querySelectorAll(`#options-${taskId} input[type="checkbox"]`);
+                let selectedAns = [];
+                checkboxes.forEach((cb, i) => {
+                    if (cb.checked) selectedAns.push(i);
+                    cb.disabled = true;
+                });
+                const correctAnsStr = [...data.ans].sort().join(',');
+                const selectedAnsStr = [...selectedAns].sort().join(',');
+                isCorrect = (correctAnsStr === selectedAnsStr);
+                
+                let correctComplexText = [];
+                data.ans.forEach(i => correctComplexText.push(data.opts[i]));
+                correctAnsText = correctComplexText.join(', ');
+
+                checkboxes.forEach((cb, i) => {
+                    if(data.ans.includes(i)) {
+                        cb.parentElement.classList.remove('border-gray-200', 'hover:border-purple-500');
+                        cb.parentElement.classList.add('border-green-500', 'bg-green-50');
+                    } else if (cb.checked) {
+                        cb.parentElement.classList.remove('border-gray-200', 'hover:border-purple-500');
+                        cb.parentElement.classList.add('border-red-500', 'bg-red-50');
+                    }
+                });
+                studentAnswers[taskId] = selectedAns;
+            } 
+            else if (type === 'fill') {
+                const inputField = document.getElementById(`input-${taskId}`);
+                let userVal = inputField.value.trim().replace(/\s/g, '').replace(',', '.');
+                inputField.disabled = true;
+                isCorrect = (userVal === data.ans);
+                if(!isCorrect) inputField.classList.add('border-red-500', 'bg-red-50');
+                else inputField.classList.add('border-green-500', 'bg-green-50');
+                correctAnsText = data.ans;
+                studentAnswers[taskId] = userVal;
+            }
+            else if (type === 'tf_table') {
+                const rows = document.querySelectorAll(`#options-${taskId} tbody tr`);
+                let userAns = [];
+                let allFilled = true;
+
+                rows.forEach((row, i) => {
+                    const radios = row.querySelectorAll('input[type="radio"]');
+                    let rowVal = null;
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        if (r.checked) rowVal = r.value;
+                    });
+                    if (rowVal === null) allFilled = false;
+                    userAns.push(rowVal);
+                });
+
+                if (!allFilled) {
+                    alert("Please answer all statements first! / Harap isi semua pernyataan terlebih dahulu!");
+                    rows.forEach((row, i) => {
+                        let radios = row.querySelectorAll('input[type="radio"]');
+                        radios.forEach(r => r.disabled = false);
+                    });
+                    return;
+                }
+
+                let correctCount = 0;
+                let correctTFText = [];
+                rows.forEach((row, i) => {
+                    const userVal = userAns[i];
+                    const correctVal = data.ans[i];
+                    correctTFText.push(`${i+1}. ${correctVal}`);
+                    if (userVal === correctVal) {
+                        correctCount++;
+                        row.classList.add('bg-green-50');
+                    } else {
+                        row.classList.add('bg-red-50');
+                    }
+                });
+
+                isCorrect = (correctCount === data.ans.length);
+                correctAnsText = correctTFText.join(' | ');
+                studentAnswers[taskId] = userAns;
+            }
+
+            if(isCorrect) {
+                resultDiv.innerHTML = `<p class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Correct! <span class="translation text-gray-600 font-normal">Benar!</span></p>`;
+                resultDiv.className = "mt-4 p-4 rounded bg-green-50 border border-green-200";
+            } else {
+                resultDiv.innerHTML = `<p class="text-red-600 font-bold"><i class="fas fa-times-circle"></i> Wrong! The correct answer is: ${correctAnsText}. <span class="translation text-gray-600 font-normal">Salah! Jawaban yang benar adalah: ${correctAnsText}.</span></p>`;
+                resultDiv.className = "mt-4 p-4 rounded bg-red-50 border border-red-200";
+            }
+            resultDiv.classList.remove('hidden');
+            collapseBtn.classList.remove('hidden');
+            
+            const collapseContent = document.getElementById(`collapse-${taskId}`);
+            collapseContent.classList.add('open');
+            collapseBtn.innerHTML = 'Hide Explanation <span class="translation text-gray-500 text-xs">Sembunyikan Penjelasan</span>';
+            
+            renderMath();
+        }
+
+        function resetTask(taskId) {
+            delete studentAnswers[taskId];
+            const taskDiv = document.querySelector(`[data-task-id="${taskId}"]`);
+            if(taskDiv) {
+                renderSingleTask(taskId, taskDiv);
+                renderMath();
+            }
+        }
+
+        function printTask(taskNum) {
+            let score = 0;
+            let tableBody = '';
+            for(let i=1; i<=10; i++) {
+                const taskId = `t${taskNum}-task${i}`;
+                const data = questions[taskId];
+                if(!data) continue;
+                
+                let studentAns = studentAnswers[taskId] || 'Not Answered';
+                let correctAns = data.ans;
+                
+                let sAnsStr = '';
+                let cAnsStr = '';
+                let isCorrect = false;
+                
+                if (data.type === 'complex') {
+                    // Untuk PG Kompleks, urutkan indeks agar pengecekan benar, lalu konversi ke teks
+                    let sArr = Array.isArray(studentAns) ? studentAns : [];
+                    let cArr = Array.isArray(correctAns) ? correctAns : [];
+                    sAnsStr = sArr.slice().sort().map(idx => data.opts[idx]).join(', ');
+                    cAnsStr = cArr.slice().sort().map(idx => data.opts[idx]).join(', ');
+                    isCorrect = (sArr.slice().sort().join(',') === cArr.slice().sort().join(','));
+                } else if (data.type === 'tf_table') {
+                    // Untuk Tabel B/S, JANGAN diurutkan agar urutan baris tetap dipertahankan
+                    let sArr = Array.isArray(studentAns) ? studentAns : [];
+                    let cArr = Array.isArray(correctAns) ? correctAns : [];
+                    sAnsStr = sArr.join(' | ');
+                    cAnsStr = cArr.join(' | ');
+                    isCorrect = (sArr.join(',') === cArr.join(','));
+                } else {
+                    // Untuk Single dan Fill
+                    sAnsStr = studentAns;
+                    cAnsStr = correctAns;
+                    isCorrect = (sAnsStr === cAnsStr);
+                }
+                
+                let note = '❌';
+                if(isCorrect) { score++; note = '✔️'; }
+                
+                tableBody += `<tr>
+                    <td class="border border-black p-1 text-center">${i}</td>
+                    <td class="border border-black p-1">${data.q.replace(/<[^>]+>/g, '')}</td>
+                    <td class="border border-black p-1">${sAnsStr}</td>
+                    <td class="border border-black p-1">${cAnsStr}</td>
+                    <td class="border border-black p-1 text-center">${note}</td>
+                </tr>`;
+            }
+            document.getElementById('printTableBody').innerHTML = tableBody;
+            document.getElementById('printTaskNum').innerText = taskNum;
+            document.getElementById('printScore').innerText = score;
+            
+            renderMathInElement(document.getElementById('printArea'), {
+                delimiters: [
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });
+            window.print();
+        }
+
+        function toggleCollapse(taskId) {
+            const content = document.getElementById(`collapse-${taskId}`);
+            const btn = document.getElementById(`collapse-btn-${taskId}`);
+            content.classList.toggle('open');
+            if(content.classList.contains('open')) {
+                btn.innerHTML = 'Hide Explanation <span class="translation text-gray-500 text-xs">Sembunyikan Penjelasan</span>';
+            } else {
+                btn.innerHTML = 'Show Explanation <span class="translation text-gray-500 text-xs">Tampilkan Penjelasan</span>';
+            }
+        }
+
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });
+        }
+
+        window.onload = () => {
+            renderTasks();
+            renderMath();
+            showSection('warmup');
+        };
+    </script>
+</body>
+</html>
