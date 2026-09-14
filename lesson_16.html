@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutoring by Deni - Multiplication Table of 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; }
+        .prompt-box { max-width: 650px; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: center; text-align: left; }
+        .prompt-box p { width: 100%; }
+        .prompt-box img { width: 100%; height: auto; max-width: 300px; display: block; margin-top: 0.5rem; }
+        .translation { font-style: italic; font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem; display: block; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .option-btn { transition: all 0.2s; }
+        .option-btn:hover { transform: translateX(5px); }
+        .collapse-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out, padding 0.4s, border 0.4s, background 0.4s; padding: 0; border: 0; background: transparent; }
+        .collapse-content.open { max-height: 2000px; padding: 1.5rem; border: 1px solid #bfdbfe; background: #eff6ff; border-radius: 0.5rem; margin-top: 1rem; }
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 10px; box-sizing: border-box; }
+            .no-print { display: none !important; }
+            #printArea table { table-layout: fixed; width: 100%; font-size: 9px; }
+            #printArea td, #printArea th { word-wrap: break-word; padding: 2px !important; }
+            @page { size: A4; margin: 5mm; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col h-screen overflow-hidden">
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <marker id="arr1" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+            </marker>
+        </defs>
+    </svg>
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white p-4 flex justify-between items-center shadow-md no-print shrink-0 z-50">
+        <div>
+            <h1 class="text-xl font-bold">Math Tutoring by Deni</h1>
+            <p class="text-sm">Topic: Multiplication Table of 2</p>
+            <p class="translation text-indigo-200">Topik: Tabel Perkalian 2</p>
+        </div>
+        <div>
+            <button onclick="openModal()" class="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 font-bold py-2 px-4 rounded flex items-center gap-2">
+                <i class="fas fa-gavel"></i> Class Rules
+            </button>
+        </div>
+    </header>
+
+    <!-- Modal Class Rules -->
+    <div id="classRulesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 no-print">
+        <div class="bg-white rounded-lg p-6 w-80 max-w-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-indigo-600">Class Rules <br><span class="translation text-gray-500">Aturan Kelas</span></h2>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <ul class="space-y-3 text-gray-700">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-comments text-indigo-500 mt-1"></i>
+                    <div>Take turns speaking. <span class="translation">Berbicara secara bergantian.</span></div>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-door-open text-indigo-500 mt-1"></i>
+                    <div>Ask permission if you want to leave the class. <span class="translation">Meminta izin jika ingin meninggalkan kelas.</span></div>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-video text-indigo-500 mt-1"></i>
+                    <div>Turn on camera and microphone if needed. <span class="translation">Menyalakan kamera dan microphone jika diperlukan.</span></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg no-print border-r border-gray-200 flex flex-col">
+            <div class="p-4 bg-indigo-600 text-white">
+                <h3 class="font-bold text-lg flex items-center gap-2"><i class="fas fa-book-open"></i> Class Agenda</h3>
+                <p class="text-xs text-indigo-200 mt-1">Select topic to navigate <span class="translation text-indigo-300 block">Pilih topik untuk navigasi</span></p>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-2">
+                <ul class="space-y-1">
+                    <li><a href="javascript:void(0)" onclick="showSection('warmup')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="warmup"><div class="font-semibold text-sm text-gray-800">Spiral Review Warm-up</div><div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:00 - 00:10</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('intro')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="intro"><div class="font-semibold text-sm text-gray-800">Introduction & Real-World</div><div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:10 - 00:15</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('review')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="review"><div class="font-semibold text-sm text-gray-800">Review of Prior Knowledge</div><div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:15 - 00:20</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('problem')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="problem"><div class="font-semibold text-sm text-gray-800">Problem Introduction</div><div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:20 - 00:30</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('guided')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="guided"><div class="font-semibold text-sm text-gray-800">Guided Practice</div><div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:30 - 00:45</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('independent')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="independent"><div class="font-semibold text-sm text-gray-800">Independent Practice</div><div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:45 - 00:55</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('consolidation')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-800 transition-colors cursor-pointer" data-section="consolidation"><div class="font-semibold text-sm text-gray-800">Consolidation & Reflection</div><div class="text-xs text-gray-500 flex items-center gap-1 mt-1"><i class="far fa-clock"></i> 00:55 - 01:00</div></a></li>
+                    <hr class="my-3 border-gray-200">
+                    <li><a href="javascript:void(0)" onclick="showSection('task1')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task1"><div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 1</div><div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('task2')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task2"><div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 2</div><div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('task3')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task3"><div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 3</div><div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('task4')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task4"><div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 4</div><div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div></a></li>
+                    <li><a href="javascript:void(0)" onclick="showSection('task5')" class="sidebar-item block px-4 py-2 rounded-lg hover:bg-orange-50 hover:text-orange-800 transition-colors cursor-pointer" data-section="task5"><div class="font-bold text-sm text-indigo-800 flex items-center gap-2"><i class="fas fa-clipboard-list text-xs"></i> Task 5</div><div class="text-xs text-gray-500 mt-1">10 Multiple Choice</div></a></li>
+                </ul>
+            </nav>
+            <div class="p-4 bg-gray-50 border-t border-gray-200 text-center">
+                <p class="text-xs text-gray-500 font-medium">Math Tutoring System</p>
+                <p class="text-xs text-gray-400">by Deni</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <div id="contentScrollArea" class="flex-1 overflow-y-auto p-6">
+
+            <!-- ========================================== -->
+            <!-- SECTION: SPIRAL REVIEW WARM-UP             -->
+            <!-- ========================================== -->
+            <div id="warmup" class="content-section active">
+                <!-- PAGE 1: THEORY 1 -->
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">What is Multiplication? <i class="fas fa-plus-circle text-indigo-400 ml-2"></i></h2>
+                        <p class="translation">Apa itu Perkalian?</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <circle cx="40" cy="70" r="15" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="40" cy="70" r="5" fill="#fef3c7"/>
+                                    <circle cx="90" cy="70" r="15" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="90" cy="70" r="5" fill="#fef3c7"/>
+                                    <circle cx="140" cy="70" r="15" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+                                    <circle cx="140" cy="70" r="5" fill="#fef3c7"/>
+                                    <text x="90" y="120" font-size="14" text-anchor="middle" fill="#333">3 plates of 1 cookie = 3 cookies</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Multiplication is adding the same number over and over again. <span class="translation">Perkalian adalah menambahkan angka yang sama berulang kali.</span></p>
+                                <p class="mt-2">If you have \( 2 \) plates and each plate has \( 1 \) cookie, you have \( 2 \times 1 = 2 \) cookies. <span class="translation">Jika kamu punya \( 2 \) piring dan setiap piring berisi \( 1 \) kue, kamu punya \( 2 \times 1 = 2 \) kue.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: "Times" Means "Groups Of"</p>
+                            <p class="mt-1">When you see \( 2 \times 4 \), think "2 groups of 4". <span class="translation">Ketika kamu melihat \( 2 \times 4 \), bayangkan "2 kelompok yang berisi 4".</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( a \times b = a + a + \dots \) (added \( b \) times)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="w-task1"></div>
+                <div class="page" data-page="3" data-task-id="w-task2"></div>
+                <div class="page" data-page="4" data-task-id="w-task3"></div>
+
+                <!-- PAGE 5: THEORY 2 -->
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">The Magic of Doubles <i class="fas fa-clone text-green-400 ml-2"></i></h2>
+                        <p class="translation">Keajaiban Penggandaan</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="30" y="40" width="40" height="60" rx="5" fill="#34d399" stroke="#059669" stroke-width="2"/>
+                                    <rect x="110" y="40" width="40" height="60" rx="5" fill="#34d399" stroke="#059669" stroke-width="2"/>
+                                    <text x="50" y="75" font-size="20" text-anchor="middle" fill="#fff" font-weight="bold">5</text>
+                                    <text x="130" y="75" font-size="20" text-anchor="middle" fill="#fff" font-weight="bold">5</text>
+                                    <path d="M 80 70 L 100 70" stroke="#ef4444" stroke-width="3" marker-end="url(#arr1)"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Multiplying by \( 2 \) is the same as doubling a number! <span class="translation">Mengalikan dengan \( 2 \) sama dengan menggandakan sebuah angka!</span></p>
+                                <p class="mt-2">If you have \( 5 \) toy cars and you get another \( 5 \), you have doubled it: \( 5 + 5 = 10 \). This is exactly \( 2 \times 5 = 10 \). <span class="translation">Jika kamu punya \( 5 \) mobil mainan dan kamu mendapat \( 5 \) lagi, kamu telah menggandakannya: \( 5 + 5 = 10 \). Ini sama persis dengan \( 2 \times 5 = 10 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Just Add It To Itself!</p>
+                            <p class="mt-1">If you forget what \( 2 \times 7 \) is, just add \( 7 + 7 \). <span class="translation">Jika kamu lupa berapa \( 2 \times 7 \), cukup jumlahkan \( 7 + 7 \).</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( 2 \times \text{Any Number} = \text{Number} + \text{Number} \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="w-task4"></div>
+                <div class="page" data-page="7" data-task-id="w-task5"></div>
+                <div class="page" data-page="8" data-task-id="w-task6"></div>
+
+                <!-- PAGE 9: THEORY 3 -->
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">The Pattern of Even Numbers <i class="fas fa-grip-lines text-purple-400 ml-2"></i></h2>
+                        <p class="translation">Pola Bilangan Genap</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="20" y="40" width="140" height="60" rx="5" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+                                    <text x="40" y="75" font-size="14" text-anchor="middle" fill="#333">2, 4</text>
+                                    <text x="90" y="75" font-size="14" text-anchor="middle" fill="#333">6, 8</text>
+                                    <text x="140" y="75" font-size="14" text-anchor="middle" fill="#333">10...</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>When you multiply any number by \( 2 \), the answer is always an even number. <span class="translation">Ketika kamu mengalikan angka apa pun dengan \( 2 \), jawabannya selalu bilangan genap.</span></p>
+                                <p class="mt-2">Even numbers end in \( 0, 2, 4, 6, \) or \( 8 \). Counting by 2s gives you all the answers to the 2 times table! <span class="translation">Bilangan genap berakhir di \( 0, 2, 4, 6, \) atau \( 8 \). Menghitung kelipatan 2 memberikanmu semua jawaban tabel perkalian 2!</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Skip Counting</p>
+                            <p class="mt-1">To find \( 2 \times 6 \), skip count by 2s six times: 2, 4, 6, 8, 10, 12! <span class="translation">Untuk menemukan \( 2 \times 6 \), hitung kelipatan 2 sebanyak enam kali: 2, 4, 6, 8, 10, 12!</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( 2 \times n = \text{Even Number} \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="w-task7"></div>
+                <div class="page" data-page="11" data-task-id="w-task8"></div>
+                <div class="page" data-page="12" data-task-id="w-task9"></div>
+                <div class="page" data-page="13" data-task-id="w-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: INTRODUCTION & REAL-WORLD         -->
+            <!-- ========================================== -->
+            <div id="intro" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Buying Pairs of Socks <i class="fas fa-socks text-indigo-400 ml-2"></i></h2>
+                        <p class="translation">Membeli Pasang Kaus Kaki</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <path d="M40,40 L40,80 L30,100 L60,100 L50,80 L50,40 Z" fill="#3b82f6"/>
+                                    <path d="M40,40 L40,80 L30,100 L60,100 L50,80 L50,40 Z" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+                                    <path d="M100,40 L100,80 L90,100 L120,100 L110,80 L110,40 Z" fill="#3b82f6"/>
+                                    <path d="M100,40 L100,80 L90,100 L120,100 L110,80 L110,40 Z" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+                                    <path d="M120,40 L120,80 L110,100 L140,100 L130,80 L130,40 Z" fill="#3b82f6"/>
+                                    <path d="M120,40 L120,80 L110,100 L140,100 L130,80 L130,40 Z" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Socks are sold in pairs. If you buy \( 3 \) pairs of socks, how many socks do you have in total? <span class="translation">Kaus kaki dijual berpasangan. Jika kamu membeli \( 3 \) pasang kaus kaki, berapa banyak kaus kaki yang kamu miliki secara total?</span></p>
+                                <p class="mt-2">Since 1 pair = \( 2 \) socks, \( 3 \) pairs mean \( 3 \times 2 = 6 \) socks. <span class="translation">Karena 1 pasang = \( 2 \) kaus kaki, \( 3 \) pasang berarti \( 3 \times 2 = 6 \) kaus kaki.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: "Pairs" Means "Times 2"</p>
+                            <p class="mt-1">Whenever you hear the word "pair", it means you are multiplying by 2. <span class="translation">Kapanpun kamu mendengar kata "pasang", itu berarti kamu mengalikan dengan 2.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Total Items = Number of Pairs \( \times 2 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="i-task1"></div>
+                <div class="page" data-page="3" data-task-id="i-task2"></div>
+                <div class="page" data-page="4" data-task-id="i-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Wheels on Bicycles <i class="fas fa-bicycle text-green-400 ml-2"></i></h2>
+                        <p class="translation">Roda pada Sepeda</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <circle cx="50" cy="100" r="25" fill="none" stroke="#10b981" stroke-width="3"/>
+                                    <circle cx="120" cy="100" r="25" fill="none" stroke="#10b981" stroke-width="3"/>
+                                    <path d="M50,100 L80,50 L120,100 M80,50 L70,40 M80,50 L90,40 M50,100 L120,100" stroke="#059669" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>A bicycle has \( 2 \) wheels. If there are \( 4 \) bicycles in the park, how many wheels are there? <span class="translation">Sepeda memiliki \( 2 \) roda. Jika ada \( 4 \) sepeda di taman, berapa banyak roda yang ada?</span></p>
+                                <p class="mt-2">You can count by 2s: \( 2, 4, 6, 8 \). Or multiply: \( 4 \times 2 = 8 \) wheels. <span class="translation">Kamu bisa berhitung kelipatan 2: \( 2, 4, 6, 8 \). Atau mengalikan: \( 4 \times 2 = 8 \) roda.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Draw It Out</p>
+                            <p class="mt-1">Drawing simple circles for wheels helps you see the groups of 2. <span class="translation">Menggambar lingkaran sederhana untuk roda membantu mu melihat kelompok-kelompok 2.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Total Wheels = Number of Bicycles \( \times 2 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="i-task4"></div>
+                <div class="page" data-page="7" data-task-id="i-task5"></div>
+                <div class="page" data-page="8" data-task-id="i-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Eyes on Animals <i class="fas fa-paw text-purple-400 ml-2"></i></h2>
+                        <p class="translation">Mata pada Hewan</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <ellipse cx="90" cy="80" rx="50" ry="40" fill="#a78bfa" stroke="#7c3aed" stroke-width="2"/>
+                                    <circle cx="70" cy="60" r="8" fill="#1f2937"/>
+                                    <circle cx="72" cy="58" r="2" fill="#fff"/>
+                                    <circle cx="110" cy="60" r="8" fill="#1f2937"/>
+                                    <circle cx="112" cy="58" r="2" fill="#fff"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Most mammals have \( 2 \) eyes. If you see \( 5 \) cats, how many eyes do they have in total? <span class="translation">Sebagian besar mamalia memiliki \( 2 \) mata. Jika kamu melihat \( 5 \) kucing, berapa banyak mata yang mereka miliki secara total?</span></p>
+                                <p class="mt-2">5 groups of 2 eyes: \( 5 \times 2 = 10 \) eyes. <span class="translation">5 kelompok 2 mata: \( 5 \times 2 = 10 \) mata.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Connect to Nature</p>
+                            <p class="mt-1">Think of animals when you need to multiply by 2! Birds have 2 wings, dogs have 2 ears. <span class="translation">Pikirkan hewan saat kamu perlu mengalikan dengan 2! Burung punya 2 sayap, anjing punya 2 telinga.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Total Eyes = Number of Animals \( \times 2 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="i-task7"></div>
+                <div class="page" data-page="11" data-task-id="i-task8"></div>
+                <div class="page" data-page="12" data-task-id="i-task9"></div>
+                <div class="page" data-page="13" data-task-id="i-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: REVIEW OF PRIOR KNOWLEDGE         -->
+            <!-- ========================================== -->
+            <div id="review" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Multiplication vs. Addition <i class="fas fa-calculator text-indigo-400 ml-2"></i></h2>
+                        <p class="translation">Perkalian vs. Penjumlahan</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="20" y="20" width="140" height="100" rx="5" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+                                    <text x="90" y="50" font-size="14" text-anchor="middle" fill="#333">2 + 2 + 2 + 2</text>
+                                    <path d="M 60 60 L 120 60" stroke="#ef4444" stroke-width="2" marker-end="url(#arr1)"/>
+                                    <text x="90" y="90" font-size="14" text-anchor="middle" fill="#333">4 × 2 = 8</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Repeated addition is just another way to write multiplication. <span class="translation">Penjumlahan berulang hanyalah cara lain untuk menulis perkalian.</span></p>
+                                <p class="mt-2">Instead of writing \( 2 + 2 + 2 + 2 \), you can write \( 4 \times 2 \). Both equal \( 8 \). <span class="translation">Alih-alih menulis \( 2 + 2 + 2 + 2 \), kamu bisa menulis \( 4 \times 2 \). Keduanya sama dengan \( 8 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Count the Twos</p>
+                            <p class="mt-1">Count how many "2"s you are adding. That number becomes the multiplier! <span class="translation">Hitung berapa banyak angka "2" yang kamu jumlahkan. Angka itu menjadi pengalinya!</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( 2 + 2 + \dots (n \text{ times}) = n \times 2 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="r-task1"></div>
+                <div class="page" data-page="3" data-task-id="r-task2"></div>
+                <div class="page" data-page="4" data-task-id="r-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Division is Sharing Equally <i class="fas fa-divide text-green-400 ml-2"></i></h2>
+                        <p class="translation">Pembagian adalah Berbagi Sama Rata</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <circle cx="90" cy="30" r="15" fill="#10b981"/>
+                                    <circle cx="90" cy="30" r="5" fill="#fff"/>
+                                    <line x1="90" y1="45" x2="50" y2="100" stroke="#333" stroke-width="2"/>
+                                    <line x1="90" y1="45" x2="130" y2="100" stroke="#333" stroke-width="2"/>
+                                    <circle cx="50" cy="110" r="10" fill="#10b981"/>
+                                    <circle cx="130" cy="110" r="10" fill="#10b981"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>In the previous lesson, we learned division. Division is the opposite of multiplication. <span class="translation">Di pelajaran sebelumnya, kita belajar pembagian. Pembagian adalah kebalikan dari perkalian.</span></p>
+                                <p class="mt-2">If \( 2 \times 4 = 8 \), then \( 8 \div 2 = 4 \). You are sharing 8 items into 2 equal groups. <span class="translation">Jika \( 2 \times 4 = 8 \), maka \( 8 \div 2 = 4 \). Kamu sedang membagi 8 item menjadi 2 kelompok yang sama.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Fact Families</p>
+                            <p class="mt-1">Multiplication and division belong to the same family. If you know one, you know the other! <span class="translation">Perkalian dan pembagian berasal dari keluarga yang sama. Jika kamu tahu yang satu, kamu tahu yang lain!</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: If \( a \times b = c \), then \( c \div a = b \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="r-task4"></div>
+                <div class="page" data-page="7" data-task-id="r-task5"></div>
+                <div class="page" data-page="8" data-task-id="r-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Zero and One Rules <i class="fas fa-rocket text-purple-400 ml-2"></i></h2>
+                        <p class="translation">Aturan Nol dan Satu</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="20" y="40" width="140" height="60" rx="5" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+                                    <text x="60" y="75" font-size="14" text-anchor="middle" fill="#333">2 × 0 = 0</text>
+                                    <text x="130" y="75" font-size="14" text-anchor="middle" fill="#333">2 × 1 = 2</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Multiplying by zero always gives zero. Multiplying by one keeps the number the same. <span class="translation">Mengalikan dengan nol selalu menghasilkan nol. Mengalikan dengan satu membuat angka tetap sama.</span></p>
+                                <p class="mt-2">So, \( 2 \times 0 = 0 \) and \( 2 \times 1 = 2 \). These are the building blocks of the 2 times table! <span class="translation">Jadi, \( 2 \times 0 = 0 \) dan \( 2 \times 1 = 2 \). Ini adalah blok bangunan dari tabel perkalian 2!</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: The Magic of One</p>
+                            <p class="mt-1">Think of multiplying by 1 as a mirror. The number looks at itself and stays the same. <span class="translation">Anggap mengalikan dengan 1 sebagai cermin. Angka tersebut melihat dirinya sendiri dan tetap sama.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( n \times 1 = n \) and \( n \times 0 = 0 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="r-task7"></div>
+                <div class="page" data-page="11" data-task-id="r-task8"></div>
+                <div class="page" data-page="12" data-task-id="r-task9"></div>
+                <div class="page" data-page="13" data-task-id="r-task10"></div>
+            </div>
+            
+            <!-- ========================================== -->
+            <!-- SECTION: PROBLEM INTRODUCTION              -->
+            <!-- ========================================== -->
+            <div id="problem" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Finding the Total Cost <i class="fas fa-shopping-cart text-indigo-400 ml-2"></i></h2>
+                        <p class="translation">Mencari Total Biaya</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <path d="M 50 30 L 60 10 L 70 30 Z" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <rect x="40" y="30" width="40" height="60" rx="5" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <text x="60" y="65" font-size="14" text-anchor="middle" fill="#fff" font-weight="bold">$2</text>
+                                    <path d="M 120 30 L 130 10 L 140 30 Z" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <rect x="110" y="30" width="40" height="60" rx="5" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                                    <text x="130" y="65" font-size="14" text-anchor="middle" fill="#fff" font-weight="bold">$2</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>One pencil costs \( \$2 \). How much do \( 5 \) pencils cost? <span class="translation">Satu pensil berharga \( \$2 \). Berapa harga \( 5 \) pensil?</span></p>
+                                <p class="mt-2">This is 5 groups of \( 2 \) dollars. We multiply: \( 5 \times 2 = 10 \). The total cost is \( \$10 \). <span class="translation">Ini adalah 5 kelompok \( 2 \) dolar. Kita mengalikan: \( 5 \times 2 = 10 \). Total biayanya \( \$10 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Identify the "Group"</p>
+                            <p class="mt-1">In word problems, find the price of one item first, then multiply by the number of items. <span class="translation">Dalam soal cerita, temukan harga satu item terlebih dahulu, lalu kalikan dengan jumlah item.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Total Cost = Price per Item \( \times \) Number of Items</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="p-task1"></div>
+                <div class="page" data-page="3" data-task-id="p-task2"></div>
+                <div class="page" data-page="4" data-task-id="p-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Finding the Number of Groups <i class="fas fa-layer-group text-green-400 ml-2"></i></h2>
+                        <p class="translation">Mencari Jumlah Kelompok</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="40" y="20" width="100" height="30" rx="5" fill="#34d399" stroke="#059669" stroke-width="2"/>
+                                    <rect x="40" y="60" width="100" height="30" rx="5" fill="#34d399" stroke="#059669" stroke-width="2"/>
+                                    <text x="90" y="40" font-size="14" text-anchor="middle" fill="#fff">?</text>
+                                    <text x="90" y="80" font-size="14" text-anchor="middle" fill="#fff">2 apples</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>You have \( 8 \) apples. You want to put \( 2 \) apples in each basket. How many baskets do you need? <span class="translation">Kamu punya \( 8 \) apel. Kamu ingin meletakkan \( 2 \) apel di setiap keranjang. Berapa banyak keranjang yang kamu butuhkan?</span></p>
+                                <p class="mt-2">Since you are making groups of 2, you divide! \( 8 \div 2 = 4 \) baskets. Or think: "What times 2 equals 8?" \( 4 \times 2 = 8 \). <span class="translation">Karena kamu membuat kelompok 2, kamu membagi! \( 8 \div 2 = 4 \) keranjang. Atau pikirkan: "Apa kali 2 sama dengan 8?" \( 4 \times 2 = 8 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Division is Grouping</p>
+                            <p class="mt-1">Whenever you are grouping items into equal sets of 2, you are dividing by 2. <span class="translation">Kapanpun kamu mengelompokkan item ke dalam set yang sama berisi 2, kamu sedang membagi dengan 2.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Number of Groups = Total Items \( \div \) Items per Group</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="p-task4"></div>
+                <div class="page" data-page="7" data-task-id="p-task5"></div>
+                <div class="page" data-page="8" data-task-id="p-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Missing Numbers <i class="fas fa-puzzle-piece text-purple-400 ml-2"></i></h2>
+                        <p class="translation">Angka yang Hilang</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="20" y="40" width="140" height="60" rx="5" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+                                    <text x="60" y="75" font-size="14" text-anchor="middle" fill="#333">2 × ? = 12</text>
+                                    <path d="M 80 80 L 100 80" stroke="#ef4444" stroke-width="2" marker-end="url(#arr1)"/>
+                                    <text x="130" y="75" font-size="14" text-anchor="middle" fill="#ef4444">? = 6</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Sometimes the problem gives you the answer and asks for the multiplier. Like: \( 2 \times ? = 12 \). <span class="translation">Kadang soal memberikan jawaban dan meminta pengalinya. Seperti: \( 2 \times ? = 12 \).</span></p>
+                                <p class="mt-2">To find the missing number, use division: \( 12 \div 2 = 6 \). So the missing number is \( 6 \). <span class="translation">Untuk menemukan angka yang hilang, gunakan pembagian: \( 12 \div 2 = 6 \). Jadi angka yang hilang adalah \( 6 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Fact Families Save the Day</p>
+                            <p class="mt-1">If you have a missing number in multiplication, switch it to a division problem to solve it easily. <span class="translation">Jika ada angka yang hilang dalam perkalian, ubah menjadi soal pembagian untuk menyelesaikannya dengan mudah.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( 2 \times ? = c \implies ? = c \div 2 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="p-task7"></div>
+                <div class="page" data-page="11" data-task-id="p-task8"></div>
+                <div class="page" data-page="12" data-task-id="p-task9"></div>
+                <div class="page" data-page="13" data-task-id="p-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: GUIDED PRACTICE                   -->
+            <!-- ========================================== -->
+            <div id="guided" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Skip Counting on a Number Line <i class="fas fa-route text-indigo-400 ml-2"></i></h2>
+                        <p class="translation">Melompat Berhitung pada Garis Bilangan</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <line x1="10" y1="70" x2="170" y2="70" stroke="#333" stroke-width="2" marker-end="url(#arr1)"/>
+                                    <circle cx="20" cy="70" r="5" fill="#3b82f6"/>
+                                    <text x="20" y="90" font-size="12" text-anchor="middle">0</text>
+                                    <circle cx="50" cy="70" r="5" fill="#3b82f6"/>
+                                    <text x="50" y="90" font-size="12" text-anchor="middle">2</text>
+                                    <circle cx="80" cy="70" r="5" fill="#3b82f6"/>
+                                    <text x="80" y="90" font-size="12" text-anchor="middle">4</text>
+                                    <circle cx="110" cy="70" r="5" fill="#3b82f6"/>
+                                    <text x="110" y="90" font-size="12" text-anchor="middle">6</text>
+                                    <path d="M 20 60 Q 35 40 50 60" stroke="#ef4444" stroke-width="2" fill="none"/>
+                                    <text x="35" y="35" font-size="10" text-anchor="middle" fill="#ef4444">+2</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>You can use a number line to multiply by 2. Just make jumps of 2! <span class="translation">Kamu bisa menggunakan garis bilangan untuk mengalikan dengan 2. Lakukan lompatan sebesar 2!</span></p>
+                                <p class="mt-2">To find \( 3 \times 2 \), start at 0 and make 3 jumps of 2. You land on \( 6 \). <span class="translation">Untuk mencari \( 3 \times 2 \), mulai dari 0 dan lakukan 3 lompatan sebesar 2. Kamu akan mendarat di \( 6 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Count the Jumps</p>
+                            <p class="mt-1">The first number tells you how many jumps, the second number tells you how big each jump is. <span class="translation">Angka pertama memberitahu mu berapa banyak lompatan, angka kedua memberitahu mu seberapa besar setiap lompatan.</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( a \times 2 = \) Start at 0, make \( a \) jumps of 2.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="g-task1"></div>
+                <div class="page" data-page="3" data-task-id="g-task2"></div>
+                <div class="page" data-page="4" data-task-id="g-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Using Arrays to Multiply <i class="fas fa-th text-green-400 ml-2"></i></h2>
+                        <p class="translation">Menggunakan Array untuk Mengalikan</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="50" y="30" width="20" height="20" fill="#10b981"/>
+                                    <rect x="70" y="30" width="20" height="20" fill="#10b981"/>
+                                    <rect x="90" y="30" width="20" height="20" fill="#10b981"/>
+                                    
+                                    <rect x="50" y="50" width="20" height="20" fill="#10b981"/>
+                                    <rect x="70" y="50" width="20" height="20" fill="#10b981"/>
+                                    <rect x="90" y="50" width="20" height="20" fill="#10b981"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>An array is a grid of objects in rows and columns. It shows multiplication perfectly! <span class="translation">Array adalah kumpulan objek dalam baris dan kolom. Ini menunjukkan perkalian dengan sempurna!</span></p>
+                                <p class="mt-2">Here we have 2 rows and 3 columns. \( 2 \times 3 = 6 \) dots. <span class="translation">Di sini kita punya 2 baris dan 3 kolom. \( 2 \times 3 = 6 \) titik.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Turn It Around</p>
+                            <p class="mt-1">Arrays show that \( 2 \times 3 \) is the same as \( 3 \times 2 \). <span class="translation">Array menunjukkan bahwa \( 2 \times 3 \) sama dengan \( 3 \times 2 \).</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Rows \( \times \) Columns = Total</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="g-task4"></div>
+                <div class="page" data-page="7" data-task-id="g-task5"></div>
+                <div class="page" data-page="8" data-task-id="g-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Multiplying Larger Numbers by 2 <i class="fas fa-arrow-up-right-dots text-purple-400 ml-2"></i></h2>
+                        <p class="translation">Mengalikan Angka Besar dengan 2</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="20" y="40" width="140" height="60" rx="5" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+                                    <text x="90" y="65" font-size="14" text-anchor="middle" fill="#333">2 × 10 = 20</text>
+                                    <text x="90" y="85" font-size="14" text-anchor="middle" fill="#666">2 × 11 = 22</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>What happens when you multiply numbers bigger than 5 by 2? Just double them! <span class="translation">Apa yang terjadi ketika kamu mengalikan angka lebih besar dari 5 dengan 2? Cukup gandakan!</span></p>
+                                <p class="mt-2">For \( 2 \times 10 \), think "10 and 10 makes 20". For \( 2 \times 11 \), think "11 and 11 makes 22". <span class="translation">Untuk \( 2 \times 10 \), pikirkan "10 dan 10 menghasilkan 20". Untuk \( 2 \times 11 \), pikirkan "11 dan 11 menghasilkan 22".</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Break It Down</p>
+                            <p class="mt-1">If 11 is hard, break it into 10 and 1. Double the 10 (20), double the 1 (2), add them: 22! <span class="translation">Jika 11 sulit, pecah menjadi 10 dan 1. Gandakan 10 (20), gandakan 1 (2), jumlahkan: 22!</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( 2 \times (a+b) = (2 \times a) + (2 \times b) \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="g-task7"></div>
+                <div class="page" data-page="11" data-task-id="g-task8"></div>
+                <div class="page" data-page="12" data-task-id="g-task9"></div>
+                <div class="page" data-page="13" data-task-id="g-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: INDEPENDENT PRACTICE               -->
+            <!-- ========================================== -->
+            <div id="independent" class="content-section">
+                <div class="page active" data-page="1">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+                        <h2 class="text-2xl font-bold text-indigo-600 mb-2">Comparing Products <i class="fas fa-scale-balanced text-indigo-400 ml-2"></i></h2>
+                        <p class="translation">Membandingkan Hasil Kali</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-indigo-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="20" y="40" width="50" height="60" rx="5" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+                                    <text x="45" y="75" font-size="12" text-anchor="middle" fill="#333">2 × 4</text>
+                                    <text x="90" y="75" font-size="20" text-anchor="middle" fill="#ef4444" font-weight="bold">&gt;</text>
+                                    <rect x="110" y="40" width="50" height="60" rx="5" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+                                    <text x="135" y="75" font-size="12" text-anchor="middle" fill="#333">2 × 2</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>You can use multiplication to compare sizes. Which is bigger: \( 2 \times 4 \) or \( 2 \times 2 \)? <span class="translation">Kamu bisa menggunakan perkalian untuk membandingkan ukuran. Mana yang lebih besar: \( 2 \times 4 \) atau \( 2 \times 2 \)?</span></p>
+                                <p class="mt-2">\( 2 \times 4 = 8 \) and \( 2 \times 2 = 4 \). Since \( 8 > 4 \), \( 2 \times 4 \) is bigger. <span class="translation">\( 2 \times 4 = 8 \) dan \( 2 \times 2 = 4 \). Karena \( 8 > 4 \), \( 2 \times 4 \) lebih besar.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Solve First, Then Compare</p>
+                            <p class="mt-1">Always solve both sides of the symbol first, then it's easy to see which one is bigger! <span class="translation">Selalu selesaikan kedua sisi simbol terlebih dahulu, lalu akan mudah untuk melihat mana yang lebih besar!</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Calculate both sides, then use \( >, <, \) or \( = \).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="2" data-task-id="ind-task1"></div>
+                <div class="page" data-page="3" data-task-id="ind-task2"></div>
+                <div class="page" data-page="4" data-task-id="ind-task3"></div>
+
+                <div class="page" data-page="5">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-green-600 mb-2">Weeks and Days <i class="fas fa-calendar-days text-green-400 ml-2"></i></h2>
+                        <p class="translation">Minggu dan Hari</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-green-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="30" y="30" width="120" height="80" rx="5" fill="#dcfce7" stroke="#10b981" stroke-width="2"/>
+                                    <line x1="30" y1="50" x2="150" y2="50" stroke="#10b981" stroke-width="2"/>
+                                    <text x="90" y="80" font-size="24" text-anchor="middle" fill="#059669" font-weight="bold">7</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>There are 7 days in a week. If an event lasts for 2 weeks, how many days is that? <span class="translation">Ada 7 hari dalam seminggu. Jika sebuah acara berlangsung selama 2 minggu, berapa hari itu?</span></p>
+                                <p class="mt-2">Since 1 week = 7 days, 2 weeks = \( 2 \times 7 = 14 \) days. <span class="translation">Karena 1 minggu = 7 hari, 2 minggu = \( 2 \times 7 = 14 \) hari.</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Real-World Math</p>
+                            <p class="mt-1">Time is full of multiples! 2 weeks is 14 days. 2 months is about 60 days! <span class="translation">Waktu penuh dengan kelipatan! 2 minggu adalah 14 hari. 2 bulan sekitar 60 hari!</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: Total Days = Number of Weeks \( \times 7 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="6" data-task-id="ind-task4"></div>
+                <div class="page" data-page="7" data-task-id="ind-task5"></div>
+                <div class="page" data-page="8" data-task-id="ind-task6"></div>
+
+                <div class="page" data-page="9">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-purple-600 mb-2">Finding the Missing Factor <i class="fas fa-key text-purple-400 ml-2"></i></h2>
+                        <p class="translation">Mencari Faktor yang Hilang</p>
+                        <div class="flex gap-4 my-4 items-center">
+                            <div class="bg-purple-50 p-4 rounded flex justify-center shrink-0">
+                                <svg width="180" height="140" viewBox="0 0 180 140">
+                                    <rect x="20" y="40" width="140" height="60" rx="5" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+                                    <text x="90" y="75" font-size="16" text-anchor="middle" fill="#333">? × 2 = 16</text>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Sometimes the 2 is the second number, and the first number is missing. Like: \( ? \times 2 = 16 \). <span class="translation">Kadang 2 adalah angka kedua, dan angka pertama yang hilang. Seperti: \( ? \times 2 = 16 \).</span></p>
+                                <p class="mt-2">Because of the commutative property (\( a \times b = b \times a \)), this is the same as \( 2 \times ? = 16 \). The answer is \( 8 \). <span class="translation">Karena sifat komutatif (\( a \times b = b \times a \)), ini sama dengan \( 2 \times ? = 16 \). Jawabannya adalah \( 8 \).</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                            <p class="font-bold text-yellow-800"><i class="fas fa-lightbulb mr-1"></i> Tips & Tricks: Flip It!</p>
+                            <p class="mt-1">If it's easier to read, swap the numbers around. The answer won't change! <span class="translation">Jika lebih mudah dibaca, tukar angkanya. Jawabannya tidak akan berubah!</span></p>
+                            <p class="mt-1 font-bold"><i class="fas fa-flag mr-1"></i> To The Point Formula: \( ? \times 2 = c \implies ? = c \div 2 \)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" data-page="10" data-task-id="ind-task7"></div>
+                <div class="page" data-page="11" data-task-id="ind-task8"></div>
+                <div class="page" data-page="12" data-task-id="ind-task9"></div>
+                <div class="page" data-page="13" data-task-id="ind-task10"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION: CONSOLIDATION & REFLECTION         -->
+            <!-- ========================================== -->
+            <div id="consolidation" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <h2 class="text-2xl font-bold text-gray-800">Consolidation & Reflection</h2>
+                    <p class="translation">Konsolidasi & Refleksi</p>
+                    <p>Excellent work! You've mastered the multiplication table of 2. Remember, multiplying by 2 is just doubling! <span class="translation">Kerja bagus! Anda telah menguasai tabel perkalian 2. Ingat, mengalikan dengan 2 hanyalah menggandakan!</span></p>
+                    <p class="mt-2">Keep practicing your skip counting to get even faster! <span class="translation">Teruslah berlatih melompat berhitung untuk menjadi lebih cepat!</span></p>
+                    <a href="https://learn.algonova.id" target="_blank" class="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+                        Go to learn.algonova.id <span class="translation text-sm italic">Pergi ke learn.algonova.id</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- TASK SECTIONS -->
+            <div id="task1" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t1-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t1-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t1-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t1-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t1-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t1-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t1-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t1-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t1-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t1-task10"></div></div>
+            </div>
+            <div id="task2" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t2-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t2-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t2-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t2-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t2-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t2-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t2-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t2-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t2-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t2-task10"></div></div>
+            </div>
+            <div id="task3" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t3-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t3-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t3-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t3-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t3-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t3-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t3-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t3-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t3-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t3-task10"></div></div>
+            </div>
+            <div id="task4" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t4-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t4-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t4-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t4-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t4-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t4-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t4-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t4-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t4-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t4-task10"></div></div>
+            </div>
+            <div id="task5" class="content-section">
+                <div class="page active" data-page="1"><div data-task-id="t5-task1"></div></div>
+                <div class="page" data-page="2"><div data-task-id="t5-task2"></div></div>
+                <div class="page" data-page="3"><div data-task-id="t5-task3"></div></div>
+                <div class="page" data-page="4"><div data-task-id="t5-task4"></div></div>
+                <div class="page" data-page="5"><div data-task-id="t5-task5"></div></div>
+                <div class="page" data-page="6"><div data-task-id="t5-task6"></div></div>
+                <div class="page" data-page="7"><div data-task-id="t5-task7"></div></div>
+                <div class="page" data-page="8"><div data-task-id="t5-task8"></div></div>
+                <div class="page" data-page="9"><div data-task-id="t5-task9"></div></div>
+                <div class="page" data-page="10"><div data-task-id="t5-task10"></div></div>
+            </div>
+            </div> <!-- Penutup #contentScrollArea -->
+            <div id="paginationBar" class="shrink-0 bg-white p-3 border-t border-gray-200 flex justify-center items-center gap-1 no-print z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]"></div>
+        </main>
+    </div>
+	
+    <!-- Print Area -->
+    <div id="printArea" class="hidden p-8">
+        <div class="text-center border-b-2 border-black pb-4 mb-4">
+            <h1 class="text-xl font-bold">Math Tutoring by Deni</h1>
+            <p>Topic: Multiplication Table of 2</p>
+            <div class="flex justify-around mt-4 text-sm">
+                <p>Name: ..............................</p>
+                <p>Date: ..............................</p>
+                <p>Task: <span id="printTaskNum">1</span></p>
+                <p>Score: <span id="printScore">0</span>/10</p>
+            </div>
+        </div>
+        <table class="w-full border-collapse border border-black text-sm">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border border-black p-1">No.</th>
+                    <th class="border border-black p-1">Question</th>
+                    <th class="border border-black p-1">Student Answer</th>
+                    <th class="border border-black p-1">Correct Answer</th>
+                    <th class="border border-black p-1">Note (❌/✔️)</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody"></tbody>
+        </table>
+        <div class="mt-8 text-right">
+            <p>Checked by,</p>
+            <br><br>
+            <p class="font-bold">Deni</p>
+        </div>
+    </div>
+    
+    <script>
+        // ====== MATH QUESTIONS DATA (PART 1) ======
+        const questions = {};
+        Object.assign(questions, {
+            // SPIRAL REVIEW WARM-UP
+            "w-task1": { type: "single", q: "Sarah has 3 plates. Each plate has 2 cookies. How many cookies does she have in total? <i class='fas fa-cookie-bite text-blue-500 ml-2'></i>", q_trans: "Sarah punya 3 piring. Setiap piring berisi 2 kue. Berapa banyak kue yang dia punya secara total?", opts: ["\\( 5 \\)", "\\( 6 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 12 \\)"], ans: "\\( 6 \\)", exp: "This is 3 groups of 2. We can write it as repeated addition: 2 + 2 + 2 = 6. Or multiply: 3 × 2 = 6.", exp_trans: "Ini adalah 3 kelompok 2. Kita bisa menulisnya sebagai penjumlahan berulang: 2 + 2 + 2 = 6. Atau mengalikan: 3 × 2 = 6." },
+            "w-task2": { type: "fill", q: "A pair of shoes means 2 shoes. If you have 5 pairs, how many shoes do you have? <i class='fas fa-shoe-prints text-blue-500 ml-2'></i>", q_trans: "Sepasang sepatu berarti 2 sepatu. Jika kamu punya 5 pasang, berapa banyak sepatu yang kamu punya?", ans: "10", exp: "1 pair = 2 shoes. 5 pairs mean 5 × 2 = 10 shoes.", exp_trans: "1 pasang = 2 sepatu. 5 pasang berarti 5 × 2 = 10 sepatu." },
+            "w-task3": { type: "tf_table", q: "Evaluate the statements about multiplication. <i class='fas fa-list-ul text-blue-500 ml-2'></i>", q_trans: "Evaluasi pernyataan tentang perkalian.", opts: ["2 × 4 is the same as 4 + 4", "Multiplying by 2 is the same as halving a number", "5 × 2 = 10", "2 × 1 = 1"], ans: ["B", "S", "B", "S"], exp: "1. True, 2 groups of 4 is 8, same as 4+4. 2. False, it is doubling. 3. True. 4. False, 2 × 1 = 2.", exp_trans: "1. Benar, 2 kelompok 4 adalah 8, sama dengan 4+4. 2. Salah, itu menggandakan. 3. Benar. 4. Salah, 2 × 1 = 2." },
+            "w-task4": { type: "single", q: "Which of the following is equal to \\( 2 + 2 + 2 + 2 + 2 \\)? <i class='fas fa-plus-circle text-blue-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan \\( 2 + 2 + 2 + 2 + 2 \\)?", opts: ["\\( 4 \\times 2 \\)", "\\( 5 \\times 2 \\)", "\\( 2 \\times 2 \\)", "\\( 6 \\times 2 \\)", "\\( 5 + 2 \\)"], ans: "\\( 5 \\times 2 \\)", exp: "There are five 2s being added together. So, 2 + 2 + 2 + 2 + 2 is the same as 5 × 2.", exp_trans: "Ada lima angka 2 yang dijumlahkan. Jadi, 2 + 2 + 2 + 2 + 2 sama dengan 5 × 2." },
+            "w-task5": { type: "complex", q: "Which of the following represent the answer 12? <i class='fas fa-check-double text-blue-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang menghasilkan jawaban 12?", opts: ["\\( 6 \\times 2 \\)", "\\( 2 + 2 + 2 + 2 + 2 + 2 \\)", "\\( 5 \\times 2 \\)", "\\( 2 \\times 7 \\)"], ans: [0, 1], exp: "1. True (6 × 2 = 12). 2. True (six 2s = 12). 3. False (5 × 2 = 10). 4. False (2 × 7 = 14).", exp_trans: "1. Benar (6 × 2 = 12). 2. Benar (enam angka 2 = 12). 3. Salah (5 × 2 = 10). 4. Salah (2 × 7 = 14)." },
+            "w-task6": { type: "fill", q: "Skip count by 2s: 2, 4, 6, 8, ___. What is the next number? <i class='fas fa-grip-lines text-blue-500 ml-2'></i>", q_trans: "Hitung kelipatan 2: 2, 4, 6, 8, ___. Berapa angka berikutnya?", ans: "10", exp: "You are adding 2 each time. 8 + 2 = 10.", exp_trans: "Kamu menambah 2 setiap kali. 8 + 2 = 10." },
+            "w-task7": { type: "single", q: "What is \\( 2 \\times 7 \\)? <i class='fas fa-calculator text-blue-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 7 \\)?", opts: ["\\( 9 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 21 \\)"], ans: "\\( 14 \\)", exp: "To find 2 × 7, just double 7. 7 + 7 = 14.", exp_trans: "Untuk mencari 2 × 7, cukup gandakan 7. 7 + 7 = 14." },
+            "w-task8": { type: "tf_table", q: "Evaluate statements about even numbers. <i class='fas fa-clipboard-check text-blue-500 ml-2'></i>", q_trans: "Evaluasi pernyataan tentang bilangan genap.", opts: ["All answers in the 2 times table are even", "2 × 3 ends in an odd number", "2 × 5 ends in 0", "14 is in the 2 times table"], ans: ["B", "S", "B", "B"], exp: "1. True. 2. False, 2 × 3 = 6 (even). 3. True, 2 × 5 = 10. 4. True, 2 × 7 = 14.", exp_trans: "1. Benar. 2. Salah, 2 × 3 = 6 (genap). 3. Benar, 2 × 5 = 10. 4. Benar, 2 × 7 = 14." },
+            "w-task9": { type: "single", q: "If \\( 2 \\times ? = 16 \\), what is the missing number? <i class='fas fa-puzzle-piece text-blue-500 ml-2'></i>", q_trans: "Jika \\( 2 \\times ? = 16 \\), berapa angka yang hilang?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 14 \\)"], ans: "\\( 8 \\)", exp: "Think: 2 times what equals 16? You can divide 16 by 2. 16 ÷ 2 = 8. So 2 × 8 = 16.", exp_trans: "Pikirkan: 2 kali apa sama dengan 16? Kamu bisa membagi 16 dengan 2. 16 ÷ 2 = 8. Jadi 2 × 8 = 16." },
+            "w-task10": { type: "complex", q: "Which of the following are multiples of 2? <i class='fas fa-check-circle text-blue-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang merupakan kelipatan 2?", opts: ["\\( 4 \\)", "\\( 7 \\)", "\\( 10 \\)", "\\( 11 \\)"], ans: [0, 2], exp: "Multiples of 2 are even numbers. 4 and 10 are even. 7 and 11 are odd.", exp_trans: "Kelipatan 2 adalah bilangan genap. 4 dan 10 adalah genap. 7 dan 11 adalah ganjil." },
+
+            // INTRODUCTION & REAL-WORLD
+            "i-task1": { type: "single", q: "A farmer has 4 baskets. Each basket has 2 apples. How many apples are there in total? <i class='fas fa-apple-whole text-green-500 ml-2'></i>", q_trans: "Seorang petani punya 4 keranjang. Setiap keranjang berisi 2 apel. Berapa banyak apel secara total?", opts: ["\\( 6 \\)", "\\( 8 \\)", "\\( 10 \\)", "\\( 12 \\)", "\\( 16 \\)"], ans: "\\( 8 \\)", exp: "4 groups of 2 apples. 4 × 2 = 8 apples.", exp_trans: "4 kelompok 2 apel. 4 × 2 = 8 apel." },
+            "i-task2": { type: "fill", q: "There are 6 bicycles in the park. How many wheels are there in total? <i class='fas fa-bicycle text-green-500 ml-2'></i>", q_trans: "Ada 6 sepeda di taman. Berapa banyak roda secara total?", ans: "12", exp: "1 bicycle has 2 wheels. 6 bicycles = 6 × 2 = 12 wheels.", exp_trans: "1 sepeda punya 2 roda. 6 sepeda = 6 × 2 = 12 roda." },
+            "i-task3": { type: "tf_table", q: "Analyze real-world pairs. <i class='fas fa-list-ul text-green-500 ml-2'></i>", q_trans: "Analisis pasangan di dunia nyata.", opts: ["1 pair of gloves = 2 gloves", "3 pairs of socks = 5 socks", "2 pairs of shoes = 4 shoes", "A pair of eyes means 2 eyes"], ans: ["B", "S", "B", "B"], exp: "1. True. 2. False, 3 pairs = 6 socks. 3. True, 2 × 2 = 4. 4. True.", exp_trans: "1. Benar. 2. Salah, 3 pasang = 6 kaus kaki. 3. Benar, 2 × 2 = 4. 4. Benar." },
+            "i-task4": { type: "single", q: "5 birds are sitting on a tree. How many wings are there in total? <i class='fas fa-dove text-green-500 ml-2'></i>", q_trans: "5 burung bertengger di pohon. Berapa banyak sayap secara total?", opts: ["\\( 7 \\)", "\\( 10 \\)", "\\( 12 \\)", "\\( 15 \\)", "\\( 20 \\)"], ans: "\\( 10 \\)", exp: "Each bird has 2 wings. 5 birds × 2 wings = 10 wings.", exp_trans: "Setiap burung punya 2 sayap. 5 burung × 2 sayap = 10 sayap." },
+            "i-task5": { type: "complex", q: "Which of these naturally come in pairs (groups of 2)? <i class='fas fa-check-double text-green-500 ml-2'></i>", q_trans: "Manakah dari ini yang secara alami berpasangan (kelompok 2)?", opts: ["Eyes on a face", "Wheels on a car (usually)", "Fingers on one hand", "Ears on a dog"], ans: [0, 1, 3], exp: "1. True (2 eyes). 2. True (4 wheels is 2 pairs). 3. False (5 fingers). 4. True (2 ears).", exp_trans: "1. Benar (2 mata). 2. Benar (4 roda adalah 2 pasang). 3. Salah (5 jari). 4. Benar (2 telinga)." },
+            "i-task6": { type: "fill", q: "You buy 8 pairs of shoes. How many individual shoes do you have? <i class='fas fa-shoe-prints text-green-500 ml-2'></i>", q_trans: "Kamu membeli 8 pasang sepatu. Berapa banyak sepatu individual yang kamu miliki?", ans: "16", exp: "1 pair = 2 shoes. 8 pairs = 8 × 2 = 16 shoes.", exp_trans: "1 pasang = 2 sepatu. 8 pasang = 8 × 2 = 16 sepatu." },
+            "i-task7": { type: "single", q: "A spider has 8 legs. How many legs do 2 spiders have? <i class='fas fa-spider text-green-500 ml-2'></i>", q_trans: "Seekor laba-laba punya 8 kaki. Berapa kaki yang dimiliki 2 laba-laba?", opts: ["\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 18 \\)"], ans: "\\( 16 \\)", exp: "2 groups of 8 legs. 2 × 8 = 16 legs. (Also, 8 + 8 = 16).", exp_trans: "2 kelompok 8 kaki. 2 × 8 = 16 kaki. (Juga, 8 + 8 = 16)." },
+            "i-task8": { type: "tf_table", q: "Evaluate multiplication in real life. <i class='fas fa-clipboard-check text-green-500 ml-2'></i>", q_trans: "Evaluasi perkalian di kehidupan nyata.", opts: ["2 boxes of 5 pens = 10 pens", "2 bags of 4 apples = 6 apples", "2 packs of 6 cards = 12 cards", "2 groups of 3 kids = 5 kids"], ans: ["B", "S", "B", "S"], exp: "1. True (2×5=10). 2. False (2×4=8). 3. True (2×6=12). 4. False (2×3=6).", exp_trans: "1. Benar (2×5=10). 2. Salah (2×4=8). 3. Benar (2×6=12). 4. Salah (2×3=6)." },
+            "i-task9": { type: "single", q: "There are 9 cats. How many ears do they have in total? <i class='fas fa-cat text-green-500 ml-2'></i>", q_trans: "Ada 9 kucing. Berapa banyak telinga yang mereka miliki secara total?", opts: ["\\( 11 \\)", "\\( 16 \\)", "\\( 18 \\)", "\\( 20 \\)", "\\( 27 \\)"], ans: "\\( 18 \\)", exp: "1 cat has 2 ears. 9 cats × 2 ears = 18 ears.", exp_trans: "1 kucing punya 2 telinga. 9 kucing × 2 telinga = 18 telinga." },
+            "i-task10": { type: "complex", q: "Which of the following scenarios equal 14? <i class='fas fa-check-circle text-green-500 ml-2'></i>", q_trans: "Skenario mana saja yang sama dengan 14?", opts: ["7 pairs of socks", "6 bicycles", "2 groups of 7", "2 groups of 8"], ans: [0, 2], exp: "1. True (7×2=14). 2. False (6×2=12). 3. True (2×7=14). 4. False (2×8=16).", exp_trans: "1. Benar (7×2=14). 2. Salah (6×2=12). 3. Benar (2×7=14). 4. Salah (2×8=16)." },
+
+            // REVIEW OF PRIOR KNOWLEDGE
+            "r-task1": { type: "single", q: "Which multiplication sentence matches \\( 2 + 2 + 2 + 2 \\)? <i class='fas fa-calculator text-purple-500 ml-2'></i>", q_trans: "Kalimat perkalian mana yang cocok dengan \\( 2 + 2 + 2 + 2 \\)?", opts: ["\\( 2 \\times 2 \\)", "\\( 3 \\times 2 \\)", "\\( 4 \\times 2 \\)", "\\( 5 \\times 2 \\)", "\\( 4 + 2 \\)"], ans: "\\( 4 \\times 2 \\)", exp: "There are four 2s. So, repeated addition 2+2+2+2 is the same as 4 × 2.", exp_trans: "Ada empat angka 2. Jadi, penjumlahan berulang 2+2+2+2 sama dengan 4 × 2." },
+            "r-task2": { type: "fill", q: "If \\( 2 \\times 5 = 10 \\), what is \\( 10 \\div 2 \\)? <i class='fas fa-divide text-purple-500 ml-2'></i>", q_trans: "Jika \\( 2 \\times 5 = 10 \\), berapakah \\( 10 \\div 2 \\)?", ans: "5", exp: "Multiplication and division are opposites (fact families). Since 2 × 5 = 10, then 10 ÷ 2 = 5.", exp_trans: "Perkalian dan pembagian adalah kebalikannya (keluarga fakta). Karena 2 × 5 = 10, maka 10 ÷ 2 = 5." },
+            "r-task3": { type: "tf_table", q: "Evaluate fact families. <i class='fas fa-list-ul text-purple-500 ml-2'></i>", q_trans: "Evaluasi keluarga fakta.", opts: ["If 2×3=6, then 6÷2=3", "If 2×4=8, then 8÷2=4", "If 2×6=12, then 12÷6=2", "If 2×2=4, then 4÷2=1"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True. 4. False, 4 ÷ 2 = 2.", exp_trans: "1. Benar. 2. Benar. 3. Benar. 4. Salah, 4 ÷ 2 = 2." },
+            "r-task4": { type: "single", q: "What is \\( 2 \\times 0 \\)? <i class='fas fa-rocket text-purple-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 0 \\)?", opts: ["\\( 0 \\)", "\\( 1 \\)", "\\( 2 \\)", "\\( 10 \\)", "\\( 20 \\)"], ans: "\\( 0 \\)", exp: "Any number multiplied by 0 is always 0. If you have 2 groups of 0 items, you have nothing.", exp_trans: "Angka apa pun dikalikan 0 selalu 0. Jika kamu punya 2 kelompok 0 item, kamu tidak punya apa-apa." },
+            "r-task5": { type: "complex", q: "Which of the following equal 2? <i class='fas fa-check-double text-purple-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 2?", opts: ["\\( 2 \\times 1 \\)", "\\( 1 + 1 \\)", "\\( 2 \\times 0 \\)", "\\( 4 \\div 2 \\)"], ans: [0, 1, 3], exp: "1. True (2×1=2). 2. True (1+1=2). 3. False (2×0=0). 4. True (4÷2=2).", exp_trans: "1. Benar (2×1=2). 2. Benar (1+1=2). 3. Salah (2×0=0). 4. Benar (4÷2=2)." },
+            "r-task6": { type: "fill", q: "What is \\( 2 \\times 1 \\)? <i class='fas fa-mirror text-purple-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 1 \\)?", ans: "2", exp: "Multiplying by 1 is like a mirror. The number stays the same. 2 × 1 = 2.", exp_trans: "Mengalikan dengan 1 seperti cermin. Angkanya tetap sama. 2 × 1 = 2." },
+            "r-task7": { type: "single", q: "Which of these is NOT equal to \\( 4 \\times 2 \\)? <i class='fas fa-times text-purple-500 ml-2'></i>", q_trans: "Manakah dari ini yang TIDAK sama dengan \\( 4 \\times 2 \\)?", opts: ["\\( 8 \\)", "\\( 2 + 2 + 2 + 2 \\)", "\\( 2 \\times 4 \\)", "\\( 4 + 4 \\)", "\\( 3 \\times 2 \\)"], ans: "\\( 3 \\times 2 \\)", exp: "4 × 2 = 8. Options 1,2,3,4 all equal 8. But 3 × 2 = 6, not 8.", exp_trans: "4 × 2 = 8. Opsi 1,2,3,4 semuanya sama dengan 8. Tapi 3 × 2 = 6, bukan 8." },
+            "r-task8": { type: "tf_table", q: "Evaluate rules of 0 and 1. <i class='fas fa-clipboard-check text-purple-500 ml-2'></i>", q_trans: "Evaluasi aturan 0 dan 1.", opts: ["5 × 0 = 0", "2 × 1 = 1", "0 × 8 = 0", "1 × 9 = 9"], ans: ["B", "S", "B", "B"], exp: "1. True. 2. False, 2 × 1 = 2. 3. True. 4. True.", exp_trans: "1. Benar. 2. Salah, 2 × 1 = 2. 3. Benar. 4. Benar." },
+            "r-task9": { type: "single", q: "If you have 2 boxes of 6 crayons, how many crayons do you have? <i class='fas fa-pen-box text-purple-500 ml-2'></i>", q_trans: "Jika kamu punya 2 kotak berisi 6 krayon, berapa banyak krayon yang kamu punya?", opts: ["\\( 8 \\)", "\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)"], ans: "\\( 12 \\)", exp: "2 groups of 6. 2 × 6 = 12.", exp_trans: "2 kelompok 6. 2 × 6 = 12." },
+            "r-task10": { type: "complex", q: "Which statements are true? <i class='fas fa-check-circle text-purple-500 ml-2'></i>", q_trans: "Pernyataan mana yang benar?", opts: ["\\( 2 \\times 4 = 8 \\)", "\\( 8 \\div 2 = 4 \\)", "\\( 4 + 4 = 8 \\)", "\\( 2 \\times 4 = 4 \\times 2 \\)"], ans: [0, 1, 2, 3], exp: "All are true. They are all part of the same fact family or commutative property.", exp_trans: "Semua benar. Mereka semua bagian dari keluarga fakta yang sama atau sifat komutatif." }
+        });
+        Object.assign(questions, {
+            // PROBLEM INTRODUCTION
+            "p-task1": { type: "single", q: "One eraser costs \\$2. How much do 5 erasers cost? <i class='fas fa-eraser text-orange-500 ml-2'></i>", q_trans: "Satu penghapus berharga \\$2. Berapa harga 5 penghapus?", opts: ["\\( \\$7 \\)", "\\( \\$10 \\)", "\\( \\$12 \\)", "\\$15", "\\( \\$20 \\)"], ans: "\\( \\$10 \\)", exp: "Price per item × Number of items = Total Cost. 2 × 5 = 10. So, 5 erasers cost $10.", exp_trans: "Harga per item × Jumlah item = Total Biaya. 2 × 5 = 10. Jadi, 5 penghapus berharga $10." },
+            "p-task2": { type: "fill", q: "A pack has 2 cards. You have 7 packs. How many cards do you have? <i class='fas fa-layer-group text-orange-500 ml-2'></i>", q_trans: "Satu paket berisi 2 kartu. Kamu punya 7 paket. Berapa banyak kartu yang kamu punya?", ans: "14", exp: "7 groups of 2. 7 × 2 = 14 cards.", exp_trans: "7 kelompok 2. 7 × 2 = 14 kartu." },
+            "p-task3": { type: "tf_table", q: "Evaluate word problem solutions. <i class='fas fa-list-ul text-orange-500 ml-2'></i>", q_trans: "Evaluasi solusi soal cerita.", opts: ["2 boxes of 3 pencils = 6 pencils", "2 bags of 4 marbles = 8 marbles", "2 packs of 5 stickers = 7 stickers", "2 jars of 2 candies = 4 candies"], ans: ["B", "B", "S", "B"], exp: "1. True (2×3=6). 2. True (2×4=8). 3. False (2×5=10). 4. True (2×2=4).", exp_trans: "1. Benar (2×3=6). 2. Benar (2×4=8). 3. Salah (2×5=10). 4. Benar (2×2=4)." },
+            "p-task4": { type: "single", q: "You have 16 cookies. You put them into bags of 2. How many bags do you need? <i class='fas fa-cookie text-orange-500 ml-2'></i>", q_trans: "Kamu punya 16 kue. Kamu meletakkannya ke dalam kantong berisi 2. Berapa banyak kantong yang kamu butuhkan?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 14 \\)"], ans: "\\( 8 \\)", exp: "To find the number of groups, divide the total by the group size. 16 ÷ 2 = 8 bags. Or think: 2 × ? = 16, which is 8.", exp_trans: "Untuk mencari jumlah kelompok, bagi total dengan ukuran kelompok. 16 ÷ 2 = 8 kantong. Atau pikir: 2 × ? = 16, yaitu 8." },
+            "p-task5": { type: "complex", q: "Which word problems require multiplying by 2? <i class='fas fa-check-double text-orange-500 ml-2'></i>", q_trans: "Soal cerita mana yang membutuhkan perkalian dengan 2?", opts: ["Finding total wheels on 5 bicycles", "Finding total eyes on 4 dogs", "Finding total fingers on 1 hand", "Finding total shoes in 3 pairs"], ans: [0, 1, 3], exp: "1. True (5×2). 2. True (4×2). 3. False (1 hand has 5 fingers). 4. True (3 pairs × 2 = 6 shoes).", exp_trans: "1. Benar (5×2). 2. Benar (4×2). 3. Salah (1 tangan punya 5 jari). 4. Benar (3 pasang × 2 = 6 sepatu)." },
+            "p-task6": { type: "fill", q: "If \\( 2 \\times ? = 18 \\), what is the missing number? <i class='fas fa-puzzle-piece text-orange-500 ml-2'></i>", q_trans: "Jika \\( 2 \\times ? = 18 \\), berapa angka yang hilang?", ans: "9", exp: "18 ÷ 2 = 9. So the missing number is 9. (2 × 9 = 18).", exp_trans: "18 ÷ 2 = 9. Jadi angka yang hilang adalah 9. (2 × 9 = 18)." },
+            "p-task7": { type: "single", q: "Tom has 2 boxes of toy cars. Each box has 7 cars. How many cars does Tom have? <i class='fas fa-car text-orange-500 ml-2'></i>", q_trans: "Tom punya 2 kotak mobil mainan. Setiap kotak berisi 7 mobil. Berapa banyak mobil yang dimiliki Tom?", opts: ["\\( 9 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 21 \\)"], ans: "\\( 14 \\)", exp: "2 groups of 7. 2 × 7 = 14 toy cars.", exp_trans: "2 kelompok 7. 2 × 7 = 14 mobil mainan." },
+            "p-task8": { type: "tf_table", q: "Evaluate missing number problems. <i class='fas fa-clipboard-check text-orange-500 ml-2'></i>", q_trans: "Evaluasi soal angka yang hilang.", opts: ["If 2×?=10, ?=5", "If 2×?=12, ?=6", "If ?×2=16, ?=7", "If ?×2=4, ?=2"], ans: ["B", "B", "S", "B"], exp: "1. True (10÷2=5). 2. True (12÷2=6). 3. False (16÷2=8). 4. True (4÷2=2).", exp_trans: "1. Benar (10÷2=5). 2. Benar (12÷2=6). 3. Salah (16÷2=8). 4. Benar (4÷2=2)." },
+            "p-task9": { type: "single", q: "A ticket costs \\$2. You buy 4 tickets. How much do you pay? <i class='fas fa-ticket text-orange-500 ml-2'></i>", q_trans: "Satu tiket berharga \\$2. Kamu membeli 4 tiket. Berapa yang kamu bayar?", opts: ["\\( \\$6 \\)", "\\( \\$8 \\)", "\\( \\$10 \\)", "\\$12", "\\( \\$16 \\)"], ans: "\\( \\$8 \\)", exp: "Price × Quantity = Total. 2 × 4 = 8. You pay $8.", exp_trans: "Harga × Jumlah = Total. 2 × 4 = 8. Kamu membayar $8." },
+            "p-task10": { type: "complex", q: "Which of the following have an answer of 16? <i class='fas fa-check-circle text-orange-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang memiliki jawaban 16?", opts: ["\\( 2 \\times 8 \\)", "\\( 8 + 8 \\)", "\\( 2 \\times 7 \\)", "\\( ? \\times 2 = 16 \\text{ where } ? = 8 \\)"], ans: [0, 1, 3], exp: "1. True (2×8=16). 2. True (8+8=16). 3. False (2×7=14). 4. True (8×2=16).", exp_trans: "1. Benar (2×8=16). 2. Benar (8+8=16). 3. Salah (2×7=14). 4. Benar (8×2=16)." }
+        });
+		
+        Object.assign(questions, {
+            // GUIDED PRACTICE
+            "g-task1": { type: "single", q: "If you start at 0 on a number line and make 4 jumps of 2, where do you land? <i class='fas fa-route text-blue-500 ml-2'></i>", q_trans: "Jika kamu mulai dari 0 pada garis bilangan dan membuat 4 lompatan sebesar 2, di mana kamu mendarat?", opts: ["\\( 6 \\)", "\\( 8 \\)", "\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)"], ans: "\\( 8 \\)", exp: "4 jumps of 2 is the same as 4 × 2. 4 × 2 = 8. You land on 8.", exp_trans: "4 lompatan sebesar 2 sama dengan 4 × 2. 4 × 2 = 8. Kamu mendarat di 8." },
+            "g-task2": { type: "fill", q: "An array has 2 rows and 6 columns. How many dots are there in total? <i class='fas fa-th text-blue-500 ml-2'></i>", q_trans: "Sebuah array memiliki 2 baris dan 6 kolom. Berapa banyak titik secara total?", ans: "12", exp: "Rows × Columns = Total. 2 × 6 = 12 dots.", exp_trans: "Baris × Kolom = Total. 2 × 6 = 12 titik." },
+            "g-task3": { type: "tf_table", q: "Evaluate array properties. <i class='fas fa-list-ul text-blue-500 ml-2'></i>", q_trans: "Evaluasi sifat array.", opts: ["Rows × Columns = Total", "2 × 3 is the same as 3 × 2", "2 rows of 5 is 7", "An array of 2 × 4 has 8 dots"], ans: ["B", "B", "S", "B"], exp: "1. True. 2. True (commutative property). 3. False, 2 × 5 = 10. 4. True, 2 × 4 = 8.", exp_trans: "1. Benar. 2. Benar (sifat komutatif). 3. Salah, 2 × 5 = 10. 4. Benar, 2 × 4 = 8." },
+            "g-task4": { type: "single", q: "A pizza box holds 2 pizzas. If you have 9 boxes, how many pizzas do you have? <i class='fas fa-pizza-slice text-blue-500 ml-2'></i>", q_trans: "Satu kotak pizza menampung 2 pizza. Jika kamu punya 9 kotak, berapa banyak pizza yang kamu punya?", opts: ["\\( 11 \\)", "\\( 16 \\)", "\\( 18 \\)", "\\( 20 \\)", "\\( 22 \\)"], ans: "\\( 18 \\)", exp: "9 groups of 2. 9 × 2 = 18 pizzas. (Hint: double the 9, 9+9=18).", exp_trans: "9 kelompok 2. 9 × 2 = 18 pizza. (Petunjuk: gandakan 9, 9+9=18)." },
+            "g-task5": { type: "complex", q: "Which of the following equal 18? <i class='fas fa-check-double text-blue-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 18?", opts: ["\\( 2 \\times 9 \\)", "\\( 9 + 9 \\)", "\\( 2 \\times 8 \\)", "\\( 2 \\times 10 \\)"], ans: [0, 1], exp: "1. True (2×9=18). 2. True (9+9=18). 3. False (2×8=16). 4. False (2×10=20).", exp_trans: "1. Benar (2×9=18). 2. Benar (9+9=18). 3. Salah (2×8=16). 4. Salah (2×10=20)." },
+            "g-task6": { type: "fill", q: "5 groups of 2 equals how many? <i class='fas fa-layer-group text-blue-500 ml-2'></i>", q_trans: "5 kelompok 2 sama dengan berapa?", ans: "10", exp: "5 × 2 = 10. You can also count by 2s five times: 2, 4, 6, 8, 10.", exp_trans: "5 × 2 = 10. Kamu juga bisa menghitung kelipatan 2 sebanyak lima kali: 2, 4, 6, 8, 10." },
+            "g-task7": { type: "single", q: "What is \\( 2 \\times 8 \\)? <i class='fas fa-calculator text-blue-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 8 \\)?", opts: ["\\( 10 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 18 \\)", "\\( 20 \\)"], ans: "\\( 16 \\)", exp: "Double the 8. 8 + 8 = 16.", exp_trans: "Gandakan 8. 8 + 8 = 16." },
+            "g-task8": { type: "tf_table", q: "Evaluate commutative property. <i class='fas fa-clipboard-check text-blue-500 ml-2'></i>", q_trans: "Evaluasi sifat komutatif.", opts: ["2 × 5 = 5 × 2", "2 × 6 = 6 × 2", "2 × 7 is bigger than 7 × 2", "2 × 4 = 4 × 2"], ans: ["B", "B", "S", "B"], exp: "1. True. 2. True. 3. False, they are equal (both 14). 4. True.", exp_trans: "1. Benar. 2. Benar. 3. Salah, keduanya sama (14). 4. Benar." },
+            "g-task9": { type: "single", q: "7 ducks are swimming in a pond. How many duck legs are there in total? <i class='fas fa-duck text-blue-500 ml-2'></i>", q_trans: "7 bebek sedang berenang di kolam. Berapa banyak kaki bebek secara total?", opts: ["\\( 9 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 21 \\)"], ans: "\\( 14 \\)", exp: "Each duck has 2 legs. 7 ducks × 2 legs = 14 legs.", exp_trans: "Setiap bebek punya 2 kaki. 7 bebek × 2 kaki = 14 kaki." },
+            "g-task10": { type: "complex", q: "Which of the following equal 20? <i class='fas fa-check-circle text-blue-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 20?", opts: ["\\( 2 \\times 10 \\)", "\\( 10 + 10 \\)", "\\( 2 \\times 9 \\)", "\\( 2 \\times 11 \\)"], ans: [0, 1], exp: "1. True (2×10=20). 2. True (10+10=20). 3. False (2×9=18). 4. False (2×11=22).", exp_trans: "1. Benar (2×10=20). 2. Benar (10+10=20). 3. Salah (2×9=18). 4. Salah (2×11=22)." },
+
+            // INDEPENDENT PRACTICE
+            "ind-task1": { type: "single", q: "Which is greater: \\( 2 \\times 7 \\) or \\( 2 \\times 5 \\)? <i class='fas fa-scale-balanced text-green-500 ml-2'></i>", q_trans: "Mana yang lebih besar: \\( 2 \\times 7 \\) atau \\( 2 \\times 5 \\)?", opts: ["\\( 2 \\times 7 \\)", "\\( 2 \\times 5 \\)", "They are equal", "Cannot be determined", "\\( 2 \\times 5 \\) is greater"], ans: "\\( 2 \\times 7 \\)", exp: "2 × 7 = 14. 2 × 5 = 10. Since 14 > 10, 2 × 7 is greater.", exp_trans: "2 × 7 = 14. 2 × 5 = 10. Karena 14 > 10, 2 × 7 lebih besar." },
+            "ind-task2": { type: "fill", q: "How many days are there in 2 weeks? <i class='fas fa-calendar-days text-green-500 ml-2'></i>", q_trans: "Berapa banyak hari dalam 2 minggu?", ans: "14", exp: "1 week = 7 days. 2 weeks = 2 × 7 = 14 days.", exp_trans: "1 minggu = 7 hari. 2 minggu = 2 × 7 = 14 hari." },
+            "ind-task3": { type: "tf_table", q: "Evaluate time facts. <i class='fas fa-list-ul text-green-500 ml-2'></i>", q_trans: "Evaluasi fakta waktu.", opts: ["1 week = 7 days", "2 weeks = 14 days", "2 days = 48 hours", "2 months = 10 days"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True (1 day=24 hrs, 2 days=48 hrs). 4. False, months have ~30 days.", exp_trans: "1. Benar. 2. Benar. 3. Benar (1 hari=24 jam, 2 hari=48 jam). 4. Salah, bulan punya ~30 hari." },
+            "ind-task4": { type: "single", q: "A library lets you borrow 2 books at a time. If 8 students borrow books, how many books are taken? <i class='fas fa-book text-green-500 ml-2'></i>", q_trans: "Perpustakaan meminjamkan 2 buku sekaligus. Jika 8 siswa meminjam buku, berapa banyak buku yang dibawa?", opts: ["\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 18 \\)"], ans: "\\( 16 \\)", exp: "8 students × 2 books = 16 books.", exp_trans: "8 siswa × 2 buku = 16 buku." },
+            "ind-task5": { type: "complex", q: "Which of the following equal 16? <i class='fas fa-check-double text-green-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 16?", opts: ["\\( 2 \\times 8 \\)", "\\( 8 + 8 \\)", "\\( 2 \\times 7 \\)", "\\( 4 + 4 + 4 + 4 \\)"], ans: [0, 1, 3], exp: "1. True (2×8=16). 2. True (8+8=16). 3. False (2×7=14). 4. True (four 4s = 16).", exp_trans: "1. Benar (2×8=16). 2. Benar (8+8=16). 3. Salah (2×7=14). 4. Benar (empat angka 4 = 16)." },
+            "ind-task6": { type: "fill", q: "What is \\( 2 \\times 12 \\)? <i class='fas fa-arrow-up-right-dots text-green-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 12 \\)?", ans: "24", exp: "Double 12. 12 + 12 = 24.", exp_trans: "Gandakan 12. 12 + 12 = 24." },
+            "ind-task7": { type: "single", q: "If \\( ? \\times 2 = 18 \\), what is the missing number? <i class='fas fa-key text-green-500 ml-2'></i>", q_trans: "Jika \\( ? \\times 2 = 18 \\), berapa angka yang hilang?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 10 \\)"], ans: "\\( 9 \\)", exp: "18 ÷ 2 = 9. So the missing number is 9.", exp_trans: "18 ÷ 2 = 9. Jadi angka yang hilang adalah 9." },
+            "ind-task8": { type: "tf_table", q: "Evaluate missing factors. <i class='fas fa-clipboard-check text-green-500 ml-2'></i>", q_trans: "Evaluasi faktor yang hilang.", opts: ["If 2×?=20, ?=10", "If ?×2=14, ?=7", "If 2×?=22, ?=10", "If ?×2=12, ?=6"], ans: ["B", "B", "S", "B"], exp: "1. True (20÷2=10). 2. True (14÷2=7). 3. False (22÷2=11). 4. True (12÷2=6).", exp_trans: "1. Benar (20÷2=10). 2. Benar (14÷2=7). 3. Salah (22÷2=11). 4. Benar (12÷2=6)." },
+            "ind-task9": { type: "single", q: "You have 2 boxes of 10 crayons. How many crayons do you have? <i class='fas fa-pen-box text-green-500 ml-2'></i>", q_trans: "Kamu punya 2 kotak berisi 10 krayon. Berapa banyak krayon yang kamu punya?", opts: ["\\( 12 \\)", "\\( 15 \\)", "\\( 18 \\)", "\\( 20 \\)", "\\( 22 \\)"], ans: "\\( 20 \\)", exp: "2 groups of 10. 2 × 10 = 20 crayons.", exp_trans: "2 kelompok 10. 2 × 10 = 20 krayon." },
+            "ind-task10": { type: "complex", q: "Which statements are true? <i class='fas fa-check-circle text-green-500 ml-2'></i>", q_trans: "Pernyataan mana yang benar?", opts: ["\\( 2 \\times 10 = 20 \\)", "\\( 2 \\times 11 = 22 \\)", "\\( 2 \\times 12 = 24 \\)", "\\( 2 \\times 9 = 18 \\)"], ans: [0, 1, 2, 3], exp: "All are true! These are the higher facts of the 2 times table.", exp_trans: "Semua benar! Ini adalah fakta perkalian 2 yang lebih tinggi." },
+
+            // TASK 1: Basic 2 Times Table
+            "t1-task1": { type: "single", q: "What is \\( 2 \\times 5 \\)? <i class='fas fa-calculator text-orange-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 5 \\)?", opts: ["\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 10 \\)", "\\( 12 \\)"], ans: "\\( 10 \\)", exp: "Double the 5. 5 + 5 = 10.", exp_trans: "Gandakan 5. 5 + 5 = 10." },
+            "t1-task2": { type: "fill", q: "What is \\( 2 \\times 6 \\)? <i class='fas fa-pencil text-orange-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 6 \\)?", ans: "12", exp: "Double the 6. 6 + 6 = 12.", exp_trans: "Gandakan 6. 6 + 6 = 12." },
+            "t1-task3": { type: "tf_table", q: "Evaluate basic 2 times table facts. <i class='fas fa-list-ul text-orange-500 ml-2'></i>", q_trans: "Evaluasi fakta dasar perkalian 2.", opts: ["2 × 1 = 2", "2 × 2 = 5", "2 × 3 = 6", "2 × 4 = 8"], ans: ["B", "S", "B", "B"], exp: "1. True. 2. False, 2×2=4. 3. True. 4. True.", exp_trans: "1. Benar. 2. Salah, 2×2=4. 3. Benar. 4. Benar." },
+            "t1-task4": { type: "single", q: "What is \\( 2 \\times 7 \\)? <i class='fas fa-times text-orange-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 7 \\)?", opts: ["\\( 9 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 18 \\)"], ans: "\\( 14 \\)", exp: "Double the 7. 7 + 7 = 14.", exp_trans: "Gandakan 7. 7 + 7 = 14." },
+            "t1-task5": { type: "complex", q: "Which of the following equal 12? <i class='fas fa-check-double text-orange-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 12?", opts: ["\\( 2 \\times 6 \\)", "\\( 6 + 6 \\)", "\\( 2 \\times 5 \\)", "\\( 2 \\times 7 \\)"], ans: [0, 1], exp: "1. True (2×6=12). 2. True (6+6=12). 3. False (2×5=10). 4. False (2×7=14).", exp_trans: "1. Benar (2×6=12). 2. Benar (6+6=12). 3. Salah (2×5=10). 4. Salah (2×7=14)." },
+            "t1-task6": { type: "fill", q: "What is \\( 2 \\times 8 \\)? <i class='fas fa-pen text-orange-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 8 \\)?", ans: "16", exp: "Double the 8. 8 + 8 = 16.", exp_trans: "Gandakan 8. 8 + 8 = 16." },
+            "t1-task7": { type: "single", q: "What is \\( 2 \\times 9 \\)? <i class='fas fa-calculator text-orange-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 9 \\)?", opts: ["\\( 11 \\)", "\\( 16 \\)", "\\( 18 \\)", "\\( 20 \\)", "\\( 22 \\)"], ans: "\\( 18 \\)", exp: "Double the 9. 9 + 9 = 18.", exp_trans: "Gandakan 9. 9 + 9 = 18." },
+            "t1-task8": { type: "tf_table", q: "Evaluate even numbers. <i class='fas fa-clipboard-check text-orange-500 ml-2'></i>", q_trans: "Evaluasi bilangan genap.", opts: ["2 × 4 = 8 (even)", "2 × 5 = 10 (even)", "2 × 7 = 15 (odd)", "2 × 8 = 16 (even)"], ans: ["B", "B", "S", "B"], exp: "1. True. 2. True. 3. False, 2×7=14 (even). 4. True.", exp_trans: "1. Benar. 2. Benar. 3. Salah, 2×7=14 (genap). 4. Benar." },
+            "t1-task9": { type: "single", q: "What is \\( 2 \\times 10 \\)? <i class='fas fa-times text-orange-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 10 \\)?", opts: ["\\( 12 \\)", "\\( 15 \\)", "\\( 18 \\)", "\\( 20 \\)", "\\( 22 \\)"], ans: "\\( 20 \\)", exp: "Double the 10. 10 + 10 = 20.", exp_trans: "Gandakan 10. 10 + 10 = 20." },
+            "t1-task10": { type: "complex", q: "Which of the following equal 20? <i class='fas fa-check-circle text-orange-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 20?", opts: ["\\( 2 \\times 10 \\)", "\\( 10 + 10 \\)", "\\( 2 \\times 9 \\)", "\\( 2 \\times 11 \\)"], ans: [0, 1], exp: "1. True (2×10=20). 2. True (10+10=20). 3. False (2×9=18). 4. False (2×11=22).", exp_trans: "1. Benar (2×10=20). 2. Benar (10+10=20). 3. Salah (2×9=18). 4. Salah (2×11=22)." },
+
+            // TASK 2: Word Problems
+            "t2-task1": { type: "single", q: "There are 4 cats. How many ears do they have in total? <i class='fas fa-cat text-orange-500 ml-2'></i>", q_trans: "Ada 4 kucing. Berapa banyak telinga yang mereka miliki secara total?", opts: ["\\( 6 \\)", "\\( 8 \\)", "\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)"], ans: "\\( 8 \\)", exp: "1 cat has 2 ears. 4 cats × 2 = 8 ears.", exp_trans: "1 kucing punya 2 telinga. 4 kucing × 2 = 8 telinga." },
+            "t2-task2": { type: "fill", q: "You buy 7 pairs of socks. How many individual socks do you have? <i class='fas fa-socks text-orange-500 ml-2'></i>", q_trans: "Kamu membeli 7 pasang kaus kaki. Berapa banyak kaus kaki individual yang kamu miliki?", ans: "14", exp: "1 pair = 2 socks. 7 pairs = 7 × 2 = 14 socks.", exp_trans: "1 pasang = 2 kaus kaki. 7 pasang = 7 × 2 = 14 kaus kaki." },
+            "t2-task3": { type: "tf_table", q: "Evaluate word problem solutions. <i class='fas fa-list-ul text-orange-500 ml-2'></i>", q_trans: "Evaluasi solusi soal cerita.", opts: ["2 boxes of 5 pens = 10 pens", "2 bags of 4 marbles = 6 marbles", "2 packs of 6 cards = 12 cards", "2 jars of 2 candies = 4 candies"], ans: ["B", "S", "B", "B"], exp: "1. True (2×5=10). 2. False (2×4=8). 3. True (2×6=12). 4. True (2×2=4).", exp_trans: "1. Benar (2×5=10). 2. Salah (2×4=8). 3. Benar (2×6=12). 4. Benar (2×2=4)." },
+            "t2-task4": { type: "single", q: "A bicycle has 2 wheels. How many wheels are there on 5 bicycles? <i class='fas fa-bicycle text-orange-500 ml-2'></i>", q_trans: "Sepeda memiliki 2 roda. Berapa banyak roda pada 5 sepeda?", opts: ["\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 10 \\)", "\\( 12 \\)"], ans: "\\( 10 \\)", exp: "5 bicycles × 2 wheels = 10 wheels.", exp_trans: "5 sepeda × 2 roda = 10 roda." },
+            "t2-task5": { type: "complex", q: "Which word problems equal 16? <i class='fas fa-check-double text-orange-500 ml-2'></i>", q_trans: "Soal cerita mana yang sama dengan 16?", opts: ["8 pairs of shoes", "2 groups of 8", "2 boxes of 7", "2 bags of 8"], ans: [0, 1, 3], exp: "1. True (8×2=16). 2. True (2×8=16). 3. False (2×7=14). 4. True (2×8=16).", exp_trans: "1. Benar (8×2=16). 2. Benar (2×8=16). 3. Salah (2×7=14). 4. Benar (2×8=16)." },
+            "t2-task6": { type: "fill", q: "One pencil costs \\$2. You buy 6 pencils. How much do you pay? <i class='fas fa-pencil text-orange-500 ml-2'></i>", q_trans: "Satu pensil berharga \\$2. Kamu membeli 6 pensil. Berapa yang kamu bayar?", ans: "12", exp: "Price × Quantity = Total. 2 × 6 = 12. You pay $12.", exp_trans: "Harga × Jumlah = Total. 2 × 6 = 12. Kamu membayar $12." },
+            "t2-task7": { type: "single", q: "How many days are there in 2 weeks? <i class='fas fa-calendar-days text-orange-500 ml-2'></i>", q_trans: "Berapa banyak hari dalam 2 minggu?", opts: ["\\( 7 \\)", "\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)"], ans: "\\( 14 \\)", exp: "1 week = 7 days. 2 weeks = 2 × 7 = 14 days.", exp_trans: "1 minggu = 7 hari. 2 minggu = 2 × 7 = 14 hari." },
+            "t2-task8": { type: "tf_table", q: "Evaluate time facts. <i class='fas fa-clipboard-check text-orange-500 ml-2'></i>", q_trans: "Evaluasi fakta waktu.", opts: ["1 week = 7 days", "2 weeks = 14 days", "2 days = 48 hours", "2 months = 10 weeks"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True. 4. False, 2 months is about 8-9 weeks.", exp_trans: "1. Benar. 2. Benar. 3. Benar. 4. Salah, 2 bulan sekitar 8-9 minggu." },
+            "t2-task9": { type: "single", q: "There are 9 children. How many hands are there in total? <i class='fas fa-child text-orange-500 ml-2'></i>", q_trans: "Ada 9 anak. Berapa banyak tangan secara total?", opts: ["\\( 9 \\)", "\\( 11 \\)", "\\( 16 \\)", "\\( 18 \\)", "\\( 20 \\)"], ans: "\\( 18 \\)", exp: "1 child has 2 hands. 9 children × 2 = 18 hands.", exp_trans: "1 anak punya 2 tangan. 9 anak × 2 = 18 tangan." },
+            "t2-task10": { type: "complex", q: "Which of the following equal 18? <i class='fas fa-check-circle text-orange-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 18?", opts: ["\\( 2 \\times 9 \\)", "\\( 9 + 9 \\)", "2 groups of 8", "9 pairs"], ans: [0, 1, 3], exp: "1. True (2×9=18). 2. True (9+9=18). 3. False (2×8=16). 4. True (9×2=18).", exp_trans: "1. Benar (2×9=18). 2. Benar (9+9=18). 3. Salah (2×8=16). 4. Benar (9×2=18)." }
+        });
+		
+        Object.assign(questions, {
+            // TASK 3: Mixed Multiplication & Arrays
+            "t3-task1": { type: "single", q: "An array has 2 rows and 5 columns. How many dots are there? <i class='fas fa-th text-orange-500 ml-2'></i>", q_trans: "Sebuah array memiliki 2 baris dan 5 kolom. Berapa banyak titik di sana?", opts: ["\\( 7 \\)", "\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 15 \\)"], ans: "\\( 10 \\)", exp: "Rows × Columns = Total. 2 × 5 = 10.", exp_trans: "Baris × Kolom = Total. 2 × 5 = 10." },
+            "t3-task2": { type: "fill", q: "If \\( 2 + 2 + 2 + 2 + 2 + 2 = 12 \\), what is \\( 6 \\times 2 \\)? <i class='fas fa-plus-circle text-orange-500 ml-2'></i>", q_trans: "Jika \\( 2 + 2 + 2 + 2 + 2 + 2 = 12 \\), berapa \\( 6 \\times 2 \\)?", ans: "12", exp: "Six groups of 2 is the same as 6 × 2. So, 6 × 2 = 12.", exp_trans: "Enam kelompok 2 sama dengan 6 × 2. Jadi, 6 × 2 = 12." },
+            "t3-task3": { type: "tf_table", q: "Evaluate array statements. <i class='fas fa-list-ul text-orange-500 ml-2'></i>", q_trans: "Evaluasi pernyataan array.", opts: ["2 rows of 4 is 8", "4 columns of 2 is 8", "2 × 3 array has 5 dots", "3 × 2 array has 6 dots"], ans: ["B", "B", "S", "B"], exp: "1. True (2×4=8). 2. True (4×2=8). 3. False (2×3=6). 4. True (3×2=6).", exp_trans: "1. Benar (2×4=8). 2. Benar (4×2=8). 3. Salah (2×3=6). 4. Benar (3×2=6)." },
+            "t3-task4": { type: "single", q: "Which of these is the same as \\( 2 \\times 8 \\)? <i class='fas fa-equals text-orange-500 ml-2'></i>", q_trans: "Mana yang sama dengan \\( 2 \\times 8 \\)?", opts: ["\\( 8 + 2 \\)", "\\( 8 \\times 2 \\)", "\\( 8 - 2 \\)", "\\( 8 \\div 2 \\)", "\\( 2 + 8 \\)"], ans: "\\( 8 \\times 2 \\)", exp: "Multiplication is commutative. 2 × 8 is the same as 8 × 2.", exp_trans: "Perkalian bersifat komutatif. 2 × 8 sama dengan 8 × 2." },
+            "t3-task5": { type: "complex", q: "Which of the following are equal to 14? <i class='fas fa-check-double text-orange-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 14?", opts: ["\\( 2 \\times 7 \\)", "\\( 7 + 7 \\)", "\\( 2 \\times 6 \\)", "\\( 2 \\times 8 \\)"], ans: [0, 1], exp: "1. True (2×7=14). 2. True (7+7=14). 3. False (2×6=12). 4. False (2×8=16).", exp_trans: "1. Benar (2×7=14). 2. Benar (7+7=14). 3. Salah (2×6=12). 4. Salah (2×8=16)." },
+            "t3-task6": { type: "fill", q: "You have 4 pairs of scissors. How many individual scissors do you have? <i class='fas fa-cut text-orange-500 ml-2'></i>", q_trans: "Kamu punya 4 pasang gunting. Berapa banyak gunting individual yang kamu miliki?", ans: "8", exp: "1 pair = 2 scissors. 4 pairs = 4 × 2 = 8.", exp_trans: "1 pasang = 2 gunting. 4 pasang = 4 × 2 = 8." },
+            "t3-task7": { type: "single", q: "A box holds 2 toy cars. If you have 11 boxes, how many cars do you have? <i class='fas fa-car-side text-orange-500 ml-2'></i>", q_trans: "Satu kotak berisi 2 mobil mainan. Jika kamu punya 11 kotak, berapa banyak mobil yang kamu punya?", opts: ["\\( 11 \\)", "\\( 13 \\)", "\\( 20 \\)", "\\( 22 \\)", "\\( 24 \\)"], ans: "\\( 22 \\)", exp: "11 groups of 2. 11 × 2 = 22. (Hint: 11+11=22).", exp_trans: "11 kelompok 2. 11 × 2 = 22. (Petunjuk: 11+11=22)." },
+            "t3-task8": { type: "tf_table", q: "Evaluate commutative property facts. <i class='fas fa-clipboard-check text-orange-500 ml-2'></i>", q_trans: "Evaluasi fakta sifat komutatif.", opts: ["2 × 9 = 9 × 2", "2 × 5 = 5 × 2", "2 × 8 = 8 + 8", "2 × 7 is less than 7 × 2"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True (both are 16). 4. False, they are equal.", exp_trans: "1. Benar. 2. Benar. 3. Benar (keduanya 16). 4. Salah, keduanya sama." },
+            "t3-task9": { type: "single", q: "What is \\( 2 \\times 11 \\)? <i class='fas fa-calculator text-orange-500 ml-2'></i>", q_trans: "Berapa \\( 2 \\times 11 \\)?", opts: ["\\( 11 \\)", "\\( 13 \\)", "\\( 20 \\)", "\\( 22 \\)", "\\( 24 \\)"], ans: "\\( 22 \\)", exp: "Double the 11. 11 + 11 = 22.", exp_trans: "Gandakan 11. 11 + 11 = 22." },
+            "t3-task10": { type: "complex", q: "Which of the following are true? <i class='fas fa-check-circle text-orange-500 ml-2'></i>", q_trans: "Manakah dari pernyataan berikut yang benar?", opts: ["\\( 2 \\times 10 = 20 \\)", "\\( 2 \\times 11 = 22 \\)", "\\( 2 \\times 12 = 24 \\)", "\\( 2 \\times 9 = 16 \\)"], ans: [0, 1, 2], exp: "1. True. 2. True. 3. True. 4. False, 2 × 9 = 18.", exp_trans: "1. Benar. 2. Benar. 3. Benar. 4. Salah, 2 × 9 = 18." },
+
+            // TASK 4: Advanced Word Problems
+            "t4-task1": { type: "single", q: "A sticker book has 2 stickers on each page. If there are 8 pages, how many stickers are there? <i class='fas fa-book text-orange-500 ml-2'></i>", q_trans: "Buku stiker memiliki 2 stiker di setiap halaman. Jika ada 8 halaman, berapa banyak stiker di sana?", opts: ["\\( 10 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 18 \\)"], ans: "\\( 16 \\)", exp: "8 pages × 2 stickers = 16 stickers.", exp_trans: "8 halaman × 2 stiker = 16 stiker." },
+            "t4-task2": { type: "fill", q: "A baker puts 2 muffins in each box. He fills 12 boxes. How many muffins did he use? <i class='fas fa-cookie-bite text-orange-500 ml-2'></i>", q_trans: "Tukang roti meletakkan 2 muffin di setiap kotak. Dia mengisi 12 kotak. Berapa banyak muffin yang digunakan?", ans: "24", exp: "12 boxes × 2 muffins = 24 muffins.", exp_trans: "12 kotak × 2 muffin = 24 muffin." },
+            "t4-task3": { type: "tf_table", q: "Evaluate word problems. <i class='fas fa-list-ul text-orange-500 ml-2'></i>", q_trans: "Evaluasi soal cerita.", opts: ["2 boxes of 6 eggs = 12 eggs", "2 baskets of 5 apples = 10 apples", "2 jars of 4 candies = 6 candies", "2 packs of 8 cards = 16 cards"], ans: ["B", "B", "S", "B"], exp: "1. True (2×6=12). 2. True (2×5=10). 3. False (2×4=8). 4. True (2×8=16).", exp_trans: "1. Benar (2×6=12). 2. Benar (2×5=10). 3. Salah (2×4=8). 4. Benar (2×8=16)." },
+            "t4-task4": { type: "single", q: "A pencil costs \\$2. How much do 11 pencils cost? <i class='fas fa-pencil text-orange-500 ml-2'></i>", q_trans: "Satu pensil berharga \\$2. Berapa harga 11 pensil?", opts: ["\\( \\$11 \\)", "\\( \\$20 \\)", "\\( \\$22 \\)", "\\( \\$24 \\)", "\\( \\$26 \\)"], ans: "\\( \\$22 \\)", exp: "Price × Quantity = Total. 2 × 11 = 22. You pay $22.", exp_trans: "Harga × Jumlah = Total. 2 × 11 = 22. Kamu membayar $22." },
+			"t4-task5": { type: "complex", q: "Which of the following situations require multiplying by 2? <i class='fas fa-check-double text-orange-500 ml-2'></i>", q_trans: "Situasi mana yang membutuhkan perkalian dengan 2?", opts: ["Finding total wheels on 9 bikes", "Finding total eyes on 12 dogs", "Finding total wheels on 3 tricycles", "Finding total shoes in 5 pairs"], ans: [0, 1, 3], exp: "1. True (9 bikes × 2 wheels = 18). 2. True (12 dogs × 2 eyes = 24). 3. False (1 tricycle has 3 wheels, so 3 tricycles = 3 × 3 = 9. This is multiplying by 3). 4. True (5 pairs × 2 = 10 shoes).", exp_trans: "1. Benar (9 sepeda × 2 roda = 18). 2. Benar (12 anjing × 2 mata = 24). 3. Salah (1 sepeda roda tiga punya 3 roda, jadi 3 sepeda = 3 × 3 = 9. Ini mengalikan dengan 3). 4. Benar (5 pasang × 2 = 10 sepatu)." },
+            "t4-task6": { type: "fill", q: "There are 2 weeks in a camp. How many days is that? <i class='fas fa-calendar-days text-orange-500 ml-2'></i>", q_trans: "Ada 2 minggu di sebuah perkemahan. Berapa hari itu?", ans: "14", exp: "1 week = 7 days. 2 weeks = 2 × 7 = 14 days.", exp_trans: "1 minggu = 7 hari. 2 minggu = 2 × 7 = 14 hari." },
+            "t4-task7": { type: "single", q: "A shop sells 2 donuts in a pack. You buy 7 packs. How many donuts do you have? <i class='fas fa-bread-slice text-orange-500 ml-2'></i>", q_trans: "Toko menjual 2 donat dalam satu paket. Kamu membeli 7 paket. Berapa banyak donat yang kamu punya?", opts: ["\\( 9 \\)", "\\( 12 \\)", "\\( 14 \\)", "\\( 16 \\)", "\\( 18 \\)"], ans: "\\( 14 \\)", exp: "7 packs × 2 donuts = 14 donuts.", exp_trans: "7 paket × 2 donat = 14 donat." },
+            "t4-task8": { type: "tf_table", q: "Evaluate multiplication facts. <i class='fas fa-clipboard-check text-orange-500 ml-2'></i>", q_trans: "Evaluasi fakta perkalian.", opts: ["2 × 11 = 22", "2 × 12 = 24", "2 × 9 = 16", "2 × 10 = 20"], ans: ["B", "B", "S", "B"], exp: "1. True. 2. True. 3. False, 2×9=18. 4. True.", exp_trans: "1. Benar. 2. Benar. 3. Salah, 2×9=18. 4. Benar." },
+            "t4-task9": { type: "single", q: "If \\( ? \\times 2 = 20 \\), what is the missing number? <i class='fas fa-puzzle-piece text-orange-500 ml-2'></i>", q_trans: "Jika \\( ? \\times 2 = 20 \\), berapa angka yang hilang?", opts: ["\\( 8 \\)", "\\( 9 \\)", "\\( 10 \\)", "\\( 11 \\)", "\\( 12 \\)"], ans: "\\( 10 \\)", exp: "20 ÷ 2 = 10. So the missing number is 10.", exp_trans: "20 ÷ 2 = 10. Jadi angka yang hilang adalah 10." },
+            "t4-task10": { type: "complex", q: "Which of the following equal 24? <i class='fas fa-check-circle text-orange-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang sama dengan 24?", opts: ["\\( 2 \\times 12 \\)", "\\( 12 + 12 \\)", "2 groups of 11", "2 boxes of 12"], ans: [0, 1, 3], exp: "1. True (2×12=24). 2. True (12+12=24). 3. False (2×11=22). 4. True (2×12=24).", exp_trans: "1. Benar (2×12=24). 2. Benar (12+12=24). 3. Salah (2×11=22). 4. Benar (2×12=24)." },
+
+            // TASK 5: Mastery & Missing Numbers
+            "t5-task1": { type: "single", q: "What is the missing number in \\( 2 \\times ? = 18 \\)? <i class='fas fa-key text-orange-500 ml-2'></i>", q_trans: "Berapa angka yang hilang dalam \\( 2 \\times ? = 18 \\)?", opts: ["\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 10 \\)", "\\( 16 \\)"], ans: "\\( 9 \\)", exp: "18 ÷ 2 = 9. So the missing number is 9.", exp_trans: "18 ÷ 2 = 9. Jadi angka yang hilang adalah 9." },
+            "t5-task2": { type: "fill", q: "If \\( ? \\times 2 = 16 \\), what is the missing number? <i class='fas fa-pen text-orange-500 ml-2'></i>", q_trans: "Jika \\( ? \\times 2 = 16 \\), berapa angka yang hilang?", ans: "8", exp: "16 ÷ 2 = 8. So the missing number is 8.", exp_trans: "16 ÷ 2 = 8. Jadi angka yang hilang adalah 8." },
+            "t5-task3": { type: "tf_table", q: "Evaluate fact families. <i class='fas fa-list-ul text-orange-500 ml-2'></i>", q_trans: "Evaluasi keluarga fakta.", opts: ["If 2×7=14, then 14÷2=7", "If 2×8=16, then 16÷2=8", "If 2×9=18, then 18÷9=2", "If 2×10=20, then 20÷2=5"], ans: ["B", "B", "B", "S"], exp: "1. True. 2. True. 3. True. 4. False, 20 ÷ 2 = 10.", exp_trans: "1. Benar. 2. Benar. 3. Benar. 4. Salah, 20 ÷ 2 = 10." },
+            "t5-task4": { type: "single", q: "A box has 2 toy cars. You have 16 cars in total. How many boxes do you have? <i class='fas fa-box text-orange-500 ml-2'></i>", q_trans: "Satu kotak berisi 2 mobil mainan. Kamu punya 16 mobil secara total. Berapa banyak kotak yang kamu punya?", opts: ["\\( 7 \\)", "\\( 8 \\)", "\\( 9 \\)", "\\( 14 \\)", "\\( 18 \\)"], ans: "\\( 8 \\)", exp: "To find the number of boxes, divide the total by the amount in each box. 16 ÷ 2 = 8 boxes.", exp_trans: "Untuk mencari jumlah kotak, bagi total dengan jumlah di setiap kotak. 16 ÷ 2 = 8 kotak." },
+            "t5-task5": { type: "complex", q: "Which of the following are true? <i class='fas fa-check-double text-orange-500 ml-2'></i>", q_trans: "Manakah dari berikut ini yang benar?", opts: ["\\( 2 \\times 4 = 8 \\)", "\\( 8 \\div 2 = 4 \\)", "\\( 4 + 4 = 8 \\)", "\\( 2 \\times 4 = 4 \\times 2 \\)"], ans: [0, 1, 2, 3], exp: "All are true. They represent the same fact family and commutative property.", exp_trans: "Semua benar. Mereka mewakili keluarga fakta dan sifat komutatif yang sama." },
+            "t5-task6": { type: "fill", q: "You have 20 stickers. You put 2 stickers on each page. How many pages did you fill? <i class='fas fa-book text-orange-500 ml-2'></i>", q_trans: "Kamu punya 20 stiker. Kamu meletakkan 2 stiker di setiap halaman. Berapa banyak halaman yang kamu isi?", ans: "10", exp: "20 ÷ 2 = 10 pages.", exp_trans: "20 ÷ 2 = 10 halaman." },
+            "t5-task7": { type: "single", q: "Which is greater: \\( 2 \\times 9 \\) or \\( 2 \\times 8 \\)? <i class='fas fa-scale-balanced text-orange-500 ml-2'></i>", q_trans: "Mana yang lebih besar: \\( 2 \\times 9 \\) atau \\( 2 \\times 8 \\)?", opts: ["\\( 2 \\times 9 \\)", "\\( 2 \\times 8 \\)", "They are equal", "Cannot be determined", "\\( 2 \\times 8 \\) is greater"], ans: "\\( 2 \\times 9 \\)", exp: "2 × 9 = 18. 2 × 8 = 16. Since 18 > 16, 2 × 9 is greater.", exp_trans: "2 × 9 = 18. 2 × 8 = 16. Karena 18 > 16, 2 × 9 lebih besar." },
+            "t5-task8": { type: "tf_table", q: "Evaluate missing number equations. <i class='fas fa-clipboard-check text-orange-500 ml-2'></i>", q_trans: "Evaluasi persamaan angka yang hilang.", opts: ["If 2×?=12, ?=6", "If ?×2=14, ?=7", "If 2×?=20, ?=10", "If ?×2=22, ?=20"], ans: ["B", "B", "B", "S"], exp: "1. True (12÷2=6). 2. True (14÷2=7). 3. True (20÷2=10). 4. False (22÷2=11).", exp_trans: "1. Benar (12÷2=6). 2. Benar (14÷2=7). 3. Benar (20÷2=10). 4. Salah (22÷2=11)." },
+            "t5-task9": { type: "single", q: "There are 14 legs in a spider room. Each spider has 2 legs (toy spiders). How many spiders are there? <i class='fas fa-spider text-orange-500 ml-2'></i>", q_trans: "Ada 14 kaki di ruangan laba-laba. Setiap laba-laba (mainan) punya 2 kaki. Berapa banyak laba-laba di sana?", opts: ["\\( 6 \\)", "\\( 7 \\)", "\\( 8 \\)", "\\( 12 \\)", "\\( 16 \\)"], ans: "\\( 7 \\)", exp: "Total legs ÷ Legs per spider = Number of spiders. 14 ÷ 2 = 7 spiders.", exp_trans: "Total kaki ÷ Kaki per laba-laba = Jumlah laba-laba. 14 ÷ 2 = 7 laba-laba." },
+            "t5-task10": { type: "complex", q: "Which statements are true about multiplication by 2? <i class='fas fa-check-circle text-orange-500 ml-2'></i>", q_trans: "Pernyataan mana yang benar tentang perkalian dengan 2?", opts: ["The answer is always even", "It is the same as doubling a number", "It is the same as adding 2", "It is the same as dividing by 2"], ans: [0, 1], exp: "1. True, 2×n is even. 2. True, it is doubling. 3. False, it is repeated addition of the same number, not just adding 2. 4. False, multiplying by 2 is the opposite of dividing by 2.", exp_trans: "1. Benar, 2×n adalah genap. 2. Benar, itu menggandakan. 3. Salah. 4. Salah, mengalikan dengan 2 adalah kebalikan dari membagi dengan 2." }
+        });
+		
+        // ====== JAVASCRIPT LOGIC ======
+        let currentPage = 1;
+        let currentTaskSection = ""; 
+
+        function openModal() {
+            const modal = document.getElementById('classRulesModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        function closeModal() {
+            const modal = document.getElementById('classRulesModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('bg-indigo-100', 'text-indigo-800', 'font-bold', 'bg-orange-100', 'text-orange-800');
+            });
+            const activeLink = document.querySelector(`.sidebar-item[data-section="${sectionId}"]`);
+            if (activeLink) {
+                if(sectionId.startsWith('task')) {
+                    activeLink.classList.add('bg-orange-100', 'text-orange-800', 'font-bold');
+                } else {
+                    activeLink.classList.add('bg-indigo-100', 'text-indigo-800', 'font-bold');
+                }
+            }
+            currentPage = 1;
+            currentTaskSection = sectionId;
+            
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const firstPage = document.querySelector(`#${sectionId} .page[data-page="1"]`);
+            if(firstPage) firstPage.classList.add('active');
+            
+            renderMath();
+            renderPagination(sectionId, currentPage);
+            document.getElementById('contentScrollArea').scrollTo(0, 0);
+        }
+
+        function changePage(direction) {
+            const activeSection = document.querySelector('.content-section.active');
+            if(!activeSection) return;
+            const pages = activeSection.querySelectorAll('.page');
+            let newPage = currentPage + direction;
+            if(newPage >= 1 && newPage <= pages.length) {
+                pages[currentPage - 1].classList.remove('active');
+                pages[newPage - 1].classList.add('active');
+                currentPage = newPage;
+                renderMath();
+                renderPagination(currentTaskSection, currentPage);
+                document.getElementById('contentScrollArea').scrollTo(0, 0);
+            }
+        }
+
+        function goToPage(pageNum) {
+            const activeSection = document.querySelector('.content-section.active');
+            if(!activeSection) return;
+            const pages = activeSection.querySelectorAll('.page');
+            if(pageNum >= 1 && pageNum <= pages.length) {
+                pages[currentPage - 1].classList.remove('active');
+                pages[pageNum - 1].classList.add('active');
+                currentPage = pageNum;
+                renderMath();
+                renderPagination(currentTaskSection, currentPage);
+                document.getElementById('contentScrollArea').scrollTo(0, 0);
+            }
+        }
+        
+        function renderPagination(sectionId, pageNum) {
+            const activeSection = document.getElementById(sectionId);
+            if (!activeSection) return;
+            const pages = activeSection.querySelectorAll('.page');
+            const totalPages = pages.length;
+            let html = '';
+            const isMainTask = sectionId.startsWith('t');
+            const theoryPages = [1, 5, 9]; 
+            
+            html += `<button onclick="goToPage(${pageNum - 1})" class="px-3 py-1.5 rounded-md text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 ${pageNum === 1 ? 'opacity-50 cursor-not-allowed' : ''}" ${pageNum === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i> Prev</button>`;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                let btnColor = 'bg-gray-100 hover:bg-gray-200 text-gray-700';
+                if (!isMainTask && theoryPages.includes(i)) {
+                    btnColor = 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800'; 
+                } else {
+                    btnColor = 'bg-orange-100 hover:bg-orange-200 text-orange-800'; 
+                }
+                if (i === pageNum) {
+                    if (!isMainTask && theoryPages.includes(i)) {
+                        btnColor = 'bg-indigo-600 text-white shadow-md'; 
+                    } else {
+                        btnColor = 'bg-orange-500 text-white shadow-md'; 
+                    }
+                }
+                html += `<button onclick="goToPage(${i})" class="w-9 h-9 rounded-md text-sm font-semibold transition-all ${btnColor}">${i}</button>`;
+            }
+            
+            html += `<button onclick="goToPage(${pageNum + 1})" class="px-3 py-1.5 rounded-md text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 ${pageNum === totalPages ? 'opacity-50 cursor-not-allowed' : ''}" ${pageNum === totalPages ? 'disabled' : ''}>Next <i class="fas fa-chevron-right"></i></button>`;
+            document.getElementById('paginationBar').innerHTML = html;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        let studentAnswers = {};
+
+        function renderTasks() {
+            document.querySelectorAll('[data-task-id]').forEach(div => {
+                const taskId = div.getAttribute('data-task-id');
+                renderSingleTask(taskId, div);
+            });
+            renderMath();
+        }
+        
+        function renderSingleTask(taskId, div) {
+            const data = questions[taskId];
+            if(!data) return;
+
+            const isMainTask = taskId.startsWith('t');
+            const taskNum = isMainTask ? taskId[1] : 0;
+            let taskType = data.type || 'single';
+            
+            let questionHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500">
+                    <div class="flex justify-between items-center mb-4 no-print">
+                        <h2 class="text-xl font-bold text-orange-600">
+                            ${isMainTask ? `Task ${taskNum}` : 'Exercise'} 
+                            ${taskType === 'complex' ? '<span class="text-sm bg-purple-200 text-purple-800 px-2 py-1 rounded ml-2">PG Kompleks</span>' : ''}
+                            ${taskType === 'fill' ? '<span class="text-sm bg-blue-200 text-blue-800 px-2 py-1 rounded ml-2">Isian Singkat</span>' : ''}
+                            ${taskType === 'tf_table' ? '<span class="text-sm bg-teal-200 text-teal-800 px-2 py-1 rounded ml-2">Tabel Benar/Salah</span>' : ''}
+                            <span class="translation text-gray-500 text-sm">Latihan</span>
+                        </h2>
+                        <div class="flex gap-2">
+                            <button onclick="resetTask('${taskId}')" class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                            ${isMainTask ? `<button onclick="printTask(${taskNum})" class="text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+                                <i class="fas fa-print"></i> Print
+                            </button>` : ''}
+                        </div>
+                    </div>
+                    <div class="mb-6 flex gap-4 items-start">
+                        <div class="bg-orange-100 p-3 rounded-full shrink-0">
+                            <i class="fas fa-question text-orange-500 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-lg">${data.q}</p>
+                            <p class="translation">${data.q_trans}</p>
+                        </div>
+                    </div>
+            `;
+
+            if (taskType === 'single') {
+                const shuffledOpts = shuffleArray([...data.opts]);
+                questionHTML += `
+                    <div id="options-${taskId}" class="space-y-3">
+                        ${shuffledOpts.map((opt, i) => `
+                            <button onclick="checkAnswer('${taskId}', this.getAttribute('data-opt'), 'single')" 
+                                    class="option-btn w-full text-left p-3 border-2 border-gray-200 rounded hover:border-orange-500 flex items-center gap-3" 
+                                    data-opt="${opt}">
+                                <span class="w-6 h-6 flex items-center justify-center bg-gray-100 rounded-full font-bold shrink-0">${String.fromCharCode(65 + i)}</span>
+                                <span class="katex">${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (taskType === 'complex') {
+                questionHTML += `
+                    <p class="text-sm text-gray-600 mb-3">*Select all correct statements. <span class="translation">*Pilih semua pernyataan yang benar.</span></p>
+                    <div id="options-${taskId}" class="space-y-3">
+                        ${data.opts.map((opt, i) => `
+                            <label class="option-btn w-full text-left p-3 border-2 border-gray-200 rounded hover:border-purple-500 flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 complex-checkbox shrink-0" data-opt-index="${i}">
+                                <span class="katex">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <button onclick="checkAnswer('${taskId}', null, 'complex')" class="mt-4 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded font-bold">Submit Jawaban</button>
+                `;
+            } else if (taskType === 'fill') {
+                questionHTML += `
+                    <div class="flex gap-2 items-center mt-2">
+                        <input type="text" id="input-${taskId}" class="border-2 border-gray-200 rounded p-2 w-32 text-lg text-center focus:border-orange-500 outline-none" placeholder="Jawaban...">
+                        <button onclick="checkAnswer('${taskId}', null, 'fill')" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold">Submit</button>
+                    </div>
+                `;
+            } else if (taskType === 'tf_table') {
+                questionHTML += `
+                    <p class="text-sm text-gray-600 mb-3">*Determine True or False for each statement. <span class="translation">*Tentukan Benar atau Salah untuk setiap pernyataan.</span></p>
+                    <div id="options-${taskId}" class="overflow-x-auto">
+                        <table class="w-full border-collapse border border-gray-300 text-sm">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border border-gray-300 p-2 w-10">No.</th>
+                                    <th class="border border-gray-300 p-2 text-left">Pernyataan <span class="translation text-xs">Statement</span></th>
+                                    <th class="border border-gray-300 p-2 w-20">Benar <span class="translation text-xs block">True</span></th>
+                                    <th class="border border-gray-300 p-2 w-20">Salah <span class="translation text-xs block">False</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.opts.map((opt, i) => `
+                                    <tr>
+                                        <td class="border border-gray-300 p-2 text-center font-bold">${i + 1}</td>
+                                        <td class="border border-gray-300 p-2"><span class="katex">${opt}</span></td>
+                                        <td class="border border-gray-300 p-2 text-center">
+                                            <input type="radio" name="tf-${taskId}-${i}" value="B" class="tf-radio w-5 h-5 cursor-pointer">
+                                        </td>
+                                        <td class="border border-gray-300 p-2 text-center">
+                                            <input type="radio" name="tf-${taskId}-${i}" value="S" class="tf-radio w-5 h-5 cursor-pointer">
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <button onclick="checkAnswer('${taskId}', null, 'tf_table')" class="mt-4 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded font-bold">Submit Jawaban</button>
+                `;
+            }
+
+            questionHTML += `
+                    <div id="result-${taskId}" class="mt-4 hidden p-4 rounded"></div>
+
+                    <div class="mt-4 no-print">
+                        <button onclick="toggleCollapse('${taskId}')" id="collapse-btn-${taskId}" class="hidden text-blue-600 underline">
+                            Tampilkan Penjelasan <span class="translation text-gray-500 text-xs" style="display: inline-block; margin-left: 4px;">Show Explanation</span>
+                        </button>
+                        <div id="collapse-${taskId}" class="collapse-content w-full">
+                            <h3 class="font-bold text-blue-800">Penjelasan: <span class="translation text-gray-500 text-sm">Explanation:</span></h3>
+                            <p class="mt-2">${data.exp}</p>
+                            <p class="translation">${data.exp_trans}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            div.innerHTML = questionHTML;
+        }
+
+        function checkAnswer(taskId, selectedOpt, type) {
+            const data = questions[taskId];
+            const resultDiv = document.getElementById(`result-${taskId}`);
+            const collapseBtn = document.getElementById(`collapse-btn-${taskId}`);
+            let isCorrect = false;
+            let correctAnsText = '';
+
+            if (type === 'single') {
+                const buttons = document.querySelectorAll(`#options-${taskId} button`);
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-70', 'cursor-not-allowed');
+                    if(btn.getAttribute('data-opt') === data.ans) {
+                        btn.classList.remove('border-gray-200', 'hover:border-orange-500');
+                        btn.classList.add('border-green-500', 'bg-green-50');
+                    } else if (btn.getAttribute('data-opt') === selectedOpt) {
+                        btn.classList.remove('border-gray-200', 'hover:border-orange-500');
+                        btn.classList.add('border-red-500', 'bg-red-50');
+                    }
+                });
+                isCorrect = (selectedOpt === data.ans);
+                correctAnsText = data.ans;
+                studentAnswers[taskId] = selectedOpt; 
+            } 
+            else if (type === 'complex') {
+                const checkboxes = document.querySelectorAll(`#options-${taskId} input[type="checkbox"]`);
+                let selectedAns = [];
+                checkboxes.forEach((cb, i) => {
+                    if (cb.checked) selectedAns.push(i);
+                    cb.disabled = true;
+                });
+                const correctAnsStr = [...data.ans].sort().join(',');
+                const selectedAnsStr = [...selectedAns].sort().join(',');
+                isCorrect = (correctAnsStr === selectedAnsStr);
+                
+                let correctComplexText = [];
+                data.ans.forEach(i => correctComplexText.push(data.opts[i]));
+                correctAnsText = correctComplexText.join(', ');
+
+                checkboxes.forEach((cb, i) => {
+                    if(data.ans.includes(i)) {
+                        cb.parentElement.classList.remove('border-gray-200', 'hover:border-purple-500');
+                        cb.parentElement.classList.add('border-green-500', 'bg-green-50');
+                    } else if (cb.checked) {
+                        cb.parentElement.classList.remove('border-gray-200', 'hover:border-purple-500');
+                        cb.parentElement.classList.add('border-red-500', 'bg-red-50');
+                    }
+                });
+                studentAnswers[taskId] = selectedAns;
+            } 
+            else if (type === 'fill') {
+                const inputField = document.getElementById(`input-${taskId}`);
+                // Hapus spasi, ubah jadi lowercase agar tidak sensitif terhadap kapital
+                let userVal = inputField.value.trim().toLowerCase().replace(/\s/g, '').replace('$', '').replace('\\', '');
+                let correctAns = data.ans.toString().toLowerCase().replace(/\s/g, '').replace('$', '').replace('\\', '');
+                inputField.disabled = true;
+                isCorrect = (userVal === correctAns);
+                if(!isCorrect) inputField.classList.add('border-red-500', 'bg-red-50');
+                else inputField.classList.add('border-green-500', 'bg-green-50');
+                correctAnsText = data.ans;
+                studentAnswers[taskId] = userVal;
+            }
+            else if (type === 'tf_table') {
+                const rows = document.querySelectorAll(`#options-${taskId} tbody tr`);
+                let userAns = [];
+                let allFilled = true;
+
+                rows.forEach((row, i) => {
+                    const radios = row.querySelectorAll('input[type="radio"]');
+                    let rowVal = null;
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        if (r.checked) rowVal = r.value;
+                    });
+                    if (rowVal === null) allFilled = false;
+                    userAns.push(rowVal);
+                });
+
+                if (!allFilled) {
+                    alert("Harap isi semua pernyataan terlebih dahulu! / Please answer all statements first!");
+                    rows.forEach((row, i) => {
+                        let radios = row.querySelectorAll('input[type="radio"]');
+                        radios.forEach(r => r.disabled = false);
+                    });
+                    return;
+                }
+
+                let correctCount = 0;
+                let correctTFText = [];
+                rows.forEach((row, i) => {
+                    const userVal = userAns[i];
+                    const correctVal = data.ans[i];
+                    correctTFText.push(`${i+1}. ${correctVal}`);
+                    if (userVal === correctVal) {
+                        correctCount++;
+                        row.classList.add('bg-green-50');
+                    } else {
+                        row.classList.add('bg-red-50');
+                    }
+                });
+
+                isCorrect = (correctCount === data.ans.length);
+                correctAnsText = correctTFText.join(' | ');
+                studentAnswers[taskId] = userAns;
+            }
+
+            if(isCorrect) {
+                resultDiv.innerHTML = `<p class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Benar! <span class="translation text-gray-600 font-normal" style="display: inline-block; margin-left: 4px;">Correct!</span></p>`;
+                resultDiv.className = "mt-4 p-4 rounded bg-green-50 border border-green-200";
+            } else {
+                resultDiv.innerHTML = `<p class="text-red-600 font-bold"><i class="fas fa-times-circle"></i> Salah! Jawaban yang benar adalah: ${correctAnsText}. <span class="translation text-gray-600 font-normal" style="display: inline-block; margin-left: 4px;">Wrong! The correct answer is: ${correctAnsText}.</span></p>`;
+                resultDiv.className = "mt-4 p-4 rounded bg-red-50 border border-red-200";
+            }
+            resultDiv.classList.remove('hidden');
+            collapseBtn.classList.remove('hidden');
+            
+            const collapseContent = document.getElementById(`collapse-${taskId}`);
+            collapseContent.classList.add('open');
+            collapseBtn.innerHTML = 'Sembunyikan Penjelasan <span class="translation text-gray-500 text-xs" style="display: inline-block; margin-left: 4px;">Hide Explanation</span>';
+            
+            renderMath();
+        }
+
+        function resetTask(taskId) {
+            delete studentAnswers[taskId];
+            const taskDiv = document.querySelector(`[data-task-id="${taskId}"]`);
+            if(taskDiv) {
+                renderSingleTask(taskId, taskDiv);
+                renderMath();
+            }
+        }
+
+        function printTask(taskNum) {
+            let score = 0;
+            let tableBody = '';
+            for(let i=1; i<=10; i++) {
+                const taskId = `t${taskNum}-task${i}`;
+                const data = questions[taskId];
+                if(!data) continue;
+                
+                let studentAns = studentAnswers[taskId] || 'Tidak Dijawab';
+                let correctAns = data.ans;
+                
+                let sAnsStr = '';
+                let cAnsStr = '';
+                let isCorrect = false;
+                
+                if (data.type === 'complex') {
+                    let sArr = Array.isArray(studentAns) ? studentAns : [];
+                    let cArr = Array.isArray(correctAns) ? correctAns : [];
+                    sAnsStr = sArr.length > 0 ? sArr.slice().sort().map(idx => data.opts[idx]).join(', ') : 'Tidak Dijawab';
+                    cAnsStr = cArr.length > 0 ? cArr.slice().sort().map(idx => data.opts[idx]).join(', ') : 'Tidak Dijawab';
+                    isCorrect = (sArr.length > 0 && sArr.slice().sort().join(',') === cArr.slice().sort().join(','));
+                } else if (data.type === 'tf_table') {
+                    let sArr = Array.isArray(studentAns) ? studentAns : [];
+                    let cArr = Array.isArray(correctAns) ? correctAns : [];
+                    sAnsStr = sArr.length > 0 ? sArr.join(' | ') : 'Tidak Dijawab';
+                    cAnsStr = cArr.join(' | ');
+                    isCorrect = (sArr.length > 0 && sArr.join(',') === cArr.join(','));
+                } else if (data.type === 'fill') {
+                    sAnsStr = studentAns || 'Tidak Dijawab';
+                    cAnsStr = correctAns;
+                    // Bersihkan jawaban benar agar sama persis formatnya dengan input siswa
+                    let strippedCorrect = correctAns.toString().toLowerCase().replace(/\s/g, '').replace('$', '').replace('\\', '');
+                    isCorrect = (sAnsStr === strippedCorrect);
+                } else {
+                    sAnsStr = studentAns || 'Tidak Dijawab';
+                    cAnsStr = correctAns;
+                    isCorrect = (sAnsStr === cAnsStr);
+                }
+                
+                let note = '❌';
+                if(isCorrect) { score++; note = '✔️'; }
+                
+                let qText = data.q.replace(/<[^>]+>/g, '');
+                if (data.type === 'tf_table') {
+                    qText += " | Statements: " + data.opts.map((opt, idx) => `${idx+1}. ${opt}`).join(" ; ");
+                }
+                
+                tableBody += `<tr>
+                    <td class="border border-black p-1 text-center">${i}</td>
+                    <td class="border border-black p-1">${qText}</td>
+                    <td class="border border-black p-1">${sAnsStr}</td>
+                    <td class="border border-black p-1">${cAnsStr}</td>
+                    <td class="border border-black p-1 text-center">${note}</td>
+                </tr>`;
+            }
+            document.getElementById('printTableBody').innerHTML = tableBody;
+            document.getElementById('printTaskNum').innerText = taskNum;
+            document.getElementById('printScore').innerText = score;
+            
+            renderMathInElement(document.getElementById('printArea'), {
+                delimiters: [
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ]
+            });
+            window.print();
+        }
+
+        function toggleCollapse(taskId) {
+            const content = document.getElementById(`collapse-${taskId}`);
+            const btn = document.getElementById(`collapse-btn-${taskId}`);
+            content.classList.toggle('open');
+            if(content.classList.contains('open')) {
+                btn.innerHTML = 'Sembunyikan Penjelasan <span class="translation text-gray-500 text-xs" style="display: inline-block; margin-left: 4px;">Hide Explanation</span>';
+            } else {
+                btn.innerHTML = 'Tampilkan Penjelasan <span class="translation text-gray-500 text-xs">Show Explanation</span>';
+            }
+        }
+
+        function renderMath() {
+            if (typeof renderMathInElement === 'undefined') return;
+            
+            const target = document.querySelector('.content-section.active') || document.body;
+            try {
+                renderMathInElement(target, {
+                    delimiters: [
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            } catch(e) {
+                console.error("KaTeX rendering error:", e);
+            }
+        }
+
+        window.onload = () => {
+            renderTasks();
+            setTimeout(() => {
+                showSection('warmup');
+                renderMath();
+            }, 100);
+        };
+    </script>
+</body>
+</html>
