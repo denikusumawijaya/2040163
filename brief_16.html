@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson Brief — Multiplication Tables of 2 (Private, 60')</title>
+<style>
+  :root{
+    --blue:#2563eb; --blue-dark:#1d4ed8; --blue-light:#dbeafe;
+    --green:#16a34a; --green-light:#dcfce7;
+    --red:#dc2626; --red-light:#fee2e2;
+    --amber:#d97706; --amber-light:#fef3c7;
+    --purple:#7c3aed; --purple-light:#ede9fe;
+    --ink:#1e293b; --sub:#64748b; --bg:#0f172a; --card:#ffffff; --border:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:clamp(13px,0.9vw + 7px,16px);}
+  body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);}
+  #wrap{max-width:1500px;margin:0 auto;padding:1rem 1.25rem 3rem;}
+
+  header{position:sticky;top:0;z-index:60;background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;
+    padding:.9rem 1.25rem;border-radius:0 0 16px 16px;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+  header h1{font-size:1.15rem;margin:0;}
+  header .sub{color:#94a3b8;font-size:.85rem;margin-top:.15rem;}
+  .clock-wrap{display:flex;align-items:center;gap:.6rem;background:#1e293b;padding:.5rem .9rem;border-radius:999px;}
+  .clock{font-variant-numeric:tabular-nums;font-size:1.4rem;font-weight:800;color:#38bdf8;min-width:4.6rem;text-align:center;}
+  .clock-stage{font-size:.85rem;color:#e2e8f0;font-weight:700;}
+  .clock-btns button{background:var(--blue);color:#fff;border:none;padding:.4rem .7rem;border-radius:8px;font-weight:700;cursor:pointer;margin-left:.3rem;font-size:.8rem;}
+  .clock-btns button.reset{background:#475569;}
+
+  .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:1rem;margin-top:1rem;}
+  @media(max-width:1000px){.grid{grid-template-columns:1fr;}}
+  .card{background:var(--card);border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,.25);}
+  .card h2{margin:0 0 .6rem;font-size:1.05rem;display:flex;align-items:center;gap:.5rem;}
+  .card h2 .tag{font-size:.7rem;background:var(--blue-light);color:var(--blue-dark);padding:.15rem .5rem;border-radius:999px;font-weight:700;}
+  .card p{margin:.35rem 0;line-height:1.5;}
+  .muted{color:var(--sub);font-size:.85rem;}
+
+  table.timing{width:100%;border-collapse:collapse;font-size:.92rem;}
+  table.timing th,table.timing td{border-bottom:1px solid var(--border);padding:.5rem .4rem;text-align:left;vertical-align:top;}
+  table.timing th{background:#f8fafc;font-size:.8rem;text-transform:uppercase;color:var(--sub);}
+  table.timing tr.stage-active{background:var(--amber-light);}
+  table.timing td.time{font-variant-numeric:tabular-nums;font-weight:700;color:var(--blue-dark);white-space:nowrap;}
+
+  .checklist{list-style:none;margin:0;padding:0;}
+  .checklist li{display:flex;gap:.5rem;padding:.35rem 0;border-bottom:1px dashed var(--border);align-items:flex-start;}
+  .checklist li input{margin-top:.2rem;}
+  .checklist li .lbl{font-size:.9rem;}
+  .checklist li .lbl b{display:block;}
+  .checklist li .lbl span{color:var(--sub);font-size:.82rem;}
+
+  .script{background:#f8fafc;border-left:4px solid var(--blue);border-radius:8px;padding:.6rem .8rem;margin:.5rem 0;font-size:.92rem;}
+  .script b{color:var(--blue-dark);}
+  .warn{background:var(--red-light);border-left:4px solid var(--red);border-radius:8px;padding:.6rem .8rem;margin:.5rem 0;font-size:.92rem;}
+  .ok{background:var(--green-light);border-left:4px solid var(--green);border-radius:8px;padding:.6rem .8rem;margin:.5rem 0;font-size:.92rem;}
+  .amber-box{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:8px;padding:.6rem .8rem;margin:.5rem 0;font-size:.92rem;}
+  ol,ul.plain{margin:.4rem 0;padding-left:1.3rem;}
+  ol li,ul.plain li{margin-bottom:.4rem;line-height:1.45;font-size:.92rem;}
+  .fill{background:#fff7ed;border:1px dashed var(--amber);padding:0 .3rem;border-radius:4px;font-weight:700;color:var(--amber);}
+  .pill{display:inline-block;background:var(--purple-light);color:var(--purple);font-size:.72rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;margin-right:.3rem;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+  @media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+<header>
+  <div>
+    <h1>🧑‍🏫 Lesson Brief — Tutor Cheat Sheet</h1>
+    <div class="sub">Private · 60 menit · Topik: Multiplication Tables of 2 · MPH! Maths 4th Ed. 2A</div>
+  </div>
+  <div class="clock-wrap">
+    <div>
+      <div class="clock" id="clockDisplay">00:00</div>
+      <div class="clock-stage" id="clockStage">Belum mulai</div>
+    </div>
+    <div class="clock-btns">
+      <button id="startBtn">▶ Start</button>
+      <button class="reset" id="resetBtn">⟲ Reset</button>
+    </div>
+  </div>
+</header>
+
+<div class="card" style="margin-top:1rem;">
+  <h2>⏱ Timing Map <span class="tag">Deviasi total ≤3 menit</span></h2>
+  <table class="timing" id="timingTable">
+    <thead><tr><th>Waktu</th><th>Tahap</th><th>Fokus Aksi Tutor</th></tr></thead>
+    <tbody>
+      <tr data-range="0-5"><td class="time">00:00–00:05</td><td>1. Opening</td><td>Hadir min. 3 menit sebelum jadwal; cek audio/video/pencahayaan; sapa personal + senyum; buka Class Rules jika perlu; jalankan 10 studi kasus warm-up icebreaker.</td></tr>
+      <tr data-range="5-13"><td class="time">00:05–00:13</td><td>2. Warm-Up & Review</td><td>Kaitkan ke minat siswa (lihat kotak Personalisasi); ajukan ≥3 soal tinjauan interaktif; identifikasi pemahaman prasyarat (Multiplication & Division).</td></tr>
+      <tr data-range="13-28"><td class="time">00:13–00:28</td><td>3. Konsep Baru</td><td>Thinking aloud di worked example $2\times4$; sisipkan 1 kesalahan sengaja (lihat kotak Miskonsepsi); bahas cara menghindarinya; ≥3 pulse check.</td></tr>
+      <tr data-range="28-43"><td class="time">00:28–00:43</td><td>4. Guided Practice</td><td>≥5 pertanyaan terbuka; beri hint, bukan jawaban; siswa jelaskan reasoning sendiri; cek pemahaman tiap 1–2 soal.</td></tr>
+      <tr data-range="43-55"><td class="time">00:43–00:55</td><td>5. Independent Practice</td><td>Cek progres ≥4 kali; berikan soal pengayaan (⭐) jika cepat selesai; feedback spesifik & cepat tiap kali cek.</td></tr>
+      <tr data-range="55-60"><td class="time">00:55–01:00</td><td>6. Closing & Reflection</td><td>≥3 pertanyaan refleksi; exit ticket; sampaikan key takeaways; berikan PR; follow-up practice.</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Bridging antar tahap wajib diucapkan (lihat kartu "Bridging Statements") agar transisi mulus dan tidak dinilai sebagai jeda.</p>
+</div>
+
+<div class="grid">
+<div>
+
+  <div class="card">
+    <h2>🎯 Personalisasi Wajib <span class="tag">≥5 penyesuaian</span></h2>
+    <p class="muted">Isi <span class="fill">[minat siswa]</span> sebelum kelas dimulai berdasarkan info dari orang tua/riwayat kelas sebelumnya. Gunakan minimal 5 dari 6 berikut, tersebar di hampir setiap tahap:</p>
+    <ol>
+      <li><b>Konteks soal cerita</b> — ganti "apel/permen" di beberapa soal dengan objek favorit siswa, mis. jika siswa suka dinosaurus → "2 kaki dinosaurus × 6 dinosaurus".</li>
+      <li><b>Kecepatan tempo</b> — jika siswa cepat paham di Warm-Up, lompat ke soal Independent Practice ⭐ lebih awal.</li>
+      <li><b>Gaya penjelasan</b> — visual (dot array) untuk siswa visual, cerita/narasi untuk siswa verbal.</li>
+      <li><b>Soal cadangan by level</b> — siapkan versi lebih mudah (angka 1–5) dan lebih sulit (angka 6–10) untuk setiap konsep inti, ganti secara live sesuai respons siswa.</li>
+      <li><b>Pujian personal</b> — sebut nama siswa dan hal spesifik yang ia lakukan benar, bukan pujian umum ("Kerja bagus, Dek!" → "Kerja bagus, <span class="fill">[nama]</span>, caramu hitung loncat tadi cepat sekali!").</li>
+      <li><b>Follow-up practice</b> — kaitkan PR dengan minat siswa jika relevan (mis. buat 1 soal tambahan tentang hobinya).</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>🌉 Bridging Statements <span class="tag">Ucapkan persis / adaptasi seperlunya</span></h2>
+    <div class="script"><b>Opening → Warm-Up:</b> "Sebelum kita mulai hal baru, yuk kita hangatkan otak kita dulu dengan hal-hal yang sudah kamu tahu."</div>
+    <div class="script"><b>Warm-Up → Konsep Baru:</b> "Nah, kamu sudah jago menghitung kelompok berisi 2. Sekarang kita akan beri nama resmi untuk cara menghitung ini — namanya Tabel Perkalian 2!"</div>
+    <div class="script"><b>Konsep Baru → Guided Practice:</b> "Sekarang giliran kita coba bareng-bareng, aku akan bantu kalau kamu butuh."</div>
+    <div class="script"><b>Guided → Independent Practice:</b> "Kamu sudah menunjukkan caranya dengan baik. Sekarang coba kerjakan sendiri dulu ya, aku perhatikan dari sini."</div>
+    <div class="script"><b>Independent → Closing:</b> "Waktu kita hampir habis, yuk kita lihat lagi semua yang sudah kamu pelajari hari ini."</div>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Skrip Miskonsepsi (Kesalahan Sengaja) <span class="tag">Wajib — di Konsep Baru</span></h2>
+    <div class="warn">
+      <b>Kapan:</b> Setelah siswa memahami worked example $2\times4=8$ di lesson material (Step 4 sudah ditekan).<br>
+      <b>Soal tambahan (dari tutor, TIDAK ada di lesson material):</b> "Coba kita hitung $2\times5$ bersama." Tutor sengaja menulis / mengucapkan langkah salah di <span class="fill">Step 2 (skip counting)</span>: tutor berhenti menghitung terlalu cepat dan berkata "2, 4, 6, 8 — jadi $2\times5=8$."<br>
+      <b>Letak kesalahan persisnya:</b> hanya menghitung 4 lompatan (2,4,6,8) padahal seharusnya 5 lompatan (2,4,6,8,10) untuk $2\times5$ — salah hitung jumlah kelompok, bukan salah konsep.<br>
+      <b>Prompt ke siswa:</b> "Coba cek, apakah jawaban tutor ini benar? Kenapa?"<br>
+      <b>Jika siswa tidak menyadari (beri hint bertahap):</b> (1) "Ada berapa kelompok yang seharusnya kita hitung untuk $2\times5$?" → (2) "Coba hitung lompatannya sambil pakai jari." → (3) "Bandingkan dengan jumlah dot array yang tadi kita gambar."<br>
+      <b>Penjelasan setelah ditemukan:</b> "Betul, tutor cuma menghitung 4 lompatan padahal $\\times5$ butuh 5 lompatan. Jawaban yang benar adalah $2\\times5=10$. Ini kesalahan yang sering terjadi — selalu cocokkan jumlah lompatan dengan angka pengalinya!"
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>❓ Bank Pertanyaan Terbuka <span class="tag">≥5, digunakan di Guided Practice</span></h2>
+    <ol>
+      <li>"Bagaimana kamu tahu harus menghitung loncat berapa kali untuk $2\times6$?"</li>
+      <li>"Kenapa $2\times7$ dan $7\times2$ hasilnya sama? Coba jelaskan dengan kata-katamu."</li>
+      <li>"Kalau aku ubah soalnya jadi $2\times12$, langkah apa yang akan kamu lakukan pertama kali?"</li>
+      <li>"Apa yang membuat kamu yakin jawabanmu untuk $2\times9$ itu benar?"</li>
+      <li>"Kalau ada temanmu bilang $2\times4=6$, apa yang akan kamu katakan untuk membantu dia?"</li>
+      <li><span class="muted">(cadangan) "Pola apa yang kamu lihat setiap kali kita mengalikan dengan 2?"</span></li>
+    </ol>
+    <p class="muted">Aturan hint: jangan pernah beri jawaban langsung. Gunakan tangga bantuan (lihat kartu Hint Ladder).</p>
+  </div>
+
+  <div class="card">
+    <h2>🪜 Hint Ladder <span class="tag">Gunakan bertahap, jangan lompat</span></h2>
+    <ol>
+      <li><b>Level 1 (dorongan umum):</b> "Coba cek lagi langkah-langkahnya satu per satu."</li>
+      <li><b>Level 2 (arahkan strategi):</b> "Coba pakai hitung loncat 2, atau gambar dot array-nya."</li>
+      <li><b>Level 3 (persempit fokus):</b> "Berapa kelompok yang kita perlukan di soal ini?"</li>
+      <li><b>Level 4 (hampir jawaban, tetap tanya):</b> "Kalau $2,4,6,...$ lanjutannya berapa?"</li>
+    </ol>
+  </div>
+
+</div>
+<div>
+
+  <div class="card">
+    <h2>✅ Pre-Class Checklist <span class="tag">Sebelum siswa masuk</span></h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span class="lbl"><b>Audio & video diuji</b><span>Cek mic, speaker, kamera, pencahayaan wajah optimal (hadap sumber cahaya).</span></span></li>
+      <li><input type="checkbox"><span class="lbl"><b>Lesson material dibuka & di-test</b><span>Buka lesson-material.html, cek semua 7 section & KaTeX render dengan benar.</span></span></li>
+      <li><input type="checkbox"><span class="lbl"><b>Lesson brief ini dibuka di monitor extend</b><span>Pastikan tidak terlihat oleh siswa lewat share screen.</span></span></li>
+      <li><input type="checkbox"><span class="lbl"><b>Catatan siswa siap</b><span>Riwayat kelas sebelumnya (Multiplication & Division) & minat siswa untuk personalisasi.</span></span></li>
+      <li><input type="checkbox"><span class="lbl"><b>Alat tulis cadangan</b><span>Kertas/papan untuk dot array manual jika koneksi bermasalah.</span></span></li>
+      <li><input type="checkbox"><span class="lbl"><b>Hadir ≥3 menit sebelum jadwal</b><span>Tampilkan penampilan profesional & background rapi sejak awal.</span></span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>💬 Bank Feedback Cepat</h2>
+    <div class="two-col">
+      <div class="ok"><b>Jawaban benar:</b><br>"Tepat sekali! Cara berpikirmu runtut, {nama}."</div>
+      <div class="ok"><b>Proses benar, hasil salah hitung:</b><br>"Caramu sudah tepat, coba cek lagi hitungannya sekali lagi."</div>
+      <div class="amber-box"><b>Ragu-ragu:</b><br>"Boleh coba dulu, kalau salah tidak apa-apa, itu bagian dari belajar."</div>
+      <div class="warn"><b>Salah konsep:</b><br>"Menarik jawabannya — coba jelaskan caramu, nanti kita cek bareng."</div>
+    </div>
+    <p class="muted">Selalu berikan feedback dalam &lt;5 detik setelah siswa menjawab. Fokus pada proses, bukan hanya hasil.</p>
+  </div>
+
+  <div class="card">
+    <h2>🔁 Progress Check Log <span class="tag">Independent Practice — ≥4×</span></h2>
+    <p class="muted">Centang tiap kali kamu mengecek progres siswa selama Independent Practice (00:43–00:55):</p>
+    <ul class="checklist">
+      <li><input type="checkbox"><span class="lbl">Cek #1 (~00:45) — progres soal 1–3</span></li>
+      <li><input type="checkbox"><span class="lbl">Cek #2 (~00:48) — progres soal 4–6</span></li>
+      <li><input type="checkbox"><span class="lbl">Cek #3 (~00:51) — progres soal 7–8, tawarkan soal ⭐</span></li>
+      <li><input type="checkbox"><span class="lbl">Cek #4 (~00:54) — progres soal 9–10, siap closing</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🗣️ Pertanyaan Refleksi Penutup <span class="tag">≥3, dua arah</span></h2>
+    <ol>
+      <li>"Coba ceritakan dengan kata-katamu sendiri, bagaimana cara mengalikan dengan 2?"</li>
+      <li>"Dari semua soal tadi, mana yang menurutmu paling menantang? Kenapa?"</li>
+      <li>"Kalau besok ketemu soal $2\times15$, apa langkah pertamamu?"</li>
+    </ol>
+    <div class="script"><b>Key takeaways (ucapkan sebelum tutup):</b> "Hari ini kita belajar 3 hal: (1) mengalikan 2 berarti membuat kelompok isi 2, (2) kita bisa hitung loncat, dan (3) urutan perkalian bisa ditukar."</div>
+  </div>
+
+  <div class="card">
+    <h2>📦 Soal Cadangan / Backup <span class="tag">Disiapkan tutor, di luar lesson material</span></h2>
+    <p class="muted">Gunakan jika siswa butuh soal ekstra (terlalu cepat, atau butuh pengulangan) — belum ada di lesson material:</p>
+    <ol>
+      <li>Lebih mudah: "Ada 2 kelinci, masing-masing punya 2 telinga. Berapa telinga semuanya?" ($2\times2=4$)</li>
+      <li>Setara: "Sebuah toko punya 7 rak, tiap rak ada 2 boneka. Berapa boneka semuanya?" ($7\times2=14$)</li>
+      <li>Lebih sulit (⭐): "Jika $2\times n = 22$, berapakah $n$?" ($n=11$, di luar tabel 1–10, untuk uji pemahaman pola)</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>📋 QC Self-Check <span class="tag">Isi setelah kelas</span></h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span class="lbl">Audio/video sangat baik, 0 gangguan teknis</span></li>
+      <li><input type="checkbox"><span class="lbl">Hadir ≥3 menit sebelum jadwal, kesan pertama positif</span></li>
+      <li><input type="checkbox"><span class="lbl">≥5 personalisasi dilakukan</span></li>
+      <li><input type="checkbox"><span class="lbl">Deviasi waktu total ≤3 menit</span></li>
+      <li><input type="checkbox"><span class="lbl">≥2 soal tinjauan interaktif di Warm-Up</span></li>
+      <li><input type="checkbox"><span class="lbl">Thinking aloud + miskonsepsi dibahas di Konsep Baru</span></li>
+      <li><input type="checkbox"><span class="lbl">≥5 pertanyaan terbuka + hint (bukan jawaban) di Guided Practice</span></li>
+      <li><input type="checkbox"><span class="lbl">≥4 pengecekan progres di Independent Practice</span></li>
+      <li><input type="checkbox"><span class="lbl">≥3 pertanyaan refleksi + exit ticket + key takeaways di Closing</span></li>
+      <li><input type="checkbox"><span class="lbl">Dialog seimbang, rapport kuat, feedback spesifik & cepat sepanjang sesi</span></li>
+    </ul>
+  </div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+let seconds = 0, timerId = null, running=false;
+const stages = [
+  {label:'1. Opening', start:0, end:5},
+  {label:'2. Warm-Up & Review', start:5, end:13},
+  {label:'3. Konsep Baru', start:13, end:28},
+  {label:'4. Guided Practice', start:28, end:43},
+  {label:'5. Independent Practice', start:43, end:55},
+  {label:'6. Closing & Reflection', start:55, end:60},
+];
+const clockDisplay = document.getElementById('clockDisplay');
+const clockStage = document.getElementById('clockStage');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const rows = document.querySelectorAll('#timingTable tbody tr');
+
+function fmt(s){
+  const m = Math.floor(s/60), sec = s%60;
+  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function tick(){
+  seconds++;
+  clockDisplay.textContent = fmt(seconds);
+  const mins = seconds/60;
+  let activeStage = null;
+  rows.forEach(r=>{
+    const [a,b] = r.dataset.range.split('-').map(Number);
+    const isActive = mins>=a && mins<b;
+    r.classList.toggle('stage-active', isActive);
+    if(isActive) activeStage = r.cells[1].textContent;
+  });
+  clockStage.textContent = activeStage || (mins>=60? 'Waktu habis — segera tutup' : '—');
+}
+startBtn.addEventListener('click', ()=>{
+  running = !running;
+  if(running){ timerId = setInterval(tick,1000); startBtn.textContent='⏸ Pause'; }
+  else { clearInterval(timerId); startBtn.textContent='▶ Start'; }
+});
+resetBtn.addEventListener('click', ()=>{
+  seconds=0; running=false; clearInterval(timerId);
+  clockDisplay.textContent='00:00'; clockStage.textContent='Belum mulai'; startBtn.textContent='▶ Start';
+  rows.forEach(r=>r.classList.remove('stage-active'));
+});
+</script>
+</body>
+</html>
