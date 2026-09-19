@@ -217,7 +217,18 @@ function dotArray(rows,cols){
   g+='</div>';
   return g;
 }
-function renderMath(){ if(window.renderMathInElement){ renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false}]}); } }
+function renderMath(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body,{
+      delimiters:[
+        {left:"$$",right:"$$",display:true},
+        {left:"\\(",right:"\\)",display:false},
+        {left:"$",right:"$",display:false}
+      ],
+      throwOnError:false
+    });
+  }
+}
 
 /* ============================= QUESTION DATA ============================= */
 /* type: radio | check | tf | fill | sort | pair | drag */
@@ -243,7 +254,7 @@ const SECTIONS = [
       opts:[{en:'$2+2+2$',id:'$2+2+2$'},{en:'$5-2$',id:'$5-2$'},{en:'$6+6$',id:'$6+6$'}], correct:[0,2],
       exp:{en:'$2+2+2$ and $6+6$ are addition of the same number. $5-2$ is subtraction.', id:'$2+2+2$ dan $6+6$ adalah penjumlahan angka yang sama. $5-2$ adalah pengurangan.'}},
     {type:'sort', q:{en:'Arrange these numbers from smallest to largest.',id:'Urutkan angka-angka ini dari yang terkecil ke terbesar.'},
-      items:[{en:'2',id:'2'},{en:'6',id:'6'},{en:'10',id:'10'},{en:'4',id:'4'}],
+      items:[{en:'2',id:'2'},{en:'4',id:'4'},{en:'6',id:'6'},{en:'10',id:'10'}],
       exp:{en:'The correct order is $2, 4, 6, 10$.', id:'Urutan yang benar adalah $2, 4, 6, 10$.'}},
     {type:'pair', q:{en:'Match each word to its meaning.',id:'Cocokkan setiap kata dengan artinya.'},
       left:[{en:'Product',id:'Hasil kali'},{en:'Quotient',id:'Hasil bagi'}],
@@ -442,7 +453,7 @@ const SECTIONS = [
       opts:[{en:'Skip counting',id:'Hitung loncat'},{en:'Repeated addition',id:'Penjumlahan berulang'},{en:'Drawing dot arrays',id:'Menggambar susunan titik'}], correct:[0,1,2],
       exp:{en:'All three are great strategies for multiplication!', id:'Ketiganya adalah strategi bagus untuk perkalian!'}},
     {type:'sort', q:{en:'Exit Ticket: order these products from smallest to largest.',id:'Tiket Keluar: urutkan hasil ini dari kecil ke besar.'},
-      items:[{en:'$2\\times4=8$',id:'$2\\times4=8$'},{en:'$2\\times1=2$',id:'$2\\times1=2$'},{en:'$2\\times7=14$',id:'$2\\times7=14$'}],
+      items:[{en:'$2\\times1=2$',id:'$2\\times1=2$'},{en:'$2\\times4=8$',id:'$2\\times4=8$'},{en:'$2\\times7=14$',id:'$2\\times7=14$'}],
       exp:{en:'$2 < 8 < 14$.', id:'$2 < 8 < 14$.'}},
     {type:'pair', q:{en:'Match the sentence to its answer one more time.',id:'Cocokkan kalimat dengan jawabannya sekali lagi.'},
       left:[{en:'$2\\times5$',id:'$2\\times5$'},{en:'$2\\times10$',id:'$2\\times10$'}], right:[{en:'10',id:'10'},{en:'20',id:'20'}],
