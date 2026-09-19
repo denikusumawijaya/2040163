@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Tutoring by Deni — Multiplication Tables of 2</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --blue:#2563eb; --blue-dark:#1d4ed8; --blue-light:#dbeafe;
+    --green:#16a34a; --green-light:#dcfce7;
+    --red:#dc2626; --red-light:#fee2e2;
+    --amber:#d97706; --amber-light:#fef3c7;
+    --purple:#7c3aed; --purple-light:#ede9fe;
+    --ink:#1e293b; --sub:#64748b; --bg:#f1f5f9; --card:#ffffff; --border:#e2e8f0;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:clamp(14px,1vw + 8px,17px);}
+  body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+  .translation{display:block;font-style:italic;color:var(--sub);font-size:0.78em;font-weight:400;margin-top:2px;}
+  #app{max-width:1400px;margin:0 auto;padding:0 1rem 2rem;min-height:100vh;display:flex;flex-direction:column;}
+
+  /* HEADER */
+  header.topbar{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;
+    background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;
+    padding:1rem 1.5rem;border-radius:0 0 var(--radius) var(--radius);
+    position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.12);flex-wrap:wrap;
+  }
+  .brand{line-height:1.35;}
+  .brand .b1{font-weight:700;font-size:1.15rem;}
+  .brand .b2{margin-top:.4rem;font-size:1rem;}
+  .brand .b2 .translation{color:#dbeafe;}
+  .header-right{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+  .section-timer{
+    background:#fff;color:var(--blue-dark);font-weight:700;padding:.5rem .9rem;border-radius:999px;
+    font-variant-numeric:tabular-nums;font-size:1rem;box-shadow:inset 0 0 0 2px var(--blue-light);white-space:nowrap;
+  }
+  #classRulesBtn{
+    background:#fff;color:var(--blue-dark);border:none;padding:.55rem 1rem;border-radius:999px;font-weight:700;
+    cursor:pointer;font-size:.95rem;white-space:nowrap;
+  }
+  #classRulesBtn:hover{background:var(--blue-light);}
+
+  /* NAV */
+  nav.section-nav{
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    background:var(--card);margin-top:1rem;padding:.75rem 1.25rem;border-radius:var(--radius);
+    box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:calc(4.6rem + 1rem);z-index:40;flex-wrap:wrap;
+  }
+  nav.section-nav button{
+    background:var(--blue);color:#fff;border:none;padding:.6rem 1.1rem;border-radius:10px;font-weight:700;
+    cursor:pointer;font-size:.95rem;
+  }
+  nav.section-nav button:disabled{background:#cbd5e1;cursor:not-allowed;}
+  .section-indicator{font-weight:700;color:var(--sub);text-align:center;flex:1;font-size:.95rem;}
+  .section-dots{display:flex;gap:.4rem;justify-content:center;margin-top:.4rem;width:100%;flex-wrap:wrap;}
+  .section-dots span{width:.6rem;height:.6rem;border-radius:50%;background:#cbd5e1;}
+  .section-dots span.active{background:var(--blue);}
+
+  main{margin-top:1rem;flex:1;}
+  .section-card{background:var(--card);border-radius:var(--radius);padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+  .section-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.25rem;}
+  .section-head .icon{font-size:2rem;}
+  .section-head h1{font-size:1.4rem;margin:0;}
+  .section-head h1 .translation{font-size:0.65em;}
+  .intro-block{background:var(--blue-light);border-radius:12px;padding:1rem 1.25rem;margin:1rem 0;}
+  .intro-block p{margin:.3rem 0;}
+  .callout{border-radius:12px;padding:1rem 1.25rem;margin:1rem 0;}
+  .callout.mistake{background:var(--red-light);border-left:5px solid var(--red);}
+  .callout.tip{background:var(--amber-light);border-left:5px solid var(--amber);}
+  .callout.rule{background:var(--green-light);border-left:5px solid var(--green);}
+  .callout h3{margin:0 0 .4rem;}
+
+  /* STEP REVEAL */
+  .step-panel{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin:1rem 0;}
+  .step-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;}
+  .step-btns button{
+    width:2.4rem;height:2.4rem;border-radius:50%;border:2px solid var(--blue);background:#fff;color:var(--blue);
+    font-weight:800;cursor:pointer;font-size:1rem;
+  }
+  .step-btns button.done{background:var(--blue);color:#fff;}
+  .step-btns button.current{box-shadow:0 0 0 4px var(--blue-light);}
+  .step-content{min-height:4rem;display:none;animation:fade .25s ease;}
+  .step-content.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .dot-array{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0;}
+  .dot-group{display:flex;gap:.25rem;background:var(--blue-light);border-radius:10px;padding:.4rem;flex-wrap:wrap;width:3.4rem;justify-content:center;}
+  .dot{width:.85rem;height:.85rem;border-radius:50%;background:var(--blue);}
+
+  /* QUIZ / CASE STUDY ENGINE */
+  .quiz-box{margin-top:1.5rem;border:2px solid var(--blue-light);border-radius:var(--radius);padding:1.25rem;background:#fafcff;}
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;}
+  .quiz-top .qcount{font-weight:700;color:var(--blue-dark);}
+  .qtype-badge{background:var(--purple-light);color:var(--purple);font-weight:700;font-size:.78rem;padding:.25rem .6rem;border-radius:999px;}
+  .badge-challenge{background:var(--amber-light);color:var(--amber);font-weight:700;font-size:.78rem;padding:.25rem .6rem;border-radius:999px;margin-left:.4rem;}
+  .qprompt{font-size:1.05rem;font-weight:600;margin:.5rem 0 1rem;}
+  .opt-list{display:flex;flex-direction:column;gap:.5rem;}
+  .opt-row{display:flex;align-items:center;gap:.6rem;background:#fff;border:2px solid var(--border);border-radius:10px;padding:.6rem .8rem;cursor:pointer;}
+  .opt-row:hover{border-color:var(--blue);}
+  .opt-row.selected{border-color:var(--blue);background:var(--blue-light);}
+  .opt-row.correctA{border-color:var(--green);background:var(--green-light);}
+  .opt-row.wrongA{border-color:var(--red);background:var(--red-light);}
+  .opt-row input{transform:scale(1.2);}
+  .tf-row{display:flex;gap:1rem;}
+  .tf-row button{flex:1;padding:.8rem;border-radius:10px;border:2px solid var(--border);background:#fff;font-weight:700;cursor:pointer;font-size:1rem;}
+  .tf-row button.selected{border-color:var(--blue);background:var(--blue-light);}
+  .fill-row input{font-size:1.05rem;padding:.6rem .8rem;border-radius:10px;border:2px solid var(--border);width:100%;max-width:16rem;}
+  .sort-list{display:flex;flex-direction:column;gap:.5rem;}
+  .sort-item{display:flex;align-items:center;justify-content:space-between;background:#fff;border:2px solid var(--border);border-radius:10px;padding:.55rem .8rem;}
+  .sort-item .btns{display:flex;gap:.3rem;}
+  .sort-item .btns button{border:none;background:var(--blue-light);color:var(--blue-dark);width:1.8rem;height:1.8rem;border-radius:6px;cursor:pointer;font-weight:800;}
+  .pair-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.55rem;flex-wrap:wrap;}
+  .pair-left{flex:1;min-width:9rem;background:#fff;border:2px solid var(--border);border-radius:10px;padding:.55rem .8rem;}
+  .pair-row select{flex:1;min-width:9rem;padding:.55rem .6rem;border-radius:10px;border:2px solid var(--border);font-size:.95rem;}
+  .drag-wrap{display:flex;flex-direction:column;gap:1rem;}
+  .drag-bank{display:flex;gap:.6rem;flex-wrap:wrap;padding:.75rem;background:var(--amber-light);border-radius:10px;min-height:3rem;}
+  .drag-chip{background:#fff;border:2px solid var(--amber);color:var(--amber);font-weight:700;padding:.4rem .8rem;border-radius:999px;cursor:grab;user-select:none;}
+  .drag-chip.used{opacity:.3;pointer-events:none;}
+  .drag-targets{display:flex;gap:.75rem;flex-wrap:wrap;}
+  .drop-slot{min-width:5rem;min-height:2.6rem;border:2px dashed var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;background:#fff;padding:.4rem;text-align:center;font-weight:700;color:var(--blue-dark);}
+  .drop-slot.filled{border-style:solid;background:var(--blue-light);}
+  .drop-slot small{display:block;font-weight:400;color:var(--sub);}
+
+  .quiz-actions{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;flex-wrap:wrap;gap:.6rem;}
+  .submit-btn{background:var(--green);color:#fff;border:none;padding:.65rem 1.3rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:.95rem;}
+  .submit-btn:disabled{background:#cbd5e1;cursor:not-allowed;}
+  .pager{display:flex;gap:.5rem;}
+  .pager button{background:#fff;border:2px solid var(--blue);color:var(--blue);padding:.5rem .9rem;border-radius:10px;font-weight:700;cursor:pointer;}
+  .pager button:disabled{opacity:.4;cursor:not-allowed;}
+  .explain-box{margin-top:1rem;border-radius:12px;padding:1rem 1.1rem;display:none;}
+  .explain-box.show{display:block;}
+  .explain-box.ok{background:var(--green-light);border-left:5px solid var(--green);}
+  .explain-box.bad{background:var(--red-light);border-left:5px solid var(--red);}
+  .explain-box .verdict{font-weight:800;margin-bottom:.35rem;}
+  .hint-btn{background:var(--amber-light);color:var(--amber);border:none;padding:.4rem .8rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem;}
+  .hint-box{margin-top:.6rem;background:var(--amber-light);border-radius:8px;padding:.6rem .8rem;display:none;}
+  .hint-box.show{display:block;}
+  .progress-dots{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.6rem;}
+  .progress-dots span{width:.55rem;height:.55rem;border-radius:50%;background:#cbd5e1;}
+  .progress-dots span.answered-ok{background:var(--green);}
+  .progress-dots span.answered-bad{background:var(--red);}
+  .progress-dots span.current{outline:2px solid var(--blue);outline-offset:2px;}
+
+  /* MODAL */
+  .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;}
+  .modal.hidden{display:none;}
+  .modal-content{background:#fff;border-radius:var(--radius);padding:1.75rem;max-width:32rem;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3);}
+  .modal-content h2{margin-top:0;}
+  .modal-timer{display:inline-block;background:var(--blue-light);color:var(--blue-dark);font-weight:700;padding:.3rem .7rem;border-radius:999px;font-size:.85rem;margin-bottom:1rem;}
+  .modal-content ul{list-style:none;padding:0;margin:0;}
+  .modal-content li{display:flex;gap:.7rem;align-items:flex-start;padding:.65rem 0;border-bottom:1px solid var(--border);}
+  .modal-content li .emoji{font-size:1.3rem;}
+  #closeRulesBtn{margin-top:1.25rem;background:var(--blue);color:#fff;border:none;padding:.6rem 1.2rem;border-radius:10px;font-weight:700;cursor:pointer;}
+
+  .hw-card{border:2px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:.75rem;}
+  footer.material-footer{text-align:center;color:var(--sub);font-size:.85rem;padding:1.5rem 0 .5rem;}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="b1">Math Tutoring<br>by Deni</div>
+      <div class="b2">Topic: Multiplication Tables of 2
+        <span class="translation">Topik: Tabel Perkalian 2</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="section-timer" id="sectionTimer">00:00–00:05</div>
+      <button id="classRulesBtn">📋 Class Rules</button>
+    </div>
+  </header>
+
+  <nav class="section-nav">
+    <button id="prevBtn">‹ Previous</button>
+    <div style="flex:1;">
+      <div class="section-indicator" id="sectionIndicator">Section 1 of 7</div>
+      <div class="section-dots" id="sectionDots"></div>
+    </div>
+    <button id="nextBtn">Next ›</button>
+  </nav>
+
+  <main id="sectionContainer"></main>
+
+  <footer class="material-footer">Marshall Cavendish · My Pals Are Here! Maths 4th Edition 2A · Multiplication Tables of 2</footer>
+</div>
+
+<div id="rulesModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Class Rules <span class="translation" style="display:inline;">Aturan Kelas</span></h2>
+    <div class="modal-timer">⏱ 00:00–00:01</div>
+    <ul>
+      <li><span class="emoji">🗣️</span><span>Talk one at a time<span class="translation">Berbicara secara bergantian</span></span></li>
+      <li><span class="emoji">🙋</span><span>Ask permission before leaving class<span class="translation">Meminta izin jika ingin meninggalkan kelas</span></span></li>
+      <li><span class="emoji">🎙️</span><span>Turn on your microphone &amp; camera when needed<span class="translation">Menyalakan microphone dan camera jika diperlukan</span></span></li>
+    </ul>
+    <button id="closeRulesBtn">Close <span class="translation" style="display:inline;">Tutup</span></button>
+  </div>
+</div>
+
+<script>
+/* ============================= HELPERS ============================= */
+function tr(en,id){return `<div>${en}<span class="translation">${id}</span></div>`;}
+function trSpan(en,id){return `<span>${en}<span class="translation">${id}</span></span>`;}
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function dotArray(rows,cols){
+  let g='<div class="dot-array">';
+  for(let r=0;r<rows;r++){
+    g+='<div class="dot-group">';
+    for(let c=0;c<cols;c++){g+='<div class="dot"></div>';}
+    g+='</div>';
+  }
+  g+='</div>';
+  return g;
+}
+function renderMath(){ if(window.renderMathInElement){ renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false}]}); } }
+
+/* ============================= QUESTION DATA ============================= */
+/* type: radio | check | tf | fill | sort | pair | drag */
+
+const SECTIONS = [
+{
+  id:'opening', icon:'👋', time:'00:00–00:05',
+  title:{en:'1. Opening', id:'Pembukaan'},
+  intro:[
+    tr('Welcome! Today we will review what you already know before we learn something new.','Selamat datang! Hari ini kita akan meninjau apa yang sudah kamu ketahui sebelum belajar hal baru.'),
+    tr('Last time, we learned about <b>Multiplication and Division</b>.','Sebelumnya, kita belajar tentang <b>Perkalian dan Pembagian</b>.')
+  ],
+  callout:{type:'rule', title:{en:'Today\'s Goal',id:'Tujuan Hari Ini'}, body:tr('By the end of this lesson, you will be able to use the <b>Multiplication Table of 2</b> confidently!','Di akhir pelajaran ini, kamu akan mampu menggunakan <b>Tabel Perkalian 2</b> dengan percaya diri!')},
+  questions:[
+    {type:'tf', q:{en:'Multiplication is a fast way to add the same number many times.',id:'Perkalian adalah cara cepat untuk menjumlahkan angka yang sama berkali-kali.'}, correct:true,
+      exp:{en:'Correct! $3+3+3 = 3\\times 3$. Multiplication is repeated addition.', id:'Betul! $3+3+3 = 3\\times 3$. Perkalian adalah penjumlahan berulang.'}},
+    {type:'radio', q:{en:'Which sentence matches $4+4+4$?',id:'Kalimat mana yang cocok dengan $4+4+4$?'},
+      opts:[{en:'$4\\times 3$',id:'$4\\times 3$'},{en:'$4\\times 4$',id:'$4\\times 4$'},{en:'$3\\times 2$',id:'$3\\times 2$'}], correct:0,
+      exp:{en:'$4$ is added $3$ times, so it is $4\\times 3 = 12$.', id:'$4$ dijumlahkan sebanyak $3$ kali, jadi $4\\times 3 = 12$.'}},
+    {type:'fill', q:{en:'$12 \\div 3 = \\_\\_\\_$',id:'$12 \\div 3 = \\_\\_\\_$'}, answer:['4'],
+      exp:{en:'$12 \\div 3 = 4$, because $4\\times 3 = 12$.', id:'$12 \\div 3 = 4$, karena $4\\times 3 = 12$.'}},
+    {type:'check', q:{en:'Which of these show repeated addition? (choose all that are correct)',id:'Manakah yang menunjukkan penjumlahan berulang? (pilih semua yang benar)'},
+      opts:[{en:'$2+2+2$',id:'$2+2+2$'},{en:'$5-2$',id:'$5-2$'},{en:'$6+6$',id:'$6+6$'}], correct:[0,2],
+      exp:{en:'$2+2+2$ and $6+6$ are addition of the same number. $5-2$ is subtraction.', id:'$2+2+2$ dan $6+6$ adalah penjumlahan angka yang sama. $5-2$ adalah pengurangan.'}},
+    {type:'sort', q:{en:'Arrange these numbers from smallest to largest.',id:'Urutkan angka-angka ini dari yang terkecil ke terbesar.'},
+      items:[{en:'2',id:'2'},{en:'6',id:'6'},{en:'10',id:'10'},{en:'4',id:'4'}],
+      exp:{en:'The correct order is $2, 4, 6, 10$.', id:'Urutan yang benar adalah $2, 4, 6, 10$.'}},
+    {type:'pair', q:{en:'Match each word to its meaning.',id:'Cocokkan setiap kata dengan artinya.'},
+      left:[{en:'Product',id:'Hasil kali'},{en:'Quotient',id:'Hasil bagi'}],
+      right:[{en:'Answer of multiplication',id:'Jawaban dari perkalian'},{en:'Answer of division',id:'Jawaban dari pembagian'}],
+      exp:{en:'Product = answer of multiplication. Quotient = answer of division.', id:'Product = jawaban perkalian. Quotient = jawaban pembagian.'}},
+    {type:'drag', q:{en:'Drag the correct symbol into each blank.',id:'Seret simbol yang tepat ke setiap kotak kosong.'},
+      blanks:[{en:'Combining equal groups',id:'Menggabungkan kelompok yang sama'},{en:'Sharing into equal groups',id:'Membagi menjadi kelompok yang sama'}],
+      bank:['×','÷','+'], correct:['×','÷'],
+      exp:{en:'"×" combines equal groups; "÷" shares into equal groups.', id:'"×" menggabungkan kelompok sama; "÷" membagi menjadi kelompok sama.'}},
+    {type:'tf', q:{en:'$5\\times 2$ means "5 groups of 2".',id:'$5\\times 2$ berarti "5 kelompok berisi 2".'}, correct:true,
+      exp:{en:'Yes! $5\\times 2 = 2+2+2+2+2 = 10$.', id:'Benar! $5\\times 2 = 2+2+2+2+2 = 10$.'}},
+    {type:'radio', q:{en:'What is $10 \\div 2$?',id:'Berapakah $10 \\div 2$?'}, opts:[{en:'4',id:'4'},{en:'5',id:'5'},{en:'6',id:'6'}], correct:1,
+      exp:{en:'$10 \\div 2 = 5$ because $5\\times 2 = 10$.', id:'$10 \\div 2 = 5$ karena $5\\times 2 = 10$.'}},
+    {type:'fill', q:{en:'$3\\times 2 = \\_\\_\\_$',id:'$3\\times 2 = \\_\\_\\_$'}, answer:['6'],
+      exp:{en:'$3\\times 2 = 2+2+2 = 6$.', id:'$3\\times 2 = 2+2+2 = 6$.'}}
+  ]
+},
+{
+  id:'warmup', icon:'🔥', time:'00:05–00:13',
+  title:{en:'2. Warm-Up & Review', id:'Pemanasan & Tinjauan'},
+  intro:[
+    tr('Look around you — many things come in <b>groups of 2</b>!','Lihat di sekitarmu — banyak benda datang dalam <b>kelompok berisi 2</b>!'),
+    tr('👟 Shoes · 🧤 Gloves · 🚲 Bicycle wheels · 👀 Eyes — all groups of 2!','👟 Sepatu · 🧤 Sarung tangan · 🚲 Roda sepeda · 👀 Mata — semua kelompok berisi 2!')
+  ],
+  callout:{type:'tip', title:{en:'Skip Counting Trick',id:'Trik Hitung Loncat'}, body:tr('Count by 2: $2,4,6,8,10,12,14,16,18,20$ — say it out loud!','Hitung loncat 2: $2,4,6,8,10,12,14,16,18,20$ — ucapkan dengan lantang!')},
+  questions:[
+    {type:'radio', q:{en:'How many wheels do 3 bicycles have, if each has 2 wheels?',id:'Berapa jumlah roda dari 3 sepeda, jika masing-masing punya 2 roda?'},
+      opts:[{en:'5',id:'5'},{en:'6',id:'6'},{en:'8',id:'8'}], correct:1,
+      exp:{en:'$3\\times 2 = 6$ wheels (skip count: $2,4,6$).', id:'$3\\times 2 = 6$ roda (hitung loncat: $2,4,6$).'}},
+    {type:'fill', q:{en:'A pair of shoes has 2 shoes. 5 pairs have $\\_\\_\\_$ shoes.',id:'Sepasang sepatu ada 2 sepatu. 5 pasang ada $\\_\\_\\_$ sepatu.'}, answer:['10'],
+      exp:{en:'$5\\times 2 = 10$ shoes.', id:'$5\\times 2 = 10$ sepatu.'}},
+    {type:'sort', q:{en:'Continue skip counting by 2 in the correct order.',id:'Lanjutkan hitung loncat 2 dengan urutan yang benar.'},
+      items:[{en:'2',id:'2'},{en:'4',id:'4'},{en:'6',id:'6'},{en:'8',id:'8'},{en:'10',id:'10'}],
+      exp:{en:'$2,4,6,8,10$ — each number is 2 more than the last.', id:'$2,4,6,8,10$ — setiap angka 2 lebih besar dari sebelumnya.'}},
+    {type:'tf', q:{en:'Every person has 2 eyes, so 4 people have 8 eyes.',id:'Setiap orang punya 2 mata, jadi 4 orang punya 8 mata.'}, correct:true,
+      exp:{en:'$4\\times 2 = 8$ eyes. Correct!', id:'$4\\times 2 = 8$ mata. Benar!'}},
+    {type:'check', q:{en:'Which of these come in groups of 2 in real life?',id:'Manakah yang datang berkelompok 2 dalam kehidupan nyata?'},
+      opts:[{en:'🧤 Gloves',id:'🧤 Sarung tangan'},{en:'⭐ A single star',id:'⭐ Satu bintang'},{en:'👟 Shoes',id:'👟 Sepatu'}], correct:[0,2],
+      exp:{en:'Gloves and shoes come in pairs (groups of 2). A single star is only 1.', id:'Sarung tangan dan sepatu datang berpasangan (kelompok 2). Satu bintang hanya 1.'}},
+    {type:'pair', q:{en:'Match the item to how many it has.',id:'Cocokkan benda dengan jumlahnya.'},
+      left:[{en:'1 pair of gloves',id:'1 pasang sarung tangan'},{en:'3 pairs of gloves',id:'3 pasang sarung tangan'}],
+      right:[{en:'2 gloves',id:'2 sarung tangan'},{en:'6 gloves',id:'6 sarung tangan'}],
+      exp:{en:'$1\\times 2=2$ and $3\\times 2=6$.', id:'$1\\times 2=2$ dan $3\\times 2=6$.'}},
+    {type:'drag', q:{en:'Drag the correct total into each blank.',id:'Seret jumlah yang tepat ke tiap kotak kosong.'},
+      blanks:[{en:'2 bicycles = ___ wheels',id:'2 sepeda = ___ roda'},{en:'6 bicycles = ___ wheels',id:'6 sepeda = ___ roda'}],
+      bank:['4','12','8'], correct:['4','12'],
+      exp:{en:'$2\\times 2=4$, $6\\times 2=12$.', id:'$2\\times 2=4$, $6\\times 2=12$.'}},
+    {type:'radio', q:{en:'7 people each raise 2 hands. How many hands in total?',id:'7 orang masing-masing mengangkat 2 tangan. Berapa total tangan?'},
+      opts:[{en:'9',id:'9'},{en:'14',id:'14'},{en:'16',id:'16'}], correct:1,
+      exp:{en:'$7\\times 2 = 14$ hands.', id:'$7\\times 2 = 14$ tangan.'}},
+    {type:'fill', q:{en:'Skip count: $2, 4, \\_\\_\\_, 8, 10$',id:'Hitung loncat: $2, 4, \\_\\_\\_, 8, 10$'}, answer:['6'],
+      exp:{en:'The missing number is $6$.', id:'Angka yang hilang adalah $6$.'}},
+    {type:'tf', q:{en:'$8\\times 2$ is the same as $2\\times 8$.',id:'$8\\times 2$ sama dengan $2\\times 8$.'}, correct:true,
+      exp:{en:'Correct! Multiplication order can be swapped: $8\\times2=2\\times8=16$.', id:'Benar! Urutan perkalian bisa ditukar: $8\\times2=2\\times8=16$.'}}
+  ]
+},
+{
+  id:'concept', icon:'💡', time:'00:13–00:28',
+  title:{en:'3. New Material: Multiplication Table of 2', id:'Materi Baru: Tabel Perkalian 2'},
+  intro:[
+    tr('To multiply by 2, we make equal groups of 2 and count them all.','Untuk mengalikan dengan 2, kita membuat kelompok yang sama berisi 2 dan menghitung semuanya.'),
+  ],
+  worked:{
+    title:{en:'Worked Example: $2\\times 4$', id:'Contoh Langkah: $2\\times 4$'},
+    steps:[
+      {en:'Step 1 — Draw 4 groups of 2 dots.', id:'Langkah 1 — Gambar 4 kelompok berisi 2 titik.', extra:'dots'},
+      {en:'Step 2 — Skip count by 2: $2, 4, 6, 8$.', id:'Langkah 2 — Hitung loncat 2: $2, 4, 6, 8$.'},
+      {en:'Step 3 — Write it as repeated addition: $2+2+2+2 = 8$.', id:'Langkah 3 — Tulis sebagai penjumlahan berulang: $2+2+2+2 = 8$.'},
+      {en:'Step 4 — Write the multiplication sentence: $2\\times 4 = 8$.', id:'Langkah 4 — Tulis kalimat perkalian: $2\\times 4 = 8$.'}
+    ]
+  },
+  callout:{type:'mistake', title:{en:'Watch Out — Common Mistake',id:'Hati-hati — Kesalahan Umum'},
+    body:tr('Some students count the <b>groups</b> instead of the <b>dots</b>. Always count every dot, or skip count by 2!','Beberapa siswa menghitung <b>kelompok</b>, bukan <b>titik</b>. Selalu hitung setiap titik, atau hitung loncat 2!')},
+  questions:[
+    {type:'radio', q:{en:'$2\\times 1 = \\_\\_\\_$',id:'$2\\times 1 = \\_\\_\\_$'}, opts:[{en:'1',id:'1'},{en:'2',id:'2'},{en:'3',id:'3'}], correct:1,
+      exp:{en:'$2\\times 1 = 2$. One group of 2.', id:'$2\\times 1 = 2$. Satu kelompok berisi 2.'}},
+    {type:'fill', q:{en:'$2\\times 2 = \\_\\_\\_$',id:'$2\\times 2 = \\_\\_\\_$'}, answer:['4'], exp:{en:'$2+2=4$.', id:'$2+2=4$.'}},
+    {type:'radio', q:{en:'$2\\times 3 = \\_\\_\\_$',id:'$2\\times 3 = \\_\\_\\_$'}, opts:[{en:'5',id:'5'},{en:'6',id:'6'},{en:'8',id:'8'}], correct:1,
+      exp:{en:'$2+2+2=6$.', id:'$2+2+2=6$.'}},
+    {type:'fill', q:{en:'$2\\times 4 = \\_\\_\\_$',id:'$2\\times 4 = \\_\\_\\_$'}, answer:['8'], exp:{en:'$2\\times 4=8$, as in our worked example above.', id:'$2\\times 4=8$, seperti contoh langkah di atas.'}},
+    {type:'tf', q:{en:'$2\\times 5 = 10$', id:'$2\\times 5 = 10$'}, correct:true, exp:{en:'Correct, $2+2+2+2+2=10$.', id:'Benar, $2+2+2+2+2=10$.'}},
+    {type:'check', q:{en:'Which of these equal 12? (choose all correct answers)',id:'Manakah yang hasilnya 12? (pilih semua yang benar)'},
+      opts:[{en:'$2\\times 6$',id:'$2\\times 6$'},{en:'$2\\times 5$',id:'$2\\times 5$'},{en:'$6\\times 2$',id:'$6\\times 2$'}], correct:[0,2],
+      exp:{en:'$2\\times6=12$ and $6\\times2=12$. $2\\times5=10$, not 12.', id:'$2\\times6=12$ dan $6\\times2=12$. $2\\times5=10$, bukan 12.'}},
+    {type:'sort', q:{en:'Arrange these products from smallest to largest: $2\\times7$, $2\\times2$, $2\\times9$, $2\\times5$',id:'Urutkan hasil ini dari kecil ke besar: $2\\times7$, $2\\times2$, $2\\times9$, $2\\times5$'},
+      items:[{en:'$2\\times2=4$',id:'$2\\times2=4$'},{en:'$2\\times5=10$',id:'$2\\times5=10$'},{en:'$2\\times7=14$',id:'$2\\times7=14$'},{en:'$2\\times9=18$',id:'$2\\times9=18$'}],
+      exp:{en:'$4 < 10 < 14 < 18$.', id:'$4 < 10 < 14 < 18$.'}},
+    {type:'pair', q:{en:'Match each multiplication sentence to its answer.',id:'Cocokkan setiap kalimat perkalian dengan jawabannya.'},
+      left:[{en:'$2\\times 8$',id:'$2\\times 8$'},{en:'$2\\times 10$',id:'$2\\times 10$'}],
+      right:[{en:'16',id:'16'},{en:'20',id:'20'}],
+      exp:{en:'$2\\times8=16$, $2\\times10=20$.', id:'$2\\times8=16$, $2\\times10=20$.'}},
+    {type:'drag', q:{en:'Drag the correct product into each blank.',id:'Seret hasil yang tepat ke tiap kotak kosong.'},
+      blanks:[{en:'$2\\times 6 =$ ___',id:'$2\\times 6 =$ ___'},{en:'$2\\times 9 =$ ___',id:'$2\\times 9 =$ ___'}],
+      bank:['12','18','14'], correct:['12','18'],
+      exp:{en:'$2\\times6=12$, $2\\times9=18$.', id:'$2\\times6=12$, $2\\times9=18$.'}},
+    {type:'radio', q:{en:'A jar has 2 candies. How many candies in 9 jars?',id:'Satu toples berisi 2 permen. Berapa permen dalam 9 toples?'},
+      opts:[{en:'16',id:'16'},{en:'18',id:'18'},{en:'20',id:'20'}], correct:1,
+      exp:{en:'$2\\times 9 = 18$ candies.', id:'$2\\times 9 = 18$ permen.'}}
+  ]
+},
+{
+  id:'guided', icon:'🧭', time:'00:28–00:43',
+  title:{en:'4. Guided Practice', id:'Latihan Terbimbing'},
+  intro:[
+    tr('Let\'s solve together! Try each problem, and use the <b>Hint</b> if you need help.','Mari kita kerjakan bersama! Coba setiap soal, dan gunakan <b>Petunjuk</b> jika perlu bantuan.')
+  ],
+  worked:{
+    title:{en:'Worked Word Problem', id:'Contoh Soal Cerita'},
+    steps:[
+      {en:'Step 1 — Read: "Deni has 6 bags. Each bag has 2 apples. How many apples in total?"', id:'Langkah 1 — Baca: "Deni punya 6 tas. Setiap tas berisi 2 apel. Berapa total apel?"'},
+      {en:'Step 2 — Identify the groups: 6 groups of 2.', id:'Langkah 2 — Kenali kelompok: 6 kelompok berisi 2.'},
+      {en:'Step 3 — Write the multiplication sentence: $6\\times 2$.', id:'Langkah 3 — Tulis kalimat perkalian: $6\\times 2$.'},
+      {en:'Step 4 — Solve: $6\\times 2 = 12$ apples.', id:'Langkah 4 — Selesaikan: $6\\times 2 = 12$ apel.'}
+    ]
+  },
+  questions:[
+    {type:'radio', q:{en:'Rani has 4 boxes with 2 pencils each. How many pencils?',id:'Rani punya 4 kotak berisi 2 pensil masing-masing. Berapa pensil?'},
+      opts:[{en:'6',id:'6'},{en:'8',id:'8'},{en:'10',id:'10'}], correct:1, hint:{en:'How many groups of 2 are there?',id:'Ada berapa kelompok berisi 2?'},
+      exp:{en:'$4\\times2=8$ pencils.', id:'$4\\times2=8$ pensil.'}},
+    {type:'fill', q:{en:'8 birds have $\\_\\_\\_$ wings (2 wings each).',id:'8 burung punya $\\_\\_\\_$ sayap (2 sayap masing-masing).'}, answer:['16'], hint:{en:'Skip count by 2, eight times.',id:'Hitung loncat 2, sebanyak delapan kali.'},
+      exp:{en:'$8\\times2=16$ wings.', id:'$8\\times2=16$ sayap.'}},
+    {type:'tf', q:{en:'If $2\\times 6=12$, then $12\\div 2=6$.',id:'Jika $2\\times 6=12$, maka $12\\div 2=6$.'}, correct:true, hint:{en:'Division undoes multiplication.',id:'Pembagian membalik perkalian.'},
+      exp:{en:'Correct — multiplication and division are related.', id:'Benar — perkalian dan pembagian saling berkaitan.'}},
+    {type:'check', q:{en:'Which number sentences equal $2\\times 7$?',id:'Kalimat mana yang hasilnya sama dengan $2\\times 7$?'},
+      opts:[{en:'$7\\times 2$',id:'$7\\times 2$'},{en:'$2+2+2+2+2+2+2$',id:'$2+2+2+2+2+2+2$'},{en:'$7+7$',id:'$7+7$'}], correct:[0,1],
+      hint:{en:'$2\\times7$ means seven groups of 2.',id:'$2\\times7$ berarti tujuh kelompok berisi 2.'},
+      exp:{en:'$7\\times2$ and seven 2\'s added both equal 14. $7+7$ is a different (but also 14) expression, not the same grouping — focus on groups of 2.', id:'$7\\times2$ dan tujuh angka 2 dijumlahkan sama-sama 14. $7+7$ adalah bentuk lain (juga 14), tapi bukan kelompok berisi 2.'}},
+    {type:'sort', q:{en:'Order the steps to solve "5 tables, 2 legs shown each, how many legs shown?"',id:'Urutkan langkah menyelesaikan "5 meja, 2 kaki terlihat masing-masing, berapa kaki terlihat?"'},
+      items:[{en:'Read the problem',id:'Baca soalnya'},{en:'Find the groups: 5 groups of 2',id:'Cari kelompok: 5 kelompok berisi 2'},{en:'Write $5\\times2$',id:'Tulis $5\\times2$'},{en:'Solve: $10$',id:'Selesaikan: $10$'}],
+      exp:{en:'Read → Find groups → Write the sentence → Solve.', id:'Baca → Cari kelompok → Tulis kalimat → Selesaikan.'}},
+    {type:'pair', q:{en:'Match the word problem to its multiplication sentence.',id:'Cocokkan soal cerita dengan kalimat perkaliannya.'},
+      left:[{en:'3 pairs of socks',id:'3 pasang kaus kaki'},{en:'9 pairs of socks',id:'9 pasang kaus kaki'}],
+      right:[{en:'$3\\times2=6$',id:'$3\\times2=6$'},{en:'$9\\times2=18$',id:'$9\\times2=18$'}],
+      exp:{en:'Each "pair" is a group of 2.', id:'Setiap "pasang" adalah kelompok berisi 2.'}},
+    {type:'drag', q:{en:'Drag the missing number into the blank to complete each sentence.',id:'Seret angka yang hilang ke kotak untuk melengkapi setiap kalimat.'},
+      blanks:[{en:'$2\\times\\_\\_\\_=14$',id:'$2\\times\\_\\_\\_=14$'},{en:'$2\\times\\_\\_\\_=16$',id:'$2\\times\\_\\_\\_=16$'}],
+      bank:['7','8','9'], correct:['7','8'],
+      exp:{en:'$2\\times7=14$ and $2\\times8=16$.', id:'$2\\times7=14$ dan $2\\times8=16$.'}},
+    {type:'radio', q:{en:'A tricycle has 3 wheels. This is NOT a "group of 2" example. True or false — is it useful for our ×2 table?',id:'Sepeda roda tiga punya 3 roda. Ini BUKAN contoh "kelompok 2". Benar atau salah — apakah berguna untuk tabel ×2 kita?'},
+      opts:[{en:'True, we can still use it',id:'Benar, tetap bisa dipakai'},{en:'False, groups must be 2 for ×2 table',id:'Salah, kelompok harus 2 untuk tabel ×2'}], correct:1,
+      hint:{en:'Think about what "×2" always means.',id:'Pikirkan arti "×2" selalu.'},
+      exp:{en:'The ×2 table only works with groups of exactly 2.', id:'Tabel ×2 hanya berlaku untuk kelompok yang berisi tepat 2.'}},
+    {type:'fill', q:{en:'Deni has 6 bags with 2 apples each (see worked example above). Total apples = $\\_\\_\\_$',id:'Deni punya 6 tas berisi 2 apel masing-masing (lihat contoh di atas). Total apel = $\\_\\_\\_$'}, answer:['12'],
+      exp:{en:'$6\\times2=12$ apples.', id:'$6\\times2=12$ apel.'}},
+    {type:'tf', q:{en:'$2\\times 0 = 0$',id:'$2\\times 0 = 0$'}, correct:true, hint:{en:'Zero groups of anything is zero.',id:'Nol kelompok apapun hasilnya nol.'},
+      exp:{en:'Correct, any number times 0 is 0.', id:'Benar, angka berapapun dikali 0 hasilnya 0.'}}
+  ]
+},
+{
+  id:'independent', icon:'✍️', time:'00:43–00:55',
+  title:{en:'5. Independent Practice', id:'Latihan Mandiri'},
+  intro:[
+    tr('Now it\'s your turn to try on your own! Some problems are marked ⭐ Challenge.','Sekarang giliranmu mencoba sendiri! Beberapa soal ditandai ⭐ Tantangan.')
+  ],
+  questions:[
+    {type:'fill', q:{en:'$2\\times 4 = \\_\\_\\_$',id:'$2\\times 4 = \\_\\_\\_$'}, answer:['8'], exp:{en:'$2\\times4=8$.', id:'$2\\times4=8$.'}},
+    {type:'radio', q:{en:'$2\\times 7 = \\_\\_\\_$',id:'$2\\times 7 = \\_\\_\\_$'}, opts:[{en:'12',id:'12'},{en:'14',id:'14'},{en:'16',id:'16'}], correct:1,
+      exp:{en:'$2\\times7=14$.', id:'$2\\times7=14$.'}},
+    {type:'tf', q:{en:'$2\\times 9 = 20$', id:'$2\\times 9 = 20$'}, correct:false, exp:{en:'False. $2\\times9=18$, not 20.', id:'Salah. $2\\times9=18$, bukan 20.'}},
+    {type:'check', q:{en:'Select all products that are even numbers.',id:'Pilih semua hasil yang merupakan bilangan genap.'},
+      opts:[{en:'$2\\times3$',id:'$2\\times3$'},{en:'$2\\times5$',id:'$2\\times5$'},{en:'$2\\times8$',id:'$2\\times8$'}], correct:[0,1,2],
+      exp:{en:'Any number multiplied by 2 is always even!', id:'Angka berapapun dikali 2 selalu genap!'}},
+    {type:'fill', q:{en:'⭐ Challenge: $2\\times \\_\\_\\_ = 20$',id:'⭐ Tantangan: $2\\times \\_\\_\\_ = 20$'}, answer:['10'], challenge:true,
+      exp:{en:'$2\\times10=20$.', id:'$2\\times10=20$.'}},
+    {type:'sort', q:{en:'Arrange from largest to smallest: $2\\times2$, $2\\times9$, $2\\times6$, $2\\times1$',id:'Urutkan dari besar ke kecil: $2\\times2$, $2\\times9$, $2\\times6$, $2\\times1$'},
+      items:[{en:'$2\\times9=18$',id:'$2\\times9=18$'},{en:'$2\\times6=12$',id:'$2\\times6=12$'},{en:'$2\\times2=4$',id:'$2\\times2=4$'},{en:'$2\\times1=2$',id:'$2\\times1=2$'}],
+      exp:{en:'$18 > 12 > 4 > 2$.', id:'$18 > 12 > 4 > 2$.'}},
+    {type:'pair', q:{en:'Match each fact to its answer.',id:'Cocokkan setiap fakta dengan jawabannya.'},
+      left:[{en:'$2\\times7$',id:'$2\\times7$'},{en:'$2\\times9$',id:'$2\\times9$'}], right:[{en:'14',id:'14'},{en:'18',id:'18'}],
+      exp:{en:'$2\\times7=14$, $2\\times9=18$.', id:'$2\\times7=14$, $2\\times9=18$.'}},
+    {type:'drag', q:{en:'⭐ Challenge: drag the correct number of legs into each blank.',id:'⭐ Tantangan: seret jumlah kaki yang tepat ke tiap kotak.'},
+      blanks:[{en:'7 ducks × 2 legs = ___',id:'7 bebek × 2 kaki = ___'},{en:'10 ducks × 2 legs = ___',id:'10 bebek × 2 kaki = ___'}],
+      bank:['14','20','16'], correct:['14','20'], challenge:true,
+      exp:{en:'$7\\times2=14$, $10\\times2=20$.', id:'$7\\times2=14$, $10\\times2=20$.'}},
+    {type:'radio', q:{en:'A class has 8 tables, each with 2 pots of pencils. How many pots?',id:'Sebuah kelas punya 8 meja, masing-masing dengan 2 tempat pensil. Berapa tempat pensil?'},
+      opts:[{en:'14',id:'14'},{en:'16',id:'16'},{en:'18',id:'18'}], correct:1, exp:{en:'$8\\times2=16$ pots.', id:'$8\\times2=16$ tempat pensil.'}},
+    {type:'fill', q:{en:'$2\\times 6 = \\_\\_\\_$',id:'$2\\times 6 = \\_\\_\\_$'}, answer:['12'], exp:{en:'$2\\times6=12$.', id:'$2\\times6=12$.'}}
+  ]
+},
+{
+  id:'closing', icon:'🌟', time:'00:55–01:00',
+  title:{en:'6. Closing & Reflection', id:'Penutup & Refleksi'},
+  intro:[
+    tr('Great job today! Let\'s check what you remember with a quick exit ticket.','Kerja bagus hari ini! Mari kita cek apa yang kamu ingat dengan tiket keluar singkat.')
+  ],
+  callout:{type:'rule', title:{en:'Key Takeaways',id:'Poin Penting'}, body:tr('1) Multiplying by 2 means making equal groups of 2. 2) You can skip count by 2. 3) $a\\times 2 = 2\\times a$.','1) Mengalikan dengan 2 berarti membuat kelompok sama berisi 2. 2) Kamu bisa hitung loncat 2. 3) $a\\times 2 = 2\\times a$.')},
+  questions:[
+    {type:'fill', q:{en:'Exit Ticket 1: $2\\times 3 = \\_\\_\\_$',id:'Tiket Keluar 1: $2\\times 3 = \\_\\_\\_$'}, answer:['6'], exp:{en:'$2\\times3=6$.', id:'$2\\times3=6$.'}},
+    {type:'fill', q:{en:'Exit Ticket 2: $2\\times 8 = \\_\\_\\_$',id:'Tiket Keluar 2: $2\\times 8 = \\_\\_\\_$'}, answer:['16'], exp:{en:'$2\\times8=16$.', id:'$2\\times8=16$.'}},
+    {type:'radio', q:{en:'Exit Ticket 3: How confident do you feel about the ×2 table?',id:'Tiket Keluar 3: Seberapa yakin kamu tentang tabel ×2?'},
+      opts:[{en:'😀 Very confident',id:'😀 Sangat yakin'},{en:'😐 A little unsure',id:'😐 Sedikit ragu'},{en:'😕 I need more practice',id:'😕 Perlu lebih banyak latihan'}], correct:0,
+      exp:{en:'Whatever you picked, that\'s great honesty — we\'ll keep practicing together!', id:'Apapun pilihanmu, itu kejujuran yang bagus — kita akan terus berlatih bersama!'}},
+    {type:'tf', q:{en:'Reflection: I can explain how to solve $2\\times n$ in my own words.',id:'Refleksi: Saya bisa menjelaskan cara menyelesaikan $2\\times n$ dengan kata-kata saya sendiri.'}, correct:true,
+      exp:{en:'Awesome — being able to explain shows real understanding!', id:'Keren — bisa menjelaskan menunjukkan pemahaman yang sesungguhnya!'}},
+    {type:'check', q:{en:'Reflection: Which strategies did you use today? (select all that apply)',id:'Refleksi: Strategi apa saja yang kamu pakai hari ini? (pilih semua yang sesuai)'},
+      opts:[{en:'Skip counting',id:'Hitung loncat'},{en:'Repeated addition',id:'Penjumlahan berulang'},{en:'Drawing dot arrays',id:'Menggambar susunan titik'}], correct:[0,1,2],
+      exp:{en:'All three are great strategies for multiplication!', id:'Ketiganya adalah strategi bagus untuk perkalian!'}},
+    {type:'sort', q:{en:'Exit Ticket: order these products from smallest to largest.',id:'Tiket Keluar: urutkan hasil ini dari kecil ke besar.'},
+      items:[{en:'$2\\times4=8$',id:'$2\\times4=8$'},{en:'$2\\times1=2$',id:'$2\\times1=2$'},{en:'$2\\times7=14$',id:'$2\\times7=14$'}],
+      exp:{en:'$2 < 8 < 14$.', id:'$2 < 8 < 14$.'}},
+    {type:'pair', q:{en:'Match the sentence to its answer one more time.',id:'Cocokkan kalimat dengan jawabannya sekali lagi.'},
+      left:[{en:'$2\\times5$',id:'$2\\times5$'},{en:'$2\\times10$',id:'$2\\times10$'}], right:[{en:'10',id:'10'},{en:'20',id:'20'}],
+      exp:{en:'$2\\times5=10$, $2\\times10=20$.', id:'$2\\times5=10$, $2\\times10=20$.'}},
+    {type:'drag', q:{en:'Drag the correct answer into each blank — last check!',id:'Seret jawaban yang tepat ke tiap kotak — pengecekan terakhir!'},
+      blanks:[{en:'$2\\times2=$ ___',id:'$2\\times2=$ ___'},{en:'$2\\times9=$ ___',id:'$2\\times9=$ ___'}],
+      bank:['4','18','16'], correct:['4','18'], exp:{en:'$2\\times2=4$, $2\\times9=18$.', id:'$2\\times2=4$, $2\\times9=18$.'}},
+    {type:'radio', q:{en:'What will we learn next, that builds on today?',id:'Apa yang akan kita pelajari selanjutnya, yang membangun dari hari ini?'},
+      opts:[{en:'Multiplication table of 3',id:'Tabel perkalian 3'},{en:'The alphabet',id:'Alfabet'},{en:'Coloring',id:'Mewarnai'}], correct:0,
+      exp:{en:'Next we will explore the multiplication table of 3, using the same strategies!', id:'Selanjutnya kita akan menjelajahi tabel perkalian 3, dengan strategi yang sama!'}},
+    {type:'tf', q:{en:'Practicing a little every day helps me remember the ×2 table.',id:'Berlatih sedikit setiap hari membantu saya mengingat tabel ×2.'}, correct:true,
+      exp:{en:'Yes! Little and often is the best way to remember math facts.', id:'Benar! Sedikit tapi sering adalah cara terbaik mengingat fakta matematika.'}}
+  ]
+}
+];
+
+const HOMEWORK = {
+  time:'After class', icon:'🏠',
+  title:{en:'7. Task Homework', id:'Tugas Rumah'},
+  intro:[ tr('Complete these 10 questions at home to practice the Multiplication Table of 2.','Selesaikan 10 soal ini di rumah untuk berlatih Tabel Perkalian 2.')],
+  questions:[
+    {type:'fill', q:{en:'$2\\times 1 = \\_\\_\\_$',id:'$2\\times 1 = \\_\\_\\_$'}, answer:['2'], exp:{en:'$2\\times1=2$.', id:'$2\\times1=2$.'}},
+    {type:'fill', q:{en:'$2\\times 2 = \\_\\_\\_$',id:'$2\\times 2 = \\_\\_\\_$'}, answer:['4'], exp:{en:'$2\\times2=4$.', id:'$2\\times2=4$.'}},
+    {type:'radio', q:{en:'$2\\times 3 = \\_\\_\\_$',id:'$2\\times 3 = \\_\\_\\_$'}, opts:[{en:'5',id:'5'},{en:'6',id:'6'},{en:'7',id:'7'}], correct:1, exp:{en:'$2\\times3=6$.', id:'$2\\times3=6$.'}},
+    {type:'tf', q:{en:'$2\\times 5 = 10$', id:'$2\\times 5 = 10$'}, correct:true, exp:{en:'Correct.', id:'Benar.'}},
+    {type:'fill', q:{en:'$2\\times 6 = \\_\\_\\_$',id:'$2\\times 6 = \\_\\_\\_$'}, answer:['12'], exp:{en:'$2\\times6=12$.', id:'$2\\times6=12$.'}},
+    {type:'radio', q:{en:'$2\\times 7 = \\_\\_\\_$',id:'$2\\times 7 = \\_\\_\\_$'}, opts:[{en:'12',id:'12'},{en:'14',id:'14'},{en:'15',id:'15'}], correct:1, exp:{en:'$2\\times7=14$.', id:'$2\\times7=14$.'}},
+    {type:'check', q:{en:'Select all correct facts.',id:'Pilih semua fakta yang benar.'}, opts:[{en:'$2\\times8=16$',id:'$2\\times8=16$'},{en:'$2\\times9=19$',id:'$2\\times9=19$'},{en:'$2\\times10=20$',id:'$2\\times10=20$'}], correct:[0,2],
+      exp:{en:'$2\\times8=16$ and $2\\times10=20$ are correct. $2\\times9=18$, not 19.', id:'$2\\times8=16$ dan $2\\times10=20$ benar. $2\\times9=18$, bukan 19.'}},
+    {type:'sort', q:{en:'Arrange from smallest to largest: $2\\times9$, $2\\times3$, $2\\times6$',id:'Urutkan dari kecil ke besar: $2\\times9$, $2\\times3$, $2\\times6$'},
+      items:[{en:'$2\\times3=6$',id:'$2\\times3=6$'},{en:'$2\\times6=12$',id:'$2\\times6=12$'},{en:'$2\\times9=18$',id:'$2\\times9=18$'}], exp:{en:'$6 < 12 < 18$.', id:'$6 < 12 < 18$.'}},
+    {type:'pair', q:{en:'Match the sentence to its answer.',id:'Cocokkan kalimat dengan jawabannya.'}, left:[{en:'$2\\times4$',id:'$2\\times4$'},{en:'$2\\times8$',id:'$2\\times8$'}], right:[{en:'8',id:'8'},{en:'16',id:'16'}],
+      exp:{en:'$2\\times4=8$, $2\\times8=16$.', id:'$2\\times4=8$, $2\\times8=16$.'}},
+    {type:'drag', q:{en:'Drag the correct answer for each fact.',id:'Seret jawaban yang tepat untuk setiap fakta.'}, blanks:[{en:'$2\\times5=$ ___',id:'$2\\times5=$ ___'},{en:'$2\\times10=$ ___',id:'$2\\times10=$ ___'}],
+      bank:['10','20','15'], correct:['10','20'], exp:{en:'$2\\times5=10$, $2\\times10=20$.', id:'$2\\times5=10$, $2\\times10=20$.'}}
+  ]
+};
+
+const ALL_SECTIONS = [...SECTIONS, {id:'homework', ...HOMEWORK}];
+
+/* ============================= STATE ============================= */
+let currentSection = 0;
+let quizState = {}; // per section: {qIndex, answers:[{state}]}
+
+ALL_SECTIONS.forEach(sec=>{
+  quizState[sec.id] = {
+    qIndex:0,
+    results: sec.questions.map(()=>null) // null | true | false
+  };
+});
+
+/* ============================= RENDER QUESTION TYPES ============================= */
+function renderQuestionBody(q, secId, qi){
+  const key = secId+'_'+qi;
+  if(q.type==='radio'){
+    let h='<div class="opt-list" data-key="'+key+'">';
+    q.opts.forEach((o,i)=>{
+      h+=`<label class="opt-row" data-i="${i}"><input type="radio" name="${key}" value="${i}">${tr(o.en,o.id)}</label>`;
+    });
+    h+='</div>';
+    return h;
+  }
+  if(q.type==='check'){
+    let h='<div class="opt-list" data-key="'+key+'">';
+    q.opts.forEach((o,i)=>{
+      h+=`<label class="opt-row" data-i="${i}"><input type="checkbox" name="${key}" value="${i}">${tr(o.en,o.id)}</label>`;
+    });
+    h+='</div>';
+    return h;
+  }
+  if(q.type==='tf'){
+    return `<div class="tf-row" data-key="${key}">
+      <button data-val="true">✅ True <span class="translation">Benar</span></button>
+      <button data-val="false">❌ False <span class="translation">Salah</span></button>
+    </div>`;
+  }
+  if(q.type==='fill'){
+    return `<div class="fill-row" data-key="${key}"><input type="text" placeholder="Type your answer / Ketik jawabanmu"></div>`;
+  }
+  if(q.type==='sort'){
+    const order = shuffle(q.items.map((it,i)=>i));
+    let h=`<div class="sort-list" data-key="${key}" data-order="${order.join(',')}">`;
+    order.forEach((idx,pos)=>{
+      h+=`<div class="sort-item" data-idx="${idx}"><div>${tr(q.items[idx].en,q.items[idx].id)}</div><div class="btns"><button class="up">↑</button><button class="down">↓</button></div></div>`;
+    });
+    h+='</div>';
+    return h;
+  }
+  if(q.type==='pair'){
+    const rightShuffled = shuffle(q.right.map((r,i)=>i));
+    let h=`<div data-key="${key}">`;
+    q.left.forEach((l,i)=>{
+      h+=`<div class="pair-row"><div class="pair-left">${tr(l.en,l.id)}</div><select data-left="${i}"><option value="">-- select / pilih --</option>`;
+      rightShuffled.forEach(ri=>{ h+=`<option value="${ri}">${q.right[ri].en} / ${q.right[ri].id}</option>`; });
+      h+='</select></div>';
+    });
+    h+='</div>';
+    return h;
+  }
+  if(q.type==='drag'){
+    const bank = shuffle(q.bank.map((b,i)=>({label:b,uid:i})));
+    let h=`<div class="drag-wrap" data-key="${key}">
+      <div class="drag-bank">`;
+    bank.forEach(b=>{ h+=`<div class="drag-chip" draggable="true" data-uid="${b.uid}" data-label="${b.label}">${b.label}</div>`; });
+    h+='</div><div class="drag-targets">';
+    q.blanks.forEach((bl,i)=>{ h+=`<div class="drop-slot" data-slot="${i}">${tr(bl.en,bl.id)}<small class="slot-fill"></small></div>`; });
+    h+='</div></div>';
+    return h;
+  }
+  return '';
+}
+
+function attachDragEvents(container){
+  container.querySelectorAll('.drag-chip').forEach(chip=>{
+    chip.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', JSON.stringify({uid:chip.dataset.uid,label:chip.dataset.label})); });
+  });
+  container.querySelectorAll('.drop-slot').forEach(slot=>{
+    slot.addEventListener('dragover', e=>e.preventDefault());
+    slot.addEventListener('drop', e=>{
+      e.preventDefault();
+      const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+      // if slot already filled, unfill it
+      const prevUid = slot.dataset.uid;
+      if(prevUid){
+        const prevChip = container.querySelector(`.drag-chip[data-uid="${prevUid}"]`);
+        if(prevChip) prevChip.classList.remove('used');
+      }
+      slot.dataset.uid = data.uid;
+      slot.dataset.label = data.label;
+      slot.classList.add('filled');
+      slot.querySelector('.slot-fill').textContent = data.label;
+      const chip = container.querySelector(`.drag-chip[data-uid="${data.uid}"]`);
+      if(chip) chip.classList.add('used');
+    });
+  });
+}
+
+function attachSortEvents(container){
+  const list = container.querySelector('.sort-list');
+  if(!list) return;
+  function moveItem(dir, item){
+    if(dir==='up' && item.previousElementSibling) list.insertBefore(item, item.previousElementSibling);
+    if(dir==='down' && item.nextElementSibling) list.insertBefore(item.nextElementSibling, item);
+  }
+  list.querySelectorAll('.up').forEach(btn=> btn.addEventListener('click', e=>{ moveItem('up', e.target.closest('.sort-item')); }));
+  list.querySelectorAll('.down').forEach(btn=> btn.addEventListener('click', e=>{ moveItem('down', e.target.closest('.sort-item')); }));
+}
+
+function attachOptEvents(container, q){
+  if(q.type==='radio'||q.type==='check'){
+    container.querySelectorAll('.opt-row').forEach(row=>{
+      row.addEventListener('click', ()=>{
+        const input = row.querySelector('input');
+        if(input.type==='radio'){
+          container.querySelectorAll('.opt-row').forEach(r=>r.classList.remove('selected'));
+          input.checked=true; row.classList.add('selected');
+        } else {
+          input.checked=!input.checked; row.classList.toggle('selected', input.checked);
+        }
+      });
+    });
+  }
+  if(q.type==='tf'){
+    container.querySelectorAll('.tf-row button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        container.querySelectorAll('.tf-row button').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected'); btn.dataset.chosen='1';
+      });
+    });
+  }
+}
+
+function gradeQuestion(container, q){
+  if(q.type==='radio'){
+    const chosen = container.querySelector('input[type=radio]:checked');
+    if(!chosen) return null;
+    return parseInt(chosen.value)===q.correct;
+  }
+  if(q.type==='check'){
+    const chosen = [...container.querySelectorAll('input[type=checkbox]:checked')].map(i=>parseInt(i.value)).sort();
+    const correct = [...q.correct].sort();
+    if(chosen.length===0) return null;
+    return JSON.stringify(chosen)===JSON.stringify(correct);
+  }
+  if(q.type==='tf'){
+    const btn = container.querySelector('.tf-row button.selected');
+    if(!btn) return null;
+    return (btn.dataset.val==='true')===q.correct;
+  }
+  if(q.type==='fill'){
+    const val = container.querySelector('input[type=text]').value.trim().toLowerCase();
+    if(!val) return null;
+    return q.answer.some(a=>a.toLowerCase()===val);
+  }
+  if(q.type==='sort'){
+    const items = [...container.querySelectorAll('.sort-item')].map(it=>parseInt(it.dataset.idx));
+    const correctOrder = q.items.map((_,i)=>i);
+    return JSON.stringify(items)===JSON.stringify(correctOrder);
+  }
+  if(q.type==='pair'){
+    const selects = [...container.querySelectorAll('select')];
+    if(selects.some(s=>s.value==='')) return null;
+    return selects.every((s,i)=>parseInt(s.value)===i);
+  }
+  if(q.type==='drag'){
+    const slots = [...container.querySelectorAll('.drop-slot')];
+    if(slots.some(s=>!s.dataset.label)) return null;
+    return slots.every((s,i)=>s.dataset.label===q.correct[i]);
+  }
+  return null;
+}
+
+/* ============================= QUIZ BOX RENDER ============================= */
+function renderQuizBox(sec){
+  const st = quizState[sec.id];
+  const qi = st.qIndex;
+  const q = sec.questions[qi];
+  const typeLabel = {radio:'Multiple Choice',check:'Checkbox',tf:'True / False',fill:'Fill in the Blank',sort:'Sorting',pair:'Pairing',drag:'Drag & Drop'}[q.type];
+  let dots='<div class="progress-dots">';
+  st.results.forEach((r,i)=>{
+    let cls = i===qi?'current':'';
+    if(r===true) cls+=' answered-ok'; else if(r===false) cls+=' answered-bad';
+    dots+=`<span class="${cls}"></span>`;
+  });
+  dots+='</div>';
+
+  const html = `
+  <div class="quiz-box" id="quizBox">
+    <div class="quiz-top">
+      <span class="qcount">Case Study ${qi+1} / 10 <span class="translation">Studi Kasus ${qi+1} / 10</span></span>
+      <span><span class="qtype-badge">${typeLabel}</span>${q.challenge?'<span class="badge-challenge">⭐ Challenge</span>':''}</span>
+    </div>
+    <div class="qprompt">${tr(q.q.en, q.q.id)}</div>
+    <div id="qBody"></div>
+    ${q.hint? `<button class="hint-btn" id="hintBtn">💡 Hint / Petunjuk</button><div class="hint-box" id="hintBox">${tr(q.hint.en,q.hint.id)}</div>`:''}
+    <div class="explain-box" id="explainBox"></div>
+    <div class="quiz-actions">
+      <button class="submit-btn" id="submitBtn">Submit Answer <span class="translation" style="color:inherit;">Kirim Jawaban</span></button>
+      <div class="pager">
+        <button id="qPrev" ${qi===0?'disabled':''}>‹ Prev</button>
+        <button id="qNext" ${qi===sec.questions.length-1?'disabled':''}>Next ›</button>
+      </div>
+    </div>
+    ${dots}
+  </div>`;
+  return html;
+}
+
+function bindQuizBox(sec){
+  const st = quizState[sec.id];
+  const qi = st.qIndex;
+  const q = sec.questions[qi];
+  const box = document.getElementById('quizBox');
+  const qBody = document.getElementById('qBody');
+  qBody.innerHTML = renderQuestionBody(q, sec.id, qi);
+  attachOptEvents(qBody, q);
+  attachSortEvents(qBody);
+  attachDragEvents(qBody);
+  renderMath();
+
+  const hintBtn = document.getElementById('hintBtn');
+  if(hintBtn){ hintBtn.addEventListener('click', ()=>{ document.getElementById('hintBox').classList.toggle('show'); }); }
+
+  const submitBtn = document.getElementById('submitBtn');
+  const explainBox = document.getElementById('explainBox');
+
+  // restore previous submitted state visually if already answered
+  if(st.results[qi]!==null){
+    showExplanation(st.results[qi]);
+    submitBtn.disabled = true;
+  }
+
+  submitBtn.addEventListener('click', ()=>{
+    const result = gradeQuestion(qBody, q);
+    if(result===null){ alert('Please answer the question first! / Silakan jawab dulu!'); return; }
+    st.results[qi] = result;
+    showExplanation(result);
+    submitBtn.disabled = true;
+    updateDots();
+  });
+
+  function showExplanation(result){
+    explainBox.className = 'explain-box show ' + (result?'ok':'bad');
+    explainBox.innerHTML = `<div class="verdict">${result? '✅ Correct! / Benar!' : '❌ Not quite / Belum tepat'}</div>${tr(q.exp.en, q.exp.id)}`;
+    renderMath();
+    highlightCorrectness(qBody, q, result);
+  }
+
+  function highlightCorrectness(container, q, result){
+    if(q.type==='radio'){
+      container.querySelectorAll('.opt-row').forEach((row,i)=>{
+        if(i===q.correct) row.classList.add('correctA');
+        else if(row.classList.contains('selected')) row.classList.add('wrongA');
+      });
+    }
+    if(q.type==='check'){
+      container.querySelectorAll('.opt-row').forEach((row,i)=>{
+        if(q.correct.includes(i)) row.classList.add('correctA');
+        else if(row.classList.contains('selected')) row.classList.add('wrongA');
+      });
+    }
+  }
+
+  function updateDots(){
+    const dotsWrap = box.querySelector('.progress-dots');
+    dotsWrap.innerHTML='';
+    st.results.forEach((r,i)=>{
+      let cls = i===qi?'current':'';
+      if(r===true) cls+=' answered-ok'; else if(r===false) cls+=' answered-bad';
+      dotsWrap.innerHTML += `<span class="${cls}"></span>`;
+    });
+  }
+
+  document.getElementById('qPrev').addEventListener('click', ()=>{ if(st.qIndex>0){ st.qIndex--; refreshQuizBox(sec); } });
+  document.getElementById('qNext').addEventListener('click', ()=>{ if(st.qIndex<sec.questions.length-1){ st.qIndex++; refreshQuizBox(sec); } });
+}
+
+function refreshQuizBox(sec){
+  const old = document.getElementById('quizBox');
+  old.outerHTML = renderQuizBox(sec);
+  bindQuizBox(sec);
+}
+
+/* ============================= SECTION RENDER ============================= */
+function renderSection(idx){
+  const sec = ALL_SECTIONS[idx];
+  document.getElementById('sectionTimer').textContent = '⏱ ' + sec.time;
+  document.getElementById('sectionIndicator').textContent = `Section ${idx+1} of ${ALL_SECTIONS.length}: ${sec.title.en}`;
+
+  let dotsHtml='';
+  ALL_SECTIONS.forEach((s,i)=>{ dotsHtml += `<span class="${i===idx?'active':''}"></span>`; });
+  document.getElementById('sectionDots').innerHTML = dotsHtml;
+
+  let html = `<div class="section-card">
+    <div class="section-head"><span class="icon">${sec.icon}</span><h1>${sec.title.en}<span class="translation">${sec.title.id}</span></h1></div>
+    <div class="intro-block">${sec.intro.join('')}</div>`;
+
+  if(sec.callout){
+    html += `<div class="callout ${sec.callout.type}"><h3>${sec.callout.title.en} <span class="translation" style="display:inline;">${sec.callout.title.id}</span></h3>${sec.callout.body}</div>`;
+  }
+
+  if(sec.worked){
+    html += `<div class="step-panel">
+      <div style="font-weight:700;margin-bottom:.5rem;">${sec.worked.title.en}<span class="translation">${sec.worked.title.id}</span></div>
+      <div class="step-btns" id="stepBtns"></div>
+      <div id="stepContents"></div>
+    </div>`;
+  }
+
+  html += `<div id="quizHolder"></div>`;
+  if(idx===ALL_SECTIONS.length-1){
+    html += `<div style="margin-top:1rem;padding:.9rem 1.1rem;background:var(--green-light);border-radius:12px;">${tr('Great effort completing your homework! See you in the next class.','Kerja bagus menyelesaikan PR-mu! Sampai jumpa di kelas berikutnya.')}</div>`;
+  }
+  html += `</div>`;
+
+  document.getElementById('sectionContainer').innerHTML = html;
+
+  if(sec.worked){
+    const stepBtns = document.getElementById('stepBtns');
+    const stepContents = document.getElementById('stepContents');
+    sec.worked.steps.forEach((s,i)=>{
+      const b = document.createElement('button');
+      b.textContent = i+1;
+      if(i===0) b.classList.add('current');
+      b.addEventListener('click', ()=>{
+        [...stepBtns.children].forEach((btn,j)=>{
+          btn.classList.toggle('done', j<=i);
+          btn.classList.toggle('current', j===i);
+        });
+        [...stepContents.children].forEach((c,j)=> c.classList.toggle('active', j===i));
+      });
+      stepBtns.appendChild(b);
+      const c = document.createElement('div');
+      c.className = 'step-content' + (i===0?' active':'');
+      c.innerHTML = tr(s.en, s.id) + (s.extra==='dots'? dotArray(4,2) : '');
+      stepContents.appendChild(c);
+    });
+  }
+
+  document.getElementById('quizHolder').innerHTML = renderQuizBox(sec);
+  bindQuizBox(sec);
+  renderMath();
+}
+
+function goTo(idx){
+  currentSection = Math.max(0, Math.min(ALL_SECTIONS.length-1, idx));
+  renderSection(currentSection);
+  document.getElementById('prevBtn').disabled = currentSection===0;
+  document.getElementById('nextBtn').disabled = currentSection===ALL_SECTIONS.length-1;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('prevBtn').addEventListener('click', ()=> goTo(currentSection-1));
+document.getElementById('nextBtn').addEventListener('click', ()=> goTo(currentSection+1));
+document.getElementById('classRulesBtn').addEventListener('click', ()=> document.getElementById('rulesModal').classList.remove('hidden'));
+document.getElementById('closeRulesBtn').addEventListener('click', ()=> document.getElementById('rulesModal').classList.add('hidden'));
+
+goTo(0);
+</script>
+</body>
+</html>
