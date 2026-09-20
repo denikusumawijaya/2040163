@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson Brief — Tutor Cheat Sheet</title>
+<style>
+:root{
+  --navy:#1e3a5f; --blue:#2f6fed; --blue-light:#eaf1ff; --green:#28a745; --green-light:#e9f9ee;
+  --red:#e74c3c; --red-light:#fdecea; --amber:#f5a623; --amber-light:#fff6e5; --purple:#8355e0; --purple-light:#f1ecfd;
+  --ink:#22303f; --sub:#6b7c8f; --card:#ffffff; --bg:#f4f7fb; --border:#dce4ee; --radius:16px; --shadow:0 4px 18px rgba(30,58,95,.08);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif; background:var(--bg); color:var(--ink); margin:0; min-width:1280px;}
+.app{max-width:1180px; margin:0 auto; padding:0 20px 60px;}
+header.top{position:sticky; top:0; z-index:50; background:linear-gradient(135deg,var(--navy),#274a76); color:#fff; padding:14px 26px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow); margin-bottom:18px;}
+header.top .brand b{font-size:19px;} header.top .brand .sub{font-size:13px; color:#cfe0ff;}
+.badge-time{background:#ffffff22; border:1px solid #ffffff55; padding:8px 14px; border-radius:12px; text-align:center; min-width:150px;}
+.badge-time .lbl{font-size:10px; letter-spacing:.5px; text-transform:uppercase; color:#cfe0ff;}
+.badge-time .val{font-size:18px; font-weight:800; font-variant-numeric:tabular-nums;}
+.jump-nav{display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 20px; position:sticky; top:78px; z-index:40; background:var(--bg); padding:8px 0;}
+.jump-nav a{text-decoration:none; background:#fff; border:1px solid var(--border); color:var(--navy); font-size:12.5px; font-weight:700; padding:7px 12px; border-radius:20px; box-shadow:var(--shadow);}
+.jump-nav a:hover{background:var(--blue-light); border-color:var(--blue);}
+.sec{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px 28px; margin-bottom:18px; scroll-margin-top:150px;}
+.sec-head{display:flex; justify-content:space-between; align-items:center; border-bottom:2px dashed var(--border); padding-bottom:12px; margin-bottom:16px;}
+.sec-head h2{margin:0; color:var(--navy); font-size:21px; display:flex; align-items:center; gap:10px;}
+.tag{display:inline-block; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; padding:3px 10px; border-radius:20px; margin-left:8px;}
+.tag.pre{background:#e8e8e8; color:#555;}
+.script{background:var(--blue-light); border-left:4px solid var(--blue); border-radius:0 10px 10px 0; padding:12px 16px; margin:10px 0;}
+.script b.lbl{color:var(--blue); display:block; font-size:11px; text-transform:uppercase; margin-bottom:4px;}
+.script.mistake{background:var(--red-light); border-left-color:var(--red);}
+.script.mistake b.lbl{color:#c0392b;}
+.script.praise{background:var(--green-light); border-left-color:var(--green);}
+.script.praise b.lbl{color:#187a34;}
+.script.note{background:var(--amber-light); border-left-color:var(--amber);}
+.script.note b.lbl{color:#9a6b00;}
+.checklist{list-style:none; padding:0; margin:10px 0;}
+.checklist li{display:flex; gap:10px; align-items:flex-start; padding:7px 0; border-bottom:1px solid var(--border);}
+.checklist li:last-child{border-bottom:none;}
+.checklist li .box{flex:none; width:18px; height:18px; border:2px solid var(--blue); border-radius:5px; margin-top:2px;}
+ol.steps, ul.plain{margin:8px 0; padding-left:22px;}
+ol.steps li, ul.plain li{margin-bottom:8px; line-height:1.5;}
+table.ref{width:100%; border-collapse:collapse; margin:10px 0; font-size:14px;}
+table.ref th, table.ref td{border:1px solid var(--border); padding:8px 12px; text-align:left; vertical-align:top;}
+table.ref th{background:var(--blue-light); color:var(--navy);}
+table.ref tr:nth-child(even){background:#fafcff;}
+.pill-row{display:flex; gap:10px; flex-wrap:wrap; margin:10px 0;}
+.pill{background:#fff; border:1.5px solid var(--border); border-radius:20px; padding:6px 14px; font-size:13px; font-weight:600;}
+.pill.support{border-color:var(--green); color:#187a34; background:var(--green-light);}
+.pill.challenge{border-color:var(--purple); color:var(--purple); background:var(--purple-light);}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.mini-h{font-weight:800; color:var(--navy); margin:14px 0 4px; font-size:14px; text-transform:uppercase; letter-spacing:.3px;}
+.callout{background:#fff8e1; border:1.5px dashed var(--amber); border-radius:10px; padding:12px 16px; margin:10px 0; font-size:14px;}
+.top-note{background:var(--purple-light); border:1px solid #d9c7f7; border-radius:14px; padding:16px 20px; margin-bottom:18px; font-size:14px;}
+.top-note b{color:var(--purple);}
+.answer-key{list-style:none; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:8px 24px;}
+.answer-key li{background:#fafcff; border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:14px;}
+.answer-key li b{color:var(--navy);}
+footer.end{text-align:center; color:var(--sub); font-size:12.5px; padding:20px 0;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <b>📋 Lesson Brief — Tutor Cheat Sheet</b><br>
+    <span class="sub">Multiplication Tables of 5 · Private · Grade 2 · Marshall Cavendish My Pals Are Here 4th Ed. 2A</span>
+  </div>
+  <div class="badge-time">
+    <div class="lbl">Total Duration</div>
+    <div class="val">60 Minutes</div>
+  </div>
+</header>
+
+<div class="app">
+
+<div class="top-note">
+  <b>How to use this brief:</b> This is your on-screen reference on the extended monitor — the student never sees this file. It mirrors the exact 6 stages and static timings in the Lesson Material file. Every instruction below is concrete and ready to say/do as written — nothing here needs improvising. Jump to any section with the buttons below.
+</div>
+
+<div class="jump-nav">
+  <a href="#pre">🔧 Pre-Class Checklist</a>
+  <a href="#s1">1. Opening (00:00–00:05)</a>
+  <a href="#s2">2. Review (00:05–00:13)</a>
+  <a href="#s3">3. Concept (00:13–00:28)</a>
+  <a href="#s4">4. Guided Practice (00:28–00:40)</a>
+  <a href="#s5">5. Independent Practice (00:40–00:52)</a>
+  <a href="#s6">6. Closing (00:52–01:00)</a>
+  <a href="#personal">⭐ Personalization Map</a>
+  <a href="#hwkey">🔑 Homework Answer Key</a>
+  <a href="#qc">✅ QC Coverage Map</a>
+</div>
+
+<!-- ============ PRE-CLASS ============ -->
+<section class="sec" id="pre">
+  <div class="sec-head"><h2>🔧 Pre-Class Checklist <span class="tag pre">Before 00:00</span></h2>
+    <div class="badge-time"><div class="lbl">Static Duration</div><div class="val">−10:00 → 00:00</div></div>
+  </div>
+  <div class="mini-h">Technical Setup (complete at least 10 minutes before the session)</div>
+  <ul class="checklist">
+    <li><span class="box"></span>Camera and microphone tested — clear audio, no echo, no lag.</li>
+    <li><span class="box"></span>Lighting checked — face clearly lit, no strong backlight from a window behind you.</li>
+    <li><span class="box"></span><b>lesson_material.html</b> is open in a fullscreen browser tab, tested on Stage 1 already loaded.</li>
+    <li><span class="box"></span>This brief (<b>lesson_brief.html</b>) is open on your extended/second monitor.</li>
+    <li><span class="box"></span>Screen-sharing tool tested — confirm the student's view matches yours (no lag, no cut-off edges).</li>
+    <li><span class="box"></span>Backup case: if internet drops, you have a printed or offline copy of this session's 6×5 mistake-demo and the homework answer key.</li>
+    <li><span class="box"></span>Notes on this specific student ready: name, an interest/hobby to use for personalization (see Personalization Map below), and any topics they struggled with last session.</li>
+    <li><span class="box"></span>0 technical disruptions target — do not start the timer until every item above is checked.</li>
+  </ul>
+  <div class="mini-h">Presence &amp; Appearance</div>
+  <ul class="checklist">
+    <li><span class="box"></span>Join the call at least <b>3 minutes before</b> the scheduled start time.</li>
+    <li><span class="box"></span>Professional appearance — neat top, hair tidy, no clutter behind you.</li>
+    <li><span class="box"></span>Background tidy and well-lit; camera framed at eye level.</li>
+  </ul>
+  <div class="script">
+    <b class="lbl">Say while waiting for the student to join</b>
+    Silent, camera on, warm smile ready — do not look at your phone or other tabs. The instant the student's video appears, greet them by name within 2 seconds.
+  </div>
+</section>
+
+<!-- ============ STAGE 1 ============ -->
+<section class="sec" id="s1">
+  <div class="sec-head"><h2>1️⃣ Opening &amp; Warm Greeting</h2>
+    <div class="badge-time"><div class="lbl">Static Duration</div><div class="val">00:00–00:05</div></div>
+  </div>
+  <div class="script">
+    <b class="lbl">Opening script — say word for word (adapt name)</b>
+    "Hi [Student's name]! So good to see you today! How was your [school/day/weekend]? ... That's great! Today we're going to become Multiplication Detectives and crack the secret pattern of the 5 Times Table — I think you're going to love it."
+  </div>
+  <div class="script note">
+    <b class="lbl">Personalization Trigger #1 of 5</b>
+    Before opening the material, connect ×5 to something this specific student likes (see Personalization Map). Example line: "I remember you like [interest] — guess what, today's number 5 shows up in [interest] all the time!"
+  </div>
+  <div class="mini-h">On screen</div>
+  <ul class="plain">
+    <li>Share your screen and open Stage 1 of the Lesson Material.</li>
+    <li>Point out the "Class Rules" button once, click it, read the 3 rules aloud together, close it.</li>
+    <li>Briefly point at the "what we already know" cards — confirm both prerequisite topics out loud: "You already know multiplication and division, and you're a champion at the ×2 table — today we build on that."</li>
+  </ul>
+  <div class="callout">🎯 Goal by 00:05: student feels welcomed, knows today's topic, and class rules are set. Move to Stage 2 with the bridging line below.</div>
+  <div class="script"><b class="lbl">Bridging line into Stage 2</b>"Let's warm up our brain with what we already know before we jump into something new — click Next with me."</div>
+</section>
+
+<!-- ============ STAGE 2 ============ -->
+<section class="sec" id="s2">
+  <div class="sec-head"><h2>2️⃣ Review &amp; Real-World Connection</h2>
+    <div class="badge-time"><div class="lbl">Static Duration</div><div class="val">00:05–00:13</div></div>
+  </div>
+  <div class="script note">
+    <b class="lbl">Personalization Trigger #2 of 5 — adapt pace live</b>
+    Watch how fast the student answers the ×2 recall (Case Study 4: "2 × 6"). If they answer in under 5 seconds without hesitation → skip slowing down, move briskly through the remaining review cases. If they hesitate or answer wrong → stop, show 2 fingers × 6 groups on your hand/screen, re-count together out loud before letting them retry.
+  </div>
+  <div class="mini-h">Required interactive review (≥2 questions, respond actively)</div>
+  <ul class="plain">
+    <li><b>Case Study 1</b> (repeated addition, MCQ) — after they answer, ask the open follow-up: <i>"Why is 4+4+4 the right one and not 3+3+3+3?"</i> Listen for them explaining "groups of 4" — this is your specific understanding check.</li>
+    <li><b>Case Study 2</b> (True/False, inverse operations) — after they answer, ask: <i>"If I told you 6×5=30, what division fact could you make instantly?"</i> (expect 30÷5=6 or 30÷6=5). This previews the concept coming in Stage 3.</li>
+  </ul>
+  <div class="mini-h">Walk through all 10 review cases together</div>
+  <p>Let the student answer every case (mix of MCQ, True/False, fill-in, sorting, pairing, checkbox, drag-and-drop) themselves by clicking/dragging — you narrate and confirm, you do not click for them. Read every explanation box out loud after each submit, even correct ones, to reinforce the reasoning.</p>
+  <div class="callout">🎯 Goal by 00:13: student is confident that multiplication = repeated addition, multiplication/division are opposites, and the ×2 pattern is fresh in memory. Deviation budget for this stage: ≤1 minute.</div>
+  <div class="script"><b class="lbl">Bridging line into Stage 3</b>"You just proved you're a multiplication expert with the number 2 — now let's discover the secret pattern of a brand new number: 5!"</div>
+</section>
+
+<!-- ============ STAGE 3 ============ -->
+<section class="sec" id="s3">
+  <div class="sec-head"><h2>3️⃣ Concept Exploration: Table of 5</h2>
+    <div class="badge-time"><div class="lbl">Static Duration</div><div class="val">00:13–00:28</div></div>
+  </div>
+  <div class="script note">
+    <b class="lbl">Personalization Trigger #3 of 5 — pick ONE real-world hook</b>
+    The material shows 3 hooks (hand/fingers, star, clock). Before class, based on this student's interest, decide which one to emphasize and linger on; move quickly past the other two. Note your choice here each session: ______________________
+  </div>
+  <div class="mini-h">Thinking-aloud script while showing the skip-count track</div>
+  <div class="script">
+    <b class="lbl">Say while pointing at each number appearing</b>
+    "Watch my finger — 5... plus 5 more is...10... plus 5 more is... 15. Do you notice something about the last digit of every number? [pause for student] That's right — it's always 0 or 5! That's our secret pattern."
+  </div>
+  <div class="mini-h">🔴 Deliberate mistake demonstration (required — do not skip)</div>
+  <div class="script mistake">
+    <b class="lbl">Exact script — the mistake is scripted, not accidental-sounding</b>
+    Problem to use: <b>8 × 5</b>. Skip-count out loud while raising a finger each time, and at the <b>6th</b> jump, deliberately say the wrong number:
+    <br>"5... 10... 15... 20... 25... <b>31</b>?? Hmm, wait — that doesn't look right, let me recount from the start." (Recount: 5,10,15,20,25,<b>30</b>,35,40.) "Ah I see my mistake — I jumped too far. It's 30, not 31, because we're always adding exactly 5. See how easy it is to slip up? That's why we always double-check by recounting."
+    <br><br><b>Purpose:</b> models metacognition and shows the student that mistakes are normal and checkable — do not rush past this, let the student see you visibly "catch" it.
+  </div>
+  <div class="mini-h">Misconception to explicitly correct</div>
+  <div class="callout">Some students think ×5 answers only end in "5". Explicitly say: "Notice: 2×5=10 ends in 0, but 3×5=15 ends in 5 — it alternates between 0 and 5 every step. Both are correct patterns of the same table."</div>
+  <div class="mini-h">Step-by-step button (6 × 5)</div>
+  <p>When you reach the numbered Step 1–4 buttons in the material, click them one at a time — narrate each step in your own words before revealing the next, do not click through quickly. Ask "What do you think Step 3 will show?" before clicking Step 3, to keep the student predicting.</p>
+  <div class="mini-h">10 case studies</div>
+  <p>Same approach as Stage 2 — student clicks/drags, you narrate, read every explanation aloud. This stage carries the heaviest new content, budget the most time here.</p>
+  <div class="callout">🎯 Goal by 00:28: student can recite the skip-count sequence 5→50 unaided and states the 0/5 pattern rule in their own words. Deviation budget: ≤1 minute.</div>
+  <div class="script"><b class="lbl">Bridging line into Stage 4</b>"Now that you know the pattern, let's put on our thinking caps and solve some real puzzles with it."</div>
+</section>
+
+<!-- ============ STAGE 4 ============ -->
+<section class="sec" id="s4">
+  <div class="sec-head"><h2>4️⃣ Guided Practice: Think It Through</h2>
+    <div class="badge-time"><div class="lbl">Static Duration</div><div class="val">00:28–00:40</div></div>
+  </div>
+  <div class="script note">
+    <b class="lbl">Personalization Trigger #4 of 5 — scaffold live</b>
+    If the student answers Case Studies 1–3 correctly on the first try, skip ahead and let them work with less narration for the rest of this stage. If they miss any of the first 3, slow down and use the hint ladder below before every remaining question.
+  </div>
+  <div class="mini-h">Open-ended questions to ask out loud (≥5 required — tick as you use them)</div>
+  <ul class="checklist">
+    <li><span class="box"></span>"How do you know if a number belongs in the 5 times table, just by looking at it?"</li>
+    <li><span class="box"></span>"What pattern do you notice in the last digit of every answer?"</li>
+    <li><span class="box"></span>"Can you explain why 30 ÷ 5 = 6 using a multiplication fact instead?"</li>
+    <li><span class="box"></span>"If we skip-counted by 5 exactly ten times, what's the biggest number we'd reach? How do you know?"</li>
+    <li><span class="box"></span>"Why does 5 × 5 mean five groups of five, and not just five plus five?"</li>
+  </ul>
+  <div class="mini-h">Hint escalation ladder (use in this order — never give the answer first)</div>
+  <ol class="steps">
+    <li><b>Level 1 — Encourage:</b> "Take your time, you've got this. What's the first thing you'd try?"</li>
+    <li><b>Level 2 — Point to the pattern:</b> "Look at the skip-counting track we made earlier — where does this number fit?"</li>
+    <li><b>Level 3 — Model the first step:</b> "Let's do the first jump together: 5... now you continue."</li>
+    <li><b>Level 4 — Partial answer:</b> Only if still stuck after Level 3, give the first two numbers of the sequence and ask them to finish it.</li>
+  </ol>
+  <div class="mini-h">Case Study 5 — error-spotting question</div>
+  <p>When the student reaches "Which calculation is WRONG?" (answer: 5×5=20), pause after they submit and ask: <i>"Can you fix it and tell me the right answer out loud?"</i> — this is your error-analysis checkpoint.</p>
+  <div class="callout">🎯 Goal by 00:40: student explains their reasoning in full sentences for at least 2–3 cases without you supplying the answer. Deviation budget: ≤30 seconds.</div>
+  <div class="script"><b class="lbl">Bridging line into Stage 5</b>"You're doing such careful thinking — now it's your turn to try some on your own. I'll be right here if you need me."</div>
+</section>
+
+<!-- ============ STAGE 5 ============ -->
+<section class="sec" id="s5">
+  <div class="sec-head"><h2>5️⃣ Independent Practice</h2>
+    <div class="badge-time"><div class="lbl">Static Duration</div><div class="val">00:40–00:52</div></div>
+  </div>
+  <div class="script note">
+    <b class="lbl">Personalization Trigger #5 of 5 — Support vs Challenge routing</b>
+    <div class="pill-row"><span class="pill support">⭐ Support path</span><span class="pill challenge">🌟 Challenge path</span></div>
+    If the student needed Level 3–4 hints more than twice in Stage 4 → narrate the ⭐ Support items slowly and offer to do the first Challenge item together instead of solo. If the student breezed through Stage 4 → let them attempt every 🌟 Challenge item independently first, only stepping in if they ask.
+  </div>
+  <div class="mini-h">Check-in script — use at least 4 times during this stage</div>
+  <div class="script">
+    <b class="lbl">Say at roughly 42, 45, 48, and 50 minutes</b>
+    "How's it going? Can you show me your thinking on this one?" — then wait silently for them to explain before responding. Do not interrupt their thinking process.
+  </div>
+  <div class="mini-h">Feedback phrase bank — specific, on the process, not just "correct!"</div>
+  <div class="two-col">
+    <ul class="plain">
+      <li>"I love how you skip-counted so carefully there!"</li>
+      <li>"Nice job catching that on your own — that's exactly what good mathematicians do!"</li>
+      <li>"You explained your thinking so clearly, I could follow every step."</li>
+      <li>"That was a tricky one and you didn't give up — great effort!"</li>
+    </ul>
+    <ul class="plain">
+      <li>"I noticed you double-checked your answer — that's a smart habit."</li>
+      <li>"You used the pattern we found earlier — perfect connection!"</li>
+      <li>"It's okay that one was wrong — what can we learn from it?"</li>
+      <li>"You're really building speed with your 5 times table today!"</li>
+    </ul>
+  </div>
+  <div class="callout">🎯 Goal by 00:52: student completes the ⭐ Support items independently, and attempts most 🌟 Challenge items with at most light support. Deviation budget: ≤30 seconds.</div>
+  <div class="script"><b class="lbl">Bridging line into Stage 6</b>"You worked so hard today — let's take a moment to look back at everything you learned."</div>
+</section>
+
+<!-- ============ STAGE 6 ============ -->
+<section class="sec" id="s6">
+  <div class="sec-head"><h2>6️⃣ Reflection, Closing &amp; Homework</h2>
+    <div class="badge-time"><div class="lbl">Static Duration</div><div class="val">00:52–01:00</div></div>
+  </div>
+  <div class="mini-h">Two-way reflection dialogue (≥3 questions — read the student's typed answer out loud, then respond)</div>
+  <ol class="steps">
+    <li>After they type their answer to Q1 ("one new thing you learned"), respond with a specific follow-up: <i>"Tell me more — how would you explain that to your little brother/sister/friend?"</i></li>
+    <li>After Q2 ("explain in your own words how to multiply by 5"), listen for the words "skip count" or "add 5 each time" — if missing, gently prompt: "What did we do with our fingers earlier?"</li>
+    <li>After Q3 (confidence scale 1–5), respond warmly regardless of the number: if low, reassure and note it for next session's warm-up; if high, celebrate it.</li>
+  </ol>
+  <div class="script praise">
+    <b class="lbl">Closing script — say word for word</b>
+    "You did an amazing job today — you went from reviewing the 2 times table all the way to solving tricky word problems with the 5 times table! I'm really proud of how you [specific thing they did well, e.g., caught your own mistake / explained your thinking]. Keep practicing with your homework, and next time we'll build on this even further. See you next class!"
+  </div>
+  <div class="mini-h">Follow-up practice</div>
+  <p>Assign the 10 homework problems shown in the Lesson Material (student sees them on screen — no need to re-read all 10 aloud, just confirm they can see the list and know to write answers in their notebook). Mention next lesson will likely move to the 10 times table or mixed review, to give a sense of progression.</p>
+  <div class="callout">🎯 Goal by 01:00: reflection captured, homework assigned and understood, class ends on a warm, encouraging note, 0 minutes over time.</div>
+</section>
+
+<!-- ============ PERSONALIZATION MAP ============ -->
+<section class="sec" id="personal">
+  <div class="sec-head"><h2>⭐ Personalization Map — 5 Adjustment Checkpoints</h2></div>
+  <table class="ref">
+    <tr><th>#</th><th>When</th><th>Trigger / Decision Rule</th></tr>
+    <tr><td>1</td><td>Stage 1 (Opening)</td><td>Introduce ×5 using this student's known interest/hobby as the example context.</td></tr>
+    <tr><td>2</td><td>Stage 2 (Review)</td><td>Fast + confident on ×2 recall → skip ahead briskly. Hesitant/wrong → slow down, use finger-counting re-teach before retry.</td></tr>
+    <tr><td>3</td><td>Stage 3 (Concept)</td><td>Pick one real-world hook (fingers / star / clock) matching the student's interest and linger there; move quickly past the other two.</td></tr>
+    <tr><td>4</td><td>Stage 4 (Guided Practice)</td><td>Correct on first 3 cases → reduce narration, let them work faster. Missed any of first 3 → use the 4-level hint ladder on every remaining case.</td></tr>
+    <tr><td>5</td><td>Stage 5 (Independent Practice)</td><td>Needed Level 3–4 hints ≥2 times in Stage 4 → route to more ⭐ Support items, co-solve first Challenge item. Breezed through Stage 4 → let them attempt 🌟 Challenge items solo first.</td></tr>
+  </table>
+</section>
+
+<!-- ============ HOMEWORK ANSWER KEY ============ -->
+<section class="sec" id="hwkey">
+  <div class="sec-head"><h2>🔑 Homework Answer Key</h2></div>
+  <p style="color:var(--sub); font-size:13.5px;">For your quick reference when checking homework at the start of the next session — not shown to the student in the Lesson Material.</p>
+  <ul class="answer-key">
+    <li><b>1.</b> 2 × 5 = <b>10</b></li>
+    <li><b>2.</b> 5 × 5 = <b>25</b></li>
+    <li><b>3.</b> 9 × 5 = <b>45</b></li>
+    <li><b>4.</b> ___ × 5 = 35 → <b>7</b></li>
+    <li><b>5.</b> 6 × 5 = <b>30</b></li>
+    <li><b>6.</b> 4 bags × 5 marbles = <b>20 marbles</b></li>
+    <li><b>7.</b> 7 rows × 5 cars = <b>35 cars</b></li>
+    <li><b>8.</b> 8 × 5 = 40, so the statement "= 45" is <b>False — correct answer is 40</b></li>
+    <li><b>9.</b> Order: <b>5, 15, 30, 45</b></li>
+    <li><b>10.</b> 5 × 5 = 25 crayons, minus 8 given away = <b>17 crayons left</b></li>
+  </ul>
+</section>
+
+<!-- ============ QC COVERAGE MAP ============ -->
+<section class="sec" id="qc">
+  <div class="sec-head"><h2>✅ QC Coverage Map (Private Class)</h2></div>
+  <p style="color:var(--sub); font-size:13.5px;">Quick self-check before and during class — where each QC rubric point is handled.</p>
+  <table class="ref">
+    <tr><th>QC Criterion</th><th>Where it's covered</th></tr>
+    <tr><td>Tech/AV, lighting, materials ready, 0 disruptions</td><td>Pre-Class Checklist</td></tr>
+    <tr><td>≥3 min early, professional appearance, positive first impression</td><td>Pre-Class Checklist + Stage 1 opening script</td></tr>
+    <tr><td>Personalization ≥5 adjustments, near every stage</td><td>Personalization Map (5 numbered checkpoints across Stages 1–5)</td></tr>
+    <tr><td>6 stages on time, ≤3 min total deviation, smooth bridging</td><td>Every stage has a static duration badge + a scripted bridging line into the next stage</td></tr>
+    <tr><td>Engaging real-world connection + ≥2 interactive review questions</td><td>Stage 2 — Personalization Trigger #2 + 2 flagged review questions</td></tr>
+    <tr><td>Challenging problem, thinking-aloud, procedure→concept link, misconception addressed</td><td>Stage 3 — thinking-aloud script, deliberate mistake demo, explicit misconception callout</td></tr>
+    <tr><td>≥5 open questions, critical thinking, hints not answers</td><td>Stage 4 — 5 checked open questions + 4-level hint ladder</td></tr>
+    <tr><td>Supportive environment, ≥4 checks, main + enrichment problems</td><td>Stage 5 — 4 scheduled check-ins + Support/Challenge routing + feedback phrase bank</td></tr>
+    <tr><td>Two-way reflection ≥3 questions, exit ticket, follow-up practice</td><td>Stage 6 — 3 reflection follow-ups, exit ticket, homework + next-topic preview</td></tr>
+    <tr><td>Balanced dialogue, rapport, exploring student's thinking</td><td>Check-in scripts (Stage 5) + reflection follow-ups (Stage 6) prompting student explanation throughout</td></tr>
+    <tr><td>Specific, fast, motivating feedback; safe environment</td><td>Feedback phrase bank (Stage 5) + praise/process language used throughout every stage's scripts</td></tr>
+  </table>
+</section>
+
+<footer class="end">Lesson Brief · Multiplication Tables of 5 · Private · 60 minutes · Prepared for Deni</footer>
+</div>
+</body>
+</html>
