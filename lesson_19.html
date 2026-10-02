@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Tutoring by Deni - Measuring Length In Metres</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#2563eb;--primary-dark:#1e40af;--secondary:#f59e0b;--success:#10b981;--danger:#ef4444;--bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.tr{font-style:italic;font-size:.82em;color:var(--muted);display:block;margin-top:2px}
+header{background:var(--primary);color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.12);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:8px}
+header .brand{font-weight:700;font-size:1.05em}
+header .topic{font-size:.88em;text-align:center;flex:1}
+header .topic .tr{color:rgba(255,255,255,.85)}
+header button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:.85em;white-space:nowrap}
+header button:hover{background:rgba(255,255,255,.25)}
+.main-container{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 52px)}
+.sidebar{background:var(--card);border-right:1px solid var(--border);padding:14px;overflow-y:auto;position:sticky;top:52px;height:calc(100vh - 52px)}
+.sidebar h3{font-size:.72em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;letter-spacing:1px}
+.nav-link{display:block;padding:8px 10px;border-radius:6px;cursor:pointer;margin-bottom:3px;font-size:.84em;border:1px solid transparent;transition:all .15s}
+.nav-link:hover{background:#eff6ff}
+.nav-link.active{background:var(--primary);color:#fff;pointer-events:none;cursor:default}
+.nav-link .nl-title{display:block;font-weight:600}
+.nav-link .time{font-size:.76em;color:var(--muted);display:block;margin-top:2px}
+.nav-link.active .time,.nav-link.active .tr{color:rgba(255,255,255,.85)}
+.nav-link.disabled{opacity:.45;cursor:not-allowed;font-size:.8em;padding:6px 10px}
+.content-area{padding:22px 28px;overflow-y:auto;max-width:1100px;margin:0 auto;width:100%}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--border);flex-wrap:wrap;gap:8px}
+.page-header h2{color:var(--primary-dark);font-size:1.1em}
+.page-header .badge{background:var(--secondary);color:#fff;padding:4px 10px;border-radius:20px;font-size:.76em;font-weight:600}
+.card{background:var(--card);border-radius:10px;padding:22px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:16px;border:1px solid var(--border)}
+.card.explain{border-left:4px solid var(--primary)}
+.card.task{border-left:4px solid var(--secondary)}
+.card h3{color:var(--primary-dark);margin-bottom:12px;font-size:1.1em}
+.math-block{background:#f1f5f9;padding:12px 14px;border-radius:8px;margin:12px 0;overflow-x:auto}
+.example-box{background:#fef3c7;border-left:4px solid var(--secondary);padding:12px 16px;margin:12px 0;border-radius:6px}
+.example-box h4{color:#92400e;margin-bottom:6px;font-size:.95em}
+.tip-box{background:#dbeafe;border-left:4px solid var(--primary);padding:10px 14px;margin:10px 0;border-radius:6px}
+.tip-box h4{color:#1e40af;margin-bottom:4px;font-size:.9em}
+.illustration{text-align:center;margin:14px 0;padding:14px;background:#f1f5f9;border-radius:8px}
+.illustration svg{max-width:100%;height:auto}
+.q-text{font-size:1em;margin-bottom:12px;line-height:1.7}
+.options{display:flex;flex-direction:column;gap:8px}
+.option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:2px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;transition:all .15s}
+.option:hover{border-color:var(--primary);background:#eff6ff}
+.option.selected{border-color:var(--primary);background:#dbeafe}
+.option.correct{border-color:var(--success);background:#d1fae5}
+.option.incorrect{border-color:var(--danger);background:#fee2e2}
+.option .marker{min-width:18px;width:18px;height:18px;border:2px solid var(--muted);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:.7em;color:#fff}
+.option.selected .marker{background:var(--primary);border-color:var(--primary)}
+.option.correct .marker{background:var(--success);border-color:var(--success)}
+.option.incorrect .marker{background:var(--danger);border-color:var(--danger)}
+.option.checkbox .marker{border-radius:3px}
+.option .opt-text{flex:1}
+.fill-input{padding:8px 12px;border:2px solid var(--border);border-radius:6px;font-size:1em;width:100%;margin:8px 0;font-family:inherit}
+.fill-input:focus{border-color:var(--primary);outline:none}
+.btn-submit{background:var(--primary);color:#fff;border:none;padding:9px 20px;border-radius:6px;cursor:pointer;font-size:.88em;font-weight:600;margin-top:12px}
+.btn-submit:hover{background:var(--primary-dark)}
+.feedback{margin-top:12px;padding:14px;border-radius:8px;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#d1fae5;border:1px solid var(--success)}
+.feedback.incorrect{background:#fee2e2;border:1px solid var(--danger)}
+.feedback h4{margin-bottom:6px}
+.feedback ol,.feedback ul{margin:6px 0;padding-left:22px}
+.feedback li{margin:4px 0}
+.card ol, .card ul { padding-left: 26px; margin: 10px 0; }
+.card li { margin: 5px 0; }
+.example-box ol, .example-box ul { padding-left: 22px; margin: 8px 0; }
+.tip-box ol, .tip-box ul { padding-left: 22px; margin: 8px 0; }
+.math-block ol, .math-block ul { padding-left: 22px; margin: 8px 0; }
+.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.pagination button{background:var(--primary);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.84em}
+.pagination button:disabled{background:#cbd5e1;cursor:not-allowed}
+.pagination .indicator{font-size:.82em;color:var(--muted);text-align:center;flex:1;padding:0 10px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+.modal.active{display:flex}
+.modal-content{background:#fff;padding:22px;border-radius:12px;max-width:460px;width:90%}
+.modal-content h3{color:var(--primary-dark);margin-bottom:12px}
+.modal-content ul{list-style:none;padding-left:0}
+.modal-content li{padding:10px 0;border-bottom:1px solid var(--border)}
+.modal-content li:last-child{border-bottom:none}
+.modal-close{background:var(--primary);color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;margin-top:12px}
+.sort-list{display:flex;flex-direction:column;gap:6px}
+.sort-item{padding:10px 12px;border:2px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s}
+.sort-item:hover{border-color:var(--primary)}
+.sort-item.selected{border-color:var(--primary);background:#dbeafe}
+.sort-item .pos{background:var(--primary);color:#fff;min-width:24px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8em;flex-shrink:0}
+.sort-item .sort-text{flex:1}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pair-col h4{font-size:.85em;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+.pair-col{display:flex;flex-direction:column;gap:6px}
+.pair-item{padding:10px 12px;border:2px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;text-align:center;font-size:.92em}
+.pair-item.selected{border-color:var(--primary);background:#dbeafe}
+.pair-item.paired{opacity:.5;cursor:default;border-color:var(--success);background:#d1fae5}
+.pairs-list{margin-top:10px}
+.pair-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#f1f5f9;border-radius:6px;margin-bottom:4px;font-size:.85em}
+.pair-row .remove{cursor:pointer;color:var(--danger);font-weight:700;margin-left:6px}
+.page-numbers {display:flex;gap:3px;flex-wrap:nowrap;justify-content:center;flex:1;overflow-x:auto;padding:0 3px;}
+.page-num {min-width:28px;height:26px;border:1px solid var(--border);background:#fff;border-radius:4px;cursor:pointer;font-size:.7em;display:flex;align-items:center;justify-content:center;padding:0 4px;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.page-num.page-num-e {background:#eff6ff;border-color:#93c5fd;color:#1e40af;}
+.page-num.page-num-t {background:#fffbeb;border-color:#fcd34d;color:#92400e;}
+.page-num.page-num-e:hover {background:#dbeafe;border-color:var(--primary);}
+.page-num.page-num-t:hover {background:#fef3c7;border-color:var(--secondary);}
+.page-num.page-num-e.active {background:var(--primary);color:#fff;border-color:var(--primary);font-weight:600;}
+.page-num.page-num-t.active {background:var(--secondary);color:#fff;border-color:var(--secondary);font-weight:600;}
+.page-num:disabled {opacity:1;cursor:default;}
+@media(max-width:1100px){.main-container{grid-template-columns:180px 1fr}.content-area{padding:18px 20px}}
+@media(max-width:760px){.main-container{grid-template-columns:1fr}.sidebar{display:none}.content-area{padding:16px}header{font-size:.9em}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Math Tutoring by Deni</div>
+  <div class="topic">Topic: Measuring Length In Metres <span class="tr">Topik: Mengukur Panjang Dalam Meter</span></div>
+  <button id="classRulesBtn">Class Rules <span class="tr">Aturan Kelas</span></button>
+</header>
+<div class="main-container">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="content-area">
+    <div id="pageContent"></div>
+    <div class="pagination">
+      <button id="prevBtn">← Previous <span class="tr">Sebelumnya</span></button>
+      <div class="page-numbers" id="pageNums"></div>
+      <button id="nextBtn">Next <span class="tr">Berikutnya</span> →</button>
+    </div>
+  </main>
+</div>
+<div id="classRulesModal" class="modal">
+  <div class="modal-content">
+    <h3>Class Rules <span class="tr">Aturan Kelas</span></h3>
+    <ul>
+      <li>Speak in turn <span class="tr">Berbicara secara bergantian</span></li>
+      <li>Ask permission before leaving the class <span class="tr">Meminta izin jika ingin meninggalkan kelas</span></li>
+      <li>Turn on microphone and camera when needed <span class="tr">Menyalakan microphone dan camera jika diperlukan</span></li>
+    </ul>
+    <button class="modal-close">Close <span class="tr">Tutup</span></button>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  if(!window.renderMathInElement){setTimeout(arguments.callee,50);return;}
+  const sectionsData = {
+    a: {
+      title: 'Spiral Review Warm-up', titleEn: 'Pemanasan Tinjauan Melingkar', time: '00:00 - 00:10',
+      pages: [
+        { type:'explanation', pageTitle:'E1: Counting in 10s and 100s', pageTitleEn:'Berhitung Kelipatan 10 dan 100',
+          body:`<p>Let's warm up our math brains! 🧠 We use tens and hundreds every day in measuring length. <span class="tr">Mari pemanasan otak matematika kita! Kita menggunakan puluhan dan ratusan setiap hari dalam mengukur panjang.</span></p>
+          <div class="math-block"><strong>Counting by 10s:</strong> $10, 20, 30, 40, 50, 60, 70, 80, 90, 100$ <span class="tr">Menghitung kelipatan 10</span></div>
+          <div class="math-block"><strong>Counting by 100s:</strong> $100, 200, 300, 400, 500, 600, 700, 800, 900, 1000$ <span class="tr">Menghitung kelipatan 100</span></div>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>What is $200 + 300$? <span class="tr">Berapa $200 + 300$?</span>
+          <p>$2$ hundreds $+$ $3$ hundreds $=$ $5$ hundreds. <span class="tr">2 ratusan + 3 ratusan = 5 ratusan.</span></p>
+          <p>So, $200 + 300 = 500$. <span class="tr">Jadi, $200 + 300 = 500$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T1: Add Tens and Hundreds', pageTitleEn:'Tambah Puluh dan Ratus', taskType:'fill',
+          question:'What is $300 + 400$? The answer is $\\dots$', questionEn:'Berapa $300 + 400$? Jawabannya adalah $\\dots$',
+          correctAnswer:'700', acceptableAnswers:['700'],
+          explanation:`<p>$3$ hundreds $+$ $4$ hundreds $=$ $7$ hundreds. <span class="tr">3 ratusan + 4 ratusan = 7 ratusan.</span></p>
+          <p>Therefore, $300 + 400 = 700$. <span class="tr">Oleh karena itu, $300 + 400 = 700$.</span></p>`
+        },
+        { type:'task', pageTitle:'T2: Subtract Hundreds', pageTitleEn:'Kurang Ratus', taskType:'radio',
+          question:'What is $800 - 300$?', questionEn:'Berapa $800 - 300$?',
+          options:[{text:'$400$', correct:false},{text:'$500$', correct:true},{text:'$600$', correct:false},{text:'$1100$', correct:false}],
+          explanation:`<p>$8$ hundreds $-$ $3$ hundreds $=$ $5$ hundreds. <span class="tr">8 ratusan - 3 ratusan = 5 ratusan.</span></p>
+          <p>So, $800 - 300 = 500$. <span class="tr">Jadi, $800 - 300 = 500$.</span></p>`
+        },
+        { type:'task', pageTitle:'T3: Order the Numbers', pageTitleEn:'Urutkan Angka', taskType:'sorting',
+          question:'Order the numbers from smallest to largest.', questionEn:'Urutkan angka dari terkecil ke terbesar.',
+          items:['$100$','$250$','$400$','$800$'], correctOrder:[0,1,2,3],
+          explanation:`<p>100 is 1 hundred, 250 is 2 hundreds, 400 is 4 hundreds, 800 is 8 hundreds. <span class="tr">100 adalah 1 ratus, 250 2 ratus, 400 4 ratus, 800 8 ratus.</span></p>
+          <p>Smallest to largest: $100, 250, 400, 800$. <span class="tr">Terkecil ke terbesar: $100, 250, 400, 800$.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E2: What is Length?', pageTitleEn:'Apa itu Panjang?',
+          body:`<p><strong>Length</strong> is how long or short something is. 📏 We measure length to find out how big things are! <span class="tr"><strong>Panjang</strong> adalah seberapa panjang atau pendek sesuatu. Kita mengukur panjang untuk mengetahui seberapa besar sesuatu!</span></p>
+          <div class="illustration"><svg width="280" height="120" viewBox="0 0 280 120"><rect x="20" y="50" width="240" height="20" fill="#f59e0b" rx="4"/><line x1="20" y1="40" x2="20" y2="80" stroke="#1e293b" stroke-width="2"/><line x1="260" y1="40" x2="260" y2="80" stroke="#1e293b" stroke-width="2"/><path d="M 20 90 L 260 90" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)" marker-start="url(#arrowhead)"/><defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/></marker></defs><text x="120" y="110" font-size="14" fill="#1e40af">Length</text></svg></div>
+          <p>We can measure length using tools like a ruler 📐 or a measuring tape. <span class="tr">Kita bisa mengukur panjang menggunakan alat seperti penggaris atau pita pengukur.</span></p>
+          <p>Common units of measurement are <strong>metres (m)</strong> and <strong>centimetres (cm)</strong>. <span class="tr">Satuan ukuran umum adalah <strong>meter (m)</strong> dan <strong>sentimeter (cm)</strong>.</span></p>`
+        },
+        { type:'task', pageTitle:'T4: Identify the Tool', pageTitleEn:'Identifikasi Alat', taskType:'truefalse',
+          question:'True or false: We use a ruler 📐 to measure the length of a pencil.', questionEn:'Benar atau salah: Kita menggunakan penggaris 📐 untuk mengukur panjang pensil.',
+          correctAnswer:'true',
+          explanation:`<p>A ruler is perfect for small things like pencils ✏️. <span class="tr">Penggaris sangat cocok untuk benda kecil seperti pensil.</span></p>`
+        },
+        { type:'task', pageTitle:'T5: Fill in the Missing Number', pageTitleEn:'Isi Angka yang Hilang', taskType:'fill',
+          question:'Count by 100s: $100, 200, 300, \\dots, 500$.', questionEn:'Hitung kelipatan 100: $100, 200, 300, \\dots, 500$.',
+          correctAnswer:'400', acceptableAnswers:['400'],
+          explanation:`<p>After $3$ hundreds comes $4$ hundreds. <span class="tr">Setelah 3 ratusan adalah 4 ratusan.</span></p>
+          <p>So, the missing number is $400$. <span class="tr">Jadi, angka yang hilang adalah $400$.</span></p>`
+        },
+        { type:'task', pageTitle:'T6: Match the Objects', pageTitleEn:'Pasangkan Benda', taskType:'pairing',
+          question:'Match the object to the best tool to measure it.', questionEn:'Pasangkan benda dengan alat terbaik untuk mengukurnya.',
+          pairs:[{left:'Pencil ✏️', right:'Ruler 📐'},{left:'Classroom Wall 🏫', right:'Measuring Tape 📏'},{left:'Eraser', right:'Ruler 📐'},{left:'Playground 🛝', right:'Measuring Tape 📏'}],
+          explanation:`<p>Small objects use rulers. Large objects need measuring tapes! <span class="tr">Benda kecil pakai penggaris. Benda besar butuh pita pengukur!</span></p>`
+        },
+        { type:'explanation', pageTitle:'E3: The 1 Metre Rule', pageTitleEn:'Aturan 1 Meter',
+          body:`<p>Do you know what <strong>1 metre</strong> looks like? 🤔 <span class="tr">Apakah kamu tahu seperti apa <strong>1 meter</strong> itu?</span></p>
+          <div class="illustration"><svg width="200" height="150" viewBox="0 0 200 150"><circle cx="100" cy="75" r="60" fill="#dbeafe"/><path d="M 60 100 L 100 40 L 140 100 Z" fill="#2563eb"/><circle cx="100" cy="75" r="8" fill="#f59e0b"/><text x="105" y="70" font-size="14" fill="#1e293b">1m</text></svg><div style="font-size:.82em;color:var(--muted);margin-top:6px">1 metre is about the height of a door handle. <span class="tr">1 meter kira-kira setinggi gagang pintu.</span></div></div>
+          <div class="math-block">$1 \\text{ m} = 100 \\text{ cm}$ <span class="tr">1 meter = 100 sentimeter</span></div>
+          <p>This is a very important rule! "m" stands for metre, and "cm" stands for centimetre. <span class="tr">Ini adalah aturan yang sangat penting! "m" singkatan dari meter, dan "cm" singkatan dari sentimeter.</span></p>`
+        },
+        { type:'task', pageTitle:'T7: Estimate Length', pageTitleEn:'Perkiraan Panjang', taskType:'checkbox',
+          question:'Select all objects that are about 1 metre long.', questionEn:'Pilih semua benda yang panjangnya sekitar 1 meter.',
+          options:[{text:'A school desk 🪑', correct:true},{text:'A pencil ✏️', correct:false},{text:'A guitar 🎸', correct:true},{text:'An eraser', correct:false}],
+          explanation:`<p>A pencil is about $15 \\text{ cm}$. A desk and a guitar are about $1 \\text{ m}$. <span class="tr">Pensil sekitar $15 \\text{ cm}$. Meja dan gitar sekitar $1 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T8: Convert m to cm', pageTitleEn:'Konversi m ke cm', taskType:'fill',
+          question:'If $1 \\text{ m} = 100 \\text{ cm}$, then $2 \\text{ m} = \\dots \\text{ cm}$.', questionEn:'Jika $1 \\text{ m} = 100 \\text{ cm}$, maka $2 \\text{ m} = \\dots \\text{ cm}$.',
+          correctAnswer:'200', acceptableAnswers:['200'],
+          explanation:`<p>$2 \\text{ m} = 2 \\times 100 \\text{ cm} = 200 \\text{ cm}$. <span class="tr">$2 \\text{ m} = 2 \\times 100 \\text{ cm} = 200 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T9: Which is Longer?', pageTitleEn:'Mana yang Lebih Panjang?', taskType:'radio',
+          question:'Which is longer?', questionEn:'Mana yang lebih panjang?',
+          options:[{text:'$100 \\text{ cm}$', correct:false},{text:'$1 \\text{ m}$', correct:false},{text:'They are the same', correct:true},{text:'Cannot tell', correct:false}],
+          explanation:`<p>Remember the golden rule: $1 \\text{ m} = 100 \\text{ cm}$. They are exactly the same! <span class="tr">Ingat aturan emas: $1 \\text{ m} = 100 \\text{ cm}$. Keduanya sama persis!</span></p>`
+        },
+        { type:'task', pageTitle:'T10: Measurement Steps', pageTitleEn:'Langkah Pengukuran', taskType:'sorting',
+          question:'Order the steps to measure a book with a ruler.', questionEn:'Urutkan langkah mengukur buku dengan penggaris.',
+          items:['Place the ruler at the edge of the book <span class="tr">Letakkan penggaris di tepi buku</span>','Look at where the book ends on the ruler <span class="tr">Lihat di mana buku berakhir di penggaris</span>','Read the number on the ruler <span class="tr">Baca angka di penggaris</span>','Write down the length in cm <span class="tr">Tulis panjangnya dalam cm</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>This is the correct way to measure any object. <span class="tr">Ini adalah cara yang benar untuk mengukur benda apa pun.</span></p>`
+        }
+      ]
+    },
+    b: {
+      title: 'Introduction & Real-World Connection', titleEn: 'Pengantar & Koneksi Dunia Nyata', time: '00:10 - 00:15',
+      pages: [
+        { type:'explanation', pageTitle:'E1: Where We Use Metres', pageTitleEn:'Di Mana Kita Menggunakan Meter',
+          body:`<p>We use <strong>metres (m)</strong> to measure things that are not too small and not too big. 🏠 <span class="tr">Kita menggunakan <strong>meter (m)</strong> untuk mengukur benda yang tidak terlalu kecil dan tidak terlalu besar.</span></p>
+          <div class="illustration"><svg width="260" height="140" viewBox="0 0 260 140"><rect x="20" y="20" width="100" height="100" fill="#f1f5f9" stroke="#64748b"/><rect x="25" y="25" width="90" height="90" fill="#dbeafe"/><line x1="120" y1="20" x2="160" y2="20" stroke="#ef4444" stroke-width="2"/><line x1="160" y1="15" x2="160" y2="125" stroke="#ef4444" stroke-width="2"/><line x1="120" y1="120" x2="160" y2="120" stroke="#ef4444" stroke-width="2"/><text x="165" y="75" font-size="14" fill="#ef4444">~1 m</text><rect x="190" y="60" width="60" height="60" fill="#f1f5f9"/><rect x="195" y="65" width="50" height="50" fill="#fbbf24"/><line x1="250" y1="60" x2="255" y2="60" stroke="#10b981" stroke-width="2"/><line x1="255" y1="55" x2="255" y2="120" stroke="#10b981" stroke-width="2"/><line x1="250" y1="120" x2="255" y2="120" stroke="#10b981" stroke-width="2"/><text x="210" y="140" font-size="12" fill="#10b981">~1 m</text></svg></div>
+          <p>Examples of things measured in metres: <span class="tr">Contoh benda yang diukur dalam meter:</span></p>
+          <ul><li>Length of a classroom 🏫 <span class="tr">Panjang ruang kelas</span></li><li>Height of a door 🚪 <span class="tr">Tinggi pintu</span></li><li>Width of a bed 🛏️ <span class="tr">Lebar tempat tidur</span></li></ul>`
+        },
+        { type:'task', pageTitle:'T1: Best Unit', pageTitleEn:'Satuan Terbaik', taskType:'radio',
+          question:'What is the best unit to measure the length of a classroom?', questionEn:'Apa satuan terbaik untuk mengukur panjang ruang kelas?',
+          options:[{text:'Centimetres (cm) <span class="tr">Sentimeter</span>', correct:false},{text:'Metres (m) <span class="tr">Meter</span>', correct:true},{text:'Kilometres (km) <span class="tr">Kilometer</span>', correct:false},{text:'Grams (g) <span class="tr">Gram</span>', correct:false}],
+          explanation:`<p>A classroom is big, so we use metres (m). <span class="tr">Ruang kelas besar, jadi kita pakai meter (m).</span></p>`
+        },
+        { type:'task', pageTitle:'T2: Real-world Math', pageTitleEn:'Matematika Dunia Nyata', taskType:'fill',
+          question:'A door is $2 \\text{ m}$ tall. How many centimetres is that? $2 \\text{ m} = \\dots \\text{ cm}$.', questionEn:'Pintu tingginya $2 \\text{ m}$. Berapa sentimeter itu? $2 \\text{ m} = \\dots \\text{ cm}$.',
+          correctAnswer:'200', acceptableAnswers:['200'],
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$.</span></p>
+          <p>$2 \\text{ m} = 2 \\times 100 \\text{ cm} = 200 \\text{ cm}$. <span class="tr">$2 \\text{ m} = 2 \\times 100 \\text{ cm} = 200 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T3: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: We use metres to measure the length of an ant. 🐜', questionEn:'Benar atau salah: Kita menggunakan meter untuk mengukur panjang semut. 🐜',
+          correctAnswer:'false',
+          explanation:`<p>An ant is very small! We use millimetres (mm) or centimetres (cm) for ants. <span class="tr">Semut sangat kecil! Kita pakai milimeter (mm) atau sentimeter (cm) untuk semut.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E2: The Metre Rule', pageTitleEn:'Aturan Meter',
+          body:`<p>Let's remember our magic rule! ✨ <span class="tr">Mari kita ingat aturan magis kita!</span></p>
+          <div class="math-block"><strong>$1 \\text{ m} = 100 \\text{ cm}$</strong> <span class="tr">1 meter = 100 sentimeter</span></div>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>Convert $4 \\text{ m}$ to centimetres. <span class="tr">Ubah $4 \\text{ m}$ ke sentimeter.</span>
+          <p>$4 \\text{ m} = 4 \\times 1 \\text{ m} = 4 \\times 100 \\text{ cm} = 400 \\text{ cm}$. <span class="tr">$4 \\text{ m} = 4 \\times 1 \\text{ m} = 4 \\times 100 \\text{ cm} = 400 \\text{ cm}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T4: Convert m to cm', pageTitleEn:'Konversi m ke cm', taskType:'fill',
+          question:'Convert $5 \\text{ m}$ to centimetres. $5 \\text{ m} = \\dots \\text{ cm}$.', questionEn:'Ubah $5 \\text{ m}$ ke sentimeter. $5 \\text{ m} = \\dots \\text{ cm}$.',
+          correctAnswer:'500', acceptableAnswers:['500'],
+          explanation:`<p>$5 \\text{ m} = 5 \\times 100 \\text{ cm} = 500 \\text{ cm}$. <span class="tr">$5 \\text{ m} = 5 \\times 100 \\text{ cm} = 500 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T5: Convert cm to m', pageTitleEn:'Konversi cm ke m', taskType:'radio',
+          question:'Convert $300 \\text{ cm}$ to metres.', questionEn:'Ubah $300 \\text{ cm}$ ke meter.',
+          options:[{text:'$3 \\text{ m}$', correct:true},{text:'$30 \\text{ m}$', correct:false},{text:'$300 \\text{ m}$', correct:false},{text:'$3 \\text{ cm}$', correct:false}],
+          explanation:`<p>$300 \\text{ cm} = 300 \\div 100 \\text{ m} = 3 \\text{ m}$. <span class="tr">$300 \\text{ cm} = 300 \\div 100 \\text{ m} = 3 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T6: Match the Conversions', pageTitleEn:'Pasangkan Konversi', taskType:'pairing',
+          question:'Match the equal lengths.', questionEn:'Pasangkan panjang yang sama.',
+          pairs:[{left:'$1 \\text{ m}$', right:'$100 \\text{ cm}$'},{left:'$2 \\text{ m}$', right:'$200 \\text{ cm}$'},{left:'$5 \\text{ m}$', right:'$500 \\text{ cm}$'},{left:'$10 \\text{ m}$', right:'$1000 \\text{ cm}$'}],
+          explanation:`<p>Multiply metres by $100$ to get centimetres. <span class="tr">Kalikan meter dengan $100$ untuk mendapat sentimeter.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E3: Adding Lengths', pageTitleEn:'Menjumlahkan Panjang',
+          body:`<p>When adding lengths, make sure the units are the same! ➕ <span class="tr">Saat menjumlahkan panjang, pastikan satuannya sama!</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>What is $1 \\text{ m} + 50 \\text{ cm}$? <span class="tr">Berapa $1 \\text{ m} + 50 \\text{ cm}$?</span>
+          <p>Step 1: Convert to the same unit. $1 \\text{ m} = 100 \\text{ cm}$. <span class="tr">Langkah 1: Ubah ke satuan yang sama. $1 \\text{ m} = 100 \\text{ cm}$.</span></p>
+          <p>Step 2: Add. $100 \\text{ cm} + 50 \\text{ cm} = 150 \\text{ cm}$. <span class="tr">Langkah 2: Jumlahkan. $100 \\text{ cm} + 50 \\text{ cm} = 150 \\text{ cm}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T7: Add Lengths', pageTitleEn:'Jumlahkan Panjang', taskType:'fill',
+          question:'$100 \\text{ cm} + 200 \\text{ cm} = \\dots \\text{ cm}$.', questionEn:'$100 \\text{ cm} + 200 \\text{ cm} = \\dots \\text{ cm}$.',
+          correctAnswer:'300', acceptableAnswers:['300'],
+          explanation:`<p>$100 + 200 = 300$. So, $100 \\text{ cm} + 200 \\text{ cm} = 300 \\text{ cm}$. <span class="tr">$100 + 200 = 300$. Jadi, $100 \\text{ cm} + 200 \\text{ cm} = 300 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T8: Mixed Units', pageTitleEn:'Satuan Campuran', taskType:'truefalse',
+          question:'True or false: $1 \\text{ m} + 1 \\text{ cm} = 2 \\text{ m}$.', questionEn:'Benar atau salah: $1 \\text{ m} + 1 \\text{ cm} = 2 \\text{ m}$.',
+          correctAnswer:'false',
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 1 \\text{ cm} = 101 \\text{ cm}$. It is not $2 \\text{ m}$! <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 1 \\text{ cm} = 101 \\text{ cm}$. Itu bukan $2 \\text{ m}$!</span></p>`
+        },
+        { type:'task', pageTitle:'T9: Compare Lengths', pageTitleEn:'Bandingkan Panjang', taskType:'sorting',
+          question:'Order the lengths from shortest to longest.', questionEn:'Urutkan panjang dari terpendek ke terpanjang.',
+          items:['$50 \\text{ cm}$','$1 \\text{ m}$','$150 \\text{ cm}$','$200 \\text{ cm}$'], correctOrder:[0,1,2,3],
+          explanation:`<p>Convert all to cm to compare: $1 \\text{ m} = 100 \\text{ cm}$, $200 \\text{ cm} = 200 \\text{ cm}$. <span class="tr">Ubah semua ke cm untuk membandingkan: $1 \\text{ m} = 100 \\text{ cm}$, $200 \\text{ cm} = 200 \\text{ cm}$.</span></p>
+          <p>So: $50 \\text{ cm}, 100 \\text{ cm}, 150 \\text{ cm}, 200 \\text{ cm}$. <span class="tr">Jadi: $50 \\text{ cm}, 100 \\text{ cm}, 150 \\text{ cm}, 200 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T10: Real-world Problem', pageTitleEn:'Soal Dunia Nyata', taskType:'radio',
+          question:'A rope is $3 \\text{ m}$ long. We cut $100 \\text{ cm}$ off. How much is left?', questionEn:'Tali panjangnya $3 \\text{ m}$. Kita potong $100 \\text{ cm}$. Berapa sisanya?',
+          options:[{text:'$2 \\text{ m}$', correct:true},{text:'$3 \\text{ m}$', correct:false},{text:'$1 \\text{ m}$', correct:false},{text:'$400 \\text{ cm}$', correct:false}],
+          explanation:`<p>$3 \\text{ m} = 300 \\text{ cm}$. $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm} = 2 \\text{ m}$. <span class="tr">$3 \\text{ m} = 300 \\text{ cm}$. $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm} = 2 \\text{ m}$.</span></p>`
+        }
+      ]
+    },
+    c: {
+      title: 'Review of Prior Knowledge', titleEn: 'Tinjauan Pengetahuan Awal', time: '00:15 - 00:20',
+      pages: [
+        { type:'explanation', pageTitle:'E1: Metres and Centimetres', pageTitleEn:'Meter dan Sentimeter',
+          body:`<p>Let's review how to write lengths in <strong>metres (m)</strong> and <strong>centimetres (cm)</strong>. 📝 <span class="tr">Mari kita tinjau cara menulis panjang dalam <strong>meter (m)</strong> dan <strong>sentimeter (cm)</strong>.</span></p>
+          <div class="math-block">$1 \\text{ m} = 100 \\text{ cm}$ <span class="tr">1 meter = 100 sentimeter</span>
+          <br>$1 \\text{ cm} = \\frac{1}{100} \\text{ m}$ <span class="tr">1 sentimeter = 1/100 meter</span></div>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>If you have $250 \\text{ cm}$, how many metres is that? <span class="tr">Jika kamu punya $250 \\text{ cm}$, berapa meter itu?</span>
+          <p>Divide by $100$: $250 \\div 100 = 2.5 \\text{ m}$. <span class="tr">Bagi dengan $100$: $250 \\div 100 = 2.5 \\text{ m}$.</span></p>
+          <p>We can write it as $2 \\text{ m } 50 \\text{ cm}$. <span class="tr">Kita bisa menulisnya sebagai $2 \\text{ m } 50 \\text{ cm}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T1: Convert cm to m', pageTitleEn:'Konversi cm ke m', taskType:'fill',
+          question:'Convert $400 \\text{ cm}$ to metres. $400 \\text{ cm} = \\dots \\text{ m}$.', questionEn:'Ubah $400 \\text{ cm}$ ke meter. $400 \\text{ cm} = \\dots \\text{ m}$.',
+          correctAnswer:'4', acceptableAnswers:['4'],
+          explanation:`<p>$400 \\div 100 = 4$. So, $400 \\text{ cm} = 4 \\text{ m}$. <span class="tr">$400 \\div 100 = 4$. Jadi, $400 \\text{ cm} = 4 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T2: Mixed Units', pageTitleEn:'Satuan Campuran', taskType:'radio',
+          question:'Which of these is the same as $1 \\text{ m } 20 \\text{ cm}$?', questionEn:'Mana yang sama dengan $1 \\text{ m } 20 \\text{ cm}$?',
+          options:[{text:'$120 \\text{ cm}$', correct:true},{text:'$1020 \\text{ cm}$', correct:false},{text:'$12 \\text{ cm}$', correct:false},{text:'$20 \\text{ cm}$', correct:false}],
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 20 \\text{ cm} = 120 \\text{ cm}$. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 20 \\text{ cm} = 120 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T3: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $5 \\text{ m}$ is the same as $500 \\text{ cm}$.', questionEn:'Benar atau salah: $5 \\text{ m}$ sama dengan $500 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>$5 \\times 100 = 500$. Yes, $5 \\text{ m} = 500 \\text{ cm}$. <span class="tr">$5 \\times 100 = 500$. Ya, $5 \\text{ m} = 500 \\text{ cm}$.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E2: Adding and Subtracting Lengths', pageTitleEn:'Menjumlahkan dan Mengurangkan Panjang',
+          body:`<p>When adding or subtracting, always make sure the units are the same! 🧩 <span class="tr">Saat menjumlahkan atau mengurangkan, pastikan satuan selalu sama!</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>Add $1 \\text{ m} + 150 \\text{ cm}$. <span class="tr">Jumlahkan $1 \\text{ m} + 150 \\text{ cm}$.</span>
+          <p>Step 1: Change $1 \\text{ m}$ to $\\text{cm}$. $1 \\text{ m} = 100 \\text{ cm}$. <span class="tr">Langkah 1: Ubah $1 \\text{ m}$ ke $\\text{cm}$. $1 \\text{ m} = 100 \\text{ cm}$.</span></p>
+          <p>Step 2: Add. $100 \\text{ cm} + 150 \\text{ cm} = 250 \\text{ cm}$. <span class="tr">Langkah 2: Jumlahkan. $100 \\text{ cm} + 150 \\text{ cm} = 250 \\text{ cm}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T4: Subtract Lengths', pageTitleEn:'Kurangkan Panjang', taskType:'fill',
+          question:'Subtract: $300 \\text{ cm} - 100 \\text{ cm} = \\dots \\text{ cm}$.', questionEn:'Kurangkan: $300 \\text{ cm} - 100 \\text{ cm} = \\dots \\text{ cm}$.',
+          correctAnswer:'200', acceptableAnswers:['200'],
+          explanation:`<p>$300 - 100 = 200$. So, $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm}$. <span class="tr">$300 - 100 = 200$. Jadi, $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T5: Add Mixed', pageTitleEn:'Jumlahkan Campuran', taskType:'radio',
+          question:'What is $2 \\text{ m} + 300 \\text{ cm}$?', questionEn:'Berapa $2 \\text{ m} + 300 \\text{ cm}$?',
+          options:[{text:'$5 \\text{ m}$', correct:true},{text:'$2 \\text{ m } 300 \\text{ cm}$', correct:false},{text:'$3 \\text{ m}$', correct:false},{text:'$200 \\text{ cm}$', correct:false}],
+          explanation:`<p>$2 \\text{ m} = 200 \\text{ cm}$. $200 \\text{ cm} + 300 \\text{ cm} = 500 \\text{ cm} = 5 \\text{ m}$. <span class="tr">$2 \\text{ m} = 200 \\text{ cm}$. $200 \\text{ cm} + 300 \\text{ cm} = 500 \\text{ cm} = 5 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T6: Match the Answers', pageTitleEn:'Pasangkan Jawaban', taskType:'pairing',
+          question:'Match the equations to their answers.', questionEn:'Pasangkan persamaan dengan jawabannya.',
+          pairs:[{left:'$100 \\text{ cm} + 100 \\text{ cm}$', right:'$200 \\text{ cm}$'},{left:'$4 \\text{ m} - 1 \\text{ m}$', right:'$3 \\text{ m}$'},{left:'$500 \\text{ cm} - 200 \\text{ cm}$', right:'$300 \\text{ cm}$'},{left:'$1 \\text{ m} + 50 \\text{ cm}$', right:'$150 \\text{ cm}$'}],
+          explanation:`<p>Always make units the same before adding or subtracting. <span class="tr">Selalu samakan satuan sebelum menjumlahkan atau mengurangkan.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E3: Multiplying Lengths', pageTitleEn:'Mengalikan Panjang',
+          body:`<p>We can also multiply lengths! ✖️ If one box is $1 \\text{ m}$ long, how long are $3$ boxes? <span class="tr">Kita juga bisa mengalikan panjang! Jika satu kotak panjangnya $1 \\text{ m}$, berapa panjang $3$ kotak?</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>$3 \\times 1 \\text{ m} = 3 \\text{ m}$. <span class="tr">$3 \\times 1 \\text{ m} = 3 \\text{ m}$.</span></div>
+          <div class="math-block"><strong>Formula:</strong> $\\text{Length} \\times \\text{Number of items} = \\text{Total Length}$ <span class="tr">Rumus: Panjang $\\times$ Jumlah benda = Total Panjang</span></div>`
+        },
+        { type:'task', pageTitle:'T7: Multiply Lengths', pageTitleEn:'Kalikan Panjang', taskType:'fill',
+          question:'One piece of string is $2 \\text{ m}$ long. What is the total length of $4$ pieces? $\\dots \\text{ m}$.', questionEn:'Sepotong tali panjangnya $2 \\text{ m}$. Berapa total panjang $4$ potong? $\\dots \\text{ m}$.',
+          correctAnswer:'8', acceptableAnswers:['8'],
+          explanation:`<p>$4 \\times 2 \\text{ m} = 8 \\text{ m}$. <span class="tr">$4 \\times 2 \\text{ m} = 8 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T8: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $3 \\times 100 \\text{ cm} = 300 \\text{ cm}$.', questionEn:'Benar atau salah: $3 \\times 100 \\text{ cm} = 300 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>Yes! $3$ groups of $100 \\text{ cm}$ make $300 \\text{ cm}$. <span class="tr">Ya! 3 kelompok $100 \\text{ cm}$ menjadi $300 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T9: Word Problem', pageTitleEn:'Soal Cerita', taskType:'sorting',
+          question:'Order the steps to solve: "A desk is $2 \\text{ m}$ long. What is the length of $2$ desks in cm?"', questionEn:'Urutkan langkah menyelesaikan: "Meja panjangnya $2 \\text{ m}$. Berapa panjang $2$ meja dalam cm?"',
+          items:['Find total length in metres: $2 \\times 2 \\text{ m} = 4 \\text{ m}$ <span class="tr">Cari total panjang dalam meter</span>','Convert metres to cm: $1 \\text{ m} = 100 \\text{ cm}$ <span class="tr">Ubah meter ke cm</span>','Multiply: $4 \\times 100 \\text{ cm} = 400 \\text{ cm}$ <span class="tr">Kalikan</span>','Final answer is $400 \\text{ cm}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Step-by-step problem solving is easy! <span class="tr">Menyelesaikan soal langkah demi langkah itu mudah!</span></p>`
+        },
+        { type:'task', pageTitle:'T10: Division Problem', pageTitleEn:'Soal Pembagian', taskType:'radio',
+          question:'A $4 \\text{ m}$ ribbon is cut into $2$ equal pieces. How long is each piece?', questionEn:'Pita $4 \\text{ m}$ dipotong menjadi $2$ bagian sama panjang. Berapa panjang setiap potong?',
+          options:[{text:'$2 \\text{ m}$', correct:true},{text:'$4 \\text{ m}$', correct:false},{text:'$1 \\text{ m}$', correct:false},{text:'$200 \\text{ cm}$', correct:false}],
+          explanation:`<p>$4 \\text{ m} \\div 2 = 2 \\text{ m}$. <span class="tr">$4 \\text{ m} \\div 2 = 2 \\text{ m}$.</span></p>`
+        }
+      ]
+    },
+    d: {
+      title: 'Problem Introduction', titleEn: 'Pengantar Masalah', time: '00:20 - 00:30',
+      pages: [
+        { type:'explanation', pageTitle:'E1: Converting Metres & Centimetres', pageTitleEn:'Mengubah Meter & Sentimeter',
+          body:`<p>Sometimes we measure in <strong>metres</strong> and sometimes in <strong>centimetres</strong>. We need to know how to change one to the other! 🔄 <span class="tr">Terkadang kita mengukur dalam meter dan terkadang dalam sentimeter. Kita perlu tahu cara mengubah satu ke yang lain!</span></p>
+          <div class="math-block"><h4>The Golden Rule:</h4> $1 \\text{ m} = 100 \\text{ cm}$ <span class="tr">Aturan Emas: 1 meter = 100 sentimeter</span></div>
+          <div class="example-box"><h4>Example 1: m to cm <span class="tr">Contoh 1: m ke cm</span></h4>Change $3 \\text{ m}$ to centimetres. <span class="tr">Ubah $3 \\text{ m}$ ke sentimeter.</span>
+          <p>$3 \\text{ m} = 3 \\times 1 \\text{ m} = 3 \\times 100 \\text{ cm} = 300 \\text{ cm}$. <span class="tr">$3 \\text{ m} = 3 \\times 1 \\text{ m} = 3 \\times 100 \\text{ cm} = 300 \\text{ cm}$.</span></p></div>
+          <div class="example-box"><h4>Example 2: cm to m <span class="tr">Contoh 2: cm ke m</span></h4>Change $500 \\text{ cm}$ to metres. <span class="tr">Ubah $500 \\text{ cm}$ ke meter.</span>
+          <p>$500 \\text{ cm} = 500 \\div 100 \\text{ m} = 5 \\text{ m}$. <span class="tr">$500 \\text{ cm} = 500 \\div 100 \\text{ m} = 5 \\text{ m}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T1: Convert m to cm', pageTitleEn:'Konversi m ke cm', taskType:'fill',
+          question:'Convert $6 \\text{ m}$ to centimetres. $6 \\text{ m} = \\dots \\text{ cm}$.', questionEn:'Ubah $6 \\text{ m}$ ke sentimeter. $6 \\text{ m} = \\dots \\text{ cm}$.',
+          correctAnswer:'600', acceptableAnswers:['600'],
+          explanation:`<p>$6 \\text{ m} = 6 \\times 100 \\text{ cm} = 600 \\text{ cm}$. <span class="tr">$6 \\text{ m} = 6 \\times 100 \\text{ cm} = 600 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T2: Convert cm to m', pageTitleEn:'Konversi cm ke m', taskType:'radio',
+          question:'Convert $900 \\text{ cm}$ to metres.', questionEn:'Ubah $900 \\text{ cm}$ ke meter.',
+          options:[{text:'$9 \\text{ m}$', correct:true},{text:'$90 \\text{ m}$', correct:false},{text:'$900 \\text{ m}$', correct:false},{text:'$9000 \\text{ m}$', correct:false}],
+          explanation:`<p>$900 \\div 100 = 9$. So, $900 \\text{ cm} = 9 \\text{ m}$. <span class="tr">$900 \\div 100 = 9$. Jadi, $900 \\text{ cm} = 9 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T3: Order the Steps', pageTitleEn:'Urutkan Langkah', taskType:'sorting',
+          question:'Order the steps to convert $4 \\text{ m } 50 \\text{ cm}$ entirely into $\\text{cm}$.', questionEn:'Urutkan langkah mengubah $4 \\text{ m } 50 \\text{ cm}$ seluruhnya ke $\\text{cm}$.',
+          items:['Identify the metres: $4 \\text{ m}$ <span class="tr">Identifikasi meter</span>','Convert metres to cm: $4 \\times 100 = 400 \\text{ cm}$ <span class="tr">Ubah meter ke cm</span>','Add the remaining cm: $400 \\text{ cm} + 50 \\text{ cm}$ <span class="tr">Tambahkan sisa cm</span>','Final answer: $450 \\text{ cm}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Separate the metres and centimetres, convert the metres, then add them together. <span class="tr">Pisahkan meter dan sentimeter, ubah meternya, lalu jumlahkan.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E2: Word Problems with Addition', pageTitleEn:'Soal Cerita Penjumlahan',
+          body:`<p>Let's solve real-world problems! 🌍 We need to add lengths to find the total. <span class="tr">Mari kita selesaikan soal dunia nyata! Kita perlu menjumlahkan panjang untuk menemukan total.</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>Tom has a rope $2 \\text{ m}$ long. Jerry gives him $100 \\text{ cm}$ of rope. What is the total length? <span class="tr">Tom punya tali sepanjang $2 \\text{ m}$. Jerry memberinya $100 \\text{ cm}$ tali. Berapa total panjangnya?</span>
+          <p><strong>Step 1:</strong> Convert to the same unit. Let's use cm. <span class="tr">Langkah 1: Ubah ke satuan yang sama. Mari kita gunakan cm.</span></p>
+          <p>$2 \\text{ m} = 200 \\text{ cm}$. <span class="tr">$2 \\text{ m} = 200 \\text{ cm}$.</span></p>
+          <p><strong>Step 2:</strong> Add the lengths. <span class="tr">Langkah 2: Jumlahkan panjangnya.</span></p>
+          <p>$200 \\text{ cm} + 100 \\text{ cm} = 300 \\text{ cm}$. <span class="tr">$200 \\text{ cm} + 100 \\text{ cm} = 300 \\text{ cm}$.</span></p>
+          <p><strong>Step 3:</strong> Convert back to metres if needed. $300 \\text{ cm} = 3 \\text{ m}$. <span class="tr">Langkah 3: Ubah kembali ke meter jika perlu. $300 \\text{ cm} = 3 \\text{ m}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T4: Total Length', pageTitleEn:'Total Panjang', taskType:'fill',
+          question:'A desk is $1 \\text{ m}$ long. A shelf is $200 \\text{ cm}$ long. What is the total length in $\\text{cm}$? $\\dots \\text{ cm}$.', questionEn:'Meja panjangnya $1 \\text{ m}$. Rak panjangnya $200 \\text{ cm}$. Berapa total panjangnya dalam $\\text{cm}$? $\\dots \\text{ cm}$.',
+          correctAnswer:'300', acceptableAnswers:['300'],
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$.</span></p>
+          <p>$100 \\text{ cm} + 200 \\text{ cm} = 300 \\text{ cm}$. <span class="tr">$100 \\text{ cm} + 200 \\text{ cm} = 300 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T5: Find Total in m', pageTitleEn:'Cari Total dalam m', taskType:'radio',
+          question:'What is $300 \\text{ cm} + 200 \\text{ cm}$ in metres?', questionEn:'Berapa $300 \\text{ cm} + 200 \\text{ cm}$ dalam meter?',
+          options:[{text:'$5 \\text{ m}$', correct:true},{text:'$50 \\text{ m}$', correct:false},{text:'$500 \\text{ m}$', correct:false},{text:'$2 \\text{ m}$', correct:false}],
+          explanation:`<p>$300 + 200 = 500 \\text{ cm}$. $500 \\div 100 = 5 \\text{ m}$. <span class="tr">$300 + 200 = 500 \\text{ cm}$. $500 \\div 100 = 5 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T6: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $1 \\text{ m } 50 \\text{ cm} + 50 \\text{ cm} = 2 \\text{ m}$.', questionEn:'Benar atau salah: $1 \\text{ m } 50 \\text{ cm} + 50 \\text{ cm} = 2 \\text{ m}$.',
+          correctAnswer:'true',
+          explanation:`<p>$1 \\text{ m } 50 \\text{ cm} = 150 \\text{ cm}$. $150 \\text{ cm} + 50 \\text{ cm} = 200 \\text{ cm} = 2 \\text{ m}$. <span class="tr">$1 \\text{ m } 50 \\text{ cm} = 150 \\text{ cm}$. $150 \\text{ cm} + 50 \\text{ cm} = 200 \\text{ cm} = 2 \\text{ m}$.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E3: Comparing Lengths', pageTitleEn:'Membandingkan Panjang',
+          body:`<p>To compare lengths, we must use the <strong>same units</strong>! ⚖️ <span class="tr">Untuk membandingkan panjang, kita harus menggunakan <strong>satuan yang sama</strong>!</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>Which is longer: $3 \\text{ m}$ or $250 \\text{ cm}$? <span class="tr">Mana yang lebih panjang: $3 \\text{ m}$ atau $250 \\text{ cm}$?</span>
+          <p><strong>Step 1:</strong> Convert $3 \\text{ m}$ to cm. $3 \\text{ m} = 300 \\text{ cm}$. <span class="tr">Langkah 1: Ubah $3 \\text{ m}$ ke cm. $3 \\text{ m} = 300 \\text{ cm}$.</span></p>
+          <p><strong>Step 2:</strong> Compare. $300 \\text{ cm} > 250 \\text{ cm}$. <span class="tr">Langkah 2: Bandingkan. $300 \\text{ cm} > 250 \\text{ cm}$.</span></p>
+          <p>So, $3 \\text{ m}$ is longer! <span class="tr">Jadi, $3 \\text{ m}$ lebih panjang!</span></p></div>`
+        },
+        { type:'task', pageTitle:'T7: Compare Lengths', pageTitleEn:'Bandingkan Panjang', taskType:'pairing',
+          question:'Match the lengths that are equal.', questionEn:'Pasangkan panjang yang sama.',
+          pairs:[{left:'$2 \\text{ m}$', right:'$200 \\text{ cm}$'},{left:'$4 \\text{ m}$', right:'$400 \\text{ cm}$'},{left:'$5 \\text{ m}$', right:'$500 \\text{ cm}$'},{left:'$10 \\text{ m}$', right:'$1000 \\text{ cm}$'}],
+          explanation:`<p>Multiply metres by $100$ to find the equivalent in centimetres. <span class="tr">Kalikan meter dengan $100$ untuk menemukan ekuivalen dalam sentimeter.</span></p>`
+        },
+        { type:'task', pageTitle:'T8: Which is Longer?', pageTitleEn:'Mana yang Lebih Panjang?', taskType:'checkbox',
+          question:'Select all lengths that are longer than $1 \\text{ m}$.', questionEn:'Pilih semua panjang yang lebih panjang dari $1 \\text{ m}$.',
+          options:[{text:'$150 \\text{ cm}$', correct:true},{text:'$200 \\text{ cm}$', correct:true},{text:'$50 \\text{ cm}$', correct:false},{text:'$90 \\text{ cm}$', correct:false}],
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. So anything greater than $100 \\text{ cm}$ is longer. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. Jadi apapun yang lebih besar dari $100 \\text{ cm}$ lebih panjang.</span></p>`
+        },
+        { type:'task', pageTitle:'T9: Compare m and cm', pageTitleEn:'Bandingkan m dan cm', taskType:'fill',
+          question:'Is $400 \\text{ cm}$ longer than $3 \\text{ m}$? If yes, type "Yes", if no, type "No".', questionEn:'Apakah $400 \\text{ cm}$ lebih panjang dari $3 \\text{ m}$? Jika ya, ketik "Yes", jika tidak, ketik "No".',
+          correctAnswer:'Yes', acceptableAnswers:['Yes','YES','yes'],
+          explanation:`<p>$3 \\text{ m} = 300 \\text{ cm}$. $400 \\text{ cm} > 300 \\text{ cm}$. So yes! <span class="tr">$3 \\text{ m} = 300 \\text{ cm}$. $400 \\text{ cm} > 300 \\text{ cm}$. Jadi ya!</span></p>`
+        },
+        { type:'task', pageTitle:'T10: Order the Lengths', pageTitleEn:'Urutkan Panjang', taskType:'sorting',
+          question:'Order the lengths from shortest to longest.', questionEn:'Urutkan panjang dari terpendek ke terpanjang.',
+          items:['$50 \\text{ cm}$','$1 \\text{ m}$','$150 \\text{ cm}$','$2 \\text{ m}$'], correctOrder:[0,1,2,3],
+          explanation:`<p>Convert all to cm: $50 \\text{ cm}, 100 \\text{ cm}, 150 \\text{ cm}, 200 \\text{ cm}$. <span class="tr">Ubah semua ke cm: $50 \\text{ cm}, 100 \\text{ cm}, 150 \\text{ cm}, 200 \\text{ cm}$.</span></p>`
+        }
+      ]
+    },
+    e: {
+      title: 'Guided Practice', titleEn: 'Latihan Terbimbing', time: '00:30 - 00:45',
+      pages: [
+        { type:'explanation', pageTitle:'E1: Estimating Length', pageTitleEn:'Memperkirakan Panjang',
+          body:`<p>Estimating is making a good guess! 🤔 We use things we know to help us estimate. <span class="tr">Memperkirakan adalah membuat tebakan yang bagus! Kita menggunakan hal yang kita ketahui untuk membantu memperkirakan.</span></p>
+          <div class="illustration"><svg width="260" height="140" viewBox="0 0 260 140"><circle cx="50" cy="70" r="30" fill="#f1f5f9" stroke="#64748b"/><text x="40" y="80" font-size="20">🧍</text><line x1="80" y1="70" x2="120" y2="70" stroke="#2563eb" stroke-width="2"/><text x="90" y="60" font-size="12" fill="#2563eb">1m</text><rect x="130" y="40" width="60" height="80" fill="#f1f5f9" stroke="#64748b"/><text x="140" y="90" font-size="20">🚪</text><line x1="130" y1="30" x2="190" y2="30" stroke="#10b981" stroke-width="2"/><text x="145" y="20" font-size="12" fill="#10b981">2m</text></svg></div>
+          <p>A person is about $1.5 \\text{ m}$ tall. A door is about $2 \\text{ m}$ tall. A desk is about $1 \\text{ m}$ long. <span class="tr">Tinggi seseorang sekitar $1.5 \\text{ m}$. Tinggi pintu sekitar $2 \\text{ m}$. Panjang meja sekitar $1 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T1: Estimate a Desk', pageTitleEn:'Perkirakan Meja', taskType:'radio',
+          question:'What is the best estimate for the length of a teacher\'s desk?', questionEn:'Apa perkiraan terbaik untuk panjang meja guru?',
+          options:[{text:'$1 \\text{ m}$', correct:true},{text:'$10 \\text{ m}$', correct:false},{text:'$10 \\text{ cm}$', correct:false},{text:'$100 \\text{ m}$', correct:false}],
+          explanation:`<p>A desk is about $1 \\text{ m}$ long. $10 \\text{ m}$ is too long, and $10 \\text{ cm}$ is too short! <span class="tr">Meja panjangnya sekitar $1 \\text{ m}$. $10 \\text{ m}$ terlalu panjang, dan $10 \\text{ cm}$ terlalu pendek!</span></p>`
+        },
+        { type:'task', pageTitle:'T2: Estimate a Book', pageTitleEn:'Perkirakan Buku', taskType:'fill',
+          question:'Estimate the length of a math book. It is about $25 \\dots$ (type m or cm).', questionEn:'Perkirakan panjang buku matematika. Sekitar $25 \\dots$ (ketik m atau cm).',
+          correctAnswer:'cm', acceptableAnswers:['cm','CM','Cm'],
+          explanation:`<p>A book is small. $25 \\text{ cm}$ makes sense! $25 \\text{ m}$ is as long as a swimming pool! 🏊 <span class="tr">Buku itu kecil. $25 \\text{ cm}$ masuk akal! $25 \\text{ m}$ sama panjang dengan kolam renang!</span></p>`
+        },
+        { type:'task', pageTitle:'T3: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: The height of a ceiling is about $3 \\text{ m}$.', questionEn:'Benar atau salah: Tinggi langit-langit sekitar $3 \\text{ m}$.',
+          correctAnswer:'true',
+          explanation:`<p>Yes, most ceilings are about $3 \\text{ m}$ high. <span class="tr">Ya, kebanyakan langit-langit tingginya sekitar $3 \\text{ m}$.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E2: Subtracting Lengths', pageTitleEn:'Mengurangkan Panjang',
+          body:`<p>If we cut a piece of wood, we are <strong>subtracting</strong> lengths! 🪚 <span class="tr">Jika kita memotong sepotong kayu, kita sedang <strong>mengurangkan</strong> panjang!</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>A plank is $3 \\text{ m}$ long. We cut off $100 \\text{ cm}$. How much is left? <span class="tr">Papan sepanjang $3 \\text{ m}$ dipotong $100 \\text{ cm}$. Berapa sisanya?</span>
+          <p><strong>Step 1:</strong> Convert $3 \\text{ m}$ to cm. $3 \\text{ m} = 300 \\text{ cm}$. <span class="tr">Langkah 1: Ubah $3 \\text{ m}$ ke cm. $3 \\text{ m} = 300 \\text{ cm}$.</span></p>
+          <p><strong>Step 2:</strong> Subtract. $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm}$. <span class="tr">Langkah 2: Kurangkan. $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm}$.</span></p>
+          <p>So, $200 \\text{ cm}$ is left (which is $2 \\text{ m}$). <span class="tr">Jadi, sisanya $200 \\text{ cm}$ (yaitu $2 \\text{ m}$).</span></p></div>`
+        },
+        { type:'task', pageTitle:'T4: Subtract Lengths', pageTitleEn:'Kurangkan Panjang', taskType:'fill',
+          question:'A rope is $500 \\text{ cm}$ long. We cut $200 \\text{ cm}$. How much is left in $\\text{cm}$? $\\dots \\text{ cm}$.', questionEn:'Tali panjangnya $500 \\text{ cm}$. Kita potong $200 \\text{ cm}$. Berapa sisanya dalam $\\text{cm}$? $\\dots \\text{ cm}$.',
+          correctAnswer:'300', acceptableAnswers:['300'],
+          explanation:`<p>$500 - 200 = 300$. So, $300 \\text{ cm}$ is left. <span class="tr">$500 - 200 = 300$. Jadi, sisanya $300 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T5: Subtract Mixed Units', pageTitleEn:'Kurangkan Satuan Campuran', taskType:'radio',
+          question:'A pipe is $4 \\text{ m}$ long. We cut off $100 \\text{ cm}$. How much is left?', questionEn:'Pipa panjangnya $4 \\text{ m}$. Kita potong $100 \\text{ cm}$. Berapa sisanya?',
+          options:[{text:'$3 \\text{ m}$', correct:true},{text:'$3 \\text{ cm}$', correct:false},{text:'$4 \\text{ m}$', correct:false},{text:'$5 \\text{ m}$', correct:false}],
+          explanation:`<p>$4 \\text{ m} = 400 \\text{ cm}$. $400 \\text{ cm} - 100 \\text{ cm} = 300 \\text{ cm} = 3 \\text{ m}$. <span class="tr">$4 \\text{ m} = 400 \\text{ cm}$. $400 \\text{ cm} - 100 \\text{ cm} = 300 \\text{ cm} = 3 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T6: Match the Subtraction', pageTitleEn:'Pasangkan Pengurangan', taskType:'pairing',
+          question:'Match the subtraction problem to its answer.', questionEn:'Pasangkan soal pengurangan dengan jawabannya.',
+          pairs:[{left:'$300 \\text{ cm} - 100 \\text{ cm}$', right:'$200 \\text{ cm}$'},{left:'$5 \\text{ m} - 2 \\text{ m}$', right:'$3 \\text{ m}$'},{left:'$400 \\text{ cm} - 200 \\text{ cm}$', right:'$200 \\text{ cm}$'},{left:'$2 \\text{ m} - 100 \\text{ cm}$', right:'$100 \\text{ cm}$'}],
+          explanation:`<p>Convert to the same unit, then subtract! <span class="tr">Ubah ke satuan yang sama, lalu kurangkan!</span></p>`
+        },
+        { type:'explanation', pageTitle:'E3: Multiplying Lengths', pageTitleEn:'Mengalikan Panjang',
+          body:`<p>If we have many pieces of the same length, we can <strong>multiply</strong>! ✖️ <span class="tr">Jika kita punya banyak potong dengan panjang yang sama, kita bisa <strong>mengalikan</strong>!</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>One step is $50 \\text{ cm}$ long. How long are $4$ steps? <span class="tr">Satu anak tangga panjangnya $50 \\text{ cm}$. Berapa panjang $4$ anak tangga?</span>
+          <p><strong>Step 1:</strong> Write the equation. $4 \\times 50 \\text{ cm} = \\text{?}$ <span class="tr">Langkah 1: Tulis persamaan. $4 \\times 50 \\text{ cm} = \\text{?}$</span></p>
+          <p><strong>Step 2:</strong> Multiply. $4 \\times 50 = 200$. <span class="tr">Langkah 2: Kalikan. $4 \\times 50 = 200$.</span></p>
+          <p><strong>Step 3:</strong> Add the unit. $200 \\text{ cm}$. <span class="tr">Langkah 3: Tambahkan satuan. $200 \\text{ cm}$.</span></p>
+          <p><strong>Step 4:</strong> Convert to metres. $200 \\text{ cm} = 2 \\text{ m}$. <span class="tr">Langkah 4: Ubah ke meter. $200 \\text{ cm} = 2 \\text{ m}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T7: Multiply Lengths', pageTitleEn:'Kalikan Panjang', taskType:'fill',
+          question:'A piece of fabric is $2 \\text{ m}$ long. What is the total length of $3$ pieces? $\\dots \\text{ m}$.', questionEn:'Sepotong kain panjangnya $2 \\text{ m}$. Berapa total panjang $3$ potong? $\\dots \\text{ m}$.',
+          correctAnswer:'6', acceptableAnswers:['6'],
+          explanation:`<p>$3 \\times 2 \\text{ m} = 6 \\text{ m}$. <span class="tr">$3 \\times 2 \\text{ m} = 6 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T8: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $5 \\times 100 \\text{ cm} = 500 \\text{ cm}$.', questionEn:'Benar atau salah: $5 \\times 100 \\text{ cm} = 500 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>Yes! $5$ groups of $100 \\text{ cm}$ make $500 \\text{ cm}$. <span class="tr">Ya! 5 kelompok $100 \\text{ cm}$ menjadi $500 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T9: Steps to Multiply', pageTitleEn:'Langkah Mengalikan', taskType:'sorting',
+          question:'Order the steps to solve: "1 box is $100 \\text{ cm}$ long. What is the length of 3 boxes in metres?"', questionEn:'Urutkan langkah menyelesaikan: "1 kotak panjangnya $100 \\text{ cm}$. Berapa panjang 3 kotak dalam meter?"',
+          items:['Multiply: $3 \\times 100 \\text{ cm} = 300 \\text{ cm}$ <span class="tr">Kalikan</span>','Know the rule: $100 \\text{ cm} = 1 \\text{ m}$ <span class="tr">Ketahui aturan</span>','Convert: $300 \\text{ cm} = 3 \\text{ m}$ <span class="tr">Ubah</span>','Final answer: $3 \\text{ m}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Always calculate first, then convert to the unit asked in the question. <span class="tr">Selalu hitung dulu, lalu ubah ke satuan yang ditanyakan di soal.</span></p>`
+        },
+        { type:'task', pageTitle:'T10: Multiplication Word Problem', pageTitleEn:'Soal Cerita Perkalian', taskType:'checkbox',
+          question:'A table is $2 \\text{ m}$ long. If we place 2 tables end to end, which of these are correct?', questionEn:'Meja panjangnya $2 \\text{ m}$. Jika kita letakkan 2 meja ujung ke ujung, mana yang benar?',
+          options:[{text:'Total length is $4 \\text{ m}$', correct:true},{text:'Total length is $400 \\text{ cm}$', correct:true},{text:'Total length is $200 \\text{ cm}$', correct:false},{text:'Total length is $2 \\text{ m}$', correct:false}],
+          explanation:`<p>$2 \\times 2 \\text{ m} = 4 \\text{ m}$. $4 \\text{ m} = 400 \\text{ cm}$. <span class="tr">$2 \\times 2 \\text{ m} = 4 \\text{ m}$. $4 \\text{ m} = 400 \\text{ cm}$.</span></p>`
+        }
+      ]
+    },
+    f: {
+      title: 'Independent Practice', titleEn: 'Latihan Mandiri', time: '00:45 - 00:55',
+      pages: [
+        { type:'explanation', pageTitle:'E1: Two-Step Word Problems', pageTitleEn:'Soal Cerita Dua Langkah',
+          body:`<p>Sometimes we need to do <strong>two operations</strong> to solve a problem! 🧩 <span class="tr">Terkadang kita perlu melakukan <strong>dua operasi</strong> untuk menyelesaikan soal!</span></p>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>Sam has a plank $4 \\text{ m}$ long. He cuts off $100 \\text{ cm}$, then another $100 \\text{ cm}$. How much is left? <span class="tr">Sam punya papan sepanjang $4 \\text{ m}$. Dia memotong $100 \\text{ cm}$, lalu $100 \\text{ cm}$ lagi. Berapa sisanya?</span>
+          <p><strong>Step 1:</strong> Convert $4 \\text{ m}$ to cm. $4 \\text{ m} = 400 \\text{ cm}$. <span class="tr">Langkah 1: Ubah $4 \\text{ m}$ ke cm. $4 \\text{ m} = 400 \\text{ cm}$.</span></p>
+          <p><strong>Step 2:</strong> Subtract the first cut. $400 \\text{ cm} - 100 \\text{ cm} = 300 \\text{ cm}$. <span class="tr">Langkah 2: Kurangi potongan pertama. $400 \\text{ cm} - 100 \\text{ cm} = 300 \\text{ cm}$.</span></p>
+          <p><strong>Step 3:</strong> Subtract the second cut. $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm}$. <span class="tr">Langkah 3: Kurangi potongan kedua. $300 \\text{ cm} - 100 \\text{ cm} = 200 \\text{ cm}$.</span></p>
+          <p><strong>Step 4:</strong> Convert back. $200 \\text{ cm} = 2 \\text{ m}$. <span class="tr">Langkah 4: Ubah kembali. $200 \\text{ cm} = 2 \\text{ m}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T1: Two-Step Problem', pageTitleEn:'Soal Dua Langkah', taskType:'fill',
+          question:'A string is $300 \\text{ cm}$ long. Cut $100 \\text{ cm}$, then cut another $50 \\text{ cm}$. How much is left in cm? $\\dots \\text{ cm}$.', questionEn:'Tali panjangnya $300 \\text{ cm}$. Potong $100 \\text{ cm}$, lalu potong lagi $50 \\text{ cm}$. Berapa sisanya dalam cm? $\\dots \\text{ cm}$.',
+          correctAnswer:'150', acceptableAnswers:['150'],
+          explanation:`<p>$300 - 100 = 200$. $200 - 50 = 150 \\text{ cm}$. <span class="tr">$300 - 100 = 200$. $200 - 50 = 150 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T2: Mixed Two-Step', pageTitleEn:'Dua Langkah Campuran', taskType:'radio',
+          question:'A wire is $5 \\text{ m}$ long. Cut off $200 \\text{ cm}$. How much is left?', questionEn:'Kawat panjangnya $5 \\text{ m}$. Potong $200 \\text{ cm}$. Berapa sisanya?',
+          options:[{text:'$3 \\text{ m}$', correct:true},{text:'$2 \\text{ m}$', correct:false},{text:'$300 \\text{ cm}$', correct:false},{text:'$5 \\text{ m}$', correct:false}],
+          explanation:`<p>$5 \\text{ m} = 500 \\text{ cm}$. $500 \\text{ cm} - 200 \\text{ cm} = 300 \\text{ cm} = 3 \\text{ m}$. <span class="tr">$5 \\text{ m} = 500 \\text{ cm}$. $500 \\text{ cm} - 200 \\text{ cm} = 300 \\text{ cm} = 3 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T3: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $2 \\text{ m} - 50 \\text{ cm} = 1 \\text{ m } 50 \\text{ cm}$.', questionEn:'Benar atau salah: $2 \\text{ m} - 50 \\text{ cm} = 1 \\text{ m } 50 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>$2 \\text{ m} = 200 \\text{ cm}$. $200 - 50 = 150 \\text{ cm} = 1 \\text{ m } 50 \\text{ cm}$. <span class="tr">$2 \\text{ m} = 200 \\text{ cm}$. $200 - 50 = 150 \\text{ cm} = 1 \\text{ m } 50 \\text{ cm}$.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E2: Perimeter in Metres', pageTitleEn:'Keliling dalam Meter',
+          body:`<p><strong>Perimeter</strong> is the total distance around the outside of a shape! 🟦 <span class="tr"><strong>Keliling</strong> adalah total jarak di sekitar luar bangun!</span></p>
+          <div class="illustration"><svg width="200" height="140" viewBox="0 0 200 140"><rect x="40" y="20" width="120" height="80" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><text x="90" y="15" font-size="12" fill="#2563eb">3 m</text><text x="170" y="65" font-size="12" fill="#2563eb">2 m</text></svg><div style="font-size:.82em;color:var(--muted);margin-top:6px">Perimeter = 3m + 2m + 3m + 2m <span class="tr">Keliling = 3m + 2m + 3m + 2m</span></div></div>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>A rectangle is $2 \\text{ m}$ long and $1 \\text{ m}$ wide. What is the perimeter? <span class="tr">Persegi panjang panjangnya $2 \\text{ m}$ dan lebarnya $1 \\text{ m}$. Berapa kelilingnya?</span>
+          <p><strong>Step 1:</strong> Add all sides. $2 \\text{ m} + 1 \\text{ m} + 2 \\text{ m} + 1 \\text{ m}$. <span class="tr">Langkah 1: Jumlahkan semua sisi. $2 \\text{ m} + 1 \\text{ m} + 2 \\text{ m} + 1 \\text{ m}$.</span></p>
+          <p><strong>Step 2:</strong> $6 \\text{ m}$. <span class="tr">Langkah 2: $6 \\text{ m}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T4: Find Perimeter', pageTitleEn:'Cari Keliling', taskType:'fill',
+          question:'A square has sides of $1 \\text{ m}$. What is its perimeter in metres? $\\dots \\text{ m}$.', questionEn:'Persegi memiliki sisi $1 \\text{ m}$. Berapa kelilingnya dalam meter? $\\dots \\text{ m}$.',
+          correctAnswer:'4', acceptableAnswers:['4'],
+          explanation:`<p>A square has 4 equal sides. $4 \\times 1 \\text{ m} = 4 \\text{ m}$. <span class="tr">Persegi memiliki 4 sisi sama. $4 \\times 1 \\text{ m} = 4 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T5: Rectangle Perimeter', pageTitleEn:'Keliling Persegi Panjang', taskType:'radio',
+          question:'A rectangle is $3 \\text{ m}$ long and $2 \\text{ m}$ wide. What is the perimeter?', questionEn:'Persegi panjang panjangnya $3 \\text{ m}$ dan lebarnya $2 \\text{ m}$. Berapa kelilingnya?',
+          options:[{text:'$10 \\text{ m}$', correct:true},{text:'$6 \\text{ m}$', correct:false},{text:'$5 \\text{ m}$', correct:false},{text:'$12 \\text{ m}$', correct:false}],
+          explanation:`<p>$3 + 2 + 3 + 2 = 10 \\text{ m}$. <span class="tr">$3 + 2 + 3 + 2 = 10 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T6: Match the Shapes', pageTitleEn:'Pasangkan Bangun', taskType:'pairing',
+          question:'Match the shape to its perimeter.', questionEn:'Pasangkan bangun dengan kelilingnya.',
+          pairs:[{left:'Square $1 \\text{ m}$ side', right:'$4 \\text{ m}$'},{left:'Rectangle $2 \\text{ m} \\times 1 \\text{ m}$', right:'$6 \\text{ m}$'},{left:'Square $2 \\text{ m}$ side', right:'$8 \\text{ m}$'},{left:'Rectangle $3 \\text{ m} \\times 1 \\text{ m}$', right:'$8 \\text{ m}$'}],
+          explanation:`<p>Add all the sides together to find the perimeter. <span class="tr">Jumlahkan semua sisi untuk menemukan keliling.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E3: Distance on a Map', pageTitleEn:'Jarak pada Peta',
+          body:`<p>We can use metres to measure distance on a map! 🗺️ <span class="tr">Kita bisa menggunakan meter untuk mengukur jarak pada peta!</span></p>
+          <div class="illustration"><svg width="260" height="100" viewBox="0 0 260 100"><circle cx="40" cy="50" r="15" fill="#ef4444"/><text x="30" y="55" fill="#fff">A</text><path d="M 55 50 L 125 50" stroke="#1e293b" stroke-width="2" stroke-dasharray="5"/><text x="80" y="40" font-size="12">500 cm</text><circle cx="140" cy="50" r="15" fill="#10b981"/><text x="130" y="55" fill="#fff">B</text><path d="M 155 50 L 225 50" stroke="#1e293b" stroke-width="2" stroke-dasharray="5"/><text x="175" y="40" font-size="12">2 m</text><circle cx="240" cy="50" r="15" fill="#2563eb"/><text x="230" y="55" fill="#fff">C</text></svg></div>
+          <div class="example-box"><h4>Example <span class="tr">Contoh</span></h4>Distance from A to B is $500 \\text{ cm}$. B to C is $2 \\text{ m}$. Total distance A to C? <span class="tr">Jarak A ke B $500 \\text{ cm}$. B ke C $2 \\text{ m}$. Total jarak A ke C?</span>
+          <p>Convert: $2 \\text{ m} = 200 \\text{ cm}$. <span class="tr">Ubah: $2 \\text{ m} = 200 \\text{ cm}$.</span></p>
+          <p>Add: $500 \\text{ cm} + 200 \\text{ cm} = 700 \\text{ cm} = 7 \\text{ m}$. <span class="tr">Jumlahkan: $500 \\text{ cm} + 200 \\text{ cm} = 700 \\text{ cm} = 7 \\text{ m}$.</span></p></div>`
+        },
+        { type:'task', pageTitle:'T7: Map Distance', pageTitleEn:'Jarak Peta', taskType:'fill',
+          question:'Point X to Y is $3 \\text{ m}$. Point Y to Z is $100 \\text{ cm}$. Total distance X to Z in metres? $\\dots \\text{ m}$.', questionEn:'Titik X ke Y $3 \\text{ m}$. Titik Y ke Z $100 \\text{ cm}$. Total jarak X ke Z dalam meter? $\\dots \\text{ m}$.',
+          correctAnswer:'4', acceptableAnswers:['4'],
+          explanation:`<p>$100 \\text{ cm} = 1 \\text{ m}$. $3 \\text{ m} + 1 \\text{ m} = 4 \\text{ m}$. <span class="tr">$100 \\text{ cm} = 1 \\text{ m}$. $3 \\text{ m} + 1 \\text{ m} = 4 \\text{ m}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T8: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $300 \\text{ cm} + 1 \\text{ m} = 400 \\text{ cm}$.', questionEn:'Benar atau salah: $300 \\text{ cm} + 1 \\text{ m} = 400 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. $300 + 100 = 400 \\text{ cm}$. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. $300 + 100 = 400 \\text{ cm}$.</span></p>`
+        },
+        { type:'task', pageTitle:'T9: Order Distance Steps', pageTitleEn:'Urutkan Langkah Jarak', taskType:'sorting',
+          question:'Order the steps to find total distance: "Path 1 is 2m. Path 2 is 200cm. Total in cm?"', questionEn:'Urutkan langkah mencari total jarak: "Jalur 1 2m. Jalur 2 200cm. Total dalam cm?"',
+          items:['Convert 2m to cm: $2 \\times 100 = 200 \\text{ cm}$ <span class="tr">Ubah 2m ke cm</span>','Identify Path 2 length: $200 \\text{ cm}$ <span class="tr">Identifikasi panjang Jalur 2</span>','Add them: $200 \\text{ cm} + 200 \\text{ cm}$ <span class="tr">Jumlahkan</span>','Final answer: $400 \\text{ cm}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Always convert to the target unit before adding. <span class="tr">Selalu ubah ke satuan target sebelum menjumlahkan.</span></p>`
+        },
+        { type:'task', pageTitle:'T10: Which Path is Longer?', pageTitleEn:'Jalur Mana yang Lebih Panjang?', taskType:'checkbox',
+          question:'Which paths are longer than 3m?', questionEn:'Jalur mana yang lebih panjang dari 3m?',
+          options:[{text:'Path A: $350 \\text{ cm}$', correct:true},{text:'Path B: $250 \\text{ cm}$', correct:false},{text:'Path C: $4 \\text{ m}$', correct:true},{text:'Path D: $2 \\text{ m } 50 \\text{ cm}$', correct:false}],
+          explanation:`<p>$3 \\text{ m} = 300 \\text{ cm}$. Only Path A ($350 \\text{ cm}$) and Path C ($400 \\text{ cm}$) are longer. <span class="tr">$3 \\text{ m} = 300 \\text{ cm}$. Hanya Jalur A ($350 \\text{ cm}$) dan Jalur C ($400 \\text{ cm}$) yang lebih panjang.</span></p>`
+        }
+      ]
+    },
+    g: {
+      title: 'Consolidation & Reflection', titleEn: 'Konsolidasi & Refleksi', time: '00:55 - 01:00',
+      pages: [
+        { type:'explanation', pageTitle:'E1: Key Takeaways', pageTitleEn:'Poin Penting',
+          body:`<div class="illustration"><svg width="240" height="80" viewBox="0 0 240 80"><circle cx="40" cy="40" r="28" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><text x="28" y="48" font-size="22" fill="#2563eb">📏</text><text x="85" y="35" font-size="13" fill="#1e40af" font-weight="bold">Measuring Length</text><text x="85" y="52" font-size="10" fill="#64748b">Metres & Centimetres</text></svg><div style="font-size:.82em;color:var(--muted);margin-top:4px">Formulas & Rules <span class="tr">Rumus & Aturan</span></div></div>
+          <p>Today we learned how to measure length using <strong>metres (m)</strong> and <strong>centimetres (cm)</strong>. <span class="tr">Hari ini kita belajar cara mengukur panjang menggunakan <strong>meter (m)</strong> dan <strong>sentimeter (cm)</strong>.</span></p>
+          <div class="math-block"><ol><li><strong>The Golden Rule:</strong> $1 \\text{ m} = 100 \\text{ cm}$ <span class="tr">Aturan Emas</span></li><li><strong>Converting m to cm:</strong> Multiply by $100$. <span class="tr">Mengubah m ke cm: Kalikan 100.</span></li><li><strong>Converting cm to m:</strong> Divide by $100$. <span class="tr">Mengubah cm ke m: Bagi 100.</span></li><li><strong>Adding/Subtracting:</strong> Always use the same units! <span class="tr">Menjumlahkan/Mengurangkan: Selalu gunakan satuan yang sama!</span></li></ol></div>`
+        },
+        { type:'task', pageTitle:'T1: Reflection Question', pageTitleEn:'Pertanyaan Refleksi', taskType:'truefalse',
+          question:'True or false: I understand that 1 metre is equal to 100 centimetres.', questionEn:'Benar atau salah: Saya mengerti bahwa 1 meter sama dengan 100 sentimeter.',
+          correctAnswer:'true',
+          explanation:`<p>Great job remembering the most important rule! <span class="tr">Kerja bagus mengingat aturan terpenting!</span></p>`
+        },
+        { type:'task', pageTitle:'T2: Exit Ticket', pageTitleEn:'Exit Ticket', taskType:'fill',
+          question:'A board is $2 \\text{ m}$ long. How many centimetres is that? $2 \\text{ m} = \\dots \\text{ cm}$.', questionEn:'Papan sepanjang $2 \\text{ m}$. Berapa sentimeter itu? $2 \\text{ m} = \\dots \\text{ cm}$.',
+          correctAnswer:'200', acceptableAnswers:['200'],
+          explanation:`<p>$2 \\times 100 = 200 \\text{ cm}$. <span class="tr">$2 \\times 100 = 200 \\text{ cm}$.</span></p>`
+        },
+        { type:'explanation', pageTitle:'E2: Follow-up Practice', pageTitleEn:'Latihan Lanjutan',
+          body:`<p>Additional practice is available in <strong>Tasks 1 to 5</strong>. Each task contains 10 questions to help you master measuring length! <span class="tr">Latihan tambahan tersedia di Tugas 1 sampai 5. Setiap tugas berisi 10 soal untuk membantumu menguasai pengukuran panjang!</span></p>
+          <div class="math-block"><ul><li><strong>Task 1:</strong> Convert m and cm <span class="tr">Konversi m dan cm</span></li><li><strong>Task 2:</strong> Add & Subtract Lengths <span class="tr">Jumlah & Kurang Panjang</span></li><li><strong>Task 3:</strong> Multiply & Divide Lengths <span class="tr">Kali & Bagi Panjang</span></li><li><strong>Task 4:</strong> Word Problems <span class="tr">Soal Cerita</span></li><li><strong>Task 5:</strong> Perimeter & Mixed <span class="tr">Keliling & Campuran</span></li></ul></div>`
+        }
+      ]
+    },
+    h: {
+      title: 'Task 1', titleEn: 'Tugas 1', time: 'Printable',
+      pages: [
+        { type:'task', pageTitle:'T1: Convert m to cm', pageTitleEn:'Konversi m ke cm', taskType:'fill',
+          question:'Convert $5 \\text{ m}$ to centimetres. $5 \\text{ m} = \\dots \\text{ cm}$.', questionEn:'Ubah $5 \\text{ m}$ ke sentimeter. $5 \\text{ m} = \\dots \\text{ cm}$.',
+          correctAnswer:'500', acceptableAnswers:['500'],
+          explanation:`<p>$5 \\times 100 \\text{ cm} = 500 \\text{ cm}$. <span class="tr">$5 \\times 100 \\text{ cm} = 500 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T2: Convert cm to m', pageTitleEn:'Konversi cm ke m', taskType:'radio',
+          question:'Convert $700 \\text{ cm}$ to metres.', questionEn:'Ubah $700 \\text{ cm}$ ke meter.',
+          options:[{text:'$7 \\text{ m}$', correct:true},{text:'$70 \\text{ m}$', correct:false},{text:'$700 \\text{ m}$', correct:false},{text:'$7000 \\text{ m}$', correct:false}],
+          explanation:`<p>$700 \\div 100 = 7$. So, $700 \\text{ cm} = 7 \\text{ m}$. <span class="tr">$700 \\div 100 = 7$. Jadi, $700 \\text{ cm} = 7 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T3: Mixed Units', pageTitleEn:'Satuan Campuran', taskType:'truefalse',
+          question:'True or false: $1 \\text{ m } 20 \\text{ cm}$ is equal to $120 \\text{ cm}$.', questionEn:'Benar atau salah: $1 \\text{ m } 20 \\text{ cm}$ sama dengan $120 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 20 \\text{ cm} = 120 \\text{ cm}$. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 20 \\text{ cm} = 120 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T4: Order the Steps', pageTitleEn:'Urutkan Langkah', taskType:'sorting',
+          question:'Order the steps to convert $450 \\text{ cm}$ to mixed units ($\\text{m}$ and $\\text{cm}$).', questionEn:'Urutkan langkah mengubah $450 \\text{ cm}$ ke satuan campuran ($\\text{m}$ dan $\\text{cm}$).',
+          items:['Divide 450 by 100: $450 \\div 100 = 4$ <span class="tr">Bagi 450 dengan 100</span>','The 4 is the metres: $4 \\text{ m}$ <span class="tr">4 adalah meternya</span>','The remainder is 50: $50 \\text{ cm}$ <span class="tr">Sisanya 50</span>','Final answer: $4 \\text{ m } 50 \\text{ cm}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Dividing by 100 gives the metres. The remainder is the centimetres. <span class="tr">Membagi dengan 100 memberikan meter. Sisanya adalah sentimeter.</span></p>`},
+        { type:'task', pageTitle:'T5: Longer than 1 m', pageTitleEn:'Lebih Panjang dari 1 m', taskType:'checkbox',
+          question:'Select all lengths that are longer than $1 \\text{ m}$.', questionEn:'Pilih semua panjang yang lebih panjang dari $1 \\text{ m}$.',
+          options:[{text:'$150 \\text{ cm}$', correct:true},{text:'$200 \\text{ cm}$', correct:true},{text:'$50 \\text{ cm}$', correct:false},{text:'$90 \\text{ cm}$', correct:false}],
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. Anything greater than $100 \\text{ cm}$ is longer. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. Apapun yang lebih besar dari $100 \\text{ cm}$ lebih panjang.</span></p>`},
+        { type:'task', pageTitle:'T6: Match the Lengths', pageTitleEn:'Pasangkan Panjang', taskType:'pairing',
+          question:'Match the equal lengths.', questionEn:'Pasangkan panjang yang sama.',
+          pairs:[{left:'$3 \\text{ m}$', right:'$300 \\text{ cm}$'},{left:'$6 \\text{ m}$', right:'$600 \\text{ cm}$'},{left:'$8 \\text{ m}$', right:'$800 \\text{ cm}$'},{left:'$10 \\text{ m}$', right:'$1000 \\text{ cm}$'}],
+          explanation:`<p>Multiply metres by $100$ to get centimetres. <span class="tr">Kalikan meter dengan $100$ untuk mendapat sentimeter.</span></p>`},
+        { type:'task', pageTitle:'T7: Convert m to cm', pageTitleEn:'Konversi m ke cm', taskType:'fill',
+          question:'Convert $9 \\text{ m}$ to centimetres. $9 \\text{ m} = \\dots \\text{ cm}$.', questionEn:'Ubah $9 \\text{ m}$ ke sentimeter. $9 \\text{ m} = \\dots \\text{ cm}$.',
+          correctAnswer:'900', acceptableAnswers:['900'],
+          explanation:`<p>$9 \\times 100 = 900 \\text{ cm}$. <span class="tr">$9 \\times 100 = 900 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T8: Convert Large cm', pageTitleEn:'Konversi cm Besar', taskType:'radio',
+          question:'Convert $1000 \\text{ cm}$ to metres.', questionEn:'Ubah $1000 \\text{ cm}$ ke meter.',
+          options:[{text:'$10 \\text{ m}$', correct:true},{text:'$1 \\text{ m}$', correct:false},{text:'$100 \\text{ m}$', correct:false},{text:'$1000 \\text{ m}$', correct:false}],
+          explanation:`<p>$1000 \\div 100 = 10 \\text{ m}$. <span class="tr">$1000 \\div 100 = 10 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T9: Compare', pageTitleEn:'Bandingkan', taskType:'truefalse',
+          question:'True or false: $400 \\text{ cm}$ is longer than $4 \\text{ m}$.', questionEn:'Benar atau salah: $400 \\text{ cm}$ lebih panjang dari $4 \\text{ m}$.',
+          correctAnswer:'false',
+          explanation:`<p>$4 \\text{ m} = 400 \\text{ cm}$. They are exactly the same! <span class="tr">$4 \\text{ m} = 400 \\text{ cm}$. Keduanya sama persis!</span></p>`},
+        { type:'task', pageTitle:'T10: Convert Mixed to cm', pageTitleEn:'Konversi Campuran ke cm', taskType:'fill',
+          question:'What is $2 \\text{ m } 50 \\text{ cm}$ in centimetres? $\\dots \\text{ cm}$.', questionEn:'Berapa $2 \\text{ m } 50 \\text{ cm}$ dalam sentimeter? $\\dots \\text{ cm}$.',
+          correctAnswer:'250', acceptableAnswers:['250'],
+          explanation:`<p>$2 \\text{ m} = 200 \\text{ cm}$. $200 \\text{ cm} + 50 \\text{ cm} = 250 \\text{ cm}$. <span class="tr">$2 \\text{ m} = 200 \\text{ cm}$. $200 \\text{ cm} + 50 \\text{ cm} = 250 \\text{ cm}$.</span></p>`}
+      ]
+    },
+    i: {
+      title: 'Task 2', titleEn: 'Tugas 2', time: 'Printable',
+      pages: [
+        { type:'task', pageTitle:'T1: Add Lengths', pageTitleEn:'Jumlahkan Panjang', taskType:'fill',
+          question:'$200 \\text{ cm} + 300 \\text{ cm} = \\dots \\text{ cm}$.', questionEn:'$200 \\text{ cm} + 300 \\text{ cm} = \\dots \\text{ cm}$.',
+          correctAnswer:'500', acceptableAnswers:['500'],
+          explanation:`<p>$200 + 300 = 500 \\text{ cm}$. <span class="tr">$200 + 300 = 500 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T2: Add Mixed', pageTitleEn:'Jumlahkan Campuran', taskType:'radio',
+          question:'What is $1 \\text{ m} + 200 \\text{ cm}$ in $\\text{cm}$?', questionEn:'Berapa $1 \\text{ m} + 200 \\text{ cm}$ dalam $\\text{cm}$?',
+          options:[{text:'$300 \\text{ cm}$', correct:true},{text:'$201 \\text{ cm}$', correct:false},{text:'$1200 \\text{ cm}$', correct:false},{text:'$2 \\text{ cm}$', correct:false}],
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 200 \\text{ cm} = 300 \\text{ cm}$. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} + 200 \\text{ cm} = 300 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T3: Subtract Lengths', pageTitleEn:'Kurangkan Panjang', taskType:'truefalse',
+          question:'True or false: $5 \\text{ m} - 1 \\text{ m} = 4 \\text{ m}$.', questionEn:'Benar atau salah: $5 \\text{ m} - 1 \\text{ m} = 4 \\text{ m}$.',
+          correctAnswer:'true',
+          explanation:`<p>Units are the same, just subtract! $5 - 1 = 4 \\text{ m}$. <span class="tr">Satuan sama, langsung kurangkan! $5 - 1 = 4 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T4: Match the Answers', pageTitleEn:'Pasangkan Jawaban', taskType:'pairing',
+          question:'Match the subtraction to its answer in $\\text{cm}$.', questionEn:'Pasangkan pengurangan dengan jawabannya dalam $\\text{cm}$.',
+          pairs:[{left:'$300 \\text{ cm} - 100 \\text{ cm}$', right:'$200 \\text{ cm}$'},{left:'$400 \\text{ cm} - 200 \\text{ cm}$', right:'$200 \\text{ cm}$'},{left:'$500 \\text{ cm} - 300 \\text{ cm}$', right:'$200 \\text{ cm}$'},{left:'$2 \\text{ m} - 100 \\text{ cm}$', right:'$100 \\text{ cm}$'}],
+          explanation:`<p>Convert to the same unit, then subtract. <span class="tr">Ubah ke satuan yang sama, lalu kurangkan.</span></p>`},
+        { type:'task', pageTitle:'T5: Equal to 3 m', pageTitleEn:'Sama dengan 3 m', taskType:'checkbox',
+          question:'Select all lengths that are equal to $3 \\text{ m}$.', questionEn:'Pilih semua panjang yang sama dengan $3 \\text{ m}$.',
+          options:[{text:'$300 \\text{ cm}$', correct:true},{text:'$2 \\text{ m } 100 \\text{ cm}$', correct:true},{text:'$250 \\text{ cm}$', correct:false},{text:'$30 \\text{ cm}$', correct:false}],
+          explanation:`<p>$3 \\text{ m} = 300 \\text{ cm}$. $2 \\text{ m} (200 \\text{ cm}) + 100 \\text{ cm} = 300 \\text{ cm}$. <span class="tr">$3 \\text{ m} = 300 \\text{ cm}$. $2 \\text{ m} (200 \\text{ cm}) + 100 \\text{ cm} = 300 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T6: Subtract Mixed', pageTitleEn:'Kurangkan Campuran', taskType:'fill',
+          question:'$400 \\text{ cm} - 150 \\text{ cm} = \\dots \\text{ cm}$.', questionEn:'$400 \\text{ cm} - 150 \\text{ cm} = \\dots \\text{ cm}$.',
+          correctAnswer:'250', acceptableAnswers:['250'],
+          explanation:`<p>$400 - 150 = 250 \\text{ cm}$. <span class="tr">$400 - 150 = 250 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T7: Steps to Subtract', pageTitleEn:'Langkah Mengurangkan', taskType:'sorting',
+          question:'Order the steps to solve: $2 \\text{ m} - 50 \\text{ cm}$.', questionEn:'Urutkan langkah menyelesaikan: $2 \\text{ m} - 50 \\text{ cm}$.',
+          items:['Convert $2 \\text{ m}$ to $\\text{cm}$: $200 \\text{ cm}$ <span class="tr">Ubah $2 \\text{ m}$ ke $\\text{cm}$</span>','Subtract: $200 \\text{ cm} - 50 \\text{ cm}$ <span class="tr">Kurangkan</span>','Calculate: $200 - 50 = 150$ <span class="tr">Hitung</span>','Final answer: $150 \\text{ cm}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Always convert to the same unit before subtracting. <span class="tr">Selalu ubah ke satuan yang sama sebelum mengurangkan.</span></p>`},
+        { type:'task', pageTitle:'T8: Mixed Addition', pageTitleEn:'Penjumlahan Campuran', taskType:'radio',
+          question:'What is $1 \\text{ m } 50 \\text{ cm} + 50 \\text{ cm}$?', questionEn:'Berapa $1 \\text{ m } 50 \\text{ cm} + 50 \\text{ cm}$?',
+          options:[{text:'$2 \\text{ m}$', correct:true},{text:'$1 \\text{ m } 100 \\text{ cm}$', correct:false},{text:'$1 \\text{ m } 55 \\text{ cm}$', correct:false},{text:'$2 \\text{ m } 50 \\text{ cm}$', correct:false}],
+          explanation:`<p>$1 \\text{ m } 50 \\text{ cm} = 150 \\text{ cm}$. $150 \\text{ cm} + 50 \\text{ cm} = 200 \\text{ cm} = 2 \\text{ m}$. <span class="tr">$1 \\text{ m } 50 \\text{ cm} = 150 \\text{ cm}$. $150 \\text{ cm} + 50 \\text{ cm} = 200 \\text{ cm} = 2 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T9: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $3 \\text{ m} + 3 \\text{ m} = 600 \\text{ cm}$.', questionEn:'Benar atau salah: $3 \\text{ m} + 3 \\text{ m} = 600 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>$3 + 3 = 6 \\text{ m}$. $6 \\times 100 = 600 \\text{ cm}$. <span class="tr">$3 + 3 = 6 \\text{ m}$. $6 \\times 100 = 600 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T10: Subtraction Word', pageTitleEn:'Soal Pengurangan', taskType:'fill',
+          question:'A pipe is $1 \\text{ m}$ long. Cut off $20 \\text{ cm}$. What is left in $\\text{cm}$? $\\dots \\text{ cm}$.', questionEn:'Pipa panjangnya $1 \\text{ m}$. Potong $20 \\text{ cm}$. Berapa sisanya dalam $\\text{cm}$? $\\dots \\text{ cm}$.',
+          correctAnswer:'80', acceptableAnswers:['80'],
+          explanation:`<p>$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} - 20 \\text{ cm} = 80 \\text{ cm}$. <span class="tr">$1 \\text{ m} = 100 \\text{ cm}$. $100 \\text{ cm} - 20 \\text{ cm} = 80 \\text{ cm}$.</span></p>`}
+      ]
+    },
+    j: {
+      title: 'Task 3', titleEn: 'Tugas 3', time: 'Printable',
+      pages: [
+        { type:'task', pageTitle:'T1: Multiply Lengths', pageTitleEn:'Kalikan Panjang', taskType:'fill',
+          question:'$3 \\times 2 \\text{ m} = \\dots \\text{ m}$.', questionEn:'$3 \\times 2 \\text{ m} = \\dots \\text{ m}$.',
+          correctAnswer:'6', acceptableAnswers:['6'],
+          explanation:`<p>$3 \\times 2 = 6 \\text{ m}$. <span class="tr">$3 \\times 2 = 6 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T2: Multiply and Convert', pageTitleEn:'Kalikan dan Ubah', taskType:'radio',
+          question:'What is $4 \\times 100 \\text{ cm}$ in metres?', questionEn:'Berapa $4 \\times 100 \\text{ cm}$ dalam meter?',
+          options:[{text:'$4 \\text{ m}$', correct:true},{text:'$40 \\text{ m}$', correct:false},{text:'$400 \\text{ m}$', correct:false},{text:'$4 \\text{ cm}$', correct:false}],
+          explanation:`<p>$4 \\times 100 = 400 \\text{ cm}$. $400 \\text{ cm} \\div 100 = 4 \\text{ m}$. <span class="tr">$4 \\times 100 = 400 \\text{ cm}$. $400 \\text{ cm} \\div 100 = 4 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T3: Divide Lengths', pageTitleEn:'Bagi Panjang', taskType:'truefalse',
+          question:'True or false: $600 \\text{ cm} \\div 2 = 3 \\text{ m}$.', questionEn:'Benar atau salah: $600 \\text{ cm} \\div 2 = 3 \\text{ m}$.',
+          correctAnswer:'true',
+          explanation:`<p>$600 \\div 2 = 300 \\text{ cm}$. $300 \\text{ cm} = 3 \\text{ m}$. <span class="tr">$600 \\div 2 = 300 \\text{ cm}$. $300 \\text{ cm} = 3 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T4: Match Multiplication', pageTitleEn:'Pasangkan Perkalian', taskType:'pairing',
+          question:'Match the equation to its answer.', questionEn:'Pasangkan persamaan dengan jawabannya.',
+          pairs:[{left:'$2 \\times 2 \\text{ m}$', right:'$4 \\text{ m}$'},{left:'$5 \\times 100 \\text{ cm}$', right:'$500 \\text{ cm}$'},{left:'$3 \\times 1 \\text{ m}$', right:'$3 \\text{ m}$'},{left:'$4 \\times 50 \\text{ cm}$', right:'$200 \\text{ cm}$'}],
+          explanation:`<p>Multiply the numbers first, then keep the unit. <span class="tr">Kalikan angka dulu, lalu pakai satuan.</span></p>`},
+        { type:'task', pageTitle:'T5: Equal to 5 m', pageTitleEn:'Sama dengan 5 m', taskType:'checkbox',
+          question:'Select all expressions that equal $5 \\text{ m}$.', questionEn:'Pilih semua ekspresi yang sama dengan $5 \\text{ m}$.',
+          options:[{text:'$5 \\times 1 \\text{ m}$', correct:true},{text:'$500 \\text{ cm}$', correct:true},{text:'$10 \\times 50 \\text{ cm}$', correct:true},{text:'$2 \\times 200 \\text{ cm}$', correct:false}],
+          explanation:`<p>$500 \\text{ cm} = 5 \\text{ m}$. $10 \\times 50 \\text{ cm} = 500 \\text{ cm}$. <span class="tr">$500 \\text{ cm} = 5 \\text{ m}$. $10 \\times 50 \\text{ cm} = 500 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T6: Divide Lengths', pageTitleEn:'Bagi Panjang', taskType:'fill',
+          question:'$8 \\text{ m} \\div 2 = \\dots \\text{ m}$.', questionEn:'$8 \\text{ m} \\div 2 = \\dots \\text{ m}$.',
+          correctAnswer:'4', acceptableAnswers:['4'],
+          explanation:`<p>$8 \\div 2 = 4 \\text{ m}$. <span class="tr">$8 \\div 2 = 4 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T7: Steps to Multiply', pageTitleEn:'Langkah Mengalikan', taskType:'sorting',
+          question:'Order the steps to find: $5 \\times 100 \\text{ cm}$ in $\\text{cm}$.', questionEn:'Urutkan langkah mencari: $5 \\times 100 \\text{ cm}$ dalam $\\text{cm}$.',
+          items:['Identify the numbers: $5$ and $100$ <span class="tr">Identifikasi angka</span>','Multiply: $5 \\times 100 = 500$ <span class="tr">Kalikan</span>','Add the unit: $500 \\text{ cm}$ <span class="tr">Tambahkan satuan</span>','Final answer: $500 \\text{ cm}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Follow the steps carefully to solve multiplication. <span class="tr">Ikuti langkah dengan hati-hati untuk menyelesaikan perkalian.</span></p>`},
+        { type:'task', pageTitle:'T8: Division Word Problem', pageTitleEn:'Soal Pembagian', taskType:'radio',
+          question:'A $6 \\text{ m}$ rope is cut into $3$ equal pieces. How long is each piece?', questionEn:'Tali $6 \\text{ m}$ dipotong menjadi $3$ bagian sama panjang. Berapa panjang setiap potong?',
+          options:[{text:'$2 \\text{ m}$', correct:true},{text:'$3 \\text{ m}$', correct:false},{text:'$18 \\text{ m}$', correct:false},{text:'$200 \\text{ cm}$', correct:false}],
+          explanation:`<p>$6 \\text{ m} \\div 3 = 2 \\text{ m}$. <span class="tr">$6 \\text{ m} \\div 3 = 2 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T9: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: $10 \\text{ m} \\div 2 = 5 \\text{ m}$.', questionEn:'Benar atau salah: $10 \\text{ m} \\div 2 = 5 \\text{ m}$.',
+          correctAnswer:'true',
+          explanation:`<p>$10 \\div 2 = 5 \\text{ m}$. <span class="tr">$10 \\div 2 = 5 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T10: Complex Multiply', pageTitleEn:'Perkalian Kompleks', taskType:'fill',
+          question:'$3 \\times 300 \\text{ cm} = \\dots \\text{ m}$.', questionEn:'$3 \\times 300 \\text{ cm} = \\dots \\text{ m}$.',
+          correctAnswer:'9', acceptableAnswers:['9'],
+          explanation:`<p>$3 \\times 300 = 900 \\text{ cm}$. $900 \\div 100 = 9 \\text{ m}$. <span class="tr">$3 \\times 300 = 900 \\text{ cm}$. $900 \\div 100 = 9 \\text{ m}$.</span></p>`}
+      ]
+    },
+    k: {
+      title: 'Task 4', titleEn: 'Tugas 4', time: 'Printable',
+      pages: [
+        { type:'task', pageTitle:'T1: Word Problem', pageTitleEn:'Soal Cerita', taskType:'fill',
+          question:'Tom has $1 \\text{ m}$ of string. Dad gives him $2 \\text{ m}$ more. What is the total length in $\\text{cm}$? $\\dots \\text{ cm}$.', questionEn:'Tom punya tali $1 \\text{ m}$. Ayah memberinya lagi $2 \\text{ m}$. Berapa total panjangnya dalam $\\text{cm}$? $\\dots \\text{ cm}$.',
+          correctAnswer:'300', acceptableAnswers:['300'],
+          explanation:`<p>$1 \\text{ m} + 2 \\text{ m} = 3 \\text{ m}$. $3 \\text{ m} = 300 \\text{ cm}$. <span class="tr">$1 \\text{ m} + 2 \\text{ m} = 3 \\text{ m}$. $3 \\text{ m} = 300 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T2: Subtraction Word', pageTitleEn:'Soal Pengurangan', taskType:'radio',
+          question:'A wire is $5 \\text{ m}$ long. We cut $3 \\text{ m}$. How much is left?', questionEn:'Kawat panjangnya $5 \\text{ m}$. Kita potong $3 \\text{ m}$. Berapa sisanya?',
+          options:[{text:'$2 \\text{ m}$', correct:true},{text:'$8 \\text{ m}$', correct:false},{text:'$3 \\text{ m}$', correct:false},{text:'$200 \\text{ cm}$', correct:false}],
+          explanation:`<p>$5 \\text{ m} - 3 \\text{ m} = 2 \\text{ m}$. <span class="tr">$5 \\text{ m} - 3 \\text{ m} = 2 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T3: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: A desk is $2 \\text{ m}$ long. A chair is $1 \\text{ m}$ long. The total is $300 \\text{ cm}$.', questionEn:'Benar atau salah: Meja panjangnya $2 \\text{ m}$. Kursi panjangnya $1 \\text{ m}$. Totalnya $300 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>$2 \\text{ m} + 1 \\text{ m} = 3 \\text{ m}$. $3 \\text{ m} = 300 \\text{ cm}$. <span class="tr">$2 \\text{ m} + 1 \\text{ m} = 3 \\text{ m}$. $3 \\text{ m} = 300 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T4: Match the Problems', pageTitleEn:'Pasangkan Soal', taskType:'pairing',
+          question:'Match the word problem to its answer.', questionEn:'Pasangkan soal cerita dengan jawabannya.',
+          pairs:[{left:'$4 \\text{ m} + 1 \\text{ m}$ <span class="tr">Tali ditambah</span>', right:'$5 \\text{ m}$'},{left:'$3 \\text{ m} - 100 \\text{ cm}$ <span class="tr">Kawat dipotong</span>', right:'$2 \\text{ m}$'},{left:'$2 \\times 2 \\text{ m}$ <span class="tr">Dua pipa</span>', right:'$4 \\text{ m}$'},{left:'$6 \\text{ m} \\div 3$ <span class="tr">Dibagi 3</span>', right:'$2 \\text{ m}$'}],
+          explanation:`<p>Convert to the same unit, then calculate. <span class="tr">Ubah ke satuan yang sama, lalu hitung.</span></p>`},
+        { type:'task', pageTitle:'T5: Equal to 4 m', pageTitleEn:'Sama dengan 4 m', taskType:'checkbox',
+          question:'Select all expressions that equal $4 \\text{ m}$.', questionEn:'Pilih semua ekspresi yang sama dengan $4 \\text{ m}$.',
+          options:[{text:'$2 \\text{ m} + 2 \\text{ m}$', correct:true},{text:'$400 \\text{ cm}$', correct:true},{text:'$1 \\text{ m} + 300 \\text{ cm}$', correct:true},{text:'$200 \\text{ cm} + 100 \\text{ cm}$', correct:false}],
+          explanation:`<p>$200 \\text{ cm} + 100 \\text{ cm} = 300 \\text{ cm}$, which is only $3 \\text{ m}$. <span class="tr">$200 \\text{ cm} + 100 \\text{ cm} = 300 \\text{ cm}$, yang hanya $3 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T6: Subtract Word', pageTitleEn:'Soal Kurang', taskType:'fill',
+          question:'A rope is $10 \\text{ m}$ long. We cut $4 \\text{ m}$. How much is left in $\\text{m}$? $\\dots \\text{ m}$.', questionEn:'Tali panjangnya $10 \\text{ m}$. Kita potong $4 \\text{ m}$. Berapa sisanya dalam $\\text{m}$? $\\dots \\text{ m}$.',
+          correctAnswer:'6', acceptableAnswers:['6'],
+          explanation:`<p>$10 \\text{ m} - 4 \\text{ m} = 6 \\text{ m}$. <span class="tr">$10 \\text{ m} - 4 \\text{ m} = 6 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T7: Steps to Solve', pageTitleEn:'Langkah Menyelesaikan', taskType:'sorting',
+          question:'Order the steps to solve: "A $2 \\text{ m}$ rope is added to $100 \\text{ cm}$. Total in $\\text{cm}$?"', questionEn:'Urutkan langkah menyelesaikan: "Tali $2 \\text{ m}$ ditambah $100 \\text{ cm}$. Total dalam $\\text{cm}$?"',
+          items:['Convert $2 \\text{ m}$ to $\\text{cm}$: $200 \\text{ cm}$ <span class="tr">Ubah $2 \\text{ m}$ ke $\\text{cm}$</span>','Add the lengths: $200 \\text{ cm} + 100 \\text{ cm}$ <span class="tr">Jumlahkan panjang</span>','Calculate: $200 + 100 = 300$ <span class="tr">Hitung</span>','Final answer: $300 \\text{ cm}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Convert to the same unit, then add. <span class="tr">Ubah ke satuan yang sama, lalu jumlahkan.</span></p>`},
+        { type:'task', pageTitle:'T8: Multiplication Word', pageTitleEn:'Soal Perkalian', taskType:'radio',
+          question:'A box is $1 \\text{ m}$ long. If we place $3$ boxes end to end, what is the total length?', questionEn:'Kotak panjangnya $1 \\text{ m}$. Jika kita letakkan $3$ kotak ujung ke ujung, berapa total panjangnya?',
+          options:[{text:'$3 \\text{ m}$', correct:true},{text:'$1 \\text{ m}$', correct:false},{text:'$4 \\text{ m}$', correct:false},{text:'$300 \\text{ cm}$', correct:false}],
+          explanation:`<p>$3 \\times 1 \\text{ m} = 3 \\text{ m}$. <span class="tr">$3 \\times 1 \\text{ m} = 3 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T9: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: A $5 \\text{ m}$ string cut into $5$ equal pieces means each piece is $1 \\text{ m}$.', questionEn:'Benar atau salah: Tali $5 \\text{ m}$ dipotong menjadi $5$ bagian sama panjang berarti setiap potong $1 \\text{ m}$.',
+          correctAnswer:'true',
+          explanation:`<p>$5 \\div 5 = 1 \\text{ m}$. <span class="tr">$5 \\div 5 = 1 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T10: Two Paths', pageTitleEn:'Dua Jalur', taskType:'fill',
+          question:'Path A is $200 \\text{ cm}$. Path B is $3 \\text{ m}$. Total in $\\text{m}$? $\\dots \\text{ m}$.', questionEn:'Jalur A $200 \\text{ cm}$. Jalur B $3 \\text{ m}$. Total dalam $\\text{m}$? $\\dots \\text{ m}$.',
+          correctAnswer:'5', acceptableAnswers:['5'],
+          explanation:`<p>$200 \\text{ cm} = 2 \\text{ m}$. $2 \\text{ m} + 3 \\text{ m} = 5 \\text{ m}$. <span class="tr">$200 \\text{ cm} = 2 \\text{ m}$. $2 \\text{ m} + 3 \\text{ m} = 5 \\text{ m}$.</span></p>`}
+      ]
+    },
+    l: {
+      title: 'Task 5', titleEn: 'Tugas 5', time: 'Printable',
+      pages: [
+        { type:'task', pageTitle:'T1: Square Perimeter', pageTitleEn:'Keliling Persegi', taskType:'fill',
+          question:'A square has sides of $2 \\text{ m}$. What is its perimeter in $\\text{m}$? $\\dots \\text{ m}$.', questionEn:'Persegi memiliki sisi $2 \\text{ m}$. Berapa kelilingnya dalam $\\text{m}$? $\\dots \\text{ m}$.',
+          correctAnswer:'8', acceptableAnswers:['8'],
+          explanation:`<p>A square has $4$ equal sides. $4 \\times 2 \\text{ m} = 8 \\text{ m}$. <span class="tr">Persegi memiliki $4$ sisi sama. $4 \\times 2 \\text{ m} = 8 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T2: Rectangle Perimeter', pageTitleEn:'Keliling Persegi Panjang', taskType:'radio',
+          question:'A rectangle is $3 \\text{ m}$ long and $1 \\text{ m}$ wide. What is the perimeter?', questionEn:'Persegi panjang panjangnya $3 \\text{ m}$ dan lebarnya $1 \\text{ m}$. Berapa kelilingnya?',
+          options:[{text:'$8 \\text{ m}$', correct:true},{text:'$4 \\text{ m}$', correct:false},{text:'$3 \\text{ m}$', correct:false},{text:'$6 \\text{ m}$', correct:false}],
+          explanation:`<p>$3 + 1 + 3 + 1 = 8 \\text{ m}$. <span class="tr">$3 + 1 + 3 + 1 = 8 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T3: Perimeter in cm', pageTitleEn:'Keliling dalam cm', taskType:'truefalse',
+          question:'True or false: A square with side $1 \\text{ m}$ has a perimeter of $400 \\text{ cm}$.', questionEn:'Benar atau salah: Persegi dengan sisi $1 \\text{ m}$ memiliki keliling $400 \\text{ cm}$.',
+          correctAnswer:'true',
+          explanation:`<p>$4 \\times 1 \\text{ m} = 4 \\text{ m}$. $4 \\text{ m} = 400 \\text{ cm}$. <span class="tr">$4 \\times 1 \\text{ m} = 4 \\text{ m}$. $4 \\text{ m} = 400 \\text{ cm}$.</span></p>`},
+        { type:'task', pageTitle:'T4: Match the Shapes', pageTitleEn:'Pasangkan Bangun', taskType:'pairing',
+          question:'Match the shape to its perimeter.', questionEn:'Pasangkan bangun dengan kelilingnya.',
+          pairs:[{left:'Square $1 \\text{ m}$ side <span class="tr">Sisi 1 m</span>', right:'$4 \\text{ m}$'},{left:'Rectangle $2 \\text{ m} \\times 1 \\text{ m}$ <span class="tr">2m x 1m</span>', right:'$6 \\text{ m}$'},{left:'Square $3 \\text{ m}$ side <span class="tr">Sisi 3 m</span>', right:'$12 \\text{ m}$'},{left:'Rectangle $4 \\text{ m} \\times 1 \\text{ m}$ <span class="tr">4m x 1m</span>', right:'$10 \\text{ m}$'}],
+          explanation:`<p>Add all four sides to find the perimeter. <span class="tr">Jumlahkan keempat sisi untuk mencari keliling.</span></p>`},
+        { type:'task', pageTitle:'T5: Perimeter 8 m', pageTitleEn:'Keliling 8 m', taskType:'checkbox',
+          question:'Select all shapes that have a perimeter of $8 \\text{ m}$.', questionEn:'Pilih semua bangun yang memiliki keliling $8 \\text{ m}$.',
+          options:[{text:'Square $2 \\text{ m}$ side <span class="tr">Sisi 2 m</span>', correct:true},{text:'Rectangle $3 \\text{ m} \\times 1 \\text{ m}$ <span class="tr">3m x 1m</span>', correct:true},{text:'Square $3 \\text{ m}$ side <span class="tr">Sisi 3 m</span>', correct:false},{text:'Rectangle $4 \\text{ m} \\times 2 \\text{ m}$ <span class="tr">4m x 2m</span>', correct:false}],
+          explanation:`<p>Square $2 \\text{ m} = 4 \\times 2 = 8 \\text{ m}$. Rectangle $3 \\times 1 = 3+1+3+1 = 8 \\text{ m}$. <span class="tr">Persegi $2 \\text{ m} = 4 \\times 2 = 8 \\text{ m}$. Persegi Panjang $3 \\times 1 = 3+1+3+1 = 8 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T6: Triangle Perimeter', pageTitleEn:'Keliling Segitiga', taskType:'fill',
+          question:'A triangle has sides of $1 \\text{ m}$, $1 \\text{ m}$, and $1 \\text{ m}$. Perimeter $= \\dots \\text{ m}$.', questionEn:'Segitiga memiliki sisi $1 \\text{ m}$, $1 \\text{ m}$, dan $1 \\text{ m}$. Keliling $= \\dots \\text{ m}$.',
+          correctAnswer:'3', acceptableAnswers:['3'],
+          explanation:`<p>$1 + 1 + 1 = 3 \\text{ m}$. <span class="tr">$1 + 1 + 1 = 3 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T7: Steps to Find Perimeter', pageTitleEn:'Langkah Mencari Keliling', taskType:'sorting',
+          question:'Order the steps to find the perimeter of a rectangle $2 \\text{ m} \\times 1 \\text{ m}$.', questionEn:'Urutkan langkah mencari keliling persegi panjang $2 \\text{ m} \\times 1 \\text{ m}$.',
+          items:['Identify the lengths of all 4 sides <span class="tr">Identifikasi panjang 4 sisi</span>','Add them: $2 \\text{ m} + 1 \\text{ m} + 2 \\text{ m} + 1 \\text{ m}$ <span class="tr">Jumlahkan</span>','Calculate: $2 + 1 + 2 + 1 = 6$ <span class="tr">Hitung</span>','Final answer: $6 \\text{ m}$ <span class="tr">Jawaban akhir</span>'], correctOrder:[0,1,2,3],
+          explanation:`<p>Perimeter is the sum of all outside edges. <span class="tr">Keliling adalah jumlah semua sisi luar.</span></p>`},
+        { type:'task', pageTitle:'T8: Missing Side', pageTitleEn:'Sisi yang Hilang', taskType:'radio',
+          question:'A fence is $4 \\text{ m}$ long. It has $2$ equal sides. If one side is $1 \\text{ m}$, what is the length of the other side?', questionEn:'Pagar panjangnya $4 \\text{ m}$. Memiliki $2$ sisi yang sama. Jika satu sisi $1 \\text{ m}$, berapa panjang sisi lainnya?',
+          options:[{text:'$3 \\text{ m}$', correct:true},{text:'$1 \\text{ m}$', correct:false},{text:'$2 \\text{ m}$', correct:false},{text:'$4 \\text{ m}$', correct:false}],
+          explanation:`<p>$1 \\text{ m} + \\text{?} = 4 \\text{ m}$. $4 - 1 = 3 \\text{ m}$. <span class="tr">$1 \\text{ m} + \\text{?} = 4 \\text{ m}$. $4 - 1 = 3 \\text{ m}$.</span></p>`},
+        { type:'task', pageTitle:'T9: True or False', pageTitleEn:'Benar atau Salah', taskType:'truefalse',
+          question:'True or false: Perimeter means adding all the sides together.', questionEn:'Benar atau salah: Keliling berarti menjumlahkan semua sisi.',
+          correctAnswer:'true',
+          explanation:`<p>Yes, perimeter is the total distance around a shape. <span class="tr">Ya, keliling adalah total jarak sekitar bangun.</span></p>`},
+        { type:'task', pageTitle:'T10: Mixed Perimeter', pageTitleEn:'Keliling Campuran', taskType:'fill',
+          question:'A rectangle is $1 \\text{ m } 50 \\text{ cm}$ long and $50 \\text{ cm}$ wide. Perimeter $= 4 \\text{ m}$. True? Type Yes or No.', questionEn:'Persegi panjang panjangnya $1 \\text{ m } 50 \\text{ cm}$ dan lebarnya $50 \\text{ cm}$. Keliling $= 4 \\text{ m}$. Benar? Ketik Yes atau No.',
+          correctAnswer:'Yes', acceptableAnswers:['Yes','YES','yes'],
+          explanation:`<p>$1 \\text{ m } 50 \\text{ cm} = 150 \\text{ cm}$. $150 + 50 + 150 + 50 = 400 \\text{ cm} = 4 \\text{ m}$. <span class="tr">$1 \\text{ m } 50 \\text{ cm} = 150 \\text{ cm}$. $150 + 50 + 150 + 50 = 400 \\text{ cm} = 4 \\text{ m}$.</span></p>`}
+      ]
+    }
+  };
+
+  // ================= STATE =================
+  let currentSection = 'a';
+  let currentPage = 0;
+  let userAnswers = {};
+
+  // ================= UTILITIES =================
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function renderMath(el){
+    if(window.renderMathInElement){
+      renderMathInElement(el, {
+        delimiters: [
+          {left:'$$', right:'$$', display:true},
+          {left:'$', right:'$', display:false}
+        ],
+        throwOnError: false
+      });
+    }
+  }
+
+  // ================= SIDEBAR =================
+  function renderSidebar(){
+    const sidebar = document.getElementById('sidebar');
+    const sectionKeys = ['a','b','c','d','e','f','g','h','i','j','k','l'];
+    const meta = {
+      a:{t:'Spiral Review', e:'Spiral Review', time:'00:00-00:10'},
+      b:{t:'Intro & Real-World', e:'Pengantar & Dunia Nyata', time:'00:10-00:15'},
+      c:{t:'Prior Knowledge', e:'Pengetahuan Awal', time:'00:15-00:20'},
+      d:{t:'Problem Intro', e:'Pengantar Masalah', time:'00:20-00:30'},
+      e:{t:'Guided Practice', e:'Latihan Terbimbing', time:'00:30-00:45'},
+      f:{t:'Independent Prac', e:'Latihan Mandiri', time:'00:45-00:55'},
+      g:{t:'Consolidation', e:'Konsolidasi', time:'00:55-01:00'},
+      h:{t:'Task 1', e:'Tugas 1', time:'Printable'},
+      i:{t:'Task 2', e:'Tugas 2', time:'Printable'},
+      j:{t:'Task 3', e:'Tugas 3', time:'Printable'},
+      k:{t:'Task 4', e:'Tugas 4', time:'Printable'},
+      l:{t:'Task 5', e:'Tugas 5', time:'Printable'}
+    };
+    let html = '<h3>Sections <span class="tr">Bagian</span></h3>';
+    sectionKeys.forEach(key => {
+      const section = sectionsData[key];
+      const isActive = currentSection === key;
+      if(section){
+        html += `<div class="nav-link ${isActive?'active':''}" data-section="${key}">
+          <span class="nl-title">${key.toUpperCase()}. ${meta[key].t}</span>
+          <span class="tr">${meta[key].e}</span>
+          <span class="time">${meta[key].time}</span>
+        </div>`;
+      } else {
+        html += `<div class="nav-link disabled">${key.toUpperCase()}. ${meta[key].t}<br><span class="tr">${meta[key].e}</span><br><span class="time">${meta[key].time} (segera)</span></div>`;
+      }
+    });
+    sidebar.innerHTML = html;
+    sidebar.querySelectorAll('.nav-link[data-section]').forEach(el => {
+      el.addEventListener('click', () => {
+        currentSection = el.dataset.section;
+        currentPage = 0;
+        renderSidebar();
+        renderPage();
+      });
+    });
+  }
+
+  // ================= PAGE RENDER =================
+  function renderPage(){
+    const section = sectionsData[currentSection];
+    if(!section) return;
+    const page = section.pages[currentPage];
+    const contentEl = document.getElementById('pageContent');
+
+    let printBtnHtml = '';
+    if(['h','i','j','k','l'].includes(currentSection)){
+      printBtnHtml = '<button id="printBtnTop" style="background:var(--success);color:#fff;border:none;padding:7px 14px;border-radius:6px;cursor:pointer;font-size:.8em;font-weight:600;white-space:nowrap">🖨 Print to PDF <span class="tr">Cetak ke PDF</span></button>';
+    }
+
+    let html = '<div class="page-header"><h2>' + section.title + ' <span class="tr">' + section.titleEn + '</span></h2><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' + printBtnHtml + '<span class="badge">' + page.pageTitle.split(':')[0] + '</span></div></div>';
+
+    if(page.type === 'explanation'){
+      html += '<div class="card explain"><h3>' + page.pageTitle + ' <span class="tr">' + page.pageTitleEn + '</span></h3>' + page.body + '</div>';
+    } else if(page.type === 'task'){
+      html += renderTask(page);
+    }
+    contentEl.innerHTML = html;
+    renderMath(contentEl);
+
+    const total = section.pages.length;
+    const pageNumsEl = document.getElementById('pageNums');
+    let pageNumHtml = '';
+    section.pages.forEach(function(p, i){
+      var raw = p.pageTitle.split(':')[0].trim();
+      var type = raw.charAt(0);
+      var num = parseInt(raw.substring(1));
+      var label = type + '-' + String(num).padStart(2, '0');
+      var typeClass = (type === 'E') ? 'page-num-e' : 'page-num-t';
+      var isActive = (i === currentPage);
+      pageNumHtml += '<button class="page-num ' + typeClass + ' ' + (isActive ? 'active' : '') + '" data-page="' + i + '"' + (isActive ? ' disabled' : '') + '>' + label + '</button>';
+    });
+    pageNumsEl.innerHTML = pageNumHtml;
+
+    pageNumsEl.querySelectorAll('.page-num').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        currentPage = parseInt(btn.dataset.page);
+        renderPage();
+      });
+    });
+
+    document.getElementById('prevBtn').disabled = (currentPage === 0);
+    document.getElementById('nextBtn').disabled = (currentPage === total - 1);
+
+    var printBtnTop = document.getElementById('printBtnTop');
+    if(printBtnTop){
+      printBtnTop.addEventListener('click', function(){ printTask(currentSection); });
+    }
+
+    if(page.type === 'task'){
+      attachTaskHandlers(page);
+    }
+  }
+
+  function renderTask(page){
+    let html = `<div class="card task"><h3>${page.pageTitle} <span class="tr">${page.pageTitleEn}</span></h3>`;
+    html += `<div class="q-text">${page.question} <span class="tr">${page.questionEn || ''}</span></div>`;
+
+    if(page.taskType === 'radio' || page.taskType === 'checkbox'){
+      const options = shuffle(page.options);
+      page._shuffledOptions = options;
+      html += '<div class="options">';
+      options.forEach((opt, i) => {
+        const cls = page.taskType === 'checkbox' ? 'option checkbox' : 'option radio';
+        html += `<div class="${cls}" data-idx="${i}">
+          <div class="marker"></div>
+          <div class="opt-text">${opt.text}</div>
+        </div>`;
+      });
+      html += '</div>';
+    } else if(page.taskType === 'fill'){
+      html += `<input type="text" class="fill-input" id="fillInput" placeholder="...">`;
+    } else if(page.taskType === 'truefalse'){
+      const opts = shuffle([
+        {text:'True <span class="tr">Benar</span>', val:'true'},
+        {text:'False <span class="tr">Salah</span>', val:'false'}
+      ]);
+      page._shuffledTF = opts;
+      html += '<div class="options">';
+      opts.forEach((o, i) => {
+        html += `<div class="option radio" data-val="${o.val}" data-idx="${i}"><div class="marker"></div><div class="opt-text">${o.text}</div></div>`;
+      });
+      html += '</div>';
+    } else if(page.taskType === 'sorting'){
+      const shuffled = shuffle(page.items.map((item, idx) => ({text:item, originalIdx:idx})));
+      page._shuffledItems = shuffled;
+      html += '<div class="sort-list">';
+      shuffled.forEach((it, i) => {
+        html += `<div class="sort-item" data-pos="${i}" data-orig="${it.originalIdx}">
+          <span class="pos">${i+1}</span>
+          <span class="sort-text">${it.text}</span>
+        </div>`;
+      });
+      html += '</div>';
+      html += '<p style="font-size:.82em;color:var(--muted);margin-top:6px">Click two items to swap. <span class="tr">Klik dua item untuk menukar.</span></p>';
+    } else if(page.taskType === 'pairing'){
+      const lefts = shuffle(page.pairs.map((p, idx) => ({text:p.left, originalIdx:idx})));
+      const rights = shuffle(page.pairs.map((p, idx) => ({text:p.right, originalIdx:idx})));
+      page._shuffledPairs = {lefts, rights};
+      html += '<div class="pair-grid">';
+      html += '<div class="pair-col"><h4>Left <span class="tr">Kiri</span></h4>';
+      lefts.forEach((l, i) => {
+        html += `<div class="pair-item" data-side="left" data-idx="${i}">${l.text}</div>`;
+      });
+      html += '</div>';
+      html += '<div class="pair-col"><h4>Right <span class="tr">Kanan</span></h4>';
+      rights.forEach((r, i) => {
+        html += `<div class="pair-item" data-side="right" data-idx="${i}">${r.text}</div>`;
+      });
+      html += '</div></div>';
+      html += '<div class="pairs-list" id="pairsList"></div>';
+      html += '<p style="font-size:.82em;color:var(--muted);margin-top:6px">Click left then right to pair. <span class="tr">Klik kiri lalu kanan untuk memasangkan.</span></p>';
+    }
+    html += `<button class="btn-submit" id="submitBtn">Check Answer <span class="tr">Periksa Jawaban</span></button>`;
+    html += `<div class="feedback" id="feedback"></div></div>`;
+    return html;
+  }
+
+  function attachTaskHandlers(page){
+    const taskType = page.taskType;
+
+    if(taskType === 'radio' || taskType === 'truefalse'){
+      document.querySelectorAll('.option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+        });
+      });
+    } else if(taskType === 'checkbox'){
+      document.querySelectorAll('.option').forEach(opt => {
+        opt.addEventListener('click', () => opt.classList.toggle('selected'));
+      });
+    } else if(taskType === 'sorting'){
+      let firstClick = null;
+      document.querySelectorAll('.sort-item').forEach(item => {
+        item.addEventListener('click', () => {
+          if(firstClick === null){
+            firstClick = item;
+            item.classList.add('selected');
+          } else if(firstClick === item){
+            item.classList.remove('selected');
+            firstClick = null;
+          } else {
+            const fText = firstClick.querySelector('.sort-text').innerHTML;
+            const sText = item.querySelector('.sort-text').innerHTML;
+            firstClick.querySelector('.sort-text').innerHTML = sText;
+            item.querySelector('.sort-text').innerHTML = fText;
+            const fOrig = firstClick.dataset.orig;
+            firstClick.dataset.orig = item.dataset.orig;
+            item.dataset.orig = fOrig;
+            firstClick.classList.remove('selected');
+            firstClick = null;
+          }
+        });
+      });
+    } else if(taskType === 'pairing'){
+      let selectedLeft = null;
+      document.querySelectorAll('.pair-item[data-side="left"]').forEach(item => {
+        item.addEventListener('click', () => {
+          if(item.classList.contains('paired')) return;
+          document.querySelectorAll('.pair-item[data-side="left"]').forEach(i => i.classList.remove('selected'));
+          item.classList.add('selected');
+          selectedLeft = item;
+        });
+      });
+      document.querySelectorAll('.pair-item[data-side="right"]').forEach(item => {
+        item.addEventListener('click', () => {
+          if(item.classList.contains('paired') || !selectedLeft) return;
+          const leftIdx = selectedLeft.dataset.idx;
+          const rightIdx = item.dataset.idx;
+          const pairList = document.getElementById('pairsList');
+          const pairRow = document.createElement('div');
+          pairRow.className = 'pair-row';
+          pairRow.dataset.leftIdx = leftIdx;
+          pairRow.dataset.rightIdx = rightIdx;
+          pairRow.innerHTML = `<span>${selectedLeft.innerHTML}</span> <span>↔</span> <span>${item.innerHTML}</span> <span class="remove" title="Remove">×</span>`;
+          pairRow.querySelector('.remove').addEventListener('click', function() {
+            const lIdx = pairRow.dataset.leftIdx;
+            const rIdx = pairRow.dataset.rightIdx;
+            const lItem = document.querySelector(`.pair-item[data-side="left"][data-idx="${lIdx}"]`);
+            const rItem = document.querySelector(`.pair-item[data-side="right"][data-idx="${rIdx}"]`);
+            if(lItem) lItem.classList.remove('paired');
+            if(rItem) rItem.classList.remove('paired');
+            pairRow.remove();
+          });
+          pairList.appendChild(pairRow);
+          selectedLeft.classList.remove('selected');
+          selectedLeft.classList.add('paired');
+          item.classList.add('paired');
+          selectedLeft = null;
+        });
+      });
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', () => checkAnswer(page));
+  }
+
+  function checkAnswer(page){
+    const taskType = page.taskType;
+    let isCorrect = false;
+    let userAnswerStr = '';
+
+    if(taskType === 'radio'){
+      let selected = null, selectedIdx = -1;
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        if(opt.classList.contains('selected')){
+          selected = page._shuffledOptions[i];
+          selectedIdx = i;
+        }
+      });
+      if(!selected){
+        showFeedback(false, 'Please select an answer. <span class="tr">Silakan pilih jawaban.</span>', false);
+        return;
+      }
+      isCorrect = selected.correct;
+      userAnswerStr = selected.text;
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.classList.remove('selected');
+        if(page._shuffledOptions[i].correct) opt.classList.add('correct');
+        else if(i === selectedIdx && !selected.correct) opt.classList.add('incorrect');
+      });
+    } else if(taskType === 'checkbox'){
+      const selectedIdxs = [];
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        if(opt.classList.contains('selected')) selectedIdxs.push(i);
+      });
+      if(selectedIdxs.length === 0){
+        showFeedback(false, 'Please select an answer. <span class="tr">Silakan pilih jawaban.</span>', false);
+        return;
+      }
+      const correctSet = new Set();
+      page._shuffledOptions.forEach((opt, i) => { if(opt.correct) correctSet.add(i); });
+      const selectedSet = new Set(selectedIdxs);
+      isCorrect = correctSet.size === selectedSet.size && [...correctSet].every(i => selectedSet.has(i));
+      userAnswerStr = selectedIdxs.map(i => page._shuffledOptions[i].text).join(', ');
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.classList.remove('selected');
+        if(page._shuffledOptions[i].correct) opt.classList.add('correct');
+        else if(selectedSet.has(i)) opt.classList.add('incorrect');
+      });
+    } else if(taskType === 'fill'){
+      const val = document.getElementById('fillInput').value.trim();
+      const acceptable = page.acceptableAnswers || [page.correctAnswer];
+      const norm = s => s.toLowerCase().replace(/\s+/g, '').trim();
+      isCorrect = acceptable.some(a => norm(a) === norm(val));
+      userAnswerStr = val;
+    } else if(taskType === 'truefalse'){
+      let selectedVal = null, selectedIdx = -1;
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        if(opt.classList.contains('selected')){
+          selectedVal = opt.dataset.val;
+          selectedIdx = i;
+        }
+      });
+      if(!selectedVal){
+        showFeedback(false, 'Please select an answer. <span class="tr">Silakan pilih jawaban.</span>', false);
+        return;
+      }
+      isCorrect = selectedVal === page.correctAnswer;
+      userAnswerStr = selectedVal === 'true' ? 'True' : 'False';
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.classList.remove('selected');
+        if(opt.dataset.val === page.correctAnswer) opt.classList.add('correct');
+        else if(i === selectedIdx) opt.classList.add('incorrect');
+      });
+    } else if(taskType === 'sorting'){
+      const currentOrder = [];
+      document.querySelectorAll('.sort-item').forEach(item => {
+        currentOrder.push(parseInt(item.dataset.orig));
+      });
+      isCorrect = currentOrder.every((idx, i) => idx === page.correctOrder[i]);
+      userAnswerStr = currentOrder.map((idx, i) => `${i+1}. ${page.items[idx] || '?'}`).join('  |  ');
+      document.querySelectorAll('.sort-item').forEach((item, i) => {
+        if(currentOrder[i] === page.correctOrder[i]) item.style.borderColor = 'var(--success)';
+        else item.style.borderColor = 'var(--danger)';
+      });
+    } else if(taskType === 'pairing'){
+      const pairRows = document.querySelectorAll('.pair-row');
+      if(pairRows.length === 0){
+        showFeedback(false, 'Please make pairs. <span class="tr">Silakan buat pasangan.</span>', false);
+        return;
+      }
+      const userPairs = [];
+      pairRows.forEach(row => {
+        const lIdx = parseInt(row.dataset.leftIdx);
+        const rIdx = parseInt(row.dataset.rightIdx);
+        userPairs.push({
+          leftText: page._shuffledPairs.lefts[lIdx].text,
+          rightText: page._shuffledPairs.rights[rIdx].text
+        });
+      });
+      const correctPairs = page.pairs.map(p => ({left:p.left, right:p.right}));
+      const correctCount = userPairs.filter(up =>
+        correctPairs.some(cp => cp.left === up.leftText && cp.right === up.rightText)
+      ).length;
+      isCorrect = correctCount === correctPairs.length && userPairs.length === correctPairs.length;
+      userAnswerStr = userPairs.map(p => `${p.leftText}↔${p.rightText}`).join('  |  ');
+      pairRows.forEach(row => {
+        const lIdx = parseInt(row.dataset.leftIdx);
+        const rIdx = parseInt(row.dataset.rightIdx);
+        const lText = page._shuffledPairs.lefts[lIdx].text;
+        const rText = page._shuffledPairs.rights[rIdx].text;
+        const ok = correctPairs.some(cp => cp.left === lText && cp.right === rText);
+        row.style.background = ok ? '#d1fae5' : '#fee2e2';
+      });
+    }
+
+    const pageKey = `${currentSection}-${currentPage}`;
+    userAnswers[pageKey] = {userAnswer:userAnswerStr, correct:isCorrect, pageTitle:page.pageTitle};
+    showFeedback(isCorrect, page.explanation, true);
+  }
+
+  function showFeedback(isCorrect, explanation, showAnswer){
+    const feedback = document.getElementById('feedback');
+    feedback.className = `feedback show ${isCorrect?'correct':'incorrect'}`;
+    if(showAnswer || explanation.indexOf('select') !== -1 || explanation.indexOf('pairs') !== -1){
+      feedback.innerHTML = `<h4>${isCorrect?'✓ Correct!':'✗ Incorrect'} <span class="tr">${isCorrect?'Benar!':'Salah'}</span></h4>${explanation}`;
+    } else {
+      feedback.innerHTML = `<h4>${isCorrect?'✓ Correct!':'✗ Incorrect'}</h4><p>${explanation}</p>`;
+    }
+    renderMath(feedback);
+  }
+
+  // ================= EVENT LISTENERS =================
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    if(currentPage > 0){ currentPage--; renderPage(); }
+  });
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    const total = sectionsData[currentSection].pages.length;
+    if(currentPage < total - 1){ currentPage++; renderPage(); }
+  });
+
+  const modal = document.getElementById('classRulesModal');
+  document.getElementById('classRulesBtn').addEventListener('click', () => modal.classList.add('active'));
+  document.querySelector('.modal-close').addEventListener('click', () => modal.classList.remove('active'));
+  modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+
+  // ================= PRINT TO PDF =================
+  function getCorrectAnswer(task){
+    if(task.taskType === 'radio'){
+      const c = task.options.find(o => o.correct);
+      return c ? c.text : '';
+    }
+    if(task.taskType === 'checkbox'){
+      return task.options.filter(o => o.correct).map(o => o.text).join(', ');
+    }
+    if(task.taskType === 'fill'){
+      return task.correctAnswer || '';
+    }
+    if(task.taskType === 'truefalse'){
+      return task.correctAnswer === 'true' ? 'True' : 'False';
+    }
+    if(task.taskType === 'sorting'){
+      return task.correctOrder.map(i => task.items[i]).join(' → ');
+    }
+    if(task.taskType === 'pairing'){
+      return task.pairs.map(p => p.left + ' ↔ ' + p.right).join('; ');
+    }
+    return '';
+  }
+
+  function printTask(sectionKey){
+    const section = sectionsData[sectionKey];
+    if(!section) return;
+    const tasks = section.pages;
+    let correctCount = 0;
+
+    const rows = tasks.map((task, idx) => {
+      const pageKey = sectionKey + '-' + idx;
+      const ua = userAnswers[pageKey];
+      const isCorrect = ua ? ua.correct : false;
+      const userAns = ua ? ua.userAnswer : '(not answered)';
+      const correctAns = getCorrectAnswer(task);
+      if(ua && ua.correct) correctCount++;
+      return '<tr><td>' + (idx+1) + '</td><td>' + task.question + '<br><span class="tr">' + (task.questionEn || '') + '</span></td><td>' + userAns + '</td><td>' + correctAns + '</td><td style="text-align:center;font-size:1.1em">' + (isCorrect ? '✓' : '✗') + '</td></tr>';
+    }).join('');
+
+    const score = correctCount + ' / ' + tasks.length;
+    const today = new Date().toLocaleDateString('en-US', {day:'numeric',month:'long',year:'numeric'});
+
+    const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Print - ' + section.title + '</title>' +
+      '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">' +
+      '<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"><\/script>' +
+      '<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"><\/script>' +
+      '<style>' +
+      'body{font-family:Segoe UI,sans-serif;padding:30px;color:#1e293b;line-height:1.5}' +
+      'h1{font-size:1.2em;margin-bottom:5px}' +
+      '.info{margin-bottom:15px;font-size:.88em}' +
+      '.info div{margin:3px 0}' +
+      'table{width:100%;border-collapse:collapse;margin:15px 0;font-size:.82em}' +
+      'th,td{border:1px solid #cbd5e1;padding:6px 8px;text-align:left;vertical-align:top}' +
+      'th{background:#f1f5f9;font-weight:600}' +
+      '.checked-by{margin-top:30px;text-align:right;font-style:italic}' +
+      '.tr{font-style:italic;font-size:.85em;color:#64748b}' +
+      '@media print{body{padding:15px}}' +
+      '</style></head><body>' +
+      '<h1>Math Tutoring by Deni</h1>' +
+      '<div class="info">' +
+      '<div>Name: ____________________________ <span class="tr">Nama</span></div>' +
+      '<div>Date: ' + today + ' <span class="tr">Tanggal</span></div>' +
+      '<div>Topic: Measuring Length In Metres <span class="tr">Topik: Mengukur Panjang Dalam Meter</span></div>' +
+      '<div>Task Group: ' + section.title + ' <span class="tr">Grup Task</span></div>' +
+      '<div>Score: <strong>' + score + '</strong> <span class="tr">Skor</span></div>' +
+      '</div>' +
+      '<table><thead><tr>' +
+      '<th style="width:30px">No.</th>' +
+      '<th>Question <span class="tr">Pertanyaan</span></th>' +
+      '<th>Student Answer <span class="tr">Jawaban Siswa</span></th>' +
+      '<th>Correct Answer <span class="tr">Jawaban Benar</span></th>' +
+      '<th style="width:50px">Note <span class="tr">Ket.</span></th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<div class="checked-by">Checked by, <span class="tr">Diperiksa oleh,</span><br>Deni</div>' +
+      '<script>document.addEventListener("DOMContentLoaded",function(){' +
+      'if(window.renderMathInElement){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false});}' +
+      'setTimeout(function(){window.print();},500);});<\/script>' +
+      '</body></html>';
+
+    const w = window.open('', '_blank');
+    if(w){
+      w.document.write(html);
+      w.document.close();
+    } else {
+      alert('Please allow pop-ups to print. (Mohon izinkan pop-up untuk mencetak.)');
+    }
+  }
+
+  // ================= INIT =================
+  renderSidebar();
+  renderPage();
+});
+</script>
+</body>
+</html>
