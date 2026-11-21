@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mass: Getting To Know Mass · Math Tutoring by Deni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --ink:#1e293b; --muted:#64748b; --bg:#fdf8ef; --card:#ffffff;
+  --blue:#3b82f6; --green:#22c55e; --orange:#f97316; --pink:#ec4899; --purple:#8b5cf6; --teal:#14b8a6; --yellow:#facc15; --red:#ef4444;
+  --line:#e8e1d3;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Nunito',sans-serif;color:var(--ink);background:var(--bg);
+  background-image:radial-gradient(#f1e7d3 1.2px,transparent 1.2px);background-size:22px 22px;font-size:17px;line-height:1.55}
+.en{display:block}
+.id{display:block;font-style:italic;font-size:.84em;color:var(--muted);font-weight:400}
+span.en,span.id{display:block}
+i.t{font-style:italic;color:var(--muted);font-weight:400}
+/* header */
+header{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:12px 22px;background:linear-gradient(100deg,#2563eb,#7c3aed 60%,#db2777);color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:52px;height:52px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:30px;flex:none;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.brand h1{margin:0;font-family:'Baloo 2';font-size:1.45rem;line-height:1.1}
+.brand .tp{font-weight:700;font-size:.95rem}
+.brand .tpi{font-style:italic;font-size:.85rem;opacity:.85}
+.rules-btn{background:#fff;color:#7c3aed;border:none;border-radius:999px;padding:10px 18px;font-weight:800;font-family:'Nunito';cursor:pointer;font-size:.95rem;box-shadow:0 3px 0 rgba(0,0,0,.2);line-height:1.15}
+.rules-btn small{display:block;font-weight:600;font-style:italic;color:#94a3b8;font-size:.75rem}
+.rules-btn:hover{transform:translateY(-1px)}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:24px;max-width:520px;width:100%;padding:26px;position:relative;animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-box h2{font-family:'Baloo 2';margin:0 0 4px;color:#7c3aed}
+.modal-box ul{list-style:none;padding:0;margin:14px 0 0}
+.modal-box li{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:14px;background:#f5f3ff;margin-bottom:10px;font-weight:700}
+.modal-box li .ic{font-size:26px}
+.close{position:absolute;top:12px;right:14px;border:none;background:#f1f5f9;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer}
+/* layout */
+.wrap{display:grid;grid-template-columns:1fr 3fr;gap:22px;padding:22px;max-width:1500px;margin:0 auto}
+nav{position:sticky;top:96px;align-self:start;background:#fff;border-radius:22px;padding:14px;border:2px solid var(--line);max-height:calc(100vh - 120px);overflow:auto}
+nav .navt{font-family:'Baloo 2';font-weight:800;font-size:1.05rem;padding:4px 8px 10px;color:#7c3aed}
+nav button{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:2px solid transparent;background:none;border-radius:14px;padding:8px 10px;cursor:pointer;font-family:'Nunito';color:var(--ink);margin-bottom:4px}
+nav button:hover{background:#f8fafc}
+nav button.active{background:#eef2ff;border-color:#c7d2fe}
+nav .ni{font-size:22px;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;flex:none}
+nav .nl{font-weight:800;font-size:.9rem;line-height:1.15}
+nav .nl small{display:block;font-weight:400;font-style:italic;color:var(--muted);font-size:.78rem}
+nav .tm{display:block;font-size:.7rem;font-weight:700;color:#7c3aed}
+nav .sep{height:2px;background:var(--line);margin:10px 4px}
+nav .dot{margin-left:auto;font-size:.72rem;font-weight:800;color:#16a34a;white-space:nowrap}
+main{min-width:0}
+section.sec{display:none;animation:fade .3s ease}
+section.sec.show{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec-head{border-radius:24px;padding:22px 26px;color:#fff;position:relative;overflow:hidden;margin-bottom:18px}
+.sec-head h2{font-family:'Baloo 2';margin:0;font-size:1.8rem;line-height:1.1}
+.sec-head .id{color:rgba(255,255,255,.9);font-size:1rem}
+.sec-head .badge{display:inline-block;background:rgba(255,255,255,.25);border-radius:999px;padding:3px 12px;font-weight:800;font-size:.85rem;margin-bottom:8px}
+.sec-head .big{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.28}
+.sec-head .score{display:inline-block;margin-left:8px;background:#fff;color:#1e293b;border-radius:999px;padding:3px 12px;font-weight:800;font-size:.85rem}
+.goal{background:#fffbeb;border:2px dashed #fbbf24;border-radius:18px;padding:12px 16px;margin-bottom:16px;font-weight:700}
+.card{background:var(--card);border-radius:22px;padding:20px 22px;margin-bottom:16px;border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.card h3{font-family:'Baloo 2';margin:0 0 8px;font-size:1.3rem;line-height:1.15;display:flex;gap:10px;align-items:flex-start}
+.card h3 .id{font-family:'Nunito';font-size:.85rem}
+.card h3 .hi{font-size:28px}
+.ex{background:#f0f9ff;border-left:6px solid var(--blue);border-radius:14px;padding:14px 16px;margin:12px 0}
+.ex-t{font-weight:800;color:#1d4ed8;margin-bottom:6px}
+.ex-t i{font-weight:600}
+ol.steps{margin:8px 0 0;padding-left:22px}
+ol.steps li{margin-bottom:8px}
+ol.steps li::marker{font-weight:800;color:var(--blue)}
+.tip{background:#ecfdf5;border-radius:14px;padding:12px 16px;border:2px solid #a7f3d0;margin:12px 0;font-weight:600}
+.warn{background:#fff1f2;border-radius:14px;padding:12px 16px;border:2px solid #fecdd3;margin:12px 0;font-weight:600}
+.fig{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:flex-end;margin:10px 0}
+.figc{text-align:center;font-size:.9rem;font-weight:700}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:12px 0}
+.tile{background:#fff;border:2px solid var(--line);border-radius:16px;padding:12px;text-align:center;font-weight:700}
+.tile .em{font-size:40px;display:block}
+table.pv{border-collapse:collapse;margin:8px auto}
+table.pv td,table.pv th{border:2px solid #cbd5e1;padding:6px 14px;text-align:center}
+table.pv th{background:#e0e7ff}
+table.voc{border-collapse:collapse;width:100%;margin-top:8px}
+table.voc td,table.voc th{border-bottom:2px solid #f1f5f9;padding:8px;text-align:left}
+table.voc th{background:#f5f3ff}
+.rule3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.rule3 .tile{padding:8px}
+/* svg classes */
+.str{stroke:#94a3b8;stroke-width:2}
+.pan{fill:#fbbf24;stroke:#b45309;stroke-width:2}
+.beam{stroke:#7c3aed;stroke-width:8;stroke-linecap:round}
+.post{stroke:#475569;stroke-width:7;stroke-linecap:round}
+.basep{fill:#475569}
+.cube{fill:#4ade80;stroke:#15803d;stroke-width:1.5}
+.plat{fill:#94a3b8}
+.body{fill:#60a5fa;stroke:#1d4ed8;stroke-width:3}
+.face{fill:#fff;stroke:#1e3a8a;stroke-width:3}
+.tick{stroke:#1e293b;stroke-width:1.5}
+.ptr{stroke:#ef4444;stroke-width:3.5;stroke-linecap:round}
+svg text{font-family:'Nunito',sans-serif;font-weight:700;fill:#1e293b}
+/* questions */
+.exhead{font-family:'Baloo 2';font-size:1.45rem;margin:22px 0 10px;display:flex;align-items:center;gap:10px;line-height:1.1}
+.exhead .id{font-family:'Nunito';font-size:.9rem}
+.qcard{background:#fff;border-radius:22px;padding:18px 20px;margin-bottom:16px;border:3px solid var(--line);transition:.2s}
+.qcard.ok{border-color:#86efac;background:#f7fef9}
+.qcard.bad{border-color:#fca5a5}
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.qnum{background:#7c3aed;color:#fff;font-weight:800;border-radius:12px;padding:2px 12px;font-family:'Baloo 2';font-size:1.05rem}
+.qtype{font-size:.82rem;font-weight:800;color:#7c3aed;background:#f5f3ff;border-radius:999px;padding:3px 12px}
+.qtype i{font-weight:600}
+.qtext{font-weight:700;font-size:1.05rem;margin-bottom:6px}
+.hint{font-size:.85rem;color:#0369a1;font-weight:700;margin:4px 0 8px}
+.hint .id{font-size:.8rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:8px 0}
+.opt{display:flex;gap:10px;align-items:center;border:2px solid #e2e8f0;border-radius:14px;padding:10px 12px;cursor:pointer;font-weight:700;background:#fff}
+.opt:hover{border-color:#a5b4fc;background:#f8faff}
+.opt input{width:20px;height:20px;accent-color:#7c3aed;flex:none}
+.opt.right{border-color:#22c55e;background:#dcfce7}
+.opt.wrong{border-color:#ef4444;background:#fee2e2}
+.fillrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700;font-size:1.1rem;margin:8px 0}
+.blank{width:90px;font-size:1.1rem;font-weight:800;padding:8px;border:3px dashed #a5b4fc;border-radius:12px;text-align:center;font-family:'Nunito'}
+.blank.right{border:3px solid #22c55e;background:#dcfce7}
+.blank.wrong{border:3px solid #ef4444;background:#fee2e2}
+.bank{display:flex;flex-wrap:wrap;gap:10px;min-height:62px;padding:10px;border-radius:16px;background:#f8fafc;border:2px dashed #cbd5e1;margin:8px 0}
+.bank-l{font-size:.8rem;font-weight:800;color:var(--muted)}
+.chip{background:#fff;border:2px solid #c4b5fd;border-radius:14px;padding:6px 12px;cursor:grab;font-weight:700;box-shadow:0 3px 0 #ddd6fe;user-select:none;text-align:center;line-height:1.2;touch-action:manipulation}
+.chip.sel{outline:4px solid #facc15;transform:translateY(-2px)}
+.chip.right{border-color:#22c55e;background:#dcfce7}
+.chip.wrong{border-color:#ef4444;background:#fee2e2}
+.chip .ce{font-size:26px;display:block}
+.chip .cen{display:block}
+.chip .cid{display:block;font-style:italic;font-weight:400;font-size:.8em;color:var(--muted)}
+.slots{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:8px 0}
+.slotw{display:flex;flex-direction:column;align-items:center;gap:4px}
+.slotn{font-weight:800;color:#7c3aed;font-size:.85rem}
+.dz{min-width:120px;min-height:64px;border:3px dashed #a5b4fc;border-radius:16px;display:flex;flex-wrap:wrap;gap:8px;padding:6px;align-items:center;justify-content:center;background:#fafaff;cursor:pointer}
+.dz.over{background:#ede9fe}
+.ends{display:flex;justify-content:space-between;font-weight:800;font-size:.85rem;color:#0f766e;margin-top:4px;gap:10px}
+.ends .id{color:#5f9e97}
+.prow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:2px dashed #f1f5f9;padding:8px 0}
+.prow .pl{flex:1 1 220px;font-weight:700}
+.prow .arrow{font-size:22px;color:#a78bfa}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:8px 0}
+.bucket{border-radius:18px;border:3px solid #e2e8f0;overflow:hidden}
+.bucket .bh{padding:8px 12px;font-weight:800;background:#f1f5f9;text-align:center}
+.bucket .dz{border:none;border-radius:0;min-height:110px;align-content:flex-start}
+.qactions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.btn{border:none;border-radius:14px;padding:9px 16px;font-weight:800;font-family:'Nunito';cursor:pointer;font-size:.95rem;line-height:1.15}
+.btn i{font-weight:600}
+.btn.check{background:#7c3aed;color:#fff;box-shadow:0 3px 0 #5b21b6}
+.btn.reset{background:#f1f5f9;color:#334155;box-shadow:0 3px 0 #cbd5e1}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.fb{margin-top:10px;font-weight:800;border-radius:12px}
+.fb:empty{display:none}
+.fb.ok{background:#dcfce7;color:#166534;padding:10px 14px}
+.fb.bad{background:#fee2e2;color:#991b1b;padding:10px 14px}
+.fb.wait{background:#fef9c3;color:#854d0e;padding:10px 14px}
+.fb .id{color:inherit;opacity:.85}
+details.sol{margin-top:12px;background:#fffbeb;border-radius:14px;border:2px solid #fde68a}
+details.sol summary{cursor:pointer;padding:10px 14px;font-weight:800;color:#92400e;list-style:none}
+details.sol summary::-webkit-details-marker{display:none}
+details.sol summary::before{content:'▶ ';font-size:.8em}
+details.sol[open] summary::before{content:'▼ '}
+details.sol ol{margin:0;padding:4px 16px 12px 38px}
+details.sol li{margin-bottom:8px}
+details.sol li::marker{font-weight:800;color:#b45309}
+.refl textarea{width:100%;min-height:70px;border-radius:12px;border:2px solid #e2e8f0;padding:10px;font-family:'Nunito';font-size:1rem;margin-top:6px}
+.keyp li{margin-bottom:10px}
+.nextprev{display:flex;justify-content:space-between;margin:20px 0 40px;gap:10px}
+.nextprev .btn{background:#fff;border:2px solid var(--line)}
+.katex{font-size:1.08em}
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;padding:12px}
+  nav{position:static;max-height:none;display:flex;overflow-x:auto;gap:6px;padding:8px}
+  nav .navt,nav .sep{display:none}
+  nav button{flex:none;width:auto;margin:0}
+  header{flex-wrap:wrap;padding:10px 14px}
+  .sec-head .big{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">⚖️</div>
+    <div>
+      <h1>Math Tutoring by Deni</h1>
+      <div class="tp">Topic: Mass: Getting To Know Mass</div>
+      <div class="tpi">Topik: Massa: Mengenal Massa</div>
+    </div>
+  </div>
+  <button class="rules-btn" id="rulesBtn">📋 Class rules<small>Aturan kelas</small></button>
+</header>
+
+<div class="modal" id="rulesModal">
+  <div class="modal-box">
+    <button class="close" id="closeRules" aria-label="Close">✕</button>
+    <h2>📋 Class Rules</h2>
+    <span class="id">Aturan Kelas</span>
+    <ul>
+      <li><span class="ic">🗣️</span><div><span class="en">Speak one at a time (take turns).</span><span class="id">Berbicara secara bergantian.</span></div></li>
+      <li><span class="ic">🙋</span><div><span class="en">Ask for permission if you want to leave the class.</span><span class="id">Meminta izin jika ingin meninggalkan kelas.</span></div></li>
+      <li><span class="ic">🎥</span><div><span class="en">Turn on your microphone and camera when needed.</span><span class="id">Menyalakan microphone dan camera jika diperlukan.</span></div></li>
+    </ul>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav id="nav"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+/* ================= HELPERS ================= */
+const R = String.raw;
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+function shuffleIdx(n, avoidIdentity) {
+  const idx = [...Array(n).keys()]; let s, t = 0;
+  do { s = shuffle(idx); t++; } while (avoidIdentity && n > 1 && s.every((v, i) => v === i) && t < 30);
+  return s;
+}
+function bi(x) {
+  if (x == null) return '';
+  if (typeof x === 'string') return `<span class="en">${x}</span>`;
+  return `<span class="en">${x[0]}</span>${x[1] ? `<span class="id">${x[1]}</span>` : ''}`;
+}
+/* chip item: emoji + English + Indonesian */
+const it = (e, en, id) => `${e ? `<span class="ce">${e}</span>` : ''}<span class="cen">${en}</span>${id ? `<span class="cid">${id}</span>` : ''}`;
+
+/* ---------- SVG: balance ---------- */
+function BAL(L, Rr, tilt, lab, w) {
+  w = w || 300;
+  const cx = 160, cy = 70, len = 105;
+  const a = (tilt === 'L' ? 11 : tilt === 'R' ? -11 : 0) * Math.PI / 180;
+  const lx = cx - len * Math.cos(a), ly = cy + len * Math.sin(a);
+  const rx = cx + len * Math.cos(a), ry = cy - len * Math.sin(a);
+  const content = (x, by, c) => {
+    if (typeof c === 'number') {
+      let s = ''; const rows = Math.ceil(c / 6);
+      for (let i = 0; i < c; i++) {
+        const row = Math.floor(i / 6), col = i % 6;
+        const rc = (row === rows - 1) ? c - 6 * row : 6;
+        const sx = x - rc * 13 / 2;
+        s += `<rect class="cube" x="${(sx + col * 13).toFixed(1)}" y="${(by - (row + 1) * 13).toFixed(1)}" width="12" height="12" rx="2"/>`;
+      }
+      return s;
+    }
+    const n = Array.from(c.replace(/️/g, '')).length;
+    return `<text x="${x.toFixed(1)}" y="${(by - 3).toFixed(1)}" text-anchor="middle" font-size="${n > 2 ? 20 : 30}">${c}</text>`;
+  };
+  const pan = (x, y, c) => `<line class="str" x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x - 42).toFixed(1)}" y2="${(y + 48).toFixed(1)}"/><line class="str" x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x + 42).toFixed(1)}" y2="${(y + 48).toFixed(1)}"/>${content(x, y + 48, c)}<path class="pan" d="M${(x - 48).toFixed(1)} ${(y + 48).toFixed(1)} Q${x.toFixed(1)} ${(y + 72).toFixed(1)} ${(x + 48).toFixed(1)} ${(y + 48).toFixed(1)} Z"/>`;
+  let s = `<svg viewBox="0 0 320 ${lab ? 222 : 205}" style="width:${w}px;max-width:100%" role="img" aria-label="balance">`;
+  s += `<line class="post" x1="${cx}" y1="${cy}" x2="${cx}" y2="190"/><rect class="basep" x="${cx - 48}" y="188" width="96" height="12" rx="5"/>`;
+  s += pan(lx, ly, L) + pan(rx, ry, Rr);
+  s += `<line class="beam" x1="${lx.toFixed(1)}" y1="${ly.toFixed(1)}" x2="${rx.toFixed(1)}" y2="${ry.toFixed(1)}"/><circle cx="${cx}" cy="${cy}" r="8" fill="#facc15" stroke="#7c3aed" stroke-width="3"/>`;
+  if (lab) s += `<text x="${lx.toFixed(1)}" y="216" text-anchor="middle" font-size="13">${lab[0]}</text><text x="${rx.toFixed(1)}" y="216" text-anchor="middle" font-size="13">${lab[1]}</text>`;
+  return s + '</svg>';
+}
+
+/* ---------- SVG: dial weighing scale ---------- */
+function DIAL(v, max, unit, item, labStep, minor, w, caption) {
+  w = w || 190;
+  const cx = 100, cy = 138, r = 62;
+  const ang = x => (-135 + 270 * x / max) * Math.PI / 180;
+  const P = (x, rr) => [cx + rr * Math.sin(ang(x)), cy - rr * Math.cos(ang(x))];
+  const nLab = max / labStep, fs = nLab > 8 ? 8.5 : 11;
+  let s = `<svg viewBox="0 0 200 ${caption ? 236 : 216}" style="width:${w}px;max-width:100%" role="img" aria-label="scale">`;
+  s += `<text x="100" y="40" text-anchor="middle" font-size="34">${item}</text>`;
+  s += `<rect class="plat" x="40" y="43" width="120" height="9" rx="4"/><rect class="plat" x="92" y="52" width="16" height="10"/>`;
+  s += `<rect class="body" x="20" y="60" width="160" height="152" rx="24"/><circle class="face" cx="${cx}" cy="${cy}" r="${r + 6}"/>`;
+  const steps = Math.round(max / minor);
+  for (let k = 0; k <= steps; k++) {
+    const x = k * minor;
+    const major = Math.abs(x / labStep - Math.round(x / labStep)) < 1e-9;
+    const [x1, y1] = P(x, r), [x2, y2] = P(x, major ? r - 10 : r - 5);
+    s += `<line class="tick" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;
+    if (major) { const [tx, ty] = P(x, r - 19); s += `<text x="${tx.toFixed(1)}" y="${(ty + 3.5).toFixed(1)}" font-size="${fs}" text-anchor="middle">${x}</text>`; }
+  }
+  const [px, py] = P(v, r - 7);
+  s += `<text x="${cx}" y="${cy + 36}" text-anchor="middle" font-size="15" fill="#1d4ed8">${unit}</text>`;
+  s += `<line class="ptr" x1="${cx}" y1="${cy}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}"/><circle cx="${cx}" cy="${cy}" r="6" fill="#ef4444"/>`;
+  if (caption) s += `<text x="100" y="230" text-anchor="middle" font-size="14">${caption}</text>`;
+  return s + '</svg>';
+}
+const KG = (v, item, w, cap) => DIAL(v, 10, 'kg', item, 1, 0.5, w, cap);
+const GR = (v, item, w, cap) => DIAL(v, 1000, 'g', item, 100, 50, w, cap);
+
+/* ================= QUESTION ENGINE ================= */
+const TYPE = {
+  mcq:   ['🔘', 'Choose ONE answer', 'Pilih SATU jawaban'],
+  multi: ['☑️', 'Choose ALL correct answers', 'Pilih SEMUA jawaban yang benar'],
+  fill:  ['✏️', 'Fill in the blank', 'Isi titik-titik'],
+  tf:    ['⚖️', 'True or False', 'Benar atau Salah'],
+  sort:  ['🔢', 'Sort in order', 'Urutkan'],
+  pair:  ['🔗', 'Match the pairs', 'Pasangkan'],
+  drag:  ['🧺', 'Drag and drop into groups', 'Seret dan lepas ke kelompok']
+};
+const CHIP_HINT = `<div class="hint"><span class="en">👆 Tap a card, then tap a box. You can also drag it.</span><span class="id">Ketuk sebuah kartu, lalu ketuk kotak. Kamu juga bisa menyeretnya.</span></div>`;
+let qCounter = 0;
+const SCORE = {};
+
+function renderQ(q, num, secId) {
+  const id = 'q' + (++qCounter);
+  const w = document.createElement('div');
+  w.className = 'qcard'; w.id = id;
+  const T = TYPE[q.t];
+  w.innerHTML = `<div class="qhead"><span class="qnum">${num}</span><span class="qtype">${T[0]} ${T[1]} · <i>${T[2]}</i></span></div>
+  <div class="qtext">${bi(q.q)}</div>${q.fig ? `<div class="fig">${q.fig}</div>` : ''}
+  <div class="qbody"></div>
+  <div class="qactions"><button class="btn check">✔ Check<br><i>Periksa</i></button><button class="btn reset">↺ Try again<br><i>Ulangi</i></button></div>
+  <div class="fb"></div>
+  <details class="sol"><summary>💡 Solution · <i>Pembahasan</i></summary><ol>${q.s.map(st => `<li>${bi(st)}</li>`).join('')}</ol></details>`;
+  const body = w.querySelector('.qbody');
+  const api = BUILD[q.t](q, body, id);
+  const fb = w.querySelector('.fb');
+  w.querySelector('.check').onclick = () => {
+    const r = api.check();
+    w.classList.remove('ok', 'bad'); fb.className = 'fb';
+    if (r === null) { fb.classList.add('wait'); fb.innerHTML = bi(['⏳ Please answer all parts first.', 'Jawab semua bagian dulu, ya.']); return; }
+    if (r) {
+      w.classList.add('ok'); fb.classList.add('ok');
+      fb.innerHTML = bi(['🎉 Correct! Great job!', 'Benar! Hebat sekali!']);
+      SCORE[secId].ok.add(id);
+    } else {
+      w.classList.add('bad'); fb.classList.add('bad');
+      fb.innerHTML = bi(['🤔 Not yet. Look at the red parts and try again, or open the Solution.', 'Belum tepat. Lihat bagian yang merah lalu coba lagi, atau buka Pembahasan.']);
+      SCORE[secId].ok.delete(id);
+    }
+    updateScore(secId);
+  };
+  w.querySelector('.reset').onclick = () => { api.reset(); fb.innerHTML = ''; fb.className = 'fb'; w.classList.remove('ok', 'bad'); SCORE[secId].ok.delete(id); updateScore(secId); };
+  return w;
+}
+
+function choiceBuilder(kind) {
+  return (q, body, id) => {
+    let opts = q.o, ans = q.a;
+    if (kind === 'tf') { opts = [['✅ True', 'Benar'], ['❌ False', 'Salah']]; ans = q.a ? 0 : 1; }
+    const order = shuffleIdx(opts.length);
+    const type = kind === 'multi' ? 'checkbox' : 'radio';
+    body.innerHTML = `<div class="opts">` + order.map(i => `<label class="opt"><input type="${type}" name="${id}" value="${i}"><span>${bi(opts[i])}</span></label>`).join('') + `</div>`;
+    const clear = () => body.querySelectorAll('.opt').forEach(l => l.classList.remove('right', 'wrong'));
+    return {
+      check() {
+        clear();
+        const sel = [...body.querySelectorAll('input:checked')].map(x => +x.value);
+        if (!sel.length) return null;
+        if (kind === 'multi') {
+          let ok = true;
+          body.querySelectorAll('input').forEach(inp => {
+            const v = +inp.value, good = ans.includes(v);
+            if (inp.checked) inp.parentElement.classList.add(good ? 'right' : 'wrong');
+            if (inp.checked !== good) ok = false;
+          });
+          return ok;
+        }
+        const ok = sel[0] === ans;
+        body.querySelector('input:checked').parentElement.classList.add(ok ? 'right' : 'wrong');
+        return ok;
+      },
+      reset() { body.querySelectorAll('input').forEach(i => i.checked = false); clear(); }
+    };
+  };
+}
+
+function fillBuilder(q, body) {
+  body.innerHTML = q.f.map(f => `<div class="fillrow">${f.pre || ''} <input class="blank" inputmode="numeric" autocomplete="off"> ${f.post || ''}</div>`).join('');
+  const ins = [...body.querySelectorAll('.blank')];
+  const norm = s => String(s).trim().toLowerCase().replace(/\s+/g, '');
+  return {
+    check() {
+      if (ins.some(i => !i.value.trim())) return null;
+      let ok = true;
+      ins.forEach((inp, k) => {
+        const acc = [].concat(q.f[k].a).map(norm);
+        const good = acc.includes(norm(inp.value));
+        inp.classList.remove('right', 'wrong'); inp.classList.add(good ? 'right' : 'wrong');
+        if (!good) ok = false;
+      });
+      return ok;
+    },
+    reset() { ins.forEach(i => { i.value = ''; i.classList.remove('right', 'wrong'); }); }
+  };
+}
+
+/* chips: shared logic for sort / pair / drag */
+let DRAG = null;
+function chipLogic(body, chips) {
+  const bank = body.querySelector('.bank');
+  let sel = null;
+  const clearMarks = () => body.querySelectorAll('.chip').forEach(c => c.classList.remove('right', 'wrong'));
+  const select = c => { if (sel) sel.classList.remove('sel'); sel = (sel === c) ? null : c; if (sel) sel.classList.add('sel'); };
+  const place = (c, dz) => {
+    if (!c || !dz) return;
+    if (dz.dataset.cap === '1') { const ex = dz.querySelector('.chip'); if (ex && ex !== c) bank.appendChild(ex); }
+    dz.appendChild(c); c.classList.remove('sel'); sel = null; clearMarks();
+  };
+  const fillBank = () => { shuffleIdx(chips.length, true).forEach(i => bank.appendChild(chips[i])); };
+  chips.forEach(c => {
+    c.draggable = true;
+    c.addEventListener('click', e => { e.stopPropagation(); if (sel && sel !== c && c.parentElement.dataset.cap === '1') { place(sel, c.parentElement); return; } select(c); });
+    c.addEventListener('dragstart', e => { DRAG = c; e.dataTransfer.setData('text/plain', 'x'); e.dataTransfer.effectAllowed = 'move'; });
+    c.addEventListener('dragend', () => { DRAG = null; });
+  });
+  [...body.querySelectorAll('.dz'), bank].forEach(dz => {
+    dz.addEventListener('click', () => { if (sel) place(sel, dz); });
+    dz.addEventListener('dragover', e => { if (DRAG && body.contains(DRAG)) { e.preventDefault(); dz.classList.add('over'); } });
+    dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); if (DRAG && body.contains(DRAG)) place(DRAG, dz); });
+  });
+  fillBank();
+  return {
+    bank, clearMarks,
+    reset() { chips.forEach(c => c.classList.remove('sel', 'right', 'wrong')); sel = null; fillBank(); }
+  };
+}
+function makeChip(html, k, c) { const d = document.createElement('div'); d.className = 'chip'; d.innerHTML = html; d.dataset.k = k; if (c != null) d.dataset.c = c; return d; }
+
+function slotCheck(body, L) {
+  const dzs = [...body.querySelectorAll('.dz[data-cap="1"]')];
+  if (dzs.some(d => !d.querySelector('.chip'))) return null;
+  L.clearMarks(); let ok = true;
+  dzs.forEach(d => { const c = d.querySelector('.chip'); const good = c.dataset.k === d.dataset.k; c.classList.add(good ? 'right' : 'wrong'); if (!good) ok = false; });
+  return ok;
+}
+function sortBuilder(q, body) {
+  const n = q.items.length;
+  body.innerHTML = CHIP_HINT + `<div class="bank-l">${bi(['Cards', 'Kartu'])}</div><div class="bank"></div>
+   <div class="slots">${q.items.map((_, i) => `<div class="slotw"><span class="slotn">${i + 1}</span><div class="dz" data-cap="1" data-k="${i}"></div></div>`).join('')}</div>
+   <div class="ends"><div>⬅ ${bi(q.ends[0])}</div><div style="text-align:right">${bi(q.ends[1])} ➡</div></div>`;
+  const chips = q.items.map((h, i) => makeChip(h, i));
+  const L = chipLogic(body, chips);
+  return { check: () => slotCheck(body, L), reset: L.reset };
+}
+function pairBuilder(q, body) {
+  body.innerHTML = CHIP_HINT + `<div class="bank-l">${bi(['Cards', 'Kartu'])}</div><div class="bank"></div>` +
+    q.L.map((h, i) => `<div class="prow"><div class="pl">${h}</div><span class="arrow">➜</span><div class="dz" data-cap="1" data-k="${i}"></div></div>`).join('');
+  const chips = q.R.map((h, i) => makeChip(h, i));
+  const L = chipLogic(body, chips);
+  return { check: () => slotCheck(body, L), reset: L.reset };
+}
+function dragBuilder(q, body) {
+  const colors = ['#fde68a', '#bfdbfe', '#fbcfe8', '#bbf7d0'];
+  body.innerHTML = CHIP_HINT + `<div class="bank-l">${bi(['Cards', 'Kartu'])}</div><div class="bank"></div><div class="buckets">` +
+    q.cats.map((c, i) => `<div class="bucket" style="border-color:${colors[i]}"><div class="bh" style="background:${colors[i]}">${bi(c.n)}</div><div class="dz" data-cap="many" data-c="${i}"></div></div>`).join('') + `</div>`;
+  const chips = []; let k = 0;
+  q.cats.forEach((c, ci) => c.items.forEach(h => chips.push(makeChip(h, k++, ci))));
+  const L = chipLogic(body, chips);
+  return {
+    check() {
+      if (L.bank.querySelector('.chip')) return null;
+      L.clearMarks(); let ok = true;
+      chips.forEach(c => { const good = c.parentElement.dataset.c === c.dataset.c; c.classList.add(good ? 'right' : 'wrong'); if (!good) ok = false; });
+      return ok;
+    },
+    reset: L.reset
+  };
+}
+const BUILD = { mcq: choiceBuilder('mcq'), tf: choiceBuilder('tf'), multi: choiceBuilder('multi'), fill: fillBuilder, sort: sortBuilder, pair: pairBuilder, drag: dragBuilder };
+function updateScore(secId) {
+  const s = SCORE[secId]; if (!s) return;
+  document.querySelectorAll(`[data-score="${secId}"]`).forEach(el => el.textContent = `${s.ok.size}/${s.n}`);
+}
+
+/* ================= CONTENT ================= */
+const EX_HEAD = R`<div class="exhead">🧩 <div><span class="en">Exercises</span><span class="id">Latihan</span></div></div>`;
+const LIGHT_HEAVY = [['lightest', 'paling ringan'], ['heaviest', 'paling berat']];
+const HEAVY_LIGHT = [['heaviest', 'paling berat'], ['lightest', 'paling ringan']];
+const SMALL_BIG = [['smallest', 'paling kecil'], ['greatest', 'paling besar']];
+
+const SECTIONS = [
+/* ---------------------------------------------------- S1 */
+{ id: 's1', icon: '🔄', color: '#3b82f6', grad: 'linear-gradient(120deg,#3b82f6,#06b6d4)', time: '00:00 – 00:10',
+  nav: ['Spiral Review Warm-up', 'Pemanasan Ulasan Spiral'],
+  goal: ['🎯 Warm up our brains! We review comparing, adding and subtracting numbers up to 1000. We will need these skills to compare masses later.',
+         'Ayo panaskan otak! Kita mengulang cara membandingkan, menjumlah, dan mengurangi bilangan sampai 1000. Kemampuan ini akan kita perlukan untuk membandingkan massa nanti.'],
+  explain: R`
+<div class="card"><h3><span class="hi">🔍</span><div><span class="en">1. Comparing Numbers</span><span class="id">1. Membandingkan Bilangan</span></div></h3>
+<p class="en">We use three signs: $>$ means <b>greater than</b>, $<$ means <b>less than</b>, $=$ means <b>equal to</b>.</p>
+<p class="id">Kita memakai tiga tanda: $>$ artinya <b>lebih dari</b>, $<$ artinya <b>kurang dari</b>, $=$ artinya <b>sama dengan</b>.</p>
+<div class="tip"><span class="en">🐊 Trick: the open mouth of the sign always "eats" the bigger number. $9 > 2$ and $2 < 9$.</span><span class="id">Trik: mulut tanda yang terbuka selalu "memakan" bilangan yang lebih besar. $9 > 2$ dan $2 < 9$.</span></div>
+<div class="ex"><div class="ex-t">📝 Example 1 · <i>Contoh 1</i></div>
+<p class="en">Compare $352$ and $325$.</p><p class="id">Bandingkan $352$ dan $325$.</p>
+<table class="pv"><tr><th>Hundreds<br><i class="t">Ratusan</i></th><th>Tens<br><i class="t">Puluhan</i></th><th>Ones<br><i class="t">Satuan</i></th></tr><tr><td>3</td><td><b style="color:#16a34a">5</b></td><td>2</td></tr><tr><td>3</td><td><b style="color:#dc2626">2</b></td><td>5</td></tr></table>
+<ol class="steps">
+<li><span class="en">Compare the hundreds: $3 = 3$. They are the same, so look at the next place.</span><span class="id">Bandingkan ratusan: $3 = 3$. Sama, jadi lihat tempat berikutnya.</span></li>
+<li><span class="en">Compare the tens: $5 > 2$.</span><span class="id">Bandingkan puluhan: $5 > 2$.</span></li>
+<li><span class="en">So $352 > 325$. (We do not need to look at the ones.)</span><span class="id">Jadi $352 > 325$. (Kita tidak perlu melihat satuan.)</span></li>
+</ol></div></div>
+
+<div class="card"><h3><span class="hi">➕</span><div><span class="en">2. Adding Numbers (Column Method)</span><span class="id">2. Menjumlahkan Bilangan (Cara Bersusun)</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 2 · <i>Contoh 2</i></div>
+<p class="en">Find $245 + 132$.</p><p class="id">Hitung $245 + 132$.</p>
+$$\begin{array}{r} 245 \\ +\;132 \\ \hline 377 \end{array}$$
+<ol class="steps">
+<li><span class="en">Add the ones: $5 + 2 = 7$.</span><span class="id">Jumlahkan satuan: $5 + 2 = 7$.</span></li>
+<li><span class="en">Add the tens: $4 + 3 = 7$.</span><span class="id">Jumlahkan puluhan: $4 + 3 = 7$.</span></li>
+<li><span class="en">Add the hundreds: $2 + 1 = 3$.</span><span class="id">Jumlahkan ratusan: $2 + 1 = 3$.</span></li>
+<li><span class="en">Answer: $245 + 132 = 377$.</span><span class="id">Jawaban: $245 + 132 = 377$.</span></li>
+</ol></div></div>
+
+<div class="card"><h3><span class="hi">➖</span><div><span class="en">3. Subtracting Numbers (Column Method)</span><span class="id">3. Mengurangi Bilangan (Cara Bersusun)</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 3 · <i>Contoh 3</i></div>
+<p class="en">Find $486 - 253$.</p><p class="id">Hitung $486 - 253$.</p>
+$$\begin{array}{r} 486 \\ -\;253 \\ \hline 233 \end{array}$$
+<ol class="steps">
+<li><span class="en">Subtract the ones: $6 - 3 = 3$.</span><span class="id">Kurangi satuan: $6 - 3 = 3$.</span></li>
+<li><span class="en">Subtract the tens: $8 - 5 = 3$.</span><span class="id">Kurangi puluhan: $8 - 5 = 3$.</span></li>
+<li><span class="en">Subtract the hundreds: $4 - 2 = 2$.</span><span class="id">Kurangi ratusan: $4 - 2 = 2$.</span></li>
+<li><span class="en">Answer: $486 - 253 = 233$. Check by adding back: $233 + 253 = 486$ ✔.</span><span class="id">Jawaban: $486 - 253 = 233$. Cek dengan menjumlah kembali: $233 + 253 = 486$ ✔.</span></li>
+</ol></div></div>
+
+<div class="card"><h3><span class="hi">🔢</span><div><span class="en">4. Ordering Numbers</span><span class="id">4. Mengurutkan Bilangan</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 4 · <i>Contoh 4</i></div>
+<p class="en">Order from smallest to greatest: $207,\ 270,\ 72,\ 227$.</p><p class="id">Urutkan dari yang paling kecil ke paling besar: $207,\ 270,\ 72,\ 227$.</p>
+<ol class="steps">
+<li><span class="en">$72$ has only 2 digits (no hundreds), so it is the smallest.</span><span class="id">$72$ hanya punya 2 angka (tidak ada ratusan), jadi paling kecil.</span></li>
+<li><span class="en">$207, 270, 227$ all have 2 hundreds. Compare the tens: $0 < 2 < 7$.</span><span class="id">$207, 270, 227$ semuanya punya 2 ratusan. Bandingkan puluhan: $0 < 2 < 7$.</span></li>
+<li><span class="en">Order: $72,\ 207,\ 227,\ 270$.</span><span class="id">Urutan: $72,\ 207,\ 227,\ 270$.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 5 · <i>Contoh 5</i></div>
+<p class="en">Which numbers are greater than $300$: $298,\ 310,\ 301$?</p><p class="id">Bilangan mana yang lebih dari $300$: $298,\ 310,\ 301$?</p>
+<ol class="steps">
+<li><span class="en">$298$: hundreds $2 < 3$, so $298 < 300$ ✗.</span><span class="id">$298$: ratusan $2 < 3$, jadi $298 < 300$ ✗.</span></li>
+<li><span class="en">$310$: hundreds $3 = 3$, tens $1 > 0$, so $310 > 300$ ✔.</span><span class="id">$310$: ratusan $3 = 3$, puluhan $1 > 0$, jadi $310 > 300$ ✔.</span></li>
+<li><span class="en">$301$: hundreds and tens are the same, ones $1 > 0$, so $301 > 300$ ✔.</span><span class="id">$301$: ratusan dan puluhan sama, satuan $1 > 0$, jadi $301 > 300$ ✔.</span></li>
+</ol></div></div>`,
+  ex: [
+    { t: 'mcq', q: [R`Which sign makes this true? $418 \;\square\; 481$`, R`Tanda mana yang membuat ini benar? $418 \;\square\; 481$`],
+      o: [R`$<$ (less than)`, R`$>$ (greater than)`, R`$=$ (equal to)`].map((x, i) => [x, ['kurang dari', 'lebih dari', 'sama dengan'][i]]), a: 0,
+      s: [[R`Hundreds: $4 = 4$ (same).`, R`Ratusan: $4 = 4$ (sama).`], [R`Tens: $1 < 8$.`, R`Puluhan: $1 < 8$.`], [R`So $418 < 481$. The answer is $<$.`, R`Jadi $418 < 481$. Jawabannya $<$.`]] },
+    { t: 'fill', q: [R`Add using the column method.`, R`Jumlahkan dengan cara bersusun.`], f: [{ pre: R`$234 + 152 =$`, a: '386' }],
+      s: [[R`Ones: $4 + 2 = 6$.`, R`Satuan: $4 + 2 = 6$.`], [R`Tens: $3 + 5 = 8$.`, R`Puluhan: $3 + 5 = 8$.`], [R`Hundreds: $2 + 1 = 3$.`, R`Ratusan: $2 + 1 = 3$.`], [R`So $234 + 152 = 386$.`, R`Jadi $234 + 152 = 386$.`]] },
+    { t: 'tf', q: [R`True or false? $675 - 341 = 334$`, R`Benar atau salah? $675 - 341 = 334$`], a: true,
+      s: [[R`Ones: $5 - 1 = 4$. Tens: $7 - 4 = 3$. Hundreds: $6 - 3 = 3$.`, R`Satuan: $5 - 1 = 4$. Puluhan: $7 - 4 = 3$. Ratusan: $6 - 3 = 3$.`], [R`$675 - 341 = 334$. Check: $334 + 341 = 675$ ✔. The statement is TRUE.`, R`$675 - 341 = 334$. Cek: $334 + 341 = 675$ ✔. Pernyataan BENAR.`]] },
+    { t: 'sort', q: [R`Sort the numbers from smallest to greatest.`, R`Urutkan bilangan dari yang paling kecil ke paling besar.`],
+      items: [R`$93$`, R`$309$`, R`$339$`, R`$390$`], ends: SMALL_BIG,
+      s: [[R`$93$ has no hundreds, so it is the smallest.`, R`$93$ tidak punya ratusan, jadi paling kecil.`], [R`$309, 339, 390$ all have 3 hundreds. Compare tens: $0 < 3 < 9$.`, R`$309, 339, 390$ semuanya 3 ratusan. Bandingkan puluhan: $0 < 3 < 9$.`], [R`Order: $93,\ 309,\ 339,\ 390$.`, R`Urutan: $93,\ 309,\ 339,\ 390$.`]] },
+    { t: 'multi', q: [R`Choose ALL the numbers that are greater than $500$.`, R`Pilih SEMUA bilangan yang lebih dari $500$.`],
+      o: [R`$512$`, R`$499$`, R`$650$`, R`$505$`, R`$405$`], a: [0, 2, 3],
+      s: [[R`$512$: hundreds $5=5$, tens $1>0$ → $512 > 500$ ✔.`, R`$512$: ratusan $5=5$, puluhan $1>0$ → $512 > 500$ ✔.`], [R`$499$ and $405$: hundreds $4 < 5$ → less than $500$ ✗.`, R`$499$ dan $405$: ratusan $4 < 5$ → kurang dari $500$ ✗.`], [R`$650$: hundreds $6 > 5$ ✔. $505$: ones $5 > 0$ ✔.`, R`$650$: ratusan $6 > 5$ ✔. $505$: satuan $5 > 0$ ✔.`], [R`Answers: $512,\ 650,\ 505$.`, R`Jawaban: $512,\ 650,\ 505$.`]] }
+  ] },
+
+/* ---------------------------------------------------- S2 */
+{ id: 's2', icon: '🌍', color: '#22c55e', grad: 'linear-gradient(120deg,#16a34a,#84cc16)', time: '00:10 – 00:15',
+  nav: ['Introduction & Real-World Connection', 'Pengenalan & Hubungan dengan Dunia Nyata'],
+  goal: ['🎯 Learn what MASS means and where we see mass in everyday life.', 'Mempelajari arti MASSA dan di mana kita menemukan massa dalam kehidupan sehari-hari.'],
+  explain: R`
+<div class="card"><h3><span class="hi">⚖️</span><div><span class="en">What is Mass?</span><span class="id">Apa itu Massa?</span></div></h3>
+<p class="en"><b>Mass</b> tells us <b>how heavy</b> an object is.</p><p class="id"><b>Massa</b> memberi tahu kita <b>seberapa berat</b> suatu benda.</p>
+<div class="grid3">
+<div class="tile"><span class="em">🐘</span><span class="en">HEAVY — hard to lift</span><span class="id">BERAT — sulit diangkat</span></div>
+<div class="tile"><span class="em">🎈</span><span class="en">LIGHT — easy to lift</span><span class="id">RINGAN — mudah diangkat</span></div>
+</div>
+<div class="ex"><div class="ex-t">📝 Example 1 · <i>Contoh 1</i></div>
+<p class="en">Which is heavier: a watermelon 🍉 or a grape 🍇?</p><p class="id">Mana yang lebih berat: semangka 🍉 atau anggur 🍇?</p>
+<ol class="steps">
+<li><span class="en">Hold one in each hand. 🤲</span><span class="id">Pegang satu di setiap tangan.</span></li>
+<li><span class="en">The hand that feels pulled down more holds the heavier object.</span><span class="id">Tangan yang terasa lebih tertarik ke bawah memegang benda yang lebih berat.</span></li>
+<li><span class="en">The watermelon is <b>heavier</b>. The grape is <b>lighter</b>.</span><span class="id">Semangka <b>lebih berat</b>. Anggur <b>lebih ringan</b>.</span></li>
+</ol></div></div>
+
+<div class="card"><h3><span class="hi">🏙️</span><div><span class="en">Mass in Real Life</span><span class="id">Massa dalam Kehidupan Nyata</span></div></h3>
+<p class="en">People measure mass in many places:</p><p class="id">Orang mengukur massa di banyak tempat:</p>
+<div class="grid3">
+<div class="tile"><span class="em">🛒</span><span class="en">Market: buying rice and fruit</span><span class="id">Pasar: membeli beras dan buah</span></div>
+<div class="tile"><span class="em">👶</span><span class="en">Posyandu: weighing babies</span><span class="id">Posyandu: menimbang bayi</span></div>
+<div class="tile"><span class="em">✈️</span><span class="en">Airport: weighing suitcases</span><span class="id">Bandara: menimbang koper</span></div>
+<div class="tile"><span class="em">🎂</span><span class="en">Kitchen: flour for a cake</span><span class="id">Dapur: tepung untuk kue</span></div>
+<div class="tile"><span class="em">📦</span><span class="en">Post office: sending parcels</span><span class="id">Kantor pos: mengirim paket</span></div>
+</div></div>
+
+<div class="card"><h3><span class="hi">🤯</span><div><span class="en">Big Does NOT Always Mean Heavy!</span><span class="id">Besar TIDAK Selalu Berarti Berat!</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 2 · <i>Contoh 2</i></div>
+<p class="en">A big balloon 🎈 and a small brick 🧱. Which is heavier?</p><p class="id">Sebuah balon besar 🎈 dan sebuah batu bata kecil 🧱. Mana yang lebih berat?</p>
+<div class="fig">${BAL('🎈', '🧱', 'R', ['Balloon/Balon', 'Brick/Bata'], 260)}</div>
+<ol class="steps">
+<li><span class="en">The balloon is bigger, but it is filled with air, so it is light.</span><span class="id">Balon lebih besar, tetapi berisi udara, jadi ringan.</span></li>
+<li><span class="en">The brick is smaller, but it is heavier.</span><span class="id">Batu bata lebih kecil, tetapi lebih berat.</span></li>
+<li><span class="en">So a <b>bigger</b> object is <b>not always heavier</b>.</span><span class="id">Jadi benda yang <b>lebih besar</b> <b>tidak selalu lebih berat</b>.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 3 · <i>Contoh 3</i></div>
+<p class="en">Sort into HEAVY and LIGHT: 🚚 truck, 🍃 leaf.</p><p class="id">Kelompokkan ke BERAT dan RINGAN: 🚚 truk, 🍃 daun.</p>
+<ol class="steps"><li><span class="en">Can I lift it easily? A leaf — yes → LIGHT. A truck — no → HEAVY.</span><span class="id">Bisakah aku mengangkatnya dengan mudah? Daun — bisa → RINGAN. Truk — tidak → BERAT.</span></li></ol></div>
+</div>
+
+<div class="card"><h3><span class="hi">📖</span><div><span class="en">Mass Words</span><span class="id">Kosakata Massa</span></div></h3>
+<table class="voc"><tr><th>English</th><th>Bahasa Indonesia</th></tr>
+<tr><td>mass</td><td>massa</td></tr><tr><td>heavy</td><td>berat</td></tr><tr><td>light</td><td>ringan</td></tr>
+<tr><td>heavier than</td><td>lebih berat dari</td></tr><tr><td>lighter than</td><td>lebih ringan dari</td></tr>
+<tr><td>balance</td><td>neraca</td></tr><tr><td>weighing scale</td><td>timbangan</td></tr></table></div>`,
+  ex: [
+    { t: 'mcq', q: [R`Which is heavier?`, R`Mana yang lebih berat?`], fig: `<div class="tile" style="font-size:60px">🍉</div><div class="tile" style="font-size:60px">🍇</div>`,
+      o: [['🍉 The watermelon', 'Semangka'], ['🍇 The grape', 'Anggur'], ['They are the same', 'Sama beratnya']], a: 0,
+      s: [[R`Imagine holding both. The watermelon pulls your hand down more.`, R`Bayangkan memegang keduanya. Semangka menarik tanganmu lebih ke bawah.`], [R`The watermelon is heavier than the grape.`, R`Semangka lebih berat daripada anggur.`]] },
+    { t: 'drag', q: [R`Put each object into the correct group.`, R`Masukkan setiap benda ke kelompok yang benar.`],
+      cats: [{ n: ['🏋️ Heavy', 'Berat'], items: [it('🐘', 'Elephant', 'Gajah'), it('🚌', 'Bus', 'Bus'), it('🚗', 'Car', 'Mobil')] },
+             { n: ['🪁 Light', 'Ringan'], items: [it('🎈', 'Balloon', 'Balon'), it('🍃', 'Leaf', 'Daun'), it('📎', 'Paper clip', 'Penjepit kertas')] }],
+      s: [[R`Ask: "Can I lift it easily with one hand?"`, R`Tanya: "Bisakah aku mengangkatnya dengan mudah dengan satu tangan?"`], [R`Elephant, bus, car → cannot lift → HEAVY.`, R`Gajah, bus, mobil → tidak bisa diangkat → BERAT.`], [R`Balloon, leaf, paper clip → easy to lift → LIGHT.`, R`Balon, daun, penjepit kertas → mudah diangkat → RINGAN.`]] },
+    { t: 'tf', q: [R`"A bigger object is always heavier than a smaller object."`, R`"Benda yang lebih besar selalu lebih berat daripada benda yang lebih kecil."`], a: false,
+      s: [[R`Remember the big balloon 🎈 and the small brick 🧱.`, R`Ingat balon besar 🎈 dan batu bata kecil 🧱.`], [R`The balloon is bigger but lighter. So the statement is FALSE.`, R`Balon lebih besar tetapi lebih ringan. Jadi pernyataan SALAH.`]] },
+    { t: 'multi', q: [R`Where do people measure mass? Choose ALL correct answers.`, R`Di mana orang mengukur massa? Pilih SEMUA jawaban yang benar.`],
+      o: [['🛒 At the market (buying rice)', 'Di pasar (membeli beras)'], ['✈️ At the airport (suitcases)', 'Di bandara (koper)'], ['👶 At the posyandu (babies)', 'Di posyandu (bayi)'], ['🎂 In the kitchen (flour for a cake)', 'Di dapur (tepung untuk kue)'], ['⭐ When counting stars in the sky', 'Saat menghitung bintang di langit']], a: [0, 1, 2, 3],
+      s: [[R`Market, airport, posyandu and kitchen all use scales to find how heavy things are ✔.`, R`Pasar, bandara, posyandu, dan dapur semuanya memakai timbangan untuk mengetahui berat benda ✔.`], [R`Counting stars is about "how many", not "how heavy" ✗.`, R`Menghitung bintang adalah tentang "berapa banyak", bukan "seberapa berat" ✗.`]] },
+    { t: 'pair', q: [R`Match each English word to its Indonesian meaning.`, R`Pasangkan setiap kata bahasa Inggris dengan artinya dalam bahasa Indonesia.`],
+      L: ['<b>heavy</b>', '<b>light</b>', '<b>mass</b>', '<b>balance</b>'], R: ['berat', 'ringan', 'massa', 'neraca'],
+      s: [[R`heavy = berat, light = ringan.`, R`heavy = berat, light = ringan.`], [R`mass = massa, balance = neraca. (Look at the "Mass Words" table.)`, R`mass = massa, balance = neraca. (Lihat tabel "Kosakata Massa".)`]] }
+  ] },
+
+/* ---------------------------------------------------- S3 */
+{ id: 's3', icon: '🧠', color: '#f97316', grad: 'linear-gradient(120deg,#f97316,#facc15)', time: '00:15 – 00:20',
+  nav: ['Review of Prior Knowledge', 'Ulasan Pengetahuan Sebelumnya'],
+  goal: ['🎯 Remember how to use a BALANCE to find which object is heavier, lighter, or as heavy as another.', 'Mengingat cara memakai NERACA untuk menentukan benda mana yang lebih berat, lebih ringan, atau sama berat.'],
+  explain: R`
+<div class="card"><h3><span class="hi">⚖️</span><div><span class="en">The Balance Rule</span><span class="id">Aturan Neraca</span></div></h3>
+<p class="en">A balance works like a seesaw. 🛝 The heavier friend goes down!</p><p class="id">Neraca bekerja seperti jungkat-jungkit. Teman yang lebih berat turun ke bawah!</p>
+<div class="rule3">
+<div class="tile">${BAL('⬛', '▫️', 'L', null, 190)}<span class="en">⬇ Side goes DOWN = HEAVIER</span><span class="id">Sisi TURUN = LEBIH BERAT</span></div>
+<div class="tile">${BAL('▫️', '⬛', 'R', null, 190)}<span class="en">⬆ Side goes UP = LIGHTER</span><span class="id">Sisi NAIK = LEBIH RINGAN</span></div>
+<div class="tile">${BAL('⬛', '⬛', 'E', null, 190)}<span class="en">↔ LEVEL = AS HEAVY AS (same mass)</span><span class="id">SEIMBANG = SAMA BERAT (massa sama)</span></div>
+</div></div>
+
+<div class="card"><h3><span class="hi">🍎</span><div><span class="en">Reading a Balance</span><span class="id">Membaca Neraca</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 1 · <i>Contoh 1</i></div>
+<div class="fig">${BAL('🍎', '🍓', 'L', ['Apple/Apel', 'Strawberry/Stroberi'], 270)}</div>
+<ol class="steps">
+<li><span class="en">Find the side that goes DOWN: the apple side.</span><span class="id">Cari sisi yang TURUN: sisi apel.</span></li>
+<li><span class="en">The apple is <b>heavier than</b> the strawberry.</span><span class="id">Apel <b>lebih berat dari</b> stroberi.</span></li>
+<li><span class="en">We can also say: the strawberry is <b>lighter than</b> the apple.</span><span class="id">Kita juga bisa bilang: stroberi <b>lebih ringan dari</b> apel.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 2 · <i>Contoh 2</i></div>
+<div class="fig">${BAL('📒', '🧃', 'E', ['Notebook/Buku', 'Juice/Jus'], 270)}</div>
+<ol class="steps">
+<li><span class="en">The balance is LEVEL (not up, not down).</span><span class="id">Neraca SEIMBANG (tidak naik, tidak turun).</span></li>
+<li><span class="en">The notebook is <b>as heavy as</b> the juice box. They have the <b>same mass</b>.</span><span class="id">Buku tulis <b>sama berat dengan</b> kotak jus. Massanya <b>sama</b>.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 3 · <i>Contoh 3 (three objects / tiga benda)</i></div>
+<div class="fig">${BAL('🥭', '🍋', 'L', ['Mango/Mangga', 'Lemon'], 240)}${BAL('🍋', '🍇', 'L', ['Lemon', 'Grape/Anggur'], 240)}</div>
+<ol class="steps">
+<li><span class="en">Balance 1: mango is heavier than lemon.</span><span class="id">Neraca 1: mangga lebih berat dari lemon.</span></li>
+<li><span class="en">Balance 2: lemon is heavier than grape.</span><span class="id">Neraca 2: lemon lebih berat dari anggur.</span></li>
+<li><span class="en">So the mango is the <b>heaviest</b>, the grape is the <b>lightest</b>.</span><span class="id">Jadi mangga <b>paling berat</b>, anggur <b>paling ringan</b>.</span></li>
+<li><span class="en">Lightest → heaviest: grape, lemon, mango.</span><span class="id">Paling ringan → paling berat: anggur, lemon, mangga.</span></li>
+</ol></div>
+<div class="tip"><span class="en">💡 "Heavier" compares 2 things. "Heaviest" compares 3 or more things.</span><span class="id">"Lebih berat" membandingkan 2 benda. "Paling berat" membandingkan 3 benda atau lebih.</span></div>
+</div>`,
+  ex: [
+    { t: 'mcq', q: [R`Look at the balance. Which is heavier?`, R`Lihat neraca. Mana yang lebih berat?`], fig: BAL('🍍', '🍋', 'L', ['Pineapple/Nanas', 'Lemon'], 280),
+      o: [['🍍 The pineapple', 'Nanas'], ['🍋 The lemon', 'Lemon'], ['They have the same mass', 'Massanya sama']], a: 0,
+      s: [[R`The pineapple side goes DOWN.`, R`Sisi nanas TURUN.`], [R`Down = heavier. The pineapple is heavier than the lemon.`, R`Turun = lebih berat. Nanas lebih berat dari lemon.`]] },
+    { t: 'mcq', q: [R`The book is ______ the teddy bear.`, R`Buku ______ boneka beruang.`], fig: BAL('📕', '🧸', 'E', ['Book/Buku', 'Teddy/Boneka'], 280),
+      o: [['as heavy as', 'sama berat dengan'], ['heavier than', 'lebih berat dari'], ['lighter than', 'lebih ringan dari']], a: 0,
+      s: [[R`The balance is LEVEL.`, R`Neraca SEIMBANG.`], [R`Level means same mass, so the book is AS HEAVY AS the teddy bear.`, R`Seimbang berarti massa sama, jadi buku SAMA BERAT DENGAN boneka beruang.`]] },
+    { t: 'tf', q: [R`"The tennis ball is heavier than the football."`, R`"Bola tenis lebih berat daripada bola sepak."`], fig: BAL('🎾', '⚽', 'R', ['Tennis ball/Bola tenis', 'Football/Bola sepak'], 290), a: false,
+      s: [[R`The football side (right) goes DOWN, the tennis ball side goes UP.`, R`Sisi bola sepak (kanan) TURUN, sisi bola tenis NAIK.`], [R`So the football is heavier. The tennis ball is lighter. The statement is FALSE.`, R`Jadi bola sepak lebih berat. Bola tenis lebih ringan. Pernyataan SALAH.`]] },
+    { t: 'sort', q: [R`Look at both balances. Sort from lightest to heaviest.`, R`Lihat kedua neraca. Urutkan dari paling ringan ke paling berat.`],
+      fig: BAL('🥥', '🍊', 'L', ['Coconut/Kelapa', 'Orange/Jeruk'], 240) + BAL('🍊', '🍒', 'L', ['Orange/Jeruk', 'Cherry/Ceri'], 240),
+      items: [it('🍒', 'Cherry', 'Ceri'), it('🍊', 'Orange', 'Jeruk'), it('🥥', 'Coconut', 'Kelapa')], ends: LIGHT_HEAVY,
+      s: [[R`Balance 1: coconut goes down → coconut is heavier than orange.`, R`Neraca 1: kelapa turun → kelapa lebih berat dari jeruk.`], [R`Balance 2: orange goes down → orange is heavier than cherry.`, R`Neraca 2: jeruk turun → jeruk lebih berat dari ceri.`], [R`Lightest → heaviest: cherry, orange, coconut.`, R`Paling ringan → paling berat: ceri, jeruk, kelapa.`]] },
+    { t: 'multi', q: [R`Look at the balance. Choose ALL true sentences.`, R`Lihat neraca. Pilih SEMUA kalimat yang benar.`], fig: BAL('🎒', '✏️', 'L', ['Bag/Tas', 'Pencil/Pensil'], 280),
+      o: [['The bag is heavier than the pencil.', 'Tas lebih berat dari pensil.'], ['The pencil is lighter than the bag.', 'Pensil lebih ringan dari tas.'], ['The pencil is heavier than the bag.', 'Pensil lebih berat dari tas.'], ['The bag is as heavy as the pencil.', 'Tas sama berat dengan pensil.']], a: [0, 1],
+      s: [[R`The bag side goes DOWN → the bag is heavier.`, R`Sisi tas TURUN → tas lebih berat.`], [R`The same balance also tells us the pencil is lighter.`, R`Neraca yang sama juga memberi tahu bahwa pensil lebih ringan.`], [R`The balance is not level, so they are NOT as heavy as each other.`, R`Neraca tidak seimbang, jadi massanya TIDAK sama.`]] }
+  ] },
+
+/* ---------------------------------------------------- S4 */
+{ id: 's4', icon: '❓', color: '#ec4899', grad: 'linear-gradient(120deg,#ec4899,#f43f5e)', time: '00:20 – 00:25',
+  nav: ['Problem Introduction', 'Pengenalan Masalah'],
+  goal: ['🎯 Find out HOW HEAVY an object is using units: cubes, marbles, kilograms (kg) and grams (g).', 'Mengetahui SEBERAPA BERAT suatu benda dengan satuan: kubus, kelereng, kilogram (kg), dan gram (g).'],
+  explain: R`
+<div class="card"><h3><span class="hi">🤔</span><div><span class="en">Mira's Problem</span><span class="id">Masalah Mira</span></div></h3>
+<p class="en">Mira knows her pear is heavier than a strawberry. But she asks: <b>"HOW heavy is my pear?"</b> A balance alone only tells heavier or lighter. We need to <b>measure</b> using <b>units</b>.</p>
+<p class="id">Mira tahu pirnya lebih berat dari stroberi. Tetapi dia bertanya: <b>"SEBERAPA berat pirku?"</b> Neraca saja hanya memberi tahu lebih berat atau lebih ringan. Kita perlu <b>mengukur</b> dengan <b>satuan</b>.</p></div>
+
+<div class="card"><h3><span class="hi">🟩</span><div><span class="en">Step 1: Measuring with Cubes (Non-standard Units)</span><span class="id">Langkah 1: Mengukur dengan Kubus (Satuan Tidak Baku)</span></div></h3>
+<p class="en">Put the object on one side. Add same-size cubes to the other side until the balance is LEVEL. Then count the cubes.</p>
+<p class="id">Letakkan benda di satu sisi. Tambahkan kubus yang sama ukurannya di sisi lain sampai neraca SEIMBANG. Lalu hitung kubusnya.</p>
+<div class="ex"><div class="ex-t">📝 Example 1 · <i>Contoh 1</i></div>
+<div class="fig">${BAL('🍎', 8, 'E', ['Apple/Apel', '8 cubes/kubus'], 280)}</div>
+<ol class="steps">
+<li><span class="en">The balance is level.</span><span class="id">Neraca seimbang.</span></li>
+<li><span class="en">Count the cubes: $1, 2, 3, \dots, 8$.</span><span class="id">Hitung kubusnya: $1, 2, 3, \dots, 8$.</span></li>
+<li><span class="en">The mass of the apple is <b>about 8 cubes</b>.</span><span class="id">Massa apel <b>kira-kira 8 kubus</b>.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 2 · <i>Contoh 2</i></div>
+<p class="en">A banana 🍌 is 4 cubes. An orange 🍊 is 7 cubes. Which is heavier? By how many cubes?</p>
+<p class="id">Pisang 🍌 = 4 kubus. Jeruk 🍊 = 7 kubus. Mana yang lebih berat? Lebih berat berapa kubus?</p>
+<ol class="steps">
+<li><span class="en">Compare: $7 > 4$, so the orange is heavier.</span><span class="id">Bandingkan: $7 > 4$, jadi jeruk lebih berat.</span></li>
+<li><span class="en">Subtract to find the difference: $7 - 4 = 3$.</span><span class="id">Kurangkan untuk mencari selisih: $7 - 4 = 3$.</span></li>
+<li><span class="en">The orange is heavier by <b>3 cubes</b>.</span><span class="id">Jeruk lebih berat <b>3 kubus</b>.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 3 · <i>Contoh 3</i></div>
+<p class="en">A doll 🪆 is 6 marbles. A robot 🤖 is 9 marbles. The robot is heavier by $9 - 6 = 3$ marbles.</p>
+<p class="id">Boneka 🪆 = 6 kelereng. Robot 🤖 = 9 kelereng. Robot lebih berat $9 - 6 = 3$ kelereng.</p></div>
+<div class="warn"><span class="en">⚠️ Problem: if Ben uses small cubes and Ana uses big cubes, they get different numbers for the same object! So people agreed to use <b>standard units</b>.</span><span class="id">Masalah: jika Ben memakai kubus kecil dan Ana memakai kubus besar, mereka mendapat angka berbeda untuk benda yang sama! Maka orang sepakat memakai <b>satuan baku</b>.</span></div></div>
+
+<div class="card"><h3><span class="hi">📏</span><div><span class="en">Step 2: Standard Units — Kilogram and Gram</span><span class="id">Langkah 2: Satuan Baku — Kilogram dan Gram</span></div></h3>
+<div class="grid3">
+<div class="tile"><span class="em">🍚🚲👦</span><span class="en"><b>kilogram ($\text{kg}$)</b> — for HEAVIER things: a bag of rice, a bicycle, a child</span><span class="id"><b>kilogram ($\text{kg}$)</b> — untuk benda yang LEBIH BERAT: sekarung beras, sepeda, anak</span></div>
+<div class="tile"><span class="em">✏️🍬🔑</span><span class="en"><b>gram ($\text{g}$)</b> — for LIGHTER things: a pencil, a sweet, a key</span><span class="id"><b>gram ($\text{g}$)</b> — untuk benda yang LEBIH RINGAN: pensil, permen, kunci</span></div>
+</div>
+<div class="tip"><span class="en">🌟 Fun fact: $1 \text{ kg} = 1000 \text{ g}$. A paper clip is about $1 \text{ g}$. A big bag of sugar can be $1 \text{ kg}$.</span><span class="id">Fakta seru: $1 \text{ kg} = 1000 \text{ g}$. Penjepit kertas kira-kira $1 \text{ g}$. Sekantong besar gula bisa $1 \text{ kg}$.</span></div>
+<div class="ex"><div class="ex-t">📝 Example 4 · <i>Contoh 4</i></div>
+<p class="en">Which unit should we use for a bicycle 🚲? For a pencil ✏️?</p><p class="id">Satuan apa yang kita pakai untuk sepeda 🚲? Untuk pensil ✏️?</p>
+<ol class="steps">
+<li><span class="en">Ask: "Is it heavy or light?"</span><span class="id">Tanya: "Benda ini berat atau ringan?"</span></li>
+<li><span class="en">Bicycle is heavy → $\text{kg}$. Pencil is light → $\text{g}$.</span><span class="id">Sepeda berat → $\text{kg}$. Pensil ringan → $\text{g}$.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 5 · <i>Contoh 5 (reading a scale / membaca timbangan)</i></div>
+<div class="fig">${KG(3, '🍉', 190)}</div>
+<ol class="steps">
+<li><span class="en">Look at the RED pointer. It points to the number $3$.</span><span class="id">Lihat jarum MERAH. Jarum menunjuk angka $3$.</span></li>
+<li><span class="en">Look at the unit on the scale: $\text{kg}$.</span><span class="id">Lihat satuan di timbangan: $\text{kg}$.</span></li>
+<li><span class="en">The mass of the watermelon is $3 \text{ kg}$.</span><span class="id">Massa semangka adalah $3 \text{ kg}$.</span></li>
+</ol></div></div>`,
+  ex: [
+    { t: 'fill', q: [R`The balance is level. What is the mass of the pear?`, R`Neraca seimbang. Berapa massa pir?`], fig: BAL('🍐', 5, 'E', ['Pear/Pir', 'cubes/kubus'], 280),
+      f: [{ pre: R`<span>Mass of pear = </span>`, a: '5', post: R`<span>cubes / <i>kubus</i></span>` }],
+      s: [[R`The balance is level, so the pear is as heavy as the cubes.`, R`Neraca seimbang, jadi pir sama berat dengan kubus-kubus.`], [R`Count the cubes: $1, 2, 3, 4, 5$.`, R`Hitung kubusnya: $1, 2, 3, 4, 5$.`], [R`The mass of the pear is $5$ cubes.`, R`Massa pir adalah $5$ kubus.`]] },
+    { t: 'mcq', q: [R`Which unit should we use to measure the mass of a watermelon 🍉?`, R`Satuan apa yang kita pakai untuk mengukur massa semangka 🍉?`],
+      o: [[R`kilogram ($\text{kg}$)`, 'kilogram'], [R`gram ($\text{g}$)`, 'gram'], [R`centimetre ($\text{cm}$)`, 'sentimeter']], a: 0,
+      s: [[R`A watermelon is heavy → use kilogram ($\text{kg}$).`, R`Semangka berat → pakai kilogram ($\text{kg}$).`], [R`Centimetre ($\text{cm}$) measures LENGTH, not mass.`, R`Sentimeter ($\text{cm}$) mengukur PANJANG, bukan massa.`]] },
+    { t: 'drag', q: [R`Which unit would you use? Put each object in the correct group.`, R`Satuan apa yang kamu pakai? Masukkan setiap benda ke kelompok yang benar.`],
+      cats: [{ n: [R`kilogram ($\text{kg}$)`, 'kilogram'], items: [it('🚲', 'Bicycle', 'Sepeda'), it('🍉', 'Watermelon', 'Semangka'), it('👦', 'A child', 'Seorang anak')] },
+             { n: [R`gram ($\text{g}$)`, 'gram'], items: [it('✏️', 'Pencil', 'Pensil'), it('🍬', 'Sweet', 'Permen'), it('🔑', 'Key', 'Kunci')] }],
+      s: [[R`Heavy things → $\text{kg}$: bicycle, watermelon, a child.`, R`Benda berat → $\text{kg}$: sepeda, semangka, seorang anak.`], [R`Light things → $\text{g}$: pencil, sweet, key.`, R`Benda ringan → $\text{g}$: pensil, permen, kunci.`]] },
+    { t: 'fill', q: [R`Read the scale. What is the mass of the pumpkin?`, R`Baca timbangan. Berapa massa labu?`], fig: KG(4, '🎃', 200),
+      f: [{ pre: R`<span>Mass of pumpkin = </span>`, a: '4', post: R`$\text{kg}$` }],
+      s: [[R`Look at the red pointer: it points to $4$.`, R`Lihat jarum merah: menunjuk angka $4$.`], [R`The unit is $\text{kg}$.`, R`Satuannya $\text{kg}$.`], [R`The pumpkin is $4 \text{ kg}$.`, R`Labu $4 \text{ kg}$.`]] },
+    { t: 'mcq', q: [R`A toy car 🚗 is as heavy as 7 marbles. A toy truck 🚚 is as heavy as 10 marbles. Which is correct?`, R`Mobil mainan 🚗 sama berat dengan 7 kelereng. Truk mainan 🚚 sama berat dengan 10 kelereng. Mana yang benar?`],
+      o: [['The truck is heavier by 3 marbles.', 'Truk lebih berat 3 kelereng.'], ['The car is heavier by 3 marbles.', 'Mobil lebih berat 3 kelereng.'], ['The truck is heavier by 17 marbles.', 'Truk lebih berat 17 kelereng.'], ['They have the same mass.', 'Massanya sama.']], a: 0,
+      s: [[R`Compare: $10 > 7$, so the truck is heavier.`, R`Bandingkan: $10 > 7$, jadi truk lebih berat.`], [R`Difference: $10 - 7 = 3$ marbles. (Not $10 + 7 = 17$ — we subtract to find "how much heavier".)`, R`Selisih: $10 - 7 = 3$ kelereng. (Bukan $10 + 7 = 17$ — kita mengurangi untuk mencari "lebih berat berapa".)`]] }
+  ] },
+
+/* ---------------------------------------------------- S5 */
+{ id: 's5', icon: '🤝', color: '#8b5cf6', grad: 'linear-gradient(120deg,#7c3aed,#a855f7)', time: '00:25 – 00:40',
+  nav: ['Guided Practice', 'Latihan Terbimbing'],
+  goal: ['🎯 Read scales in kg and g, then compare and order masses. Let\'s do it together!', 'Membaca timbangan dalam kg dan g, lalu membandingkan dan mengurutkan massa. Ayo kerjakan bersama!'],
+  explain: R`
+<div class="card"><h3><span class="hi">🗺️</span><div><span class="en">Our 3-Step Plan</span><span class="id">Rencana 3 Langkah Kita</span></div></h3>
+<div class="grid3">
+<div class="tile"><span class="em">👀</span><span class="en">1. READ each mass (number + unit)</span><span class="id">1. BACA setiap massa (angka + satuan)</span></div>
+<div class="tile"><span class="em">⚖️</span><span class="en">2. COMPARE the numbers (same unit!)</span><span class="id">2. BANDINGKAN angkanya (satuan sama!)</span></div>
+<div class="tile"><span class="em">✅</span><span class="en">3. ANSWER with the unit</span><span class="id">3. JAWAB dengan satuan</span></div>
+</div></div>
+
+<div class="card"><h3><span class="hi">🔎</span><div><span class="en">Reading a Gram Scale</span><span class="id">Membaca Timbangan Gram</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 1 · <i>Contoh 1</i></div>
+<div class="fig">${GR(300, '🥭', 210)}</div>
+<ol class="steps">
+<li><span class="en">The numbers on this scale go up by $100$: $0, 100, 200, 300, \dots, 1000$.</span><span class="id">Angka pada timbangan ini naik $100$: $0, 100, 200, 300, \dots, 1000$.</span></li>
+<li><span class="en">The red pointer points to $300$. The unit is $\text{g}$.</span><span class="id">Jarum merah menunjuk $300$. Satuannya $\text{g}$.</span></li>
+<li><span class="en">The mango is $300 \text{ g}$.</span><span class="id">Mangga $300 \text{ g}$.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 2 · <i>Contoh 2 (matching scales / mencocokkan timbangan)</i></div>
+<div class="fig">${KG(6, '📦', 160, 'Box X')}${KG(1, '📦', 160, 'Box Y')}</div>
+<ol class="steps">
+<li><span class="en">Box X: pointer at $6$ → $6 \text{ kg}$.</span><span class="id">Kotak X: jarum di $6$ → $6 \text{ kg}$.</span></li>
+<li><span class="en">Box Y: pointer at $1$ → $1 \text{ kg}$.</span><span class="id">Kotak Y: jarum di $1$ → $1 \text{ kg}$.</span></li>
+</ol></div></div>
+
+<div class="card"><h3><span class="hi">🏆</span><div><span class="en">Heaviest, Lightest and Ordering</span><span class="id">Paling Berat, Paling Ringan, dan Mengurutkan</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 3 · <i>Contoh 3</i></div>
+<div class="grid3"><div class="tile"><span class="em">🎒</span>$5 \text{ kg}$</div><div class="tile"><span class="em">👜</span>$3 \text{ kg}$</div><div class="tile"><span class="em">🧳</span>$8 \text{ kg}$</div></div>
+<ol class="steps">
+<li><span class="en">All masses are in $\text{kg}$, so we just compare the numbers: $3 < 5 < 8$.</span><span class="id">Semua massa dalam $\text{kg}$, jadi kita cukup membandingkan angkanya: $3 < 5 < 8$.</span></li>
+<li><span class="en">Heaviest: the suitcase 🧳 ($8 \text{ kg}$). Lightest: the handbag 👜 ($3 \text{ kg}$).</span><span class="id">Paling berat: koper 🧳 ($8 \text{ kg}$). Paling ringan: tas tangan 👜 ($3 \text{ kg}$).</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 4 · <i>Contoh 4</i></div>
+<p class="en">Order from lightest to heaviest: 🍑 $140 \text{ g}$, 🍐 $170 \text{ g}$, 🍋 $110 \text{ g}$.</p><p class="id">Urutkan dari paling ringan ke paling berat: 🍑 $140 \text{ g}$, 🍐 $170 \text{ g}$, 🍋 $110 \text{ g}$.</p>
+<ol class="steps">
+<li><span class="en">Hundreds are all $1$. Compare tens: $1 < 4 < 7$.</span><span class="id">Ratusan semuanya $1$. Bandingkan puluhan: $1 < 4 < 7$.</span></li>
+<li><span class="en">So $110 < 140 < 170$: lemon, peach, pear.</span><span class="id">Jadi $110 < 140 < 170$: lemon, persik, pir.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 5 · <i>Contoh 5 (how much heavier? / lebih berat berapa?)</i></div>
+<p class="en">How much heavier is the suitcase ($8 \text{ kg}$) than the handbag ($3 \text{ kg}$)?</p><p class="id">Koper ($8 \text{ kg}$) lebih berat berapa dari tas tangan ($3 \text{ kg}$)?</p>
+$$8 \text{ kg} - 3 \text{ kg} = 5 \text{ kg}$$
+<ol class="steps"><li><span class="en">"How much heavier" → subtract: bigger mass − smaller mass. The suitcase is $5 \text{ kg}$ heavier.</span><span class="id">"Lebih berat berapa" → kurangi: massa besar − massa kecil. Koper lebih berat $5 \text{ kg}$.</span></li></ol></div>
+<div class="warn"><span class="en">⚠️ Only compare numbers when the units are the SAME ($\text{kg}$ with $\text{kg}$, $\text{g}$ with $\text{g}$).</span><span class="id">Bandingkan angka hanya jika satuannya SAMA ($\text{kg}$ dengan $\text{kg}$, $\text{g}$ dengan $\text{g}$).</span></div>
+</div>`,
+  ex: [
+    { t: 'fill', q: [R`Read the scale. What is the mass of the bread?`, R`Baca timbangan. Berapa massa roti?`], fig: GR(600, '🍞', 220),
+      f: [{ pre: R`<span>Mass of bread = </span>`, a: '600', post: R`$\text{g}$` }],
+      s: [[R`The numbers go up by $100$.`, R`Angkanya naik $100$.`], [R`The red pointer points to $600$. The unit is $\text{g}$.`, R`Jarum merah menunjuk $600$. Satuannya $\text{g}$.`], [R`The bread is $600 \text{ g}$.`, R`Roti $600 \text{ g}$.`]] },
+    { t: 'mcq', q: [R`Which pet is the heaviest?`, R`Hewan peliharaan mana yang paling berat?`],
+      fig: `<div class="grid3" style="width:100%"><div class="tile"><span class="em">🐱</span>Cat / <i>Kucing</i><br>$4 \\text{ kg}$</div><div class="tile"><span class="em">🐶</span>Dog / <i>Anjing</i><br>$9 \\text{ kg}$</div><div class="tile"><span class="em">🐰</span>Rabbit / <i>Kelinci</i><br>$2 \\text{ kg}$</div></div>`,
+      o: [['🐶 Dog', 'Anjing'], ['🐱 Cat', 'Kucing'], ['🐰 Rabbit', 'Kelinci']], a: 0,
+      s: [[R`All units are $\text{kg}$. Compare: $2 < 4 < 9$.`, R`Semua satuan $\text{kg}$. Bandingkan: $2 < 4 < 9$.`], [R`The biggest number is $9$, so the dog ($9 \text{ kg}$) is the heaviest.`, R`Angka terbesar $9$, jadi anjing ($9 \text{ kg}$) paling berat.`]] },
+    { t: 'sort', q: [R`Sort the fruits from lightest to heaviest.`, R`Urutkan buah dari paling ringan ke paling berat.`],
+      items: [it('🍌', R`$120 \text{ g}$`, 'Banana / Pisang'), it('🍎', R`$150 \text{ g}$`, 'Apple / Apel'), it('🍊', R`$180 \text{ g}$`, 'Orange / Jeruk'), it('🥭', R`$250 \text{ g}$`, 'Mango / Mangga')], ends: LIGHT_HEAVY,
+      s: [[R`All units are $\text{g}$. Compare hundreds: $250$ has 2 hundreds → heaviest.`, R`Semua satuan $\text{g}$. Bandingkan ratusan: $250$ punya 2 ratusan → paling berat.`], [R`$120, 150, 180$ have 1 hundred. Compare tens: $2 < 5 < 8$.`, R`$120, 150, 180$ punya 1 ratusan. Bandingkan puluhan: $2 < 5 < 8$.`], [R`Order: banana $120 \text{ g}$, apple $150 \text{ g}$, orange $180 \text{ g}$, mango $250 \text{ g}$.`, R`Urutan: pisang $120 \text{ g}$, apel $150 \text{ g}$, jeruk $180 \text{ g}$, mangga $250 \text{ g}$.`]] },
+    { t: 'fill', q: [R`The dog is $9 \text{ kg}$. The cat is $4 \text{ kg}$. How much heavier is the dog?`, R`Anjing $9 \text{ kg}$. Kucing $4 \text{ kg}$. Anjing lebih berat berapa?`],
+      f: [{ pre: R`$9 \text{ kg} - 4 \text{ kg} =$`, a: '5', post: R`$\text{kg}$` }],
+      s: [[R`"How much heavier" → subtract.`, R`"Lebih berat berapa" → kurangi.`], [R`$9 - 4 = 5$.`, R`$9 - 4 = 5$.`], [R`The dog is $5 \text{ kg}$ heavier than the cat.`, R`Anjing lebih berat $5 \text{ kg}$ dari kucing.`]] },
+    { t: 'pair', q: [R`Match each scale to its mass.`, R`Pasangkan setiap timbangan dengan massanya.`],
+      L: [KG(2, '📦', 140, 'Box A'), KG(5, '📦', 140, 'Box B'), KG(7, '📦', 140, 'Box C')], R: [R`$2 \text{ kg}$`, R`$5 \text{ kg}$`, R`$7 \text{ kg}$`],
+      s: [[R`Box A: the pointer is at $2$ → $2 \text{ kg}$.`, R`Kotak A: jarum di $2$ → $2 \text{ kg}$.`], [R`Box B: the pointer is at $5$ → $5 \text{ kg}$.`, R`Kotak B: jarum di $5$ → $5 \text{ kg}$.`], [R`Box C: the pointer is at $7$ → $7 \text{ kg}$.`, R`Kotak C: jarum di $7$ → $7 \text{ kg}$.`]] }
+  ] },
+
+/* ---------------------------------------------------- S6 */
+{ id: 's6', icon: '🚀', color: '#14b8a6', grad: 'linear-gradient(120deg,#0d9488,#22d3ee)', time: '00:40 – 00:55',
+  nav: ['Independent Practice', 'Latihan Mandiri'],
+  goal: ['🎯 Solve word problems about mass by yourself using addition and subtraction.', 'Menyelesaikan soal cerita tentang massa sendiri dengan penjumlahan dan pengurangan.'],
+  explain: R`
+<div class="card"><h3><span class="hi">🪜</span><div><span class="en">5 Steps to Solve a Word Problem</span><span class="id">5 Langkah Menyelesaikan Soal Cerita</span></div></h3>
+<ol class="steps">
+<li><span class="en">📖 READ the problem carefully.</span><span class="id">BACA soal dengan teliti.</span></li>
+<li><span class="en">🔍 FIND the masses (numbers and units).</span><span class="id">TEMUKAN massanya (angka dan satuan).</span></li>
+<li><span class="en">🤔 CHOOSE $+$ or $-$.</span><span class="id">PILIH $+$ atau $-$.</span></li>
+<li><span class="en">🧮 CALCULATE.</span><span class="id">HITUNG.</span></li>
+<li><span class="en">✍️ WRITE the answer with the unit ($\text{kg}$ or $\text{g}$).</span><span class="id">TULIS jawaban dengan satuannya ($\text{kg}$ atau $\text{g}$).</span></li>
+</ol>
+<table class="voc"><tr><th>➕ <span class="en">Add when you see…</span><span class="id">Jumlahkan jika ada kata…</span></th><th>➖ <span class="en">Subtract when you see…</span><span class="id">Kurangkan jika ada kata…</span></th></tr>
+<tr><td>total / <i class="t">jumlah seluruhnya</i></td><td>how much heavier / lighter / <i class="t">lebih berat / ringan berapa</i></td></tr>
+<tr><td>altogether, together / <i class="t">semuanya, bersama-sama</i></td><td>difference / <i class="t">selisih</i></td></tr>
+<tr><td>in all / <i class="t">seluruhnya</i></td><td>left, uses, gives away / <i class="t">sisa, memakai, memberikan</i></td></tr>
+<tr><td>buys more, adds / <i class="t">membeli lagi, menambah</i></td><td>takes out / <i class="t">mengeluarkan</i></td></tr></table></div>
+
+<div class="card"><h3><span class="hi">➕</span><div><span class="en">Adding Masses</span><span class="id">Menjumlahkan Massa</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 1 · <i>Contoh 1</i></div>
+<p class="en">Ali buys $3 \text{ kg}$ of rice 🍚 and $2 \text{ kg}$ of sugar. What is the total mass?</p><p class="id">Ali membeli $3 \text{ kg}$ beras 🍚 dan $2 \text{ kg}$ gula. Berapa massa totalnya?</p>
+<ol class="steps"><li><span class="en">"Total" → add.</span><span class="id">"Total" → jumlahkan.</span></li><li><span class="en">$3 \text{ kg} + 2 \text{ kg} = 5 \text{ kg}$.</span><span class="id">$3 \text{ kg} + 2 \text{ kg} = 5 \text{ kg}$.</span></li></ol></div>
+<div class="ex"><div class="ex-t">📝 Example 2 · <i>Contoh 2</i></div>
+<p class="en">A tin has $342 \text{ g}$ of cookies 🍪. Mom adds $125 \text{ g}$ more. How many grams of cookies are in the tin now?</p><p class="id">Sebuah kaleng berisi $342 \text{ g}$ kue 🍪. Ibu menambahkan $125 \text{ g}$ lagi. Berapa gram kue di kaleng sekarang?</p>
+$$\begin{array}{r} 342 \\ +\;125 \\ \hline 467 \end{array}$$
+<ol class="steps"><li><span class="en">Ones $2+5=7$, tens $4+2=6$, hundreds $3+1=4$.</span><span class="id">Satuan $2+5=7$, puluhan $4+2=6$, ratusan $3+1=4$.</span></li><li><span class="en">Answer: $467 \text{ g}$.</span><span class="id">Jawaban: $467 \text{ g}$.</span></li></ol></div></div>
+
+<div class="card"><h3><span class="hi">➖</span><div><span class="en">Subtracting Masses</span><span class="id">Mengurangi Massa</span></div></h3>
+<div class="ex"><div class="ex-t">📝 Example 3 · <i>Contoh 3</i></div>
+<p class="en">Bag A is $15 \text{ kg}$. Bag B is $9 \text{ kg}$. How much heavier is Bag A?</p><p class="id">Tas A $15 \text{ kg}$. Tas B $9 \text{ kg}$. Tas A lebih berat berapa?</p>
+<ol class="steps"><li><span class="en">"How much heavier" → subtract: $15 \text{ kg} - 9 \text{ kg} = 6 \text{ kg}$.</span><span class="id">"Lebih berat berapa" → kurangi: $15 \text{ kg} - 9 \text{ kg} = 6 \text{ kg}$.</span></li></ol></div>
+<div class="ex"><div class="ex-t">📝 Example 4 · <i>Contoh 4 (with regrouping / dengan meminjam)</i></div>
+<p class="en">Box P is $630 \text{ g}$. Box Q is $450 \text{ g}$. Is Box P $180 \text{ g}$ heavier than Box Q?</p><p class="id">Kotak P $630 \text{ g}$. Kotak Q $450 \text{ g}$. Apakah kotak P lebih berat $180 \text{ g}$ dari kotak Q?</p>
+$$\begin{array}{r} \overset{5}{\cancel{6}}\,\overset{13}{\cancel{3}}\,0 \\ -\;4\;5\;0 \\ \hline 1\;8\;0 \end{array}$$
+<ol class="steps">
+<li><span class="en">Ones: $0 - 0 = 0$.</span><span class="id">Satuan: $0 - 0 = 0$.</span></li>
+<li><span class="en">Tens: $3 - 5$ cannot be done. Borrow 1 hundred → $13 - 5 = 8$. Now hundreds is $5$.</span><span class="id">Puluhan: $3 - 5$ tidak bisa. Pinjam 1 ratusan → $13 - 5 = 8$. Sekarang ratusan menjadi $5$.</span></li>
+<li><span class="en">Hundreds: $5 - 4 = 1$. So $630 - 450 = 180$. YES, it is true ✔.</span><span class="id">Ratusan: $5 - 4 = 1$. Jadi $630 - 450 = 180$. YA, benar ✔.</span></li>
+</ol></div>
+<div class="ex"><div class="ex-t">📝 Example 5 · <i>Contoh 5 (two ways / dua cara)</i></div>
+<p class="en">How much lighter is $20 \text{ kg}$ than $45 \text{ kg}$?</p><p class="id">$20 \text{ kg}$ lebih ringan berapa dari $45 \text{ kg}$?</p>
+<ol class="steps"><li><span class="en">Way 1 (subtract): $45 - 20 = 25$.</span><span class="id">Cara 1 (kurangi): $45 - 20 = 25$.</span></li><li><span class="en">Way 2 (count on): $20 + 25 = 45$. Both show $25 \text{ kg}$ lighter.</span><span class="id">Cara 2 (menghitung maju): $20 + 25 = 45$. Keduanya menunjukkan lebih ringan $25 \text{ kg}$.</span></li></ol></div>
+<div class="ex"><div class="ex-t">📝 Example 6 · <i>Contoh 6 (two steps / dua langkah)</i></div>
+<p class="en">A box has $8 \text{ kg}$ of sand. Dad takes out $2 \text{ kg}$, then adds $4 \text{ kg}$. What is the mass of sand now?</p><p class="id">Sebuah kotak berisi $8 \text{ kg}$ pasir. Ayah mengeluarkan $2 \text{ kg}$, lalu menambahkan $4 \text{ kg}$. Berapa massa pasir sekarang?</p>
+<ol class="steps"><li><span class="en">Step 1 "takes out" → $8 - 2 = 6$.</span><span class="id">Langkah 1 "mengeluarkan" → $8 - 2 = 6$.</span></li><li><span class="en">Step 2 "adds" → $6 + 4 = 10$. Answer: $10 \text{ kg}$.</span><span class="id">Langkah 2 "menambahkan" → $6 + 4 = 10$. Jawaban: $10 \text{ kg}$.</span></li></ol></div>
+</div>`,
+  ex: [
+    { t: 'fill', q: [R`Siti has $254 \text{ g}$ of flour. She buys $135 \text{ g}$ more. How much flour does she have now?`, R`Siti punya $254 \text{ g}$ tepung. Dia membeli $135 \text{ g}$ lagi. Berapa tepung yang dia punya sekarang?`],
+      f: [{ pre: R`$254 \text{ g} + 135 \text{ g} =$`, a: '389', post: R`$\text{g}$` }],
+      s: [[R`"Buys more" → add.`, R`"Membeli lagi" → jumlahkan.`], [R`Ones $4+5=9$, tens $5+3=8$, hundreds $2+1=3$.`, R`Satuan $4+5=9$, puluhan $5+3=8$, ratusan $2+1=3$.`], [R`Siti has $389 \text{ g}$ of flour.`, R`Siti punya $389 \text{ g}$ tepung.`]] },
+    { t: 'mcq', q: [R`A watermelon is $6 \text{ kg}$. A pumpkin is $4 \text{ kg}$. What is their mass altogether?`, R`Semangka $6 \text{ kg}$. Labu $4 \text{ kg}$. Berapa massa keduanya?`], fig: KG(6, '🍉', 150) + KG(4, '🎃', 150),
+      o: [R`$10 \text{ kg}$`, R`$2 \text{ kg}$`, R`$64 \text{ kg}$`, R`$10 \text{ g}$`], a: 0,
+      s: [[R`"Altogether" → add.`, R`"Keduanya / semuanya" → jumlahkan.`], [R`$6 \text{ kg} + 4 \text{ kg} = 10 \text{ kg}$.`, R`$6 \text{ kg} + 4 \text{ kg} = 10 \text{ kg}$.`], [R`$2 \text{ kg}$ is the difference (wrong operation), $10 \text{ g}$ has the wrong unit.`, R`$2 \text{ kg}$ adalah selisih (operasi salah), $10 \text{ g}$ satuannya salah.`]] },
+    { t: 'tf', q: [R`Box A is $520 \text{ g}$. Box B is $380 \text{ g}$. "Box A is $140 \text{ g}$ heavier than Box B."`, R`Kotak A $520 \text{ g}$. Kotak B $380 \text{ g}$. "Kotak A lebih berat $140 \text{ g}$ dari kotak B."`], a: true,
+      s: [[R`"How much heavier" → $520 - 380$.`, R`"Lebih berat berapa" → $520 - 380$.`], [R`Ones: $0 - 0 = 0$. Tens: $2 - 8$ cannot → borrow 1 hundred → $12 - 8 = 4$. Hundreds: $4 - 3 = 1$.`, R`Satuan: $0 - 0 = 0$. Puluhan: $2 - 8$ tidak bisa → pinjam 1 ratusan → $12 - 8 = 4$. Ratusan: $4 - 3 = 1$.`], [R`$520 - 380 = 140$. The statement is TRUE.`, R`$520 - 380 = 140$. Pernyataan BENAR.`]] },
+    { t: 'multi', q: [R`How much lighter is $35 \text{ kg}$ than $50 \text{ kg}$? Choose ALL correct answers.`, R`$35 \text{ kg}$ lebih ringan berapa dari $50 \text{ kg}$? Pilih SEMUA jawaban yang benar.`],
+      o: [R`$50 - 35 = 15$`, R`$35 + 15 = 50$`, R`$50 + 35 = 85$`, [R`Answer: $15 \text{ kg}$ lighter`, R`Jawaban: lebih ringan $15 \text{ kg}$`], [R`Answer: $85 \text{ kg}$ lighter`, R`Jawaban: lebih ringan $85 \text{ kg}$`]], a: [0, 1, 3],
+      s: [[R`"How much lighter" → subtract: ones $0 - 5$ cannot → borrow → $10 - 5 = 5$; tens $4 - 3 = 1$. So $50 - 35 = 15$ ✔.`, R`"Lebih ringan berapa" → kurangi: satuan $0 - 5$ tidak bisa → pinjam → $10 - 5 = 5$; puluhan $4 - 3 = 1$. Jadi $50 - 35 = 15$ ✔.`], [R`Count on: $35 + 15 = 50$ ✔ (same answer, $15$).`, R`Menghitung maju: $35 + 15 = 50$ ✔ (jawaban sama, $15$).`], [R`$50 + 35 = 85$ uses the wrong operation ✗. Answer: $15 \text{ kg}$ lighter ✔.`, R`$50 + 35 = 85$ memakai operasi yang salah ✗. Jawaban: lebih ringan $15 \text{ kg}$ ✔.`]] },
+    { t: 'fill', q: [R`A bag of rice is $10 \text{ kg}$. Mom uses $3 \text{ kg}$. Then she buys $5 \text{ kg}$ more. What is the mass of rice now?`, R`Sekarung beras $10 \text{ kg}$. Ibu memakai $3 \text{ kg}$. Lalu dia membeli $5 \text{ kg}$ lagi. Berapa massa beras sekarang?`],
+      f: [{ pre: R`Step 1 / <i>Langkah 1</i>: $10 - 3 =$`, a: '7' }, { pre: R`Step 2 / <i>Langkah 2</i>: $7 + 5 =$`, a: '12', post: R`$\text{kg}$` }],
+      s: [[R`Step 1: "uses" → subtract: $10 - 3 = 7$.`, R`Langkah 1: "memakai" → kurangi: $10 - 3 = 7$.`], [R`Step 2: "buys more" → add: $7 + 5 = 12$.`, R`Langkah 2: "membeli lagi" → jumlahkan: $7 + 5 = 12$.`], [R`The rice is now $12 \text{ kg}$.`, R`Beras sekarang $12 \text{ kg}$.`]] }
+  ] },
+
+/* ---------------------------------------------------- CONSOLIDATION */
+{ id: 's7', icon: '🌟', color: '#eab308', grad: 'linear-gradient(120deg,#ca8a04,#f97316)', time: '00:55 – 01:00',
+  nav: ['Consolidation & Reflection', 'Penguatan & Refleksi'], consolidation: true,
+  goal: ['🎯 Remember the big ideas, think about your learning, and show what you know!', 'Ingat ide-ide penting, pikirkan pembelajaranmu, dan tunjukkan apa yang kamu ketahui!'],
+  explain: R`
+<div class="card"><h3><span class="hi">🔑</span><div><span class="en">Key Points</span><span class="id">Poin Penting</span></div></h3>
+<ol class="steps keyp">
+<li><span class="en"><b>Mass</b> tells us how heavy an object is.</span><span class="id"><b>Massa</b> memberi tahu seberapa berat suatu benda.</span></li>
+<li><span class="en">On a balance: DOWN = heavier, UP = lighter, LEVEL = as heavy as.</span><span class="id">Pada neraca: TURUN = lebih berat, NAIK = lebih ringan, SEIMBANG = sama berat.</span></li>
+<li><span class="en">Bigger is not always heavier (🎈 vs 🧱).</span><span class="id">Lebih besar tidak selalu lebih berat (🎈 vs 🧱).</span></li>
+<li><span class="en">We can measure with non-standard units (cubes, marbles) or standard units: $\text{kg}$ for heavy things, $\text{g}$ for light things.</span><span class="id">Kita bisa mengukur dengan satuan tidak baku (kubus, kelereng) atau satuan baku: $\text{kg}$ untuk benda berat, $\text{g}$ untuk benda ringan.</span></li>
+<li><span class="en">To read a scale: look at the pointer, read the number, write the unit.</span><span class="id">Membaca timbangan: lihat jarum, baca angka, tulis satuannya.</span></li>
+<li><span class="en">Total / altogether → $+$. How much heavier / left → $-$. Always write the unit!</span><span class="id">Total / semuanya → $+$. Lebih berat berapa / sisa → $-$. Selalu tulis satuannya!</span></li>
+</ol></div>
+
+<div class="card refl"><h3><span class="hi">💭</span><div><span class="en">Reflection Questions</span><span class="id">Pertanyaan Refleksi</span></div></h3>
+<p><span class="en">1. What does the side that goes down on a balance tell you?</span><span class="id">1. Apa yang diberitahukan oleh sisi neraca yang turun?</span></p><textarea placeholder="Write here... / Tulis di sini..."></textarea>
+<p><span class="en">2. Name one thing you would measure in $\text{kg}$ and one thing in $\text{g}$. Why?</span><span class="id">2. Sebutkan satu benda yang diukur dalam $\text{kg}$ dan satu dalam $\text{g}$. Mengapa?</span></p><textarea placeholder="Write here... / Tulis di sini..."></textarea>
+<p><span class="en">3. Which part of today's lesson was the easiest? Which was the hardest? 😊😐😟</span><span class="id">3. Bagian mana dari pelajaran hari ini yang paling mudah? Mana yang paling sulit?</span></p><textarea placeholder="Write here... / Tulis di sini..."></textarea>
+</div>`,
+  exitTitle: ['🎟️ Exit Ticket', 'Tiket Keluar'],
+  ex: [
+    { t: 'mcq', q: [R`Which is heavier?`, R`Mana yang lebih berat?`], fig: BAL('🍌', '🍓', 'L', ['Banana/Pisang', 'Strawberry/Stroberi'], 270),
+      o: [['🍌 The banana', 'Pisang'], ['🍓 The strawberry', 'Stroberi'], ['Same mass', 'Massanya sama']], a: 0,
+      s: [[R`The banana side goes DOWN → the banana is heavier.`, R`Sisi pisang TURUN → pisang lebih berat.`]] },
+    { t: 'mcq', q: [R`Which unit would you use for a school bag 🎒?`, R`Satuan apa yang kamu pakai untuk tas sekolah 🎒?`],
+      o: [[R`$\text{kg}$`, 'kilogram'], [R`$\text{g}$`, 'gram']], a: 0,
+      s: [[R`A school bag with books is quite heavy → $\text{kg}$.`, R`Tas sekolah berisi buku cukup berat → $\text{kg}$.`]] },
+    { t: 'fill', q: [R`A cat is $7 \text{ kg}$ and a dog is $6 \text{ kg}$. What is their total mass?`, R`Kucing $7 \text{ kg}$ dan anjing $6 \text{ kg}$. Berapa massa totalnya?`],
+      f: [{ pre: R`$7 \text{ kg} + 6 \text{ kg} =$`, a: '13', post: R`$\text{kg}$` }],
+      s: [[R`"Total" → add: $7 + 6 = 13$.`, R`"Total" → jumlahkan: $7 + 6 = 13$.`], [R`Answer: $13 \text{ kg}$.`, R`Jawaban: $13 \text{ kg}$.`]] }
+  ],
+  after: R`
+<div class="card"><h3><span class="hi">🏠</span><div><span class="en">Follow-Up Practice (at home)</span><span class="id">Latihan Lanjutan (di rumah)</span></div></h3>
+<ol class="steps">
+<li><span class="en">🤲 Hand balance: hold 2 objects at home (a spoon and a book). Which is heavier? Write a sentence.</span><span class="id">Neraca tangan: pegang 2 benda di rumah (sendok dan buku). Mana yang lebih berat? Tulis sebuah kalimat.</span></li>
+<li><span class="en">🏷️ Label hunt: find 3 food packets in the kitchen. Write their mass and unit (for example $500 \text{ g}$, $1 \text{ kg}$). Order them from lightest to heaviest.</span><span class="id">Berburu label: temukan 3 kemasan makanan di dapur. Tulis massa dan satuannya (misalnya $500 \text{ g}$, $1 \text{ kg}$). Urutkan dari paling ringan ke paling berat.</span></li>
+<li><span class="en">🧮 Solve: Mom buys $2 \text{ kg}$ of chicken and $3 \text{ kg}$ of fish. What is the total mass? <i>(Answer: $2 + 3 = 5 \text{ kg}$)</i></span><span class="id">Selesaikan: Ibu membeli $2 \text{ kg}$ ayam dan $3 \text{ kg}$ ikan. Berapa massa totalnya? <i>(Jawaban: $2 + 3 = 5 \text{ kg}$)</i></span></li>
+<li><span class="en">🧮 Solve: A box is $450 \text{ g}$. Another box is $230 \text{ g}$. How much heavier is the first box? <i>(Answer: $450 - 230 = 220 \text{ g}$)</i></span><span class="id">Selesaikan: Sebuah kotak $450 \text{ g}$. Kotak lain $230 \text{ g}$. Kotak pertama lebih berat berapa? <i>(Jawaban: $450 - 230 = 220 \text{ g}$)</i></span></li>
+<li><span class="en">📝 Then do Task 1 – Task 5 in this lesson!</span><span class="id">Lalu kerjakan Tugas 1 – Tugas 5 di pelajaran ini!</span></li>
+</ol></div>` }
+];
+
+/* ================= TASKS ================= */
+const TASKS = [
+{ id: 't1', icon: '⚖️', grad: 'linear-gradient(120deg,#2563eb,#60a5fa)', nav: ['Task 1', 'Tugas 1'],
+  title: ['Task 1: Heavier, Lighter, As Heavy As', 'Tugas 1: Lebih Berat, Lebih Ringan, Sama Berat'],
+  ex: [
+    { t: 'mcq', q: [R`Which is lighter?`, R`Mana yang lebih ringan?`], fig: BAL('🍉', '🍎', 'L', ['Watermelon/Semangka', 'Apple/Apel'], 280),
+      o: [['🍎 The apple', 'Apel'], ['🍉 The watermelon', 'Semangka'], ['Same mass', 'Massanya sama']], a: 0,
+      s: [[R`The apple side goes UP.`, R`Sisi apel NAIK.`], [R`Up = lighter. The apple is lighter than the watermelon.`, R`Naik = lebih ringan. Apel lebih ringan dari semangka.`]] },
+    { t: 'tf', q: [R`"The teddy bear is as heavy as the book."`, R`"Boneka beruang sama berat dengan buku."`], fig: BAL('🧸', '📗', 'E', ['Teddy/Boneka', 'Book/Buku'], 280), a: true,
+      s: [[R`The balance is LEVEL.`, R`Neraca SEIMBANG.`], [R`Level = same mass. The statement is TRUE.`, R`Seimbang = massa sama. Pernyataan BENAR.`]] },
+    { t: 'mcq', q: [R`The coconut is ______ the pineapple.`, R`Kelapa ______ nanas.`], fig: BAL('🥥', '🍍', 'R', ['Coconut/Kelapa', 'Pineapple/Nanas'], 280),
+      o: [['lighter than', 'lebih ringan dari'], ['heavier than', 'lebih berat dari'], ['as heavy as', 'sama berat dengan']], a: 0,
+      s: [[R`The pineapple side goes DOWN, the coconut side goes UP.`, R`Sisi nanas TURUN, sisi kelapa NAIK.`], [R`So the coconut is LIGHTER THAN the pineapple.`, R`Jadi kelapa LEBIH RINGAN DARI nanas.`]] },
+    { t: 'multi', q: [R`Choose ALL true sentences.`, R`Pilih SEMUA kalimat yang benar.`], fig: BAL('🎈', '⚽', 'R', ['Balloon/Balon', 'Ball/Bola'], 280),
+      o: [['The ball is heavier than the balloon.', 'Bola lebih berat dari balon.'], ['The balloon is lighter than the ball.', 'Balon lebih ringan dari bola.'], ['The balloon is heavier than the ball.', 'Balon lebih berat dari bola.'], ['They have the same mass.', 'Massanya sama.']], a: [0, 1],
+      s: [[R`The ball side goes DOWN → the ball is heavier ✔.`, R`Sisi bola TURUN → bola lebih berat ✔.`], [R`So the balloon is lighter ✔. The balance is not level, so not the same mass ✗.`, R`Jadi balon lebih ringan ✔. Neraca tidak seimbang, jadi massanya tidak sama ✗.`]] },
+    { t: 'sort', q: [R`Look at both balances. Sort from heaviest to lightest.`, R`Lihat kedua neraca. Urutkan dari paling berat ke paling ringan.`],
+      fig: BAL('🍇', '🍌', 'R', ['Grape/Anggur', 'Banana/Pisang'], 240) + BAL('🍌', '🍍', 'R', ['Banana/Pisang', 'Pineapple/Nanas'], 240),
+      items: [it('🍍', 'Pineapple', 'Nanas'), it('🍌', 'Banana', 'Pisang'), it('🍇', 'Grape', 'Anggur')], ends: HEAVY_LIGHT,
+      s: [[R`Balance 1: banana goes down → banana is heavier than grape.`, R`Neraca 1: pisang turun → pisang lebih berat dari anggur.`], [R`Balance 2: pineapple goes down → pineapple is heavier than banana.`, R`Neraca 2: nanas turun → nanas lebih berat dari pisang.`], [R`Heaviest → lightest: pineapple, banana, grape.`, R`Paling berat → paling ringan: nanas, pisang, anggur.`]] },
+    { t: 'drag', q: [R`Compare each object with an apple 🍎. Put it in the correct group.`, R`Bandingkan setiap benda dengan apel 🍎. Masukkan ke kelompok yang benar.`],
+      cats: [{ n: ['Heavier than an apple 🍎', 'Lebih berat dari apel'], items: [it('🍉', 'Watermelon', 'Semangka'), it('🎃', 'Pumpkin', 'Labu'), it('🎒', 'School bag', 'Tas sekolah')] },
+             { n: ['Lighter than an apple 🍎', 'Lebih ringan dari apel'], items: [it('🍇', 'One grape', 'Sebutir anggur'), it('🍃', 'Leaf', 'Daun'), it('📎', 'Paper clip', 'Penjepit kertas')] }],
+      s: [[R`Imagine each object on a balance with an apple.`, R`Bayangkan setiap benda di neraca bersama apel.`], [R`Watermelon, pumpkin, school bag would go DOWN → heavier.`, R`Semangka, labu, tas sekolah akan TURUN → lebih berat.`], [R`One grape, a leaf, a paper clip would go UP → lighter.`, R`Sebutir anggur, daun, penjepit kertas akan NAIK → lebih ringan.`]] },
+    { t: 'pair', q: [R`Match each balance to the correct sentence.`, R`Pasangkan setiap neraca dengan kalimat yang benar.`],
+      L: [BAL('🍎', '🍐', 'L', ['Apple', 'Pear'], 200), BAL('🍎', '🍐', 'R', ['Apple', 'Pear'], 200), BAL('🍎', '🍐', 'E', ['Apple', 'Pear'], 200)],
+      R: [it('', 'The apple is heavier than the pear.', 'Apel lebih berat dari pir.'), it('', 'The pear is heavier than the apple.', 'Pir lebih berat dari apel.'), it('', 'The apple is as heavy as the pear.', 'Apel sama berat dengan pir.')],
+      s: [[R`Balance 1: apple side down → apple heavier.`, R`Neraca 1: sisi apel turun → apel lebih berat.`], [R`Balance 2: pear side down → pear heavier.`, R`Neraca 2: sisi pir turun → pir lebih berat.`], [R`Balance 3: level → as heavy as.`, R`Neraca 3: seimbang → sama berat.`]] },
+    { t: 'fill', q: [R`1 pineapple 🍍 is as heavy as 3 apples 🍎. How many apples are as heavy as 2 pineapples?`, R`1 nanas 🍍 sama berat dengan 3 apel 🍎. Berapa apel yang sama berat dengan 2 nanas?`], fig: BAL('🍍', '🍎🍎🍎', 'E', ['1 pineapple', '3 apples'], 260),
+      f: [{ pre: R`$3 + 3 =$`, a: '6', post: R`<span>apples / <i>apel</i></span>` }],
+      s: [[R`1 pineapple = 3 apples.`, R`1 nanas = 3 apel.`], [R`2 pineapples = 3 apples + 3 apples.`, R`2 nanas = 3 apel + 3 apel.`], [R`$3 + 3 = 6$. So 6 apples.`, R`$3 + 3 = 6$. Jadi 6 apel.`]] },
+    { t: 'mcq', q: [R`We put a brick 🧱 on one side and a balloon 🎈 on the other side of a balance. What happens?`, R`Kita letakkan batu bata 🧱 di satu sisi dan balon 🎈 di sisi lain neraca. Apa yang terjadi?`],
+      o: [['The brick side goes down.', 'Sisi batu bata turun.'], ['The balloon side goes down.', 'Sisi balon turun.'], ['The balance stays level.', 'Neraca tetap seimbang.']], a: 0,
+      s: [[R`The brick is heavier than the balloon.`, R`Batu bata lebih berat dari balon.`], [R`The heavier side goes DOWN → the brick side goes down.`, R`Sisi yang lebih berat TURUN → sisi batu bata turun.`]] },
+    { t: 'tf', q: [R`"On a balance, the lighter object goes down."`, R`"Pada neraca, benda yang lebih ringan turun."`], a: false,
+      s: [[R`On a balance, the HEAVIER object goes down, the lighter one goes up.`, R`Pada neraca, benda yang LEBIH BERAT turun, yang lebih ringan naik.`], [R`The statement is FALSE.`, R`Pernyataan SALAH.`]] }
+  ] },
+
+{ id: 't2', icon: '🟩', grad: 'linear-gradient(120deg,#16a34a,#4ade80)', nav: ['Task 2', 'Tugas 2'],
+  title: ['Task 2: Measuring with Cubes and Marbles', 'Tugas 2: Mengukur dengan Kubus dan Kelereng'],
+  ex: [
+    { t: 'fill', q: [R`The balance is level. What is the mass of the pear?`, R`Neraca seimbang. Berapa massa pir?`], fig: BAL('🍐', 6, 'E', ['Pear/Pir', 'cubes/kubus'], 280),
+      f: [{ pre: R`<span>Mass = </span>`, a: '6', post: R`<span>cubes / <i>kubus</i></span>` }],
+      s: [[R`Level → pear is as heavy as the cubes.`, R`Seimbang → pir sama berat dengan kubus.`], [R`Count: $1, 2, 3, 4, 5, 6$. The mass is $6$ cubes.`, R`Hitung: $1, 2, 3, 4, 5, 6$. Massanya $6$ kubus.`]] },
+    { t: 'mcq', q: [R`An apple is $8$ cubes. An orange is $5$ cubes. Which is heavier?`, R`Apel $8$ kubus. Jeruk $5$ kubus. Mana yang lebih berat?`], fig: BAL('🍎', 8, 'E', ['Apple', '8'], 200) + BAL('🍊', 5, 'E', ['Orange', '5'], 200),
+      o: [['🍎 The apple', 'Apel'], ['🍊 The orange', 'Jeruk'], ['Same mass', 'Massanya sama']], a: 0,
+      s: [[R`Compare the number of cubes: $8 > 5$.`, R`Bandingkan jumlah kubus: $8 > 5$.`], [R`More cubes = heavier. The apple is heavier.`, R`Lebih banyak kubus = lebih berat. Apel lebih berat.`]] },
+    { t: 'fill', q: [R`An apple is $8$ cubes. An orange is $5$ cubes. How many cubes heavier is the apple?`, R`Apel $8$ kubus. Jeruk $5$ kubus. Apel lebih berat berapa kubus?`],
+      f: [{ pre: R`$8 - 5 =$`, a: '3', post: R`<span>cubes / <i>kubus</i></span>` }],
+      s: [[R`"How many heavier" → subtract.`, R`"Lebih berat berapa" → kurangi.`], [R`$8 - 5 = 3$. The apple is $3$ cubes heavier.`, R`$8 - 5 = 3$. Apel lebih berat $3$ kubus.`]] },
+    { t: 'sort', q: [R`The masses are measured in marbles. Sort from lightest to heaviest.`, R`Massa diukur dengan kelereng. Urutkan dari paling ringan ke paling berat.`],
+      items: [it('✏️', '3 marbles', 'Pencil / Pensil · 3 kelereng'), it('🧃', '7 marbles', 'Juice / Jus · 7 kelereng'), it('📘', '9 marbles', 'Book / Buku · 9 kelereng'), it('🧸', '12 marbles', 'Teddy / Boneka · 12 kelereng')], ends: LIGHT_HEAVY,
+      s: [[R`Compare the numbers: $3 < 7 < 9 < 12$.`, R`Bandingkan angkanya: $3 < 7 < 9 < 12$.`], [R`Lightest → heaviest: pencil, juice, book, teddy.`, R`Paling ringan → paling berat: pensil, jus, buku, boneka.`]] },
+    { t: 'tf', q: [R`"A toy car is as heavy as 10 marbles. So its mass is about 10 marbles."`, R`"Mobil mainan sama berat dengan 10 kelereng. Jadi massanya kira-kira 10 kelereng."`], a: true,
+      s: [[R`"As heavy as" means the balance is level.`, R`"Sama berat dengan" berarti neraca seimbang.`], [R`So the mass of the car is about $10$ marbles. TRUE.`, R`Jadi massa mobil kira-kira $10$ kelereng. BENAR.`]] },
+    { t: 'multi', q: [R`Which are NON-STANDARD units (units we make ourselves)? Choose ALL.`, R`Mana yang termasuk satuan TIDAK BAKU (satuan buatan sendiri)? Pilih SEMUA.`],
+      o: [['🟩 Cubes', 'Kubus'], ['🔵 Marbles', 'Kelereng'], ['📎 Paper clips', 'Penjepit kertas'], [R`Kilograms ($\text{kg}$)`, 'Kilogram']], a: [0, 1, 2],
+      s: [[R`Cubes, marbles and paper clips are things we can count — non-standard units ✔.`, R`Kubus, kelereng, dan penjepit kertas adalah benda yang bisa kita hitung — satuan tidak baku ✔.`], [R`Kilogram is a STANDARD unit, the same everywhere ✗.`, R`Kilogram adalah satuan BAKU, sama di mana saja ✗.`]] },
+    { t: 'fill', q: [R`A mug is $4$ cubes. A spoon is $2$ cubes. We put both on the same pan. How many cubes do we need to make it level?`, R`Cangkir $4$ kubus. Sendok $2$ kubus. Keduanya kita letakkan di piringan yang sama. Berapa kubus yang dibutuhkan agar seimbang?`],
+      f: [{ pre: R`$4 + 2 =$`, a: '6', post: R`<span>cubes / <i>kubus</i></span>` }],
+      s: [[R`Both together → add.`, R`Keduanya bersama → jumlahkan.`], [R`$4 + 2 = 6$ cubes.`, R`$4 + 2 = 6$ kubus.`]] },
+    { t: 'mcq', q: [R`Ben uses small cubes and finds a book is $12$ cubes. Ana uses big cubes and finds the same book is $6$ cubes. Why are the numbers different?`, R`Ben memakai kubus kecil dan mendapat massa buku $12$ kubus. Ana memakai kubus besar dan mendapat buku yang sama $6$ kubus. Mengapa angkanya berbeda?`],
+      o: [['Because the cubes are different sizes.', 'Karena ukuran kubusnya berbeda.'], ['Because the book changed.', 'Karena bukunya berubah.'], ['Because the book is lighter for Ana.', 'Karena buku lebih ringan untuk Ana.']], a: 0,
+      s: [[R`It is the same book, so its mass is the same.`, R`Bukunya sama, jadi massanya sama.`], [R`Big cubes are heavier, so we need fewer of them. The units are different sizes.`, R`Kubus besar lebih berat, jadi dibutuhkan lebih sedikit. Ukuran satuannya berbeda.`], [R`This is why we use standard units ($\text{kg}$ and $\text{g}$).`, R`Inilah alasan kita memakai satuan baku ($\text{kg}$ dan $\text{g}$).`]] },
+    { t: 'pair', q: [R`Count the cubes. Match each balance to the mass.`, R`Hitung kubusnya. Pasangkan setiap neraca dengan massanya.`],
+      L: [BAL('🍋', 2, 'E', null, 190), BAL('🍎', 4, 'E', null, 190), BAL('🍐', 7, 'E', null, 190)],
+      R: [it('', '2 cubes', '2 kubus'), it('', '4 cubes', '4 kubus'), it('', '7 cubes', '7 kubus')],
+      s: [[R`Lemon: count $1, 2$ → $2$ cubes.`, R`Lemon: hitung $1, 2$ → $2$ kubus.`], [R`Apple: $1, 2, 3, 4$ → $4$ cubes.`, R`Apel: $1, 2, 3, 4$ → $4$ kubus.`], [R`Pear: $1, \dots, 7$ → $7$ cubes (6 in the first row and 1 on top).`, R`Pir: $1, \dots, 7$ → $7$ kubus (6 di baris pertama dan 1 di atas).`]] },
+    { t: 'drag', q: [R`Compare each mass with $5$ cubes. Put it in the correct group.`, R`Bandingkan setiap massa dengan $5$ kubus. Masukkan ke kelompok yang benar.`],
+      cats: [{ n: [R`Heavier than $5$ cubes`, R`Lebih berat dari $5$ kubus`], items: [it('🍌', '7 cubes', '7 kubus'), it('🥭', '9 cubes', '9 kubus'), it('🍍', '11 cubes', '11 kubus')] },
+             { n: [R`Lighter than $5$ cubes`, R`Lebih ringan dari $5$ kubus`], items: [it('🍓', '2 cubes', '2 kubus'), it('🥕', '4 cubes', '4 kubus'), it('🍋', '3 cubes', '3 kubus')] }],
+      s: [[R`Greater than $5$: $7, 9, 11$ → heavier.`, R`Lebih dari $5$: $7, 9, 11$ → lebih berat.`], [R`Less than $5$: $2, 3, 4$ → lighter.`, R`Kurang dari $5$: $2, 3, 4$ → lebih ringan.`]] }
+  ] },
+
+{ id: 't3', icon: '🔎', grad: 'linear-gradient(120deg,#db2777,#f472b6)', nav: ['Task 3', 'Tugas 3'],
+  title: ['Task 3: Kilograms, Grams and Reading Scales', 'Tugas 3: Kilogram, Gram, dan Membaca Timbangan'],
+  ex: [
+    { t: 'mcq', q: [R`Which unit is best for a bag of rice 🍚?`, R`Satuan apa yang paling tepat untuk sekarung beras 🍚?`],
+      o: [[R`$\text{kg}$`, 'kilogram'], [R`$\text{g}$`, 'gram']], a: 0, s: [[R`A bag of rice is heavy → $\text{kg}$.`, R`Sekarung beras berat → $\text{kg}$.`]] },
+    { t: 'mcq', q: [R`Which unit is best for a strawberry 🍓?`, R`Satuan apa yang paling tepat untuk stroberi 🍓?`],
+      o: [[R`$\text{g}$`, 'gram'], [R`$\text{kg}$`, 'kilogram']], a: 0, s: [[R`A strawberry is very light → $\text{g}$.`, R`Stroberi sangat ringan → $\text{g}$.`]] },
+    { t: 'drag', q: [R`Put each object in the correct unit group.`, R`Masukkan setiap benda ke kelompok satuan yang benar.`],
+      cats: [{ n: [R`$\text{kg}$`, 'kilogram'], items: [it('🛵', 'Motorbike', 'Sepeda motor'), it('🧳', 'Suitcase', 'Koper'), it('🐕', 'Dog', 'Anjing')] },
+             { n: [R`$\text{g}$`, 'gram'], items: [it('🥄', 'Spoon', 'Sendok'), it('🖍️', 'Crayon', 'Krayon'), it('🍪', 'Cookie', 'Kue kering')] }],
+      s: [[R`Heavy → $\text{kg}$: motorbike, suitcase, dog.`, R`Berat → $\text{kg}$: sepeda motor, koper, anjing.`], [R`Light → $\text{g}$: spoon, crayon, cookie.`, R`Ringan → $\text{g}$: sendok, krayon, kue kering.`]] },
+    { t: 'fill', q: [R`Read the scale. What is the mass of the watermelon?`, R`Baca timbangan. Berapa massa semangka?`], fig: KG(6, '🍉', 200),
+      f: [{ pre: R`<span>Mass = </span>`, a: '6', post: R`$\text{kg}$` }],
+      s: [[R`The pointer points to $6$. The unit is $\text{kg}$.`, R`Jarum menunjuk $6$. Satuannya $\text{kg}$.`], [R`The watermelon is $6 \text{ kg}$.`, R`Semangka $6 \text{ kg}$.`]] },
+    { t: 'fill', q: [R`Read the scale. What is the mass of the bread?`, R`Baca timbangan. Berapa massa roti?`], fig: GR(800, '🍞', 220),
+      f: [{ pre: R`<span>Mass = </span>`, a: '800', post: R`$\text{g}$` }],
+      s: [[R`Numbers go up by $100$. The pointer points to $800$.`, R`Angka naik $100$. Jarum menunjuk $800$.`], [R`The unit is $\text{g}$. The bread is $800 \text{ g}$.`, R`Satuannya $\text{g}$. Roti $800 \text{ g}$.`]] },
+    { t: 'tf', q: [R`"The pumpkin is $5 \text{ kg}$."`, R`"Labu $5 \text{ kg}$."`], fig: KG(3, '🎃', 200), a: false,
+      s: [[R`The pointer points to $3$, not $5$.`, R`Jarum menunjuk $3$, bukan $5$.`], [R`The pumpkin is $3 \text{ kg}$. The statement is FALSE.`, R`Labu $3 \text{ kg}$. Pernyataan SALAH.`]] },
+    { t: 'pair', q: [R`Match each scale to its mass.`, R`Pasangkan setiap timbangan dengan massanya.`],
+      L: [GR(200, '🧀', 190), GR(500, '🧈', 190), GR(900, '🥥', 190)], R: [R`$200 \text{ g}$`, R`$500 \text{ g}$`, R`$900 \text{ g}$`],
+      s: [[R`Scale 1: pointer at $200$ → $200 \text{ g}$.`, R`Timbangan 1: jarum di $200$ → $200 \text{ g}$.`], [R`Scale 2: pointer at $500$ → $500 \text{ g}$.`, R`Timbangan 2: jarum di $500$ → $500 \text{ g}$.`], [R`Scale 3: pointer at $900$ → $900 \text{ g}$.`, R`Timbangan 3: jarum di $900$ → $900 \text{ g}$.`]] },
+    { t: 'mcq', q: [R`What is the best guess for the mass of a newborn baby 👶?`, R`Berapa perkiraan terbaik untuk massa bayi yang baru lahir 👶?`],
+      o: [R`$3 \text{ kg}$`, R`$3 \text{ g}$`, R`$300 \text{ kg}$`], a: 0,
+      s: [[R`$3 \text{ g}$ is as light as 3 paper clips — too light ✗.`, R`$3 \text{ g}$ seringan 3 penjepit kertas — terlalu ringan ✗.`], [R`$300 \text{ kg}$ is heavier than a cow — too heavy ✗.`, R`$300 \text{ kg}$ lebih berat dari sapi — terlalu berat ✗.`], [R`A newborn baby is about $3 \text{ kg}$ ✔.`, R`Bayi baru lahir kira-kira $3 \text{ kg}$ ✔.`]] },
+    { t: 'multi', q: [R`Which would you measure in GRAMS? Choose ALL.`, R`Mana yang kamu ukur dalam GRAM? Pilih SEMUA.`],
+      o: [['🧽 An eraser', 'Penghapus'], ['✉️ A letter', 'Surat'], ['🚲 A bicycle', 'Sepeda'], ['✏️ A pencil', 'Pensil'], ['🪑 A chair', 'Kursi']], a: [0, 1, 3],
+      s: [[R`Light things → grams: eraser, letter, pencil ✔.`, R`Benda ringan → gram: penghapus, surat, pensil ✔.`], [R`Bicycle and chair are heavy → kilograms ✗.`, R`Sepeda dan kursi berat → kilogram ✗.`]] },
+    { t: 'sort', q: [R`Sort the animals from lightest to heaviest.`, R`Urutkan hewan dari paling ringan ke paling berat.`],
+      items: [it('🐇', R`$2 \text{ kg}$`, 'Rabbit / Kelinci'), it('🐱', R`$5 \text{ kg}$`, 'Cat / Kucing'), it('🦃', R`$7 \text{ kg}$`, 'Turkey / Kalkun'), it('🐕', R`$10 \text{ kg}$`, 'Dog / Anjing')], ends: LIGHT_HEAVY,
+      s: [[R`All units are $\text{kg}$. Compare: $2 < 5 < 7 < 10$.`, R`Semua satuan $\text{kg}$. Bandingkan: $2 < 5 < 7 < 10$.`], [R`Lightest → heaviest: rabbit, cat, turkey, dog.`, R`Paling ringan → paling berat: kelinci, kucing, kalkun, anjing.`]] }
+  ] },
+
+{ id: 't4', icon: '🏆', grad: 'linear-gradient(120deg,#7c3aed,#c084fc)', nav: ['Task 4', 'Tugas 4'],
+  title: ['Task 4: Comparing and Ordering Masses', 'Tugas 4: Membandingkan dan Mengurutkan Massa'],
+  ex: [
+    { t: 'mcq', q: [R`Which sign makes this true? $450 \text{ g} \;\square\; 405 \text{ g}$`, R`Tanda mana yang membuat ini benar? $450 \text{ g} \;\square\; 405 \text{ g}$`],
+      o: [[R`$>$`, 'lebih dari'], [R`$<$`, 'kurang dari'], [R`$=$`, 'sama dengan']], a: 0,
+      s: [[R`Hundreds: $4 = 4$. Tens: $5 > 0$.`, R`Ratusan: $4 = 4$. Puluhan: $5 > 0$.`], [R`So $450 \text{ g} > 405 \text{ g}$.`, R`Jadi $450 \text{ g} > 405 \text{ g}$.`]] },
+    { t: 'mcq', q: [R`Which animal is the heaviest?`, R`Hewan mana yang paling berat?`],
+      fig: `<div class="grid3" style="width:100%"><div class="tile"><span class="em">🐐</span>Goat / <i>Kambing</i><br>$35 \\text{ kg}$</div><div class="tile"><span class="em">🐑</span>Sheep / <i>Domba</i><br>$42 \\text{ kg}$</div><div class="tile"><span class="em">🐖</span>Pig / <i>Babi</i><br>$60 \\text{ kg}$</div><div class="tile"><span class="em">🐕</span>Dog / <i>Anjing</i><br>$18 \\text{ kg}$</div></div>`,
+      o: [['🐖 Pig', 'Babi'], ['🐑 Sheep', 'Domba'], ['🐐 Goat', 'Kambing'], ['🐕 Dog', 'Anjing']], a: 0,
+      s: [[R`Compare tens: $1 < 3 < 4 < 6$, so $18 < 35 < 42 < 60$.`, R`Bandingkan puluhan: $1 < 3 < 4 < 6$, jadi $18 < 35 < 42 < 60$.`], [R`The pig ($60 \text{ kg}$) is the heaviest.`, R`Babi ($60 \text{ kg}$) paling berat.`]] },
+    { t: 'mcq', q: [R`Look at the same animals (goat $35 \text{ kg}$, sheep $42 \text{ kg}$, pig $60 \text{ kg}$, dog $18 \text{ kg}$). Which is the lightest?`, R`Lihat hewan yang sama (kambing $35 \text{ kg}$, domba $42 \text{ kg}$, babi $60 \text{ kg}$, anjing $18 \text{ kg}$). Mana yang paling ringan?`],
+      o: [['🐕 Dog', 'Anjing'], ['🐐 Goat', 'Kambing'], ['🐑 Sheep', 'Domba'], ['🐖 Pig', 'Babi']], a: 0,
+      s: [[R`The smallest number is $18$.`, R`Angka terkecil adalah $18$.`], [R`The dog ($18 \text{ kg}$) is the lightest.`, R`Anjing ($18 \text{ kg}$) paling ringan.`]] },
+    { t: 'sort', q: [R`Sort from heaviest to lightest.`, R`Urutkan dari paling berat ke paling ringan.`],
+      items: [it('🥥', R`$900 \text{ g}$`, 'Coconut / Kelapa'), it('🍍', R`$750 \text{ g}$`, 'Pineapple / Nanas'), it('🥭', R`$300 \text{ g}$`, 'Mango / Mangga'), it('🍋', R`$90 \text{ g}$`, 'Lemon')], ends: HEAVY_LIGHT,
+      s: [[R`$90$ has no hundreds → lightest.`, R`$90$ tidak punya ratusan → paling ringan.`], [R`Compare hundreds: $9 > 7 > 3$, so $900 > 750 > 300$.`, R`Bandingkan ratusan: $9 > 7 > 3$, jadi $900 > 750 > 300$.`], [R`Heaviest → lightest: coconut, pineapple, mango, lemon.`, R`Paling berat → paling ringan: kelapa, nanas, mangga, lemon.`]] },
+    { t: 'tf', q: [R`"$235 \text{ g}$ is lighter than $253 \text{ g}$."`, R`"$235 \text{ g}$ lebih ringan dari $253 \text{ g}$."`], a: true,
+      s: [[R`Hundreds: $2 = 2$. Tens: $3 < 5$.`, R`Ratusan: $2 = 2$. Puluhan: $3 < 5$.`], [R`So $235 < 253$. $235 \text{ g}$ is lighter. TRUE.`, R`Jadi $235 < 253$. $235 \text{ g}$ lebih ringan. BENAR.`]] },
+    { t: 'multi', q: [R`Choose ALL masses heavier than $500 \text{ g}$.`, R`Pilih SEMUA massa yang lebih berat dari $500 \text{ g}$.`],
+      o: [R`$650 \text{ g}$`, R`$499 \text{ g}$`, R`$505 \text{ g}$`, R`$50 \text{ g}$`, R`$720 \text{ g}$`], a: [0, 2, 4],
+      s: [[R`$650$ (6 hundreds) ✔, $720$ (7 hundreds) ✔.`, R`$650$ (6 ratusan) ✔, $720$ (7 ratusan) ✔.`], [R`$505$: hundreds $5 = 5$, tens $0 = 0$, ones $5 > 0$ ✔.`, R`$505$: ratusan $5 = 5$, puluhan $0 = 0$, satuan $5 > 0$ ✔.`], [R`$499$ (4 hundreds) ✗, $50$ (no hundreds) ✗.`, R`$499$ (4 ratusan) ✗, $50$ (tanpa ratusan) ✗.`]] },
+    { t: 'fill', q: [R`The pig is $60 \text{ kg}$. The dog is $18 \text{ kg}$. How much heavier is the pig?`, R`Babi $60 \text{ kg}$. Anjing $18 \text{ kg}$. Babi lebih berat berapa?`],
+      f: [{ pre: R`$60 \text{ kg} - 18 \text{ kg} =$`, a: '42', post: R`$\text{kg}$` }],
+      s: [[R`"How much heavier" → subtract.`, R`"Lebih berat berapa" → kurangi.`], [R`Ones: $0 - 8$ cannot → borrow 1 ten → $10 - 8 = 2$. Tens: $5 - 1 = 4$.`, R`Satuan: $0 - 8$ tidak bisa → pinjam 1 puluhan → $10 - 8 = 2$. Puluhan: $5 - 1 = 4$.`], [R`$60 - 18 = 42$. The pig is $42 \text{ kg}$ heavier.`, R`$60 - 18 = 42$. Babi lebih berat $42 \text{ kg}$.`]] },
+    { t: 'pair', q: [R`Match each comparison to the correct sign.`, R`Pasangkan setiap perbandingan dengan tanda yang benar.`],
+      L: [R`$312 \text{ g} \;\square\; 321 \text{ g}$`, R`$540 \text{ g} \;\square\; 504 \text{ g}$`, R`$700 \text{ g} \;\square\; 700 \text{ g}$`], R: [R`$<$`, R`$>$`, R`$=$`],
+      s: [[R`$312$ vs $321$: tens $1 < 2$ → $<$.`, R`$312$ vs $321$: puluhan $1 < 2$ → $<$.`], [R`$540$ vs $504$: tens $4 > 0$ → $>$.`, R`$540$ vs $504$: puluhan $4 > 0$ → $>$.`], [R`$700$ and $700$ are the same → $=$.`, R`$700$ dan $700$ sama → $=$.`]] },
+    { t: 'drag', q: [R`Airport check! Is each bag lighter or heavier than $20 \text{ kg}$?`, R`Pemeriksaan bandara! Apakah setiap tas lebih ringan atau lebih berat dari $20 \text{ kg}$?`],
+      cats: [{ n: [R`Lighter than $20 \text{ kg}$`, R`Lebih ringan dari $20 \text{ kg}$`], items: [it('🎒', R`$8 \text{ kg}$`, ''), it('👜', R`$12 \text{ kg}$`, ''), it('🛍️', R`$19 \text{ kg}$`, '')] },
+             { n: [R`Heavier than $20 \text{ kg}$`, R`Lebih berat dari $20 \text{ kg}$`], items: [it('🧳', R`$25 \text{ kg}$`, ''), it('📦', R`$31 \text{ kg}$`, ''), it('🧺', R`$22 \text{ kg}$`, '')] }],
+      s: [[R`Less than $20$: $8, 12, 19$ → lighter.`, R`Kurang dari $20$: $8, 12, 19$ → lebih ringan.`], [R`Greater than $20$: $22, 25, 31$ → heavier.`, R`Lebih dari $20$: $22, 25, 31$ → lebih berat.`]] },
+    { t: 'fill', q: [R`Box A is $245 \text{ g}$, Box B is $452 \text{ g}$, Box C is $425 \text{ g}$. What is the mass of the heaviest box?`, R`Kotak A $245 \text{ g}$, kotak B $452 \text{ g}$, kotak C $425 \text{ g}$. Berapa massa kotak yang paling berat?`],
+      f: [{ pre: R`<span>Heaviest / <i>Paling berat</i> = </span>`, a: '452', post: R`$\text{g}$` }],
+      s: [[R`Hundreds: $2 < 4$, so Box A is not the heaviest.`, R`Ratusan: $2 < 4$, jadi kotak A bukan yang paling berat.`], [R`Box B and C both have 4 hundreds. Tens: $5 > 2$, so $452 > 425$.`, R`Kotak B dan C sama-sama 4 ratusan. Puluhan: $5 > 2$, jadi $452 > 425$.`], [R`The heaviest is Box B: $452 \text{ g}$.`, R`Paling berat kotak B: $452 \text{ g}$.`]] }
+  ] },
+
+{ id: 't5', icon: '📚', grad: 'linear-gradient(120deg,#0d9488,#2dd4bf)', nav: ['Task 5', 'Tugas 5'],
+  title: ['Task 5: Word Problems on Mass', 'Tugas 5: Soal Cerita tentang Massa'],
+  ex: [
+    { t: 'fill', q: [R`Mom buys $5 \text{ kg}$ of rice and $3 \text{ kg}$ of sugar. What is the total mass?`, R`Ibu membeli $5 \text{ kg}$ beras dan $3 \text{ kg}$ gula. Berapa massa totalnya?`],
+      f: [{ pre: R`$5 \text{ kg} + 3 \text{ kg} =$`, a: '8', post: R`$\text{kg}$` }],
+      s: [[R`"Total" → add.`, R`"Total" → jumlahkan.`], [R`$5 + 3 = 8$. Answer: $8 \text{ kg}$.`, R`$5 + 3 = 8$. Jawaban: $8 \text{ kg}$.`]] },
+    { t: 'fill', q: [R`A bag of flour is $900 \text{ g}$. Grandma uses $350 \text{ g}$ to bake a cake. How much flour is left?`, R`Sekantong tepung $900 \text{ g}$. Nenek memakai $350 \text{ g}$ untuk membuat kue. Berapa sisa tepung?`],
+      f: [{ pre: R`$900 \text{ g} - 350 \text{ g} =$`, a: '550', post: R`$\text{g}$` }],
+      s: [[R`"Left" → subtract.`, R`"Sisa" → kurangi.`], [R`Ones: $0 - 0 = 0$. Tens: $0 - 5$ cannot → borrow 1 hundred → $10 - 5 = 5$. Hundreds: $8 - 3 = 5$.`, R`Satuan: $0 - 0 = 0$. Puluhan: $0 - 5$ tidak bisa → pinjam 1 ratusan → $10 - 5 = 5$. Ratusan: $8 - 3 = 5$.`], [R`$900 - 350 = 550$. Answer: $550 \text{ g}$.`, R`$900 - 350 = 550$. Jawaban: $550 \text{ g}$.`]] },
+    { t: 'mcq', q: [R`Dad is $68 \text{ kg}$. Budi is $25 \text{ kg}$. How much heavier is Dad?`, R`Ayah $68 \text{ kg}$. Budi $25 \text{ kg}$. Ayah lebih berat berapa?`],
+      o: [R`$43 \text{ kg}$`, R`$93 \text{ kg}$`, R`$33 \text{ kg}$`, R`$47 \text{ kg}$`], a: 0,
+      s: [[R`"How much heavier" → subtract: $68 - 25$.`, R`"Lebih berat berapa" → kurangi: $68 - 25$.`], [R`Ones: $8 - 5 = 3$. Tens: $6 - 2 = 4$.`, R`Satuan: $8 - 5 = 3$. Puluhan: $6 - 2 = 4$.`], [R`$68 - 25 = 43$. Dad is $43 \text{ kg}$ heavier. ($93$ comes from adding — wrong.)`, R`$68 - 25 = 43$. Ayah lebih berat $43 \text{ kg}$. ($93$ berasal dari penjumlahan — salah.)`]] },
+    { t: 'tf', q: [R`Ayu's cat is $4 \text{ kg}$ and her dog is $12 \text{ kg}$. "Together they are $16 \text{ kg}$."`, R`Kucing Ayu $4 \text{ kg}$ dan anjingnya $12 \text{ kg}$. "Bersama-sama massanya $16 \text{ kg}$."`], a: true,
+      s: [[R`"Together" → add: $4 + 12 = 16$.`, R`"Bersama-sama" → jumlahkan: $4 + 12 = 16$.`], [R`The statement is TRUE.`, R`Pernyataan BENAR.`]] },
+    { t: 'multi', q: [R`Rina has a $350 \text{ g}$ bag of sweets. She gives away $120 \text{ g}$. How much is left? Choose ALL correct parts.`, R`Rina punya sekantong permen $350 \text{ g}$. Dia memberikan $120 \text{ g}$. Berapa sisanya? Pilih SEMUA bagian yang benar.`],
+      o: [R`$350 - 120 = 230$`, R`$350 + 120 = 470$`, [R`Answer: $230 \text{ g}$`, R`Jawaban: $230 \text{ g}$`], [R`Answer: $230 \text{ kg}$`, R`Jawaban: $230 \text{ kg}$`]], a: [0, 2],
+      s: [[R`"Gives away … left" → subtract: $350 - 120$.`, R`"Memberikan … sisa" → kurangi: $350 - 120$.`], [R`Ones $0 - 0 = 0$, tens $5 - 2 = 3$, hundreds $3 - 1 = 2$ → $230$ ✔.`, R`Satuan $0 - 0 = 0$, puluhan $5 - 2 = 3$, ratusan $3 - 1 = 2$ → $230$ ✔.`], [R`The unit is grams (sweets are light), so $230 \text{ g}$ ✔, not $\text{kg}$ ✗.`, R`Satuannya gram (permen ringan), jadi $230 \text{ g}$ ✔, bukan $\text{kg}$ ✗.`]] },
+    { t: 'fill', q: [R`A box has $15 \text{ kg}$ of books. Teacher adds $6 \text{ kg}$, then takes out $4 \text{ kg}$. What is the mass now?`, R`Sebuah kotak berisi $15 \text{ kg}$ buku. Guru menambahkan $6 \text{ kg}$, lalu mengeluarkan $4 \text{ kg}$. Berapa massanya sekarang?`],
+      f: [{ pre: R`Step 1 / <i>Langkah 1</i>: $15 + 6 =$`, a: '21' }, { pre: R`Step 2 / <i>Langkah 2</i>: $21 - 4 =$`, a: '17', post: R`$\text{kg}$` }],
+      s: [[R`Step 1: "adds" → $15 + 6 = 21$.`, R`Langkah 1: "menambahkan" → $15 + 6 = 21$.`], [R`Step 2: "takes out" → $21 - 4 = 17$.`, R`Langkah 2: "mengeluarkan" → $21 - 4 = 17$.`], [R`Answer: $17 \text{ kg}$.`, R`Jawaban: $17 \text{ kg}$.`]] },
+    { t: 'sort', q: [R`Put the steps for solving a word problem in the correct order.`, R`Urutkan langkah-langkah menyelesaikan soal cerita dengan benar.`],
+      items: [it('📖', 'Read the problem', 'Baca soal'), it('🔍', 'Find the masses', 'Temukan massanya'), it('🤔', R`Choose $+$ or $-$`, R`Pilih $+$ atau $-$`), it('🧮', 'Calculate', 'Hitung'), it('✍️', 'Write the answer with the unit', 'Tulis jawaban dengan satuan')], ends: [['first', 'pertama'], ['last', 'terakhir']],
+      s: [[R`1 Read → 2 Find the masses → 3 Choose $+$ or $-$ → 4 Calculate → 5 Write the answer with the unit.`, R`1 Baca → 2 Temukan massa → 3 Pilih $+$ atau $-$ → 4 Hitung → 5 Tulis jawaban dengan satuan.`]] },
+    { t: 'pair', q: [R`Match each problem to its number sentence.`, R`Pasangkan setiap soal dengan kalimat matematikanya.`],
+      L: [bi(['A 40 kg sack and a 20 kg sack. What is the total mass?', 'Karung 40 kg dan karung 20 kg. Berapa massa totalnya?']), bi(['How much heavier is a 40 kg sack than a 20 kg sack?', 'Karung 40 kg lebih berat berapa dari karung 20 kg?']), bi(['A sack is 40 kg. 10 kg is taken out. How much is left?', 'Sebuah karung 40 kg. 10 kg dikeluarkan. Berapa sisanya?'])],
+      R: [R`$40 + 20 = 60$`, R`$40 - 20 = 20$`, R`$40 - 10 = 30$`],
+      s: [[R`"Total" → $40 + 20 = 60$.`, R`"Total" → $40 + 20 = 60$.`], [R`"How much heavier" → $40 - 20 = 20$.`, R`"Lebih berat berapa" → $40 - 20 = 20$.`], [R`"Taken out … left" → $40 - 10 = 30$.`, R`"Dikeluarkan … sisa" → $40 - 10 = 30$.`]] },
+    { t: 'drag', q: [R`Do these words tell us to add or subtract?`, R`Apakah kata-kata ini menyuruh kita menjumlah atau mengurangi?`],
+      cats: [{ n: [R`Add $(+)$`, R`Jumlahkan $(+)$`], items: [it('', 'altogether', 'semuanya'), it('', 'in all', 'seluruhnya'), it('', 'together', 'bersama-sama')] },
+             { n: [R`Subtract $(-)$`, R`Kurangkan $(-)$`], items: [it('', 'how much heavier', 'lebih berat berapa'), it('', 'how much is left', 'berapa sisanya'), it('', 'difference', 'selisih')] }],
+      s: [[R`Putting masses together → add: altogether, in all, together.`, R`Menggabungkan massa → jumlahkan: semuanya, seluruhnya, bersama-sama.`], [R`Comparing or taking away → subtract: how much heavier, how much is left, difference.`, R`Membandingkan atau mengambil → kurangkan: lebih berat berapa, berapa sisanya, selisih.`]] },
+    { t: 'mcq', q: [R`Look at the scales. How much heavier is the pumpkin than the watermelon?`, R`Lihat timbangan. Labu lebih berat berapa dari semangka?`], fig: KG(4, '🍉', 160) + KG(7, '🎃', 160),
+      o: [R`$3 \text{ kg}$`, R`$11 \text{ kg}$`, R`$4 \text{ kg}$`, R`$7 \text{ kg}$`], a: 0,
+      s: [[R`Read the scales: watermelon $4 \text{ kg}$, pumpkin $7 \text{ kg}$.`, R`Baca timbangan: semangka $4 \text{ kg}$, labu $7 \text{ kg}$.`], [R`"How much heavier" → $7 - 4 = 3$.`, R`"Lebih berat berapa" → $7 - 4 = 3$.`], [R`The pumpkin is $3 \text{ kg}$ heavier.`, R`Labu lebih berat $3 \text{ kg}$.`]] }
+  ] }
+];
+
+/* ================= BUILD PAGE ================= */
+const ALL = [...SECTIONS, ...TASKS];
+const nav = document.getElementById('nav');
+const main = document.getElementById('main');
+nav.innerHTML = `<div class="navt">🧭 Lesson Menu<br><small style="font-family:Nunito;font-style:italic;font-weight:400;color:#64748b;font-size:.8rem">Menu Pelajaran</small></div>`;
+
+ALL.forEach((S, idx) => {
+  if (idx === SECTIONS.length) nav.insertAdjacentHTML('beforeend', `<div class="sep"></div>`);
+  const b = document.createElement('button');
+  b.dataset.go = S.id;
+  b.innerHTML = `<span class="ni" style="background:${S.grad}">${S.icon}</span><span class="nl">${S.time ? `<span class="tm">${S.time}</span>` : ''}${S.nav[0]}<small>${S.nav[1]}</small></span><span class="dot" data-score="${S.id}"></span>`;
+  b.onclick = () => show(S.id);
+  nav.appendChild(b);
+
+  const sec = document.createElement('section');
+  sec.className = 'sec'; sec.id = S.id;
+  SCORE[S.id] = { ok: new Set(), n: S.ex.length };
+  const title = S.title || S.nav;
+  sec.innerHTML = `<div class="sec-head" style="background:${S.grad}"><span class="big">${S.icon}</span>
+    <span class="badge">${S.time ? '⏰ ' + S.time : '📝 ' + S.ex.length + ' questions · <i>soal</i>'}</span><span class="score">⭐ <span data-score="${S.id}">0/${S.ex.length}</span></span>
+    <h2>${title[0]}</h2><span class="id">${title[1]}</span></div>
+    ${S.goal ? `<div class="goal">${bi(S.goal)}</div>` : ''}
+    ${S.explain || ''}`;
+  if (!S.explain && S.id.startsWith('t')) {
+    sec.insertAdjacentHTML('beforeend', `<div class="goal">${bi(['📌 Answer all 10 questions. Press "Check" to see if you are right. Open "Solution" to see the steps.', 'Jawab semua 10 soal. Tekan "Periksa" untuk melihat apakah jawabanmu benar. Buka "Pembahasan" untuk melihat langkah-langkahnya.'])}</div>`);
+  }
+  const head = S.exitTitle ? `<div class="exhead">🎟️ <div><span class="en">${S.exitTitle[0].replace('🎟️ ', '')}</span><span class="id">${S.exitTitle[1]}</span></div></div>` :
+               S.id.startsWith('t') ? '' : EX_HEAD;
+  sec.insertAdjacentHTML('beforeend', head);
+  S.ex.forEach((q, i) => sec.appendChild(renderQ(q, i + 1, S.id)));
+  if (S.after) sec.insertAdjacentHTML('beforeend', S.after);
+  const prev = ALL[idx - 1], next = ALL[idx + 1];
+  sec.insertAdjacentHTML('beforeend', `<div class="nextprev">${prev ? `<button class="btn" data-go="${prev.id}">⬅ ${prev.nav[0]}<br><i>${prev.nav[1]}</i></button>` : '<span></span>'}${next ? `<button class="btn" data-go="${next.id}">${next.nav[0]} ➡<br><i>${next.nav[1]}</i></button>` : ''}</div>`);
+  main.appendChild(sec);
+  updateScore(S.id);
+});
+main.querySelectorAll('.nextprev [data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
+
+function show(id) {
+  document.querySelectorAll('section.sec').forEach(s => s.classList.toggle('show', s.id === id));
+  nav.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.go === id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+show('s1');
+
+/* class rules modal */
+const modal = document.getElementById('rulesModal');
+document.getElementById('rulesBtn').onclick = () => modal.classList.add('open');
+document.getElementById('closeRules').onclick = () => modal.classList.remove('open');
+modal.onclick = e => { if (e.target === modal) modal.classList.remove('open'); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+
+/* KaTeX */
+function renderMath() {
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }], throwOnError: false });
+  }
+}
+if (window.renderMathInElement) renderMath(); else window.addEventListener('load', renderMath);
+</script>
+</body>
+</html>
